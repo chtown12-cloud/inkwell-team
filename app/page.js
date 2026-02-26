@@ -1668,19 +1668,22 @@ const KanbanBoard = ({tasks, columns, onColumnsChange, onResetColumns, onSelect,
   const [editDate, setEditDate] = useState("");
   const [cardDrop, setCardDrop] = useState(null); /* {id, zone:"before"|"after"} */
 
-  const PRIO_ORD={high:0,medium:1,low:2,none:3};
-  const sortCards=(arr)=>{
-    if(sortBy==="default")return arr;
-    return [...arr].sort((a,b)=>{
-      if(sortBy==="priority") return (PRIO_ORD[a.priority||"none"]||3)-(PRIO_ORD[b.priority||"none"]||3);
-      if(sortBy==="alpha") return (a.title||"").localeCompare(b.title||"");
-      if(sortBy==="created") return (b.createdAt||"").localeCompare(a.createdAt||"");
-      return 0;
-    });
-  };
-  const filterCards=(arr)=>filterPriority==="all"?arr:arr.filter(t=>t.priority===filterPriority);
+  const kanbanSortFilter = useMemo(() => {
+    const PO={high:0,medium:1,low:2,none:3};
+    const doFilter=(arr)=>filterPriority==="all"?arr:arr.filter(t=>(t.priority||"none")===filterPriority);
+    const doSort=(arr)=>{
+      if(sortBy==="default") return arr;
+      return [...arr].sort((a,b)=>{
+        if(sortBy==="priority") return (PO[a.priority||"none"]??3)-(PO[b.priority||"none"]??3);
+        if(sortBy==="alpha") return (a.title||"").localeCompare(b.title||"");
+        if(sortBy==="created") return (b.createdAt||"").localeCompare(a.createdAt||"");
+        return 0;
+      });
+    };
+    return (arr)=>doSort(doFilter(arr));
+  }, [sortBy, filterPriority]);
 
-  const overdueTasks = useMemo(() => sortCards(filterCards(tasks.filter(t => !t.completed && t.dueDate && t.dueDate < todayStr()))), [tasks, sortBy, filterPriority]);
+  const overdueTasks = useMemo(() => kanbanSortFilter(tasks.filter(t => !t.completed && t.dueDate && t.dueDate < todayStr())), [tasks, kanbanSortFilter]);
 
   /* Collect subtasks with own due dates */
   const datedSubs = useMemo(() => collectDatedSubtasks(tasks), [tasks]);
@@ -1688,13 +1691,13 @@ const KanbanBoard = ({tasks, columns, onColumnsChange, onResetColumns, onSelect,
   const byDate = useMemo(() => {
     const map = {};
     columns.forEach(c => {
-      const directTasks = sortCards(filterCards(tasks.filter(t => !t.completed && t.dueDate === c.dateStr)));
+      const directTasks = kanbanSortFilter(tasks.filter(t => !t.completed && t.dueDate === c.dateStr));
       /* Surface every subtask whose dueDate matches this column as a standalone card */
       const surfaced = datedSubs.filter(ds => ds.sub.dueDate === c.dateStr);
       map[c.dateStr] = { tasks: directTasks, subtasks: surfaced };
     });
     return map;
-  }, [tasks, columns, datedSubs, sortBy, filterPriority]);
+  }, [tasks, columns, datedSubs, kanbanSortFilter]);
 
   const onColDragOver = (e, ds) => { e.preventDefault(); e.dataTransfer.dropEffect = "move"; setHoverCol(ds); };
   const onColDrop = (e, ds) => {
@@ -3010,24 +3013,23 @@ export default function InkwellApp() {
     flash(`✓ Added ${added} task${added!==1?"s":""}${checked?`, checked off ${checked}`:""}${lm}`);};
 
   const PRIO_ORDER={high:0,medium:1,low:2,none:3};
-  const applySortFilter=(arr)=>{
-    /* Priority filter */
-    let f=filterPriority==="all"?arr:arr.filter(t=>t.priority===filterPriority);
-    /* Split incomplete/completed */
-    const inc=f.filter(t=>!t.completed);
-    const comp=f.filter(t=>t.completed);
-    /* Sort incomplete */
-    if(sortBy!=="default"){
-      inc.sort((a,b)=>{
-        if(sortBy==="priority") return (PRIO_ORDER[a.priority||"none"]||3)-(PRIO_ORDER[b.priority||"none"]||3);
-        if(sortBy==="alpha") return (a.title||"").localeCompare(b.title||"");
-        if(sortBy==="date") return (a.dueDate||"9999").localeCompare(b.dueDate||"9999");
-        if(sortBy==="created") return (b.createdAt||"").localeCompare(a.createdAt||"");
-        return 0;
-      });
-    }
-    return [...inc,...comp.sort((a,b)=>(b.completedAt||"").localeCompare(a.completedAt||""))];
-  };
+  const applySortFilter=useMemo(()=>{
+    return (arr)=>{
+      let f=filterPriority==="all"?arr:arr.filter(t=>(t.priority||"none")===filterPriority);
+      const inc=f.filter(t=>!t.completed);
+      const comp=f.filter(t=>t.completed);
+      if(sortBy!=="default"){
+        inc.sort((a,b)=>{
+          if(sortBy==="priority") return (PRIO_ORDER[a.priority||"none"]??3)-(PRIO_ORDER[b.priority||"none"]??3);
+          if(sortBy==="alpha") return (a.title||"").localeCompare(b.title||"");
+          if(sortBy==="date") return (a.dueDate||"9999").localeCompare(b.dueDate||"9999");
+          if(sortBy==="created") return (b.createdAt||"").localeCompare(a.createdAt||"");
+          return 0;
+        });
+      }
+      return [...inc,...comp.sort((a,b)=>(b.completedAt||"").localeCompare(a.completedAt||""))];
+    };
+  },[sortBy,filterPriority]);
 
   const filtered=useMemo(()=>{let f=tasks;
     if(search){const q=search.toLowerCase();f=f.filter(t=>t.title.toLowerCase().includes(q)||(t.notes||"").toLowerCase().includes(q)||(t.tags||[]).some(tg=>tg.toLowerCase().includes(q)));}
@@ -3046,7 +3048,7 @@ export default function InkwellApp() {
       result.splice(insertAt,0,...surfaced);
     }
     return result;
-  },[tasks,view,search,sortBy,filterPriority]);
+  },[tasks,view,search,sortBy,filterPriority,applySortFilter]);
 
   const overdueCount=useMemo(()=>tasks.filter(t=>!t.completed&&isOverdue(t.dueDate)).length,[tasks]);
   /* Auto-redirect from overdue view when all tasks resolved */
@@ -3256,15 +3258,6 @@ export default function InkwellApp() {
               onKeyDown={e=>{if(e.key==="Enter"&&newList.trim()&&!lists.includes(newList.trim())){setLists(p=>[...p,newList.trim()]);setNewList("");setShowNewList(false);}if(e.key==="Escape"){setShowNewList(false);setNewList("");}}}
               onBlur={()=>{setShowNewList(false);setNewList("");}} placeholder="List name..." style={{width:"100%",padding:"8px 10px",borderRadius:8,border:"1px solid var(--accent)",fontSize:13,outline:"none",background:"white",fontFamily:"inherit"}}/></div>)}
           </NavSection>
-          {hasSupabase && user && (
-            <div style={{padding:"8px 8px 4px"}}>
-              <a href="/team" style={{display:"flex",alignItems:"center",gap:10,padding:"10px 12px",borderRadius:10,border:"1px dashed var(--border)",background:"rgba(217,119,6,0.04)",color:"var(--accent)",fontSize:13,fontWeight:600,textDecoration:"none",transition:"all 0.15s"}}
-                onMouseEnter={e=>e.currentTarget.style.background="rgba(217,119,6,0.08)"}
-                onMouseLeave={e=>e.currentTarget.style.background="rgba(217,119,6,0.04)"}>
-                <span style={{fontSize:15}}>♦</span> Team Workspace →
-              </a>
-            </div>
-          )}
         </div>
         {overdueCount>0&&view!=="overdue"&&<button onClick={()=>selectView("overdue")} style={{margin:"0 8px 8px",padding:"10px 14px",borderRadius:10,background:"#fef2f2",border:"1px solid #fecaca",fontSize:13,color:"#ef4444",fontWeight:600,flexShrink:0,cursor:"pointer",width:"calc(100% - 16px)",textAlign:"left",fontFamily:"inherit",transition:"background 0.15s"}}
           onMouseEnter={e=>e.currentTarget.style.background="#fee2e2"} onMouseLeave={e=>e.currentTarget.style.background="#fef2f2"}>⚠ {overdueCount} overdue — view →</button>}
