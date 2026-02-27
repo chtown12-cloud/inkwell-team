@@ -2652,7 +2652,8 @@ export default function InkwellApp() {
     window.addEventListener("resize",fn);
     /* Service worker: register + detect updates → force reload for fresh code */
     if("serviceWorker" in navigator){
-      navigator.serviceWorker.register("/sw.js").then(reg=>{
+      /* Force browser to check sw.js freshness every time (bypass HTTP cache) */
+      navigator.serviceWorker.register("/sw.js",{updateViaCache:"none"}).then(reg=>{
         reg.addEventListener("updatefound",()=>{
           const nw=reg.installing;
           if(!nw)return;
