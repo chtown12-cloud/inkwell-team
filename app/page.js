@@ -2548,6 +2548,7 @@ export default function InkwellApp() {
   const [dragListOver,setDragListOver]=useState(null);
   const [showViewCounts,setShowViewCounts]=useState(()=>load("inkwell-showViewCounts",true));
   const [showListCounts,setShowListCounts]=useState(()=>load("inkwell-showListCounts",true));
+  const BUILD_VERSION = "2026.02.27-v2";
   const [darkMode,setDarkMode]=useState(()=>load("inkwell-darkMode",false));
   const defaultQuickDates=[{label:"Tomorrow",offset:"tomorrow"},{label:"Next Monday",offset:"nextMonday"}];
   const [quickDates,setQuickDates]=useState(()=>load("inkwell-quickDates",defaultQuickDates));
@@ -2647,6 +2648,7 @@ export default function InkwellApp() {
       setReady(true);
     };
     init();
+    console.log("%c Inkwell " + BUILD_VERSION + " ", "background:#d97706;color:white;font-weight:bold;border-radius:4px;padding:2px 8px;");
     const mob=window.innerWidth<768;setIsMobile(mob);if(mob)setSidebar(false);
     const fn=()=>{const m=window.innerWidth<768;setIsMobile(m);if(m)setSidebar(false);};
     window.addEventListener("resize",fn);
@@ -3500,6 +3502,7 @@ export default function InkwellApp() {
           </div>
         )}
         </div>
+        <div style={{textAlign:"center",padding:"8px 0 4px",fontSize:10,color:"var(--muted)",opacity:0.6}}>Inkwell {BUILD_VERSION}</div>
       </Overlay>)}
       {/* ═══ BULK ACTION BAR ═══ */}
       {selectedIds.size>1&&(
