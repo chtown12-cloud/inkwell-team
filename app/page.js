@@ -10,106 +10,163 @@ function useSupabaseSync() {
   const [authLoading, setAuthLoading] = useState(true);
   const [authError, setAuthError] = useState(null);
   const saveTimer = useRef(null);
-
   const accessTokenRef = useRef(null);
 
-  useEffect(() => {
-    if (!supabase) { setAuthLoading(false); return; }
+  /* ── Team state ── */
+  const [team, setTeam] = useState(null);
+  const [teamLoading, setTeamLoading] = useState(true);
+  const [members, setMembers] = useState([]);
+  const [myRole, setMyRole] = useState("member");
+  const [requests, setRequests] = useState([]);
+  const [needsTeam, setNeedsTeam] = useState(false);
+  const teamIdRef = useRef(null);
 
+  useEffect(() => {
+    if (!supabase) { setAuthLoading(false); setTeamLoading(false); return; }
     supabase.auth.getSession().then(({ data: { session } }) => {
       setUser(session?.user ?? null);
       accessTokenRef.current = session?.access_token ?? null;
       setAuthLoading(false);
     });
-
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user ?? null);
       accessTokenRef.current = session?.access_token ?? null;
     });
-
     return () => subscription.unsubscribe();
   }, []);
 
-  const signInWithEmail = async (email) => {
-    setAuthError(null);
-    const { error } = await supabase.auth.signInWithOtp({
-      email,
-      options: { emailRedirectTo: window.location.origin }
-    });
-    if (error) setAuthError(error.message);
-    return !error;
-  };
-
-  const signInWithPassword = async (email, password, isSignUp) => {
-    setAuthError(null);
-    const { error } = isSignUp
-      ? await supabase.auth.signUp({ email, password })
-      : await supabase.auth.signInWithPassword({ email, password });
-    if (error) setAuthError(error.message);
-    return !error;
-  };
-
-  const signOut = async () => {
-    await supabase.auth.signOut();
-    setUser(null);
-  };
-
-  const loadFromCloud = useCallback(async () => {
-    if (!supabase || !user) return null;
-    const { data, error } = await supabase
-      .from("user_data")
-      .select("tasks, lists, settings, updated_at")
-      .eq("user_id", user.id)
-      .single();
-    if (error) { console.warn("Cloud load failed:", error.message); return null; }
-    return data;
+  /* ── Find user's team on login ── */
+  useEffect(() => {
+    if (!supabase || !user) { setTeam(null); teamIdRef.current = null; setTeamLoading(false); setNeedsTeam(false); return; }
+    (async () => {
+      setTeamLoading(true);
+      const { data: membership } = await supabase
+        .from("team_members").select("team_id, role, teams(id, name, slug)").eq("user_id", user.id).limit(1).single();
+      if (membership?.teams) {
+        setTeam(membership.teams); teamIdRef.current = membership.teams.id;
+        setMyRole(membership.role); setNeedsTeam(false);
+      } else { setTeam(null); teamIdRef.current = null; setNeedsTeam(true); }
+      setTeamLoading(false);
+    })();
   }, [user]);
 
+  /* ── Load members + requests when team is set ── */
+  const loadTeamMeta = useCallback(async () => {
+    if (!supabase || !teamIdRef.current) return;
+    const [mRes, rRes] = await Promise.all([
+      supabase.from("team_members").select("*").eq("team_id", teamIdRef.current).order("joined_at"),
+      supabase.from("team_requests").select("*").eq("team_id", teamIdRef.current).order("created_at", { ascending: false })
+    ]);
+    setMembers(mRes.data || []); setRequests(rRes.data || []);
+  }, []);
+  useEffect(() => { if (team) loadTeamMeta(); }, [team]);
+
+  /* Auto-refresh team meta every 30s */
+  useEffect(() => { if (!team) return; const i = setInterval(loadTeamMeta, 30000); return () => clearInterval(i); }, [team, loadTeamMeta]);
+
+  const signInWithEmail = async (email) => {
+    setAuthError(null);
+    const { error } = await supabase.auth.signInWithOtp({ email, options: { emailRedirectTo: window.location.origin } });
+    if (error) setAuthError(error.message);
+    return !error;
+  };
+  const signInWithPassword = async (email, password, isSignUp) => {
+    setAuthError(null);
+    const { error } = isSignUp ? await supabase.auth.signUp({ email, password }) : await supabase.auth.signInWithPassword({ email, password });
+    if (error) setAuthError(error.message);
+    return !error;
+  };
+  const signOut = async () => { await supabase.auth.signOut(); setUser(null); setTeam(null); teamIdRef.current = null; };
+
+  /* ── Cloud sync: workspace_data by team_id ── */
+  const loadFromCloud = useCallback(async () => {
+    if (!supabase || !user || !teamIdRef.current) return null;
+    const { data, error } = await supabase
+      .from("workspace_data").select("tasks, lists, settings, updated_at").eq("team_id", teamIdRef.current).single();
+    if (error) { console.warn("Cloud load failed:", error.message); return null; }
+    return data;
+  }, [user, team]);
+
   const saveToCloud = useCallback((tasks, lists, settings) => {
-    if (!supabase || !user) return;
+    if (!supabase || !user || !teamIdRef.current) return;
     clearTimeout(saveTimer.current);
     saveTimer.current = setTimeout(async () => {
       const { error } = await supabase
-        .from("user_data")
-        .upsert({ user_id: user.id, tasks, lists, settings, updated_at: new Date().toISOString() }, { onConflict: "user_id" });
+        .from("workspace_data").upsert({ team_id: teamIdRef.current, tasks, lists, settings, updated_at: new Date().toISOString() }, { onConflict: "team_id" });
       if (error) console.warn("Cloud save failed:", error.message);
-    }, 800); /* debounce 800ms — fast enough for cross-device */
-  }, [user]);
+    }, 800);
+  }, [user, team]);
 
-  /* Immediate (non-debounced) cloud save — for flush on tab hide */
   const saveToCloudNow = useCallback(async (tasks, lists, settings) => {
-    if (!supabase || !user) return;
+    if (!supabase || !user || !teamIdRef.current) return;
     clearTimeout(saveTimer.current);
-    try {
-      await supabase
-        .from("user_data")
-        .upsert({ user_id: user.id, tasks, lists, settings, updated_at: new Date().toISOString() }, { onConflict: "user_id" });
-    } catch(e) { /* best effort */ }
-  }, [user]);
+    try { await supabase.from("workspace_data").upsert({ team_id: teamIdRef.current, tasks, lists, settings, updated_at: new Date().toISOString() }, { onConflict: "team_id" }); }
+    catch(e) { /* best effort */ }
+  }, [user, team]);
 
-  /* keepalive flush for beforeunload — survives page close/refresh */
   const flushToCloudKeepalive = useCallback((tasks, lists, settings) => {
-    if (!supabase || !user) return;
+    if (!supabase || !user || !teamIdRef.current) return;
     clearTimeout(saveTimer.current);
     try {
-      const token = accessTokenRef.current;
-      if (!token) return;
-      const url = `${supabase.supabaseUrl}/rest/v1/user_data?on_conflict=user_id`;
-      fetch(url, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "apikey": supabase.supabaseKey,
-          "Authorization": `Bearer ${token}`,
-          "Prefer": "resolution=merge-duplicates"
-        },
-        body: JSON.stringify({ user_id: user.id, tasks, lists, settings, updated_at: new Date().toISOString() }),
-        keepalive: true
-      }).catch(() => {});
+      const token = accessTokenRef.current; if (!token) return;
+      const url = `${supabase.supabaseUrl}/rest/v1/workspace_data?on_conflict=team_id`;
+      fetch(url, { method: "POST", headers: { "Content-Type": "application/json", "apikey": supabase.supabaseKey, "Authorization": `Bearer ${token}`, "Prefer": "resolution=merge-duplicates" },
+        body: JSON.stringify({ team_id: teamIdRef.current, tasks, lists, settings, updated_at: new Date().toISOString() }), keepalive: true }).catch(() => {});
     } catch(e) { /* best effort */ }
-  }, [user]);
+  }, [user, team]);
 
-  return { user, authLoading, authError, signInWithEmail, signInWithPassword, signOut, loadFromCloud, saveToCloud, saveToCloudNow, flushToCloudKeepalive, hasSupabase: !!supabase };
+  /* ── Team operations ── */
+  const createTeam = useCallback(async (name) => {
+    if (!supabase || !user) return;
+    /* Generate slug */
+    const { data: slugData } = await supabase.rpc("generate_team_slug", { team_name: name });
+    const slug = slugData || name.toLowerCase().replace(/[^a-z0-9]+/g, "-") + "-" + Date.now();
+    const { data: t, error } = await supabase.from("teams").insert({ name, slug, created_by: user.id }).select().single();
+    if (error) throw error;
+    /* Add self as admin */
+    await supabase.from("team_members").insert({ team_id: t.id, user_id: user.id, email: user.email, display_name: user.email.split("@")[0], role: "admin", invited_by: user.id });
+    /* Create workspace_data row */
+    await supabase.from("workspace_data").insert({ team_id: t.id });
+    setTeam(t); teamIdRef.current = t.id; setMyRole("admin"); setNeedsTeam(false);
+    await loadTeamMeta();
+  }, [user, loadTeamMeta]);
+
+  const inviteMember = useCallback(async (email, role) => {
+    if (!supabase || !teamIdRef.current) return;
+    const { data: existing } = await supabase.from("team_members").select("user_id").eq("email", email.toLowerCase()).limit(1).single();
+    if (!existing?.user_id) throw new Error("This person needs to sign up for Inkwell first, then you can add them.");
+    const { error } = await supabase.from("team_members").insert({ team_id: teamIdRef.current, user_id: existing.user_id, email: email.toLowerCase(), display_name: email.split("@")[0], role, invited_by: user.id });
+    if (error) throw error;
+    await loadTeamMeta();
+  }, [user, loadTeamMeta]);
+
+  const updateMemberRole = useCallback(async (memberId, role) => {
+    if (!supabase) return;
+    await supabase.from("team_members").update({ role }).eq("id", memberId);
+    await loadTeamMeta();
+  }, [loadTeamMeta]);
+
+  const removeMember = useCallback(async (memberId) => {
+    if (!supabase) return;
+    await supabase.from("team_members").delete().eq("id", memberId);
+    await loadTeamMeta();
+  }, [loadTeamMeta]);
+
+  const acceptRequest = useCallback(async (requestId, taskData) => {
+    if (!supabase || !user) return;
+    await supabase.from("team_requests").update({ status: "accepted", reviewed_by: user.id, reviewed_at: new Date().toISOString(), response_note: taskData.response_note || "" }).eq("id", requestId);
+    await loadTeamMeta();
+    return taskData; /* caller adds the task to the JSON blob */
+  }, [user, loadTeamMeta]);
+
+  const declineRequest = useCallback(async (requestId, note) => {
+    if (!supabase || !user) return;
+    await supabase.from("team_requests").update({ status: "declined", reviewed_by: user.id, reviewed_at: new Date().toISOString(), response_note: note || "" }).eq("id", requestId);
+    await loadTeamMeta();
+  }, [user, loadTeamMeta]);
+
+  return { user, authLoading: authLoading || teamLoading, authError, signInWithEmail, signInWithPassword, signOut, loadFromCloud, saveToCloud, saveToCloudNow, flushToCloudKeepalive, hasSupabase: !!supabase,
+    team, members, myRole, requests, needsTeam, createTeam, inviteMember, updateMemberRole, removeMember, acceptRequest, declineRequest, loadTeamMeta };
 }
 
 /* ═══════════════════════════════════════════════════════════════════════
@@ -1345,7 +1402,7 @@ const ScanResultsModal = ({results,onConfirm,onClose,lists}) => {
 /* ═══════════════════════════════════════════════════════════════════════
    TASK DETAIL PANEL — with subtask navigation (click into any subtask)
    ═══════════════════════════════════════════════════════════════════════ */
-const TaskDetail = ({task, onUpdate, onDelete, onClose, lists}) => {
+const TaskDetail = ({task, onUpdate, onDelete, onClose, lists, members}) => {
   /* Navigation stack: view subtask details, then go back */
   const [subPath, setSubPath] = useState([]);
   const [newSub, setNewSub] = useState("");
@@ -1517,6 +1574,16 @@ const TaskDetail = ({task, onUpdate, onDelete, onClose, lists}) => {
           </Field>
         )}
 
+        {/* Assigned To (only on top-level tasks, only when members exist) */}
+        {!isSubtask && members && members.length > 0 && (
+          <Field label="Assigned To">
+            <select value={task.assignedTo||""} onChange={e=>onUpdate({...task,assignedTo:e.target.value||null})} style={{...fieldInput,cursor:"pointer"}}>
+              <option value="">Unassigned</option>
+              {members.filter(m=>m.role!=="viewer").map(m=><option key={m.user_id} value={m.user_id}>{m.display_name||m.email}</option>)}
+            </select>
+          </Field>
+        )}
+
         {/* Tags */}
         <Field label="Tags">
           <div style={{display:"flex",flexWrap:"wrap",gap:4,marginBottom:6}}>
@@ -1661,7 +1728,7 @@ const collectDatedSubtasks = (tasks) => {
   return results;
 };
 
-const KanbanBoard = ({tasks, columns, onColumnsChange, onResetColumns, onSelect, onUpdate, onToggle, onUpdateSubtask, onSubUpdate, flash, setIsDragging, animatingTasks, onReorder, sortBy="default", filterPriority="all"}) => {
+const KanbanBoard = ({tasks, columns, onColumnsChange, onResetColumns, onSelect, onUpdate, onToggle, onUpdateSubtask, onSubUpdate, flash, setIsDragging, animatingTasks, onReorder, sortBy="default", filterPriority="all", members}) => {
   const [hoverCol, setHoverCol] = useState(null);
   const [editingCol, setEditingCol] = useState(null);
   const [editName, setEditName] = useState("");
@@ -1815,7 +1882,7 @@ const KanbanBoard = ({tasks, columns, onColumnsChange, onResetColumns, onSelect,
             {overdueTasks.map(t => (
               <KanbanCard key={t.id} task={t} onSelect={onSelect} onToggle={onToggle} onDragBegin={setIsDragging} animateState={animatingTasks?.[t.id]}
                 cardDrop={cardDrop} onCardDragOver={onCardDragOver} onCardDrop={onCardDrop} onCardDragLeave={onCardDragLeave}
-                onUpdateSubtask={onUpdateSubtask} onSubUpdate={onSubUpdate} setIsDragging={setIsDragging}/>
+                onUpdateSubtask={onUpdateSubtask} onSubUpdate={onSubUpdate} setIsDragging={setIsDragging} members={members}/>
             ))}
           </div>
         </div>
@@ -1865,7 +1932,7 @@ const KanbanBoard = ({tasks, columns, onColumnsChange, onResetColumns, onSelect,
               {colTasks.map(t => (
                 <KanbanCard key={t.id} task={t} onSelect={onSelect} onToggle={onToggle} onDragBegin={setIsDragging} animateState={animatingTasks?.[t.id]}
                   cardDrop={cardDrop} onCardDragOver={onCardDragOver} onCardDrop={onCardDrop} onCardDragLeave={onCardDragLeave}
-                  onUpdateSubtask={onUpdateSubtask} onSubUpdate={onSubUpdate} setIsDragging={setIsDragging}/>
+                  onUpdateSubtask={onUpdateSubtask} onSubUpdate={onSubUpdate} setIsDragging={setIsDragging} members={members}/>
               ))}
               {colSubs.length > 0 && colTasks.length > 0 && <div style={{borderTop:"1px dashed var(--border)",margin:"6px 0"}} />}
               {colSubs.map(ds => (
@@ -1893,13 +1960,14 @@ const KanbanBoard = ({tasks, columns, onColumnsChange, onResetColumns, onSelect,
   );
 };
 
-const KanbanCard = ({task, onSelect, onToggle, onDragBegin, animateState, cardDrop, onCardDragOver, onCardDrop, onCardDragLeave, onUpdateSubtask, onSubUpdate, setIsDragging: setDragging}) => {
+const KanbanCard = ({task, onSelect, onToggle, onDragBegin, animateState, cardDrop, onCardDragOver, onCardDrop, onCardDragLeave, onUpdateSubtask, onSubUpdate, setIsDragging: setDragging, members}) => {
   const pc = PRIORITY[task.priority || "none"].color;
   const dz = cardDrop?.id === task.id ? cardDrop : null;
   const subs = task.subtasks || [];
   const hasSubs = subs.length > 0;
   const {total, done} = hasSubs ? countSubs(subs) : {total: 0, done: 0};
   const [expanded, setExpanded] = useState(false);
+  const assigned = task.assignedTo && members?.length > 0 ? members.find(m => m.user_id === task.assignedTo) : null;
 
   return (
     <div
@@ -1938,6 +2006,7 @@ const KanbanCard = ({task, onSelect, onToggle, onDragBegin, animateState, cardDr
                 <span style={{fontSize:10,color:"var(--muted)",background:"var(--surface)",padding:"1px 5px",borderRadius:3}}>{task.list}</span>
               </div>
             </div>
+            {assigned && <div title={assigned.display_name||assigned.email} style={{width:20,height:20,borderRadius:"50%",background:["#3b82f6","#22c55e","#f59e0b","#ef4444","#8b5cf6","#ec4899","#14b8a6","#f97316"][(assigned.display_name||assigned.email||"?").charCodeAt(0)%8],color:"white",display:"flex",alignItems:"center",justifyContent:"center",fontSize:9,fontWeight:700,flexShrink:0,marginTop:1}}>{(assigned.display_name||assigned.email||"?")[0].toUpperCase()}</div>}
           </div>
         </div>
         {/* ── Expanded subtask list ── */}
@@ -2301,7 +2370,7 @@ const CalendarView = ({tasks, onSelect, onUpdate}) => {
 /* ═══════════════════════════════════════════════════════════════════════
    TASK ROW — editable title, drag handle, collapsible subtasks
    ═══════════════════════════════════════════════════════════════════════ */
-const TaskRow = ({task,isActive,isSelected,onSelect,onToggle,onUpdateTask,onDragStart,onDragOver,onDrop,onDragEnd,dropTarget,view,lists,animateState}) => {
+const TaskRow = ({task,isActive,isSelected,onSelect,onToggle,onUpdateTask,onDragStart,onDragOver,onDrop,onDragEnd,dropTarget,view,lists,animateState,members}) => {
   const [subsOpen,setSubsOpen]=useState(false);
   const clickTimer=useRef(null);
   const overdue=!task.completed&&isOverdue(task.dueDate);
@@ -2309,6 +2378,7 @@ const TaskRow = ({task,isActive,isSelected,onSelect,onToggle,onUpdateTask,onDrag
   const hasDuration=task.startDate&&task.endDate;
   const isDT=dropTarget?.id===task.id;
   const dtZone=isDT?dropTarget.zone:null;
+  const assigned = task.assignedTo && members?.length > 0 ? members.find(m => m.user_id === task.assignedTo) : null;
 
   const handleSubAction = (action, targetId, data) => {
     let newSubs;
@@ -2356,6 +2426,7 @@ const TaskRow = ({task,isActive,isSelected,onSelect,onToggle,onUpdateTask,onDrag
             {!view.startsWith("list:")&&view!=="inbox"&&<span style={{fontSize:11,color:"var(--muted)",background:"var(--surface)",padding:"1px 7px",borderRadius:4}}>{task.list}</span>}
           </div>
         </div>
+        {assigned && <div title={assigned.display_name||assigned.email} style={{width:24,height:24,borderRadius:"50%",background:["#3b82f6","#22c55e","#f59e0b","#ef4444","#8b5cf6","#ec4899","#14b8a6","#f97316"][(assigned.display_name||assigned.email||"?").charCodeAt(0)%8],color:"white",display:"flex",alignItems:"center",justifyContent:"center",fontSize:11,fontWeight:700,flexShrink:0,alignSelf:"center"}}>{(assigned.display_name||assigned.email||"?")[0].toUpperCase()}</div>}
       </div>
       {/* Expanded subtasks — each one is draggable to promote */}
       {subsOpen&&subTotal>0&&(
@@ -2494,7 +2565,8 @@ const LoginScreen = ({ onSignIn, onSignInPassword, error }) => {
 };
 
 export default function InkwellApp() {
-  const { user, authLoading, authError, signInWithEmail, signInWithPassword, signOut, loadFromCloud, saveToCloud, saveToCloudNow, flushToCloudKeepalive, hasSupabase } = useSupabaseSync();
+  const { user, authLoading, authError, signInWithEmail, signInWithPassword, signOut, loadFromCloud, saveToCloud, saveToCloudNow, flushToCloudKeepalive, hasSupabase,
+    team, members, myRole, requests, needsTeam, createTeam, inviteMember, updateMemberRole, removeMember, acceptRequest, declineRequest, loadTeamMeta } = useSupabaseSync();
   const [tasks,setTasks]=useState([]);
   const [lists,setLists]=useState(DEFAULT_LISTS);
   const [view,setView]=useState("today");
@@ -2546,6 +2618,13 @@ export default function InkwellApp() {
   const [sortBy,setSortBy]=useState("default"); /* default|priority|alpha|date|created */
   const [filterPriority,setFilterPriority]=useState("all"); /* all|high|medium|low */
   const [showSortMenu,setShowSortMenu]=useState(false);
+  const [showAddMember,setShowAddMember]=useState(false);
+  const [showRequestReview,setShowRequestReview]=useState(null);
+  const [teamCreateName,setTeamCreateName]=useState("");
+  const [teamCreating,setTeamCreating]=useState(false);
+  const pendingRequests = useMemo(()=>(requests||[]).filter(r=>r.status==="pending"),[requests]);
+  const isViewer = myRole==="viewer";
+  const memberName = useCallback((uid)=>{const m=(members||[]).find(m=>m.user_id===uid);return m?.display_name||m?.email?.split("@")[0]||"";},[members]);
   const [kanbanColumns, setKanbanColumns] = useState(() => {
     const saved = load("inkwell-kanbanCols", null);
     if (!saved || saved.length === 0) return null;
@@ -2609,11 +2688,11 @@ export default function InkwellApp() {
   }, []);
 
   useEffect(()=>{
-    if(authLoading) return; /* wait for auth to resolve */
-    const userId = user?.id || null;
-    /* Skip re-init for same user (token refresh) — only re-init on actual user change */
-    if(initializedUserRef.current === userId && ready) return;
-    initializedUserRef.current = userId;
+    if(authLoading) return; /* wait for auth + team to resolve */
+    const initKey = (user?.id || "anon") + ":" + (team?.id || "noteam");
+    /* Skip re-init for same user+team (token refresh) — only re-init on actual change */
+    if(initializedUserRef.current === initKey && ready) return;
+    initializedUserRef.current = initKey;
 
     const init = async () => {
       if (hasSupabase && user) {
@@ -2655,7 +2734,7 @@ export default function InkwellApp() {
       }).catch(()=>{});
     }
     return()=>window.removeEventListener("resize",fn);
-  },[user, hasSupabase, authLoading]);
+  },[user, hasSupabase, authLoading, team]);
 
   /* ── Sync from cloud when tab regains focus ── */
   useEffect(()=>{
@@ -2750,7 +2829,7 @@ export default function InkwellApp() {
 
 
   const addTask=useCallback(data=>{
-    const task={id:uid(),title:data.title||"Untitled",completed:data.completed||false,dueDate:data.dueDate||todayStr(),startDate:data.startDate||null,endDate:data.endDate||null,priority:data.priority||"none",list:data.list||(view.startsWith("list:")?view.replace("list:",""):"Inbox"),subtasks:data.subtasks||[],notes:data.notes||"",tags:data.tags||[],createdAt:new Date().toISOString(),completedAt:data.completed?new Date().toISOString():null};
+    const task={id:uid(),title:data.title||"Untitled",completed:data.completed||false,dueDate:data.dueDate||todayStr(),startDate:data.startDate||null,endDate:data.endDate||null,priority:data.priority||"none",list:data.list||(view.startsWith("list:")?view.replace("list:",""):"Inbox"),subtasks:data.subtasks||[],notes:data.notes||"",tags:data.tags||[],assignedTo:data.assignedTo||null,createdAt:new Date().toISOString(),completedAt:data.completed?new Date().toISOString():null};
     setTasks(prev=>[task,...prev]);return task;
   },[view]);
 
@@ -3064,7 +3143,7 @@ export default function InkwellApp() {
     if((e.metaKey||e.ctrlKey)&&e.key==="z"&&e.shiftKey){e.preventDefault();redo();return;}
     if((e.metaKey||e.ctrlKey)&&e.key==="y"){e.preventDefault();redo();return;}
     if(["INPUT","TEXTAREA","SELECT"].includes(e.target.tagName))return;if(e.key==="n"&&!e.metaKey){e.preventDefault();document.getElementById("quick-add")?.focus();}if(e.key==="/"||((e.metaKey||e.ctrlKey)&&e.key==="f")){e.preventDefault();setShowSearch(true);}if(e.key==="b"&&!e.metaKey&&!e.ctrlKey){setSidebar(s=>!s);}if(e.key==="?")setShowShortcuts(s=>!s);if(e.key==="Escape"){setShowSearch(false);setSearch("");setSelectedTask(null);setShowShortcuts(false);setShowTips(false);setSelectedIds(new Set());}if(e.key==="a"&&(e.metaKey||e.ctrlKey)){e.preventDefault();setSelectedIds(new Set(filtered.map(t=>t.id)));}if((e.key==="Delete"||e.key==="Backspace")&&selectedIds.size>0&&!e.metaKey){bulkDelete();}};window.addEventListener("keydown",h);return()=>window.removeEventListener("keydown",h);},[filtered,selectedIds,undo,redo]);
-  const titles={today:"Today",overdue:"Overdue",upcoming:"Upcoming",all:"All Tasks",completed:"Completed",inbox:"Inbox",calendar:"Calendar"};
+  const titles={today:"Today",overdue:"Overdue",upcoming:"Upcoming",all:"All Tasks",completed:"Completed",inbox:"Inbox",calendar:"Calendar","my-assigned":"My Assigned",requests:"Requests","team-members":"Members"};
   const iconsMap={today:Icons.today,overdue:Icons.overdue,upcoming:Icons.upcoming,all:Icons.all,completed:Icons.done,inbox:Icons.inbox,calendar:Icons.calendar};
   const viewTitle=titles[view]||(view.startsWith("list:")?view.replace("list:",""):"Tasks");
   const viewIcon=iconsMap[view]||Icons.all;
@@ -3073,6 +3152,26 @@ export default function InkwellApp() {
   /* Auth gate: show login if Supabase is configured but user isn't signed in */
   if (hasSupabase && authLoading) return <div style={{height:"100dvh",display:"flex",alignItems:"center",justifyContent:"center",fontFamily:"var(--font-display)",fontSize:22,color:"var(--muted)"}}>Loading...</div>;
   if (hasSupabase && !user) return <LoginScreen onSignIn={signInWithEmail} onSignInPassword={signInWithPassword} error={authError}/>;
+
+  /* Team creation gate */
+  if (hasSupabase && user && needsTeam) return (
+    <div style={{display:"flex",alignItems:"center",justifyContent:"center",minHeight:"100vh",padding:20,background:"var(--bg)",fontFamily:"var(--font-body)"}}>
+      <style>{`@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;800&family=Source+Sans+3:wght@300;400;500;600;700&display=swap');:root{--font-display:'Playfair Display',Georgia,serif;--font-body:'Source Sans 3',-apple-system,sans-serif;--bg:#fafaf9;--accent:#d97706;--ink:#1c1917;}`}</style>
+      <div style={{textAlign:"center",maxWidth:400}}>
+        <div style={{width:56,height:56,borderRadius:16,background:"linear-gradient(135deg,#d97706,#ea580c)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:24,fontWeight:800,color:"white",fontFamily:"var(--font-display)",margin:"0 auto 20px"}}>I</div>
+        <h2 style={{fontSize:24,fontWeight:800,marginBottom:6,color:"var(--ink)",fontFamily:"var(--font-display)"}}>Create Your Workspace</h2>
+        <p style={{fontSize:15,color:"#78716c",marginBottom:28,lineHeight:1.6}}>Name your shared workspace. Everyone on your team will see and edit the same tasks.</p>
+        <input value={teamCreateName} onChange={e=>setTeamCreateName(e.target.value)} placeholder="e.g. CS Ops, Design Team..."
+          onKeyDown={e=>{if(e.key==="Enter"&&teamCreateName.trim()&&!teamCreating){setTeamCreating(true);createTeam(teamCreateName.trim()).catch(err=>alert("Error: "+err.message)).finally(()=>setTeamCreating(false));}}}
+          style={{width:"100%",padding:"14px 18px",borderRadius:12,border:"2px solid #e7e5e4",fontSize:16,textAlign:"center",fontFamily:"inherit",outline:"none",boxSizing:"border-box",marginBottom:16,transition:"border-color 0.15s"}}
+          onFocus={e=>e.currentTarget.style.borderColor="#d97706"} onBlur={e=>e.currentTarget.style.borderColor="#e7e5e4"} autoFocus />
+        <button onClick={()=>{if(!teamCreateName.trim()||teamCreating)return;setTeamCreating(true);createTeam(teamCreateName.trim()).catch(err=>alert("Error: "+err.message)).finally(()=>setTeamCreating(false));}}
+          disabled={!teamCreateName.trim()||teamCreating}
+          style={{width:"100%",padding:14,fontSize:15,borderRadius:12,border:"none",background:"#d97706",color:"white",fontWeight:600,cursor:!teamCreateName.trim()||teamCreating?"not-allowed":"pointer",opacity:!teamCreateName.trim()||teamCreating?0.5:1,fontFamily:"inherit"}}>{teamCreating?"Creating...":"Create Workspace →"}</button>
+        <button onClick={signOut} style={{marginTop:16,background:"none",border:"none",cursor:"pointer",fontSize:13,color:"#a8a29e",fontFamily:"inherit"}}>Sign out</button>
+      </div>
+    </div>
+  );
 
   if(!ready)return<div style={{height:"100dvh",display:"flex",alignItems:"center",justifyContent:"center",fontFamily:"var(--font-display)",fontSize:22,color:"var(--muted)"}}>Loading...</div>;
 
@@ -3150,6 +3249,7 @@ export default function InkwellApp() {
             <div style={{width:34,height:34,borderRadius:10,background:"linear-gradient(135deg,#d97706,#ea580c)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:17,fontWeight:800,color:"white",fontFamily:"var(--font-display)"}}>I</div>
             <span style={{fontSize:20,fontWeight:700,fontFamily:"var(--font-display)",color:"var(--ink)",whiteSpace:"nowrap"}}>Inkwell</span>
           </div>
+          {team && <div style={{fontSize:12,fontWeight:600,color:"var(--accent)",marginBottom:8,padding:"0 4px",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{team.name}</div>}
           <button onClick={()=>{setShowPhoto(true);if(isMobile)setSidebar(false);}} style={{width:"100%",padding:"11px 14px",borderRadius:12,border:"2px dashed #d6d3d1",background:"rgba(217,119,6,0.04)",color:"var(--accent)",fontSize:13,fontWeight:600,cursor:"pointer",display:"flex",alignItems:"center",gap:10,transition:"all 0.2s",marginBottom:16,whiteSpace:"nowrap",fontFamily:"inherit"}}>{Icons.camera} Scan Notebook Page</button>
         </div>
         <div style={{flex:1,overflowY:"auto",padding:"0 8px"}}>
@@ -3256,14 +3356,12 @@ export default function InkwellApp() {
               onKeyDown={e=>{if(e.key==="Enter"&&newList.trim()&&!lists.includes(newList.trim())){setLists(p=>[...p,newList.trim()]);setNewList("");setShowNewList(false);}if(e.key==="Escape"){setShowNewList(false);setNewList("");}}}
               onBlur={()=>{setShowNewList(false);setNewList("");}} placeholder="List name..." style={{width:"100%",padding:"8px 10px",borderRadius:8,border:"1px solid var(--accent)",fontSize:13,outline:"none",background:"white",fontFamily:"inherit"}}/></div>)}
           </NavSection>
-          {hasSupabase && user && (
-            <div style={{padding:"8px 8px 4px"}}>
-              <a href="/team" style={{display:"flex",alignItems:"center",gap:10,padding:"10px 12px",borderRadius:10,border:"1px dashed var(--border)",background:"rgba(217,119,6,0.04)",color:"var(--accent)",fontSize:13,fontWeight:600,textDecoration:"none",transition:"all 0.15s"}}
-                onMouseEnter={e=>e.currentTarget.style.background="rgba(217,119,6,0.08)"}
-                onMouseLeave={e=>e.currentTarget.style.background="rgba(217,119,6,0.04)"}>
-                <span style={{fontSize:15}}>♦</span> Team Workspace →
-              </a>
-            </div>
+          {hasSupabase && user && team && (
+            <NavSection title="Team">
+              <NavItem active={view==="my-assigned"} icon={<span style={{fontSize:13}}>◉</span>} label="My Assigned" count={tasks.filter(t=>!t.completed&&t.assignedTo===user.id).length} onClick={()=>selectView("my-assigned")}/>
+              {!isViewer && <NavItem active={view==="requests"} icon={<span style={{fontSize:13}}>↓</span>} label="Requests" count={pendingRequests.length} onClick={()=>selectView("requests")} countColor={pendingRequests.length>0?"#d97706":undefined}/>}
+              <NavItem active={view==="team-members"} icon={<span style={{fontSize:13}}>♦</span>} label="Members" count={members.length} onClick={()=>selectView("team-members")}/>
+            </NavSection>
           )}
         </div>
         {overdueCount>0&&view!=="overdue"&&<button onClick={()=>selectView("overdue")} style={{margin:"0 8px 8px",padding:"10px 14px",borderRadius:10,background:"#fef2f2",border:"1px solid #fecaca",fontSize:13,color:"#ef4444",fontWeight:600,flexShrink:0,cursor:"pointer",width:"calc(100% - 16px)",textAlign:"left",fontFamily:"inherit",transition:"background 0.15s"}}
@@ -3349,7 +3447,86 @@ export default function InkwellApp() {
 
         <div style={{flex:1,display:"flex",overflow:"hidden"}}>
           <div className="main-scroll" style={{flex:1,overflowY:"auto",padding:isMobile?"16px":"20px 24px"}}>
-            {view==="calendar"?(<CalendarView tasks={tasks} onSelect={t=>setSelectedTask(t)} onUpdate={updateTask}/>):(view==="today"&&todayMode==="kanban")?(<div style={{display:"flex",flexDirection:"column",height:"100%"}}>
+            {/* ═══ TEAM VIEWS ═══ */}
+            {view==="my-assigned"?(
+              <div>
+                <div style={{display:"flex",alignItems:"center",gap:12,padding:"12px 14px",background:"white",borderRadius:14,border:"1px solid var(--border)",marginBottom:16,boxShadow:"0 1px 3px rgba(0,0,0,0.04)"}}>
+                  <span style={{color:"var(--accent)",flexShrink:0}}>{Icons.plus}</span>
+                  <input value={newTitle} onChange={e=>setNewTitle(e.target.value)} onKeyDown={e=>{if(e.key==="Enter"&&newTitle.trim()){addTask({title:newTitle.trim(),assignedTo:user?.id});setNewTitle("");flash("Added ✓");}}} placeholder="Add a task assigned to me..." style={{flex:1,border:"none",outline:"none",fontSize:15,color:"var(--ink)",background:"none",fontFamily:"inherit",minWidth:0}}/>
+                </div>
+                {tasks.filter(t=>!t.completed&&t.assignedTo===user?.id).length===0?(
+                  <div style={{textAlign:"center",padding:"50px 20px",color:"var(--muted)"}}><div style={{fontSize:44,marginBottom:14,opacity:0.4}}>🎯</div><div style={{fontSize:16,fontWeight:600,marginBottom:4}}>All caught up!</div><div style={{fontSize:14}}>No tasks assigned to you right now.</div></div>
+                ):(
+                  <div role="list">{tasks.filter(t=>!t.completed&&t.assignedTo===user?.id).map(task=>(
+                    <div key={task.id} role="listitem"><TaskRow task={task} isActive={selectedTask?.id===task.id} isSelected={selectedIds.has(task.id)} onSelect={handleTaskClick} onToggle={toggleTask} onUpdateTask={updateTask} view={view} lists={lists} onDragStart={onDragStart} onDragOver={onDragOver} onDrop={onDrop} onDragEnd={onDragEnd} dropTarget={dropTarget?.id===task.id?dropTarget:null} animateState={animatingTasks[task.id]} members={members}/></div>
+                  ))}</div>
+                )}
+              </div>
+            ):view==="requests"?(
+              <div style={{maxWidth:720}}>
+                {team && <div style={{background:"#fffbeb",border:"1px solid #fde68a",borderRadius:12,padding:"14px 18px",marginBottom:20,display:"flex",alignItems:"center",gap:12,flexWrap:"wrap"}}>
+                  <span style={{fontSize:13,fontWeight:600,color:"#92400e",flexShrink:0}}>📬 Share this link to receive requests:</span>
+                  <code style={{fontSize:12,background:"white",padding:"6px 10px",borderRadius:6,flex:1,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap",minWidth:0,border:"1px solid #fde68a"}}>{typeof window!=="undefined"?`${window.location.origin}/submit/${team.id}`:""}</code>
+                  <button onClick={()=>{navigator.clipboard.writeText(`${window.location.origin}/submit/${team.id}`);flash("Copied!");}} style={{background:"#d97706",color:"white",border:"none",borderRadius:8,padding:"8px 14px",fontSize:12,fontWeight:600,cursor:"pointer",whiteSpace:"nowrap",fontFamily:"inherit"}}>Copy</button>
+                </div>}
+                <h3 style={{fontSize:15,fontWeight:700,marginBottom:12,display:"flex",alignItems:"center",gap:8,fontFamily:"var(--font-display)"}}>Pending <span style={{fontSize:12,fontWeight:600,padding:"2px 8px",borderRadius:6,color:"#d97706",background:"#fffbeb"}}>{pendingRequests.length}</span></h3>
+                {pendingRequests.length===0?<div style={{padding:20,textAlign:"center",color:"var(--muted)",fontSize:14,fontStyle:"italic",marginBottom:24}}>No pending requests — share the link above.</div>
+                :pendingRequests.map(req=>(
+                  <div key={req.id} onClick={()=>setShowRequestReview(req)}
+                    style={{display:"flex",alignItems:"center",gap:12,padding:"14px 16px",background:"white",borderRadius:12,marginBottom:8,cursor:"pointer",border:"1px solid var(--border)",borderLeft:`3px solid ${(PRIORITY[req.priority||"medium"]||PRIORITY.medium).color}`,transition:"box-shadow 0.15s"}}
+                    onMouseEnter={e=>e.currentTarget.style.boxShadow="0 2px 8px rgba(0,0,0,0.06)"} onMouseLeave={e=>e.currentTarget.style.boxShadow="none"}>
+                    <div style={{flex:1,minWidth:0}}><div style={{fontSize:14,fontWeight:600}}>{req.title}</div><div style={{fontSize:12,color:"var(--muted)",marginTop:2}}>From {req.requester_name} · {new Date(req.created_at).toLocaleDateString("en-IE",{month:"short",day:"numeric"})}</div></div>
+                    <span style={{fontSize:11,fontWeight:600,padding:"2px 8px",borderRadius:6,color:(PRIORITY[req.priority||"medium"]||PRIORITY.medium).color,background:(PRIORITY[req.priority||"medium"]||PRIORITY.medium).color+"18"}}>{req.priority||"medium"}</span>
+                  </div>
+                ))}
+                {(requests||[]).filter(r=>r.status!=="pending").length>0&&(
+                  <details style={{marginTop:20}}><summary style={{fontSize:14,fontWeight:600,color:"var(--muted)",cursor:"pointer",padding:"8px 0",fontFamily:"inherit"}}>History ({(requests||[]).filter(r=>r.status!=="pending").length})</summary>
+                    {(requests||[]).filter(r=>r.status!=="pending").map(req=>(
+                      <div key={req.id} style={{display:"flex",alignItems:"center",gap:12,padding:"10px 16px",background:"var(--surface)",borderRadius:10,marginBottom:4,opacity:0.7}}>
+                        <span>{req.status==="accepted"?"✅":"❌"}</span>
+                        <div style={{flex:1}}><div style={{fontSize:13,fontWeight:500}}>{req.title}</div><div style={{fontSize:12,color:"var(--muted)"}}>From {req.requester_name} · {req.status}</div></div>
+                      </div>
+                    ))}
+                  </details>
+                )}
+              </div>
+            ):view==="team-members"?(
+              <div style={{maxWidth:600}}>
+                {myRole==="admin"&&<button onClick={()=>setShowAddMember(true)} style={{padding:"10px 20px",borderRadius:10,border:"none",background:"#d97706",color:"white",fontSize:13,fontWeight:600,cursor:"pointer",fontFamily:"inherit",marginBottom:16}}>+ Add Member</button>}
+                {team && <div style={{background:"var(--surface)",borderRadius:12,padding:"16px 18px",marginBottom:20}}>
+                  <div style={{fontSize:13,fontWeight:700,marginBottom:10}}>📎 Shareable Links</div>
+                  {[["Request form",`/submit/${team.id}`],["Viewer dashboard",`/dashboard/${team.id}`]].map(([label,path])=>(
+                    <div key={label} style={{display:"flex",alignItems:"center",gap:8,marginBottom:6}}>
+                      <span style={{fontSize:12,color:"var(--muted)",flexShrink:0,minWidth:115}}>{label}:</span>
+                      <code style={{fontSize:11,flex:1,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap",color:"var(--text)"}}>{typeof window!=="undefined"?window.location.origin+path:path}</code>
+                      <button onClick={()=>{navigator.clipboard.writeText(window.location.origin+path);flash("Copied!");}} style={{background:"#d97706",color:"white",border:"none",borderRadius:6,padding:"4px 10px",fontSize:11,cursor:"pointer",fontFamily:"inherit",whiteSpace:"nowrap"}}>Copy</button>
+                    </div>
+                  ))}
+                </div>}
+                {(members||[]).map(m=>{
+                  const colors=["#3b82f6","#22c55e","#f59e0b","#ef4444","#8b5cf6","#ec4899","#14b8a6","#f97316"];
+                  const initial=(m.display_name||m.email||"?")[0].toUpperCase();
+                  const bg=colors[(m.display_name||m.email||"?").charCodeAt(0)%8];
+                  return(
+                  <div key={m.id} style={{display:"flex",alignItems:"center",gap:12,padding:"14px 16px",background:"white",borderRadius:12,marginBottom:8,border:"1px solid var(--border)"}}>
+                    <div style={{width:36,height:36,borderRadius:"50%",background:bg,color:"white",display:"flex",alignItems:"center",justifyContent:"center",fontSize:15,fontWeight:700,flexShrink:0}}>{initial}</div>
+                    <div style={{flex:1,minWidth:0}}><div style={{fontSize:14,fontWeight:600}}>{m.display_name||m.email.split("@")[0]}</div><div style={{fontSize:12,color:"var(--muted)"}}>{m.email}</div></div>
+                    <span style={{fontSize:11,fontWeight:600,padding:"2px 8px",borderRadius:6,color:m.role==="admin"?"#d97706":m.role==="viewer"?"#78716c":"#3b82f6",background:m.role==="admin"?"#fffbeb":m.role==="viewer"?"#f5f5f4":"#eff6ff"}}>{m.role}</span>
+                    {myRole==="admin"&&m.user_id!==user?.id&&(
+                      <select value={m.role} onChange={e=>{updateMemberRole(m.id,e.target.value).then(()=>flash("Updated")).catch(err=>alert(err.message));}}
+                        style={{fontSize:12,border:"1px solid var(--border)",borderRadius:6,padding:"4px 8px",cursor:"pointer",fontFamily:"inherit",background:"white"}}>
+                        <option value="admin">Admin</option><option value="member">Member</option><option value="viewer">Viewer</option>
+                      </select>
+                    )}
+                    {myRole==="admin"&&m.user_id!==user?.id&&(
+                      <button onClick={()=>{if(confirm(`Remove ${m.display_name||m.email}?`))removeMember(m.id).then(()=>flash("Removed")).catch(err=>alert(err.message));}}
+                        style={{background:"none",border:"none",cursor:"pointer",color:"#ef4444",fontSize:18,padding:"2px 6px"}} title="Remove">×</button>
+                    )}
+                  </div>);
+                })}
+              </div>
+            ):
+            view==="calendar"?(<CalendarView tasks={tasks} onSelect={t=>setSelectedTask(t)} onUpdate={updateTask}/>):(view==="today"&&todayMode==="kanban")?(<div style={{display:"flex",flexDirection:"column",height:"100%"}}>
               <div style={{display:"flex",alignItems:"center",gap:12,padding:"12px 14px",background:"white",borderRadius:14,border:"1px solid var(--border)",marginBottom:10,boxShadow:"0 1px 3px rgba(0,0,0,0.04)",flexShrink:0}}>
                 <span style={{color:"var(--accent)",flexShrink:0}}>{Icons.plus}</span>
                 <input id="quick-add" value={newTitle} onChange={e=>setNewTitle(e.target.value)} onKeyDown={e=>{if(e.key==="Enter"&&newTitle.trim()){const t=addTask({title:newTitle.trim()});setNewTitle("");flash(`✓ Added "${t.title}"`);}}} placeholder="Add a task... (Enter) · defaults to today" style={{flex:1,border:"none",outline:"none",fontSize:15,color:"var(--ink)",background:"none",fontFamily:"inherit",minWidth:0}}/>
@@ -3358,7 +3535,7 @@ export default function InkwellApp() {
                 <button onClick={()=>setTodayMode("kanban")} style={{padding:"5px 12px",borderRadius:6,border:"none",fontSize:12,fontWeight:600,cursor:"pointer",fontFamily:"inherit",background:todayMode==="kanban"?"white":"transparent",color:todayMode==="kanban"?"var(--ink)":"var(--muted)",boxShadow:todayMode==="kanban"?"0 1px 3px rgba(0,0,0,0.08)":"none",transition:"all 0.15s"}}>Board</button>
                 <button onClick={()=>setTodayMode("list")} style={{padding:"5px 12px",borderRadius:6,border:"none",fontSize:12,fontWeight:600,cursor:"pointer",fontFamily:"inherit",background:todayMode==="list"?"white":"transparent",color:todayMode==="list"?"var(--ink)":"var(--muted)",boxShadow:todayMode==="list"?"0 1px 3px rgba(0,0,0,0.08)":"none",transition:"all 0.15s"}}>List</button>
               </div>
-              <div style={{flex:1,minHeight:0}}><KanbanBoard tasks={tasks} columns={activeKanbanCols} onColumnsChange={setKanbanColumns} onResetColumns={kanbanColumns?resetKanbanCols:null} onSelect={t=>setSelectedTask(t)} onUpdate={updateTask} onToggle={toggleTask} onReorder={setTasks} onUpdateSubtask={(taskId,subId)=>{setTasks(prev=>prev.map(t=>t.id!==taskId?t:{...t,subtasks:updateSubById(t.subtasks,subId,{completed:!findSubById(t.subtasks,subId)?.completed,completedAt:!findSubById(t.subtasks,subId)?.completed?new Date().toISOString():null})}));}} onSubUpdate={(subId,changes)=>{setTasks(prev=>prev.map(t=>{const found=findSubById(t.subtasks,subId);if(!found)return t;return{...t,subtasks:updateSubById(t.subtasks,subId,changes)};}));}} flash={flash} setIsDragging={setIsDragging} animatingTasks={animatingTasks} sortBy={sortBy} filterPriority={filterPriority}/></div>
+              <div style={{flex:1,minHeight:0}}><KanbanBoard tasks={tasks} columns={activeKanbanCols} onColumnsChange={setKanbanColumns} onResetColumns={kanbanColumns?resetKanbanCols:null} onSelect={t=>setSelectedTask(t)} onUpdate={updateTask} onToggle={toggleTask} onReorder={setTasks} onUpdateSubtask={(taskId,subId)=>{setTasks(prev=>prev.map(t=>t.id!==taskId?t:{...t,subtasks:updateSubById(t.subtasks,subId,{completed:!findSubById(t.subtasks,subId)?.completed,completedAt:!findSubById(t.subtasks,subId)?.completed?new Date().toISOString():null})}));}} onSubUpdate={(subId,changes)=>{setTasks(prev=>prev.map(t=>{const found=findSubById(t.subtasks,subId);if(!found)return t;return{...t,subtasks:updateSubById(t.subtasks,subId,changes)};}));}} flash={flash} setIsDragging={setIsDragging} animatingTasks={animatingTasks} sortBy={sortBy} filterPriority={filterPriority} members={members}/></div>
             </div>):(<>
               {view!=="completed"&&view!=="overdue"&&(<div style={{display:"flex",alignItems:"center",gap:12,padding:"12px 14px",background:"white",borderRadius:14,border:"1px solid var(--border)",marginBottom:view==="today"?10:16,boxShadow:"0 1px 3px rgba(0,0,0,0.04)"}}>
                 <span style={{color:"var(--accent)",flexShrink:0}}>{Icons.plus}</span>
@@ -3399,20 +3576,90 @@ export default function InkwellApp() {
                           style={{fontSize:11,fontWeight:600,color:"#dc2626",background:"white",border:"1px solid #fecaca",borderRadius:6,padding:"3px 8px",cursor:"pointer",fontFamily:"inherit",whiteSpace:"nowrap"}}>→ Today</button>
                       </div>)}
                       {showSep&&(<div style={{display:"flex",alignItems:"center",gap:10,padding:"12px 12px 8px",marginTop:8}}><div style={{height:1,flex:1,background:"var(--border)"}}/><span style={{fontSize:12,fontWeight:600,color:"var(--muted)",textTransform:"uppercase",letterSpacing:0.8}}>Completed</span><div style={{height:1,flex:1,background:"var(--border)"}}/></div>)}
-                      <TaskRow task={task} isActive={selectedTask?.id===task.id} isSelected={selectedIds.has(task.id)} onSelect={handleTaskClick} onToggle={toggleTask} onUpdateTask={updateTask} view={view} lists={lists} onDragStart={onDragStart} onDragOver={onDragOver} onDrop={onDrop} onDragEnd={onDragEnd} dropTarget={dropTarget?.id===task.id?dropTarget:null} animateState={animatingTasks[task.id]}/>
+                      <TaskRow task={task} isActive={selectedTask?.id===task.id} isSelected={selectedIds.has(task.id)} onSelect={handleTaskClick} onToggle={toggleTask} onUpdateTask={updateTask} view={view} lists={lists} onDragStart={onDragStart} onDragOver={onDragOver} onDrop={onDrop} onDragEnd={onDragEnd} dropTarget={dropTarget?.id===task.id?dropTarget:null} animateState={animatingTasks[task.id]} members={members}/>
                     </div>);})}
                 </div>
               )}
             </>)}
           </div>
-          {selectedTask&&!isMobile&&<TaskDetail task={selectedTask} onUpdate={updateTask} onDelete={deleteTask} onClose={()=>setSelectedTask(null)} lists={lists}/>}
+          {selectedTask&&!isMobile&&<TaskDetail task={selectedTask} onUpdate={updateTask} onDelete={deleteTask} onClose={()=>setSelectedTask(null)} lists={lists} members={members}/>}
         </div>
-        {selectedTask&&isMobile&&(<div style={{position:"fixed",inset:0,background:"rgba(15,23,42,0.4)",zIndex:100,display:"flex",justifyContent:"flex-end"}} onClick={()=>setSelectedTask(null)}><div onClick={e=>e.stopPropagation()} style={{width:"100%"}}><TaskDetail task={selectedTask} onUpdate={updateTask} onDelete={deleteTask} onClose={()=>setSelectedTask(null)} lists={lists}/></div></div>)}
+        {selectedTask&&isMobile&&(<div style={{position:"fixed",inset:0,background:"rgba(15,23,42,0.4)",zIndex:100,display:"flex",justifyContent:"flex-end"}} onClick={()=>setSelectedTask(null)}><div onClick={e=>e.stopPropagation()} style={{width:"100%"}}><TaskDetail task={selectedTask} onUpdate={updateTask} onDelete={deleteTask} onClose={()=>setSelectedTask(null)} lists={lists} members={members}/></div></div>)}
       </main>
 
       {showPhoto&&<PhotoModal onClose={()=>{setShowPhoto(false);setScanError(null);}} onProcess={handleScan} processing={processing} error={scanError}/>}
       {scanResults&&<ScanResultsModal results={scanResults} onConfirm={confirmScan} onClose={()=>setScanResults(null)} lists={lists}/>}
       {showTips&&<ScanTipsModal onClose={()=>setShowTips(false)}/>}
+
+      {/* ═══ ADD MEMBER MODAL ═══ */}
+      {showAddMember&&(()=>{
+        const AMState={email:"",role:"member",error:"",loading:false};
+        const AM=()=>{
+          const [email,setEmail]=useState("");
+          const [role,setRole]=useState("member");
+          const [error,setError]=useState("");
+          const [loading,setLoading]=useState(false);
+          const inp={width:"100%",padding:"10px 12px",borderRadius:10,border:"1px solid var(--border)",fontSize:14,color:"var(--ink)",background:"white",fontFamily:"inherit",boxSizing:"border-box",outline:"none"};
+          const handleAdd=async()=>{if(!email.trim())return;setLoading(true);setError("");try{await inviteMember(email.trim().toLowerCase(),role);flash("Member added ✓");setShowAddMember(false);}catch(e){setError(e.message);}finally{setLoading(false);}};
+          return(<Overlay onClose={()=>setShowAddMember(false)}>
+            <h2 style={{fontSize:19,fontFamily:"var(--font-display)",marginBottom:16}}>Add Team Member</h2>
+            <div style={{marginBottom:12}}><label style={{fontSize:12,fontWeight:600,color:"var(--muted)",display:"block",marginBottom:6}}>Email</label><input value={email} onChange={e=>setEmail(e.target.value)} placeholder="colleague@company.com" style={inp} autoFocus onKeyDown={e=>{if(e.key==="Enter")handleAdd();}}/></div>
+            <div style={{marginBottom:16}}><label style={{fontSize:12,fontWeight:600,color:"var(--muted)",display:"block",marginBottom:6}}>Role</label><select value={role} onChange={e=>setRole(e.target.value)} style={{...inp,cursor:"pointer"}}><option value="member">Member — create & edit tasks</option><option value="viewer">Viewer — read-only</option><option value="admin">Admin — manage members</option></select></div>
+            <div style={{fontSize:13,color:"var(--muted)",marginBottom:16,lineHeight:1.5,background:"var(--surface)",padding:"10px 14px",borderRadius:10}}>They must have an Inkwell account first. Ask them to sign up at the main page.</div>
+            {error&&<div style={{background:"#fef2f2",border:"1px solid #fecaca",borderRadius:10,padding:"10px 14px",fontSize:13,color:"#dc2626",marginBottom:12}}>{error}</div>}
+            <div style={{display:"flex",justifyContent:"flex-end",gap:8}}>
+              <button onClick={()=>setShowAddMember(false)} style={{padding:"10px 20px",borderRadius:10,border:"1px solid var(--border)",background:"white",color:"var(--text)",fontSize:13,fontWeight:600,cursor:"pointer",fontFamily:"inherit"}}>Cancel</button>
+              <button onClick={handleAdd} disabled={!email.trim()||loading} style={{padding:"10px 20px",borderRadius:10,border:"none",background:"#d97706",color:"white",fontSize:13,fontWeight:600,cursor:!email.trim()||loading?"not-allowed":"pointer",opacity:!email.trim()||loading?0.5:1,fontFamily:"inherit"}}>{loading?"Adding...":"Add Member"}</button>
+            </div>
+          </Overlay>);
+        };
+        return <AM/>;
+      })()}
+
+      {/* ═══ REQUEST REVIEW MODAL ═══ */}
+      {showRequestReview&&(()=>{
+        const RR=()=>{
+          const req=showRequestReview;
+          const [assignedTo,setAssignedTo]=useState("");
+          const [priority,setPriority]=useState(req.priority||"medium");
+          const [dueDate,setDueDate]=useState(todayStr());
+          const [note,setNote]=useState("");
+          const [category,setCategory]=useState("Inbox");
+          const inp={width:"100%",padding:"10px 12px",borderRadius:10,border:"1px solid var(--border)",fontSize:14,color:"var(--ink)",background:"white",fontFamily:"inherit",boxSizing:"border-box",outline:"none"};
+          const handleAccept=async()=>{
+            try{
+              await acceptRequest(req.id,{response_note:note});
+              addTask({title:req.title,dueDate:dueDate||todayStr(),priority,list:category||"Inbox",assignedTo:assignedTo||null,notes:req.description||""});
+              flash("Request → task ✓");setShowRequestReview(null);
+            }catch(e){alert(e.message);}
+          };
+          const handleDecline=async()=>{try{await declineRequest(req.id,note);flash("Declined");setShowRequestReview(null);}catch(e){alert(e.message);}};
+          return(<Overlay onClose={()=>setShowRequestReview(null)}>
+            <h2 style={{fontSize:19,fontFamily:"var(--font-display)",marginBottom:4}}>Review Request</h2>
+            <div style={{fontSize:12,color:"var(--muted)",marginBottom:16}}>From {req.requester_name}{req.requester_email?` (${req.requester_email})`:""} · {new Date(req.created_at).toLocaleDateString("en-IE",{month:"short",day:"numeric"})}</div>
+            <div style={{background:"var(--surface)",borderRadius:12,padding:16,marginBottom:20,borderLeft:"3px solid #d97706"}}>
+              <div style={{fontSize:15,fontWeight:600,marginBottom:4,color:"var(--ink)"}}>{req.title}</div>
+              {req.description&&<div style={{fontSize:14,color:"var(--muted)",lineHeight:1.6,whiteSpace:"pre-wrap"}}>{req.description}</div>}
+              <div style={{marginTop:8}}><span style={{fontSize:11,fontWeight:600,padding:"2px 8px",borderRadius:6,color:(PRIORITY[req.priority||"medium"]||PRIORITY.medium).color,background:(PRIORITY[req.priority||"medium"]||PRIORITY.medium).color+"18"}}>{req.priority||"medium"} priority</span></div>
+            </div>
+            <div style={{fontSize:13,fontWeight:700,color:"var(--ink)",marginBottom:12}}>Accept as task:</div>
+            <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:12,marginBottom:12}}>
+              <div><label style={{fontSize:12,fontWeight:600,color:"var(--muted)",display:"block",marginBottom:4}}>Assign To</label><select value={assignedTo} onChange={e=>setAssignedTo(e.target.value)} style={{...inp,cursor:"pointer"}}><option value="">Unassigned</option>{(members||[]).filter(m=>m.role!=="viewer").map(m=><option key={m.user_id} value={m.user_id}>{m.display_name||m.email}</option>)}</select></div>
+              <div><label style={{fontSize:12,fontWeight:600,color:"var(--muted)",display:"block",marginBottom:4}}>Priority</label><select value={priority} onChange={e=>setPriority(e.target.value)} style={{...inp,cursor:"pointer"}}>{Object.entries(PRIORITY).map(([k,v])=><option key={k} value={k}>{v.label}</option>)}</select></div>
+            </div>
+            <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:12,marginBottom:12}}>
+              <div><label style={{fontSize:12,fontWeight:600,color:"var(--muted)",display:"block",marginBottom:4}}>Due Date</label><input type="date" value={dueDate} onChange={e=>setDueDate(e.target.value)} style={inp}/></div>
+              <div><label style={{fontSize:12,fontWeight:600,color:"var(--muted)",display:"block",marginBottom:4}}>List</label><select value={category} onChange={e=>setCategory(e.target.value)} style={{...inp,cursor:"pointer"}}>{lists.map(l=><option key={l} value={l}>{l}</option>)}</select></div>
+            </div>
+            <div style={{marginBottom:16}}><label style={{fontSize:12,fontWeight:600,color:"var(--muted)",display:"block",marginBottom:4}}>Response Note</label><input value={note} onChange={e=>setNote(e.target.value)} placeholder="Optional note..." style={inp}/></div>
+            <div style={{display:"flex",justifyContent:"flex-end",gap:8}}>
+              <button onClick={handleDecline} style={{padding:"10px 20px",borderRadius:10,background:"#fef2f2",color:"#ef4444",border:"1px solid #fecaca",fontSize:13,fontWeight:600,cursor:"pointer",fontFamily:"inherit"}}>Decline</button>
+              <button onClick={handleAccept} style={{padding:"10px 20px",borderRadius:10,border:"none",background:"#d97706",color:"white",fontSize:13,fontWeight:600,cursor:"pointer",fontFamily:"inherit"}}>Accept → Create Task</button>
+            </div>
+          </Overlay>);
+        };
+        return <RR/>;
+      })()}
       {showShortcuts&&(<Overlay onClose={()=>setShowShortcuts(false)}><h2 style={{fontSize:19,fontFamily:"var(--font-display)",marginBottom:16}}>Keyboard Shortcuts</h2>{[["N","New task"],["B","Toggle sidebar"],["/ or ⌘F","Search"],["⌘Z","Undo"],["⌘⇧Z","Redo"],["⌘A","Select all tasks"],["Shift+Click","Select range"],["⌘/Ctrl+Click","Toggle select"],["Delete","Delete selected"],["Esc","Clear selection / close"],["?","This help"],["Double-click","Edit any name"]].map(([k,d])=>(<div key={k} style={{display:"flex",alignItems:"center",gap:12,padding:"8px 0",borderBottom:"1px solid var(--border-light)"}}><kbd style={{fontSize:12,fontWeight:600,background:"var(--surface)",padding:"3px 8px",borderRadius:6,border:"1px solid var(--border)",fontFamily:"inherit",minWidth:50,textAlign:"center"}}>{k}</kbd><span style={{fontSize:14,color:"var(--text)"}}>{d}</span></div>))}</Overlay>)}
       {showSettings&&(<Overlay onClose={()=>setShowSettings(false)}>
         <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:20}}>
