@@ -1,0 +1,980 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Wreck of the Eldermoor — A Virtual Escape Room</title>
+<!-- Google Fonts: the only external dependency. Everything else is embedded. -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Special+Elite&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   THE WRECK OF THE ELDERMOOR — styles
+   Palette: dark teal / sandy beige / weathered wood / parchment.
+   Each room overrides accent variables for a distinct feel.
+   ============================================================ */
+:root{
+  --ink:#e8e0cf;            /* main text (parchment) */
+  --dim:#a99f88;            /* secondary text */
+  --bg0:#0b1d21;            /* deep teal background */
+  --bg1:#12292e;
+  --panel:#1a2f33;
+  --wood:#5b4632;
+  --wood-hi:#8a6f52;
+  --sand:#d8c39a;
+  --teal:#2e6f6a;
+  --teal-hi:#4fa39b;
+  --danger:#c9553d;
+  --ok:#7fae6a;
+  --accent:#4fa39b;         /* per-room accent */
+  --room-glow:rgba(79,163,155,.15);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{
+  font-family:'Inter',system-ui,sans-serif;
+  background:radial-gradient(ellipse at 50% -20%, var(--room-glow), transparent 60%),
+             linear-gradient(180deg,var(--bg0),var(--bg1) 70%, #0a161a);
+  background-attachment:fixed;
+  color:var(--ink);
+  min-height:100vh;
+  line-height:1.55;
+}
+h1,h2,h3,.headline{font-family:'Special Elite',serif;letter-spacing:.5px;font-weight:400}
+button{font-family:'Inter',sans-serif;cursor:pointer}
+.hidden{display:none !important}
+
+/* ---------- start screen ---------- */
+#start-screen{max-width:860px;margin:0 auto;padding:6vh 24px 60px;text-align:center;position:relative}
+#start-screen h1{font-size:clamp(2.1rem,5.5vw,3.6rem);color:var(--sand);text-shadow:0 3px 14px rgba(0,0,0,.6)}
+#start-screen .sub{color:var(--teal-hi);font-family:'Special Elite',serif;font-size:1.05rem;margin-top:8px}
+.parchment{
+  margin:34px auto;max-width:640px;text-align:left;padding:26px 30px;
+  background:linear-gradient(160deg,#e9dcbc,#d8c39a 55%,#cbb489);
+  color:#3a2d1c;border-radius:4px;
+  box-shadow:0 12px 30px rgba(0,0,0,.55), inset 0 0 60px rgba(120,90,40,.28);
+  border:1px solid #b49a6d;font-size:1.02rem;
+}
+.parchment p+p{margin-top:12px}
+.big-btn{
+  margin-top:10px;padding:16px 46px;font-size:1.25rem;font-family:'Special Elite',serif;
+  background:linear-gradient(180deg,var(--teal-hi),var(--teal));color:#eafaf7;
+  border:1px solid #6dc0b8;border-radius:8px;box-shadow:0 6px 18px rgba(0,0,0,.5);
+  transition:transform .12s, box-shadow .12s;
+}
+.big-btn:hover{transform:translateY(-2px);box-shadow:0 10px 22px rgba(0,0,0,.55)}
+.start-note{color:var(--dim);font-size:.85rem;margin-top:18px}
+/* Discreet Game Master toggle — start screen only */
+#gm-btn{
+  position:fixed;bottom:14px;right:16px;font-size:.72rem;color:#5c6f6d;background:none;
+  border:1px solid #2c4144;border-radius:6px;padding:5px 10px;opacity:.65;
+}
+#gm-btn:hover{opacity:1;color:var(--dim)}
+#gm-panel{
+  max-width:860px;margin:30px auto;text-align:left;background:#101c1e;border:1px solid #2c4144;
+  border-radius:10px;padding:26px 30px;font-size:.9rem;
+}
+#gm-panel h2{color:var(--sand);margin-bottom:6px}
+#gm-panel h3{color:var(--teal-hi);margin:22px 0 6px;border-bottom:1px dashed #2c4144;padding-bottom:4px}
+#gm-panel .chain{color:var(--dim);font-style:italic;margin-bottom:10px}
+#gm-panel .gm-puzzle{margin:10px 0 14px;padding-left:14px;border-left:3px solid var(--wood-hi)}
+#gm-panel .gm-answer{color:var(--ok);font-weight:700}
+#gm-panel ul{margin:4px 0 0 22px;color:var(--dim)}
+
+/* ---------- HUD / header ---------- */
+#hud{
+  position:sticky;top:0;z-index:40;display:flex;align-items:center;justify-content:space-between;
+  gap:16px;padding:10px 20px;background:rgba(8,18,21,.92);backdrop-filter:blur(4px);
+  border-bottom:1px solid #23393d;
+}
+#hud .room-label{font-family:'Special Elite',serif;color:var(--accent);font-size:1.05rem}
+#timer{
+  font-family:'Special Elite',serif;font-size:1.9rem;color:var(--sand);
+  background:#0d1a1d;border:1px solid #2c4144;border-radius:8px;padding:2px 18px;min-width:150px;text-align:center;
+}
+#timer.low{color:#ff8a70;border-color:#7e3324;animation:pulse 1s infinite}
+#timer.overtime{color:var(--danger)}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 rgba(201,85,61,0)}50%{box-shadow:0 0 18px rgba(201,85,61,.7)}}
+#hud .stats{display:flex;gap:14px;font-size:.8rem;color:var(--dim);white-space:nowrap}
+#hud .stats b{color:var(--ink)}
+
+/* ---------- room / object grid ---------- */
+#game-screen{max-width:1080px;margin:0 auto;padding:26px 22px 90px}
+.room-header{margin-bottom:6px}
+.room-header h2{font-size:clamp(1.5rem,3.4vw,2.3rem);color:var(--sand)}
+.room-intro{
+  margin:12px 0 26px;padding:16px 20px;background:rgba(0,0,0,.28);border-left:4px solid var(--accent);
+  border-radius:0 8px 8px 0;color:var(--ink);font-style:italic;max-width:820px;
+}
+#objects{display:grid;grid-template-columns:repeat(auto-fill,minmax(215px,1fr));gap:16px}
+.obj-card{
+  background:linear-gradient(170deg,var(--panel),#14262a);
+  border:1px solid #2c4144;border-radius:12px;padding:18px 16px 14px;text-align:center;
+  cursor:pointer;transition:transform .12s, border-color .12s, box-shadow .12s;position:relative;
+  min-height:132px;
+}
+.obj-card:hover{transform:translateY(-3px);border-color:var(--accent);box-shadow:0 8px 20px rgba(0,0,0,.45)}
+.obj-card .icon{font-size:2.4rem;display:block;filter:drop-shadow(0 3px 4px rgba(0,0,0,.5))}
+.obj-card .name{font-family:'Special Elite',serif;margin-top:10px;color:var(--ink);font-size:1rem}
+.obj-card.solved{border-color:var(--ok)}
+.obj-card.solved::after{
+  content:"✓ SOLVED";position:absolute;top:8px;right:8px;font-size:.62rem;font-weight:700;
+  color:#12291a;background:var(--ok);padding:2px 7px;border-radius:10px;letter-spacing:.5px;
+}
+.obj-card.flicker .icon{animation:flick 3.2s infinite}
+@keyframes flick{
+  0%,100%{opacity:1}72%{opacity:1}74%{opacity:.35}76%{opacity:1}83%{opacity:.5}85%{opacity:1}
+}
+.room-complete{
+  margin-top:30px;text-align:center;padding:24px;background:rgba(46,111,106,.16);
+  border:1px dashed var(--teal-hi);border-radius:12px;
+}
+.room-complete p{font-style:italic;margin-bottom:14px}
+
+/* ---------- object modal ---------- */
+#overlay{
+  position:fixed;inset:0;background:rgba(4,10,12,.78);z-index:60;display:flex;
+  align-items:flex-start;justify-content:center;padding:6vh 16px;overflow-y:auto;
+}
+#modal{
+  width:min(680px,100%);background:linear-gradient(165deg,#1c3136,#122327);
+  border:1px solid #37545a;border-radius:14px;padding:26px 28px 24px;position:relative;
+  box-shadow:0 18px 50px rgba(0,0,0,.65);
+}
+#modal h3{color:var(--sand);font-size:1.5rem;margin-bottom:4px}
+#modal .obj-desc{margin:12px 0;white-space:pre-line}
+#modal .obj-desc em{color:var(--teal-hi)}
+#modal .close-x{
+  position:absolute;top:10px;right:12px;background:none;border:none;color:var(--dim);
+  font-size:1.5rem;line-height:1;padding:6px;
+}
+#modal .close-x:hover{color:var(--ink)}
+.puzzle-box{margin-top:16px;padding:16px;background:rgba(0,0,0,.3);border:1px solid #2c4144;border-radius:10px}
+.puzzle-box .prompt{font-family:'Special Elite',serif;color:var(--teal-hi);margin-bottom:10px}
+.answer-row{display:flex;gap:10px;flex-wrap:wrap}
+.answer-row input{
+  flex:1;min-width:180px;padding:12px 14px;font-size:1.15rem;letter-spacing:2px;
+  background:#0d191c;color:var(--sand);border:1px solid #3a565c;border-radius:8px;
+  font-family:'Special Elite',serif;text-transform:uppercase;
+}
+.answer-row input:focus{outline:none;border-color:var(--accent)}
+.answer-row button, .hint-btn, .signal-btn{
+  padding:12px 22px;font-size:1rem;font-weight:600;border-radius:8px;border:1px solid #6dc0b8;
+  background:linear-gradient(180deg,var(--teal-hi),var(--teal));color:#eafaf7;
+}
+.answer-row button:hover{filter:brightness(1.1)}
+.feedback{min-height:22px;margin-top:10px;font-size:.9rem}
+.feedback.bad{color:#ff9a82;font-weight:600}
+.feedback.good{color:var(--ok);font-weight:600}
+.shake{animation:shake .4s}
+@keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-8px)}40%{transform:translateX(8px)}60%{transform:translateX(-6px)}80%{transform:translateX(6px)}}
+.solved-note{
+  margin-top:14px;padding:14px;background:rgba(127,174,106,.12);border:1px solid #3f5c37;
+  border-radius:10px;white-space:pre-line;
+}
+.hints{margin-top:16px;border-top:1px dashed #2c4144;padding-top:12px}
+.hint-btn{background:linear-gradient(180deg,var(--wood-hi),var(--wood));border-color:#a5896a;font-size:.85rem;padding:8px 16px}
+.hint-btn:disabled{opacity:.45;cursor:not-allowed}
+.hint-text{margin-top:8px;padding:10px 12px;background:rgba(216,195,154,.09);border-left:3px solid var(--wood-hi);border-radius:0 6px 6px 0;font-size:.92rem;color:var(--sand)}
+.hint-cost{color:var(--dim);font-size:.75rem;margin-left:8px}
+.symbols{font-size:1.6rem;letter-spacing:10px;color:var(--sand);text-align:center;margin:8px 0}
+.morse{font-family:'Special Elite',serif;font-size:1.35rem;letter-spacing:4px;color:var(--teal-hi);text-align:center;margin:8px 0;word-break:break-all}
+table.crib{margin:10px auto;border-collapse:collapse;font-size:.82rem;color:var(--dim)}
+table.crib td{padding:2px 9px;border:1px solid #24393d;text-align:center}
+table.crib td b{color:var(--sand);font-family:'Special Elite',serif}
+
+/* ---------- signal (SOS) puzzle ---------- */
+.signal-pad{margin-top:12px;text-align:center}
+.signal-btn{margin:4px 6px;min-width:130px}
+.signal-btn.long{background:linear-gradient(180deg,var(--wood-hi),var(--wood));border-color:#a5896a}
+.signal-btn.clear{background:#243a3e;border-color:#3a565c}
+.signal-display{
+  min-height:44px;margin:12px auto 4px;max-width:420px;font-family:'Special Elite',serif;
+  font-size:1.7rem;letter-spacing:6px;color:var(--sand);background:#0d191c;border:1px solid #3a565c;
+  border-radius:8px;padding:6px 10px;
+}
+
+/* ---------- monster beat pop-up ---------- */
+#beat{
+  position:fixed;top:74px;left:50%;transform:translateX(-50%);z-index:80;max-width:520px;width:calc(100% - 32px);
+  background:linear-gradient(170deg,#181420,#0e0c14);color:#cfc4de;border:1px solid #3d3350;
+  border-radius:10px;padding:16px 20px;font-style:italic;text-align:center;
+  box-shadow:0 10px 34px rgba(0,0,0,.7);opacity:0;pointer-events:none;transition:opacity 1.6s;
+}
+#beat.show{opacity:1}
+#beat::before{content:"· · ·";display:block;color:#5c4f74;letter-spacing:8px;font-style:normal;margin-bottom:4px}
+
+/* ---------- transition / end screens ---------- */
+.screen-center{
+  position:fixed;inset:0;z-index:70;display:flex;align-items:center;justify-content:center;
+  background:rgba(5,12,14,.94);padding:20px;overflow-y:auto;
+}
+.end-card{max-width:600px;width:100%;text-align:center;padding:40px 34px;background:linear-gradient(165deg,#1c3136,#101f23);border:1px solid #37545a;border-radius:16px}
+.end-card h2{font-size:2.2rem;color:var(--sand);margin-bottom:10px}
+.end-card .rating{font-family:'Special Elite',serif;font-size:1.5rem;color:var(--teal-hi);margin:14px 0}
+.end-card .stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:20px 0;text-align:left}
+.end-card .stat{background:rgba(0,0,0,.3);border:1px solid #2c4144;border-radius:8px;padding:10px 14px}
+.end-card .stat .k{font-size:.72rem;color:var(--dim);text-transform:uppercase;letter-spacing:1px}
+.end-card .stat .v{font-family:'Special Elite',serif;font-size:1.3rem;color:var(--sand)}
+.end-card .btn-row{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:18px}
+pre.share{
+  text-align:left;background:#0b1517;border:1px solid #2c4144;border-radius:8px;padding:14px;
+  font-size:.85rem;color:var(--ink);white-space:pre-wrap;margin-top:16px;
+}
+/* ---------- per-room accents ---------- */
+body.room-beach {--accent:#d8b46a;--room-glow:rgba(216,180,106,.13)}
+body.room-radio {--accent:#7fae6a;--room-glow:rgba(127,174,106,.12)}
+body.room-jungle{--accent:#4f8a5c;--room-glow:rgba(30,80,45,.22)}
+body.room-raft  {--accent:#c98a5a;--room-glow:rgba(201,138,90,.15)}
+body.room-jungle{background:radial-gradient(ellipse at 50% -20%,var(--room-glow),transparent 60%),linear-gradient(180deg,#0a1710,#0d1d14 70%,#07110b);background-attachment:fixed}
+body.room-raft{background:radial-gradient(ellipse at 50% -20%,var(--room-glow),transparent 60%),linear-gradient(180deg,#1a1420,#241a22 60%,#120d14);background-attachment:fixed}
+@media (max-width:640px){
+  #hud .stats{display:none}
+  .end-card .stat-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- ==================== START SCREEN ==================== -->
+<div id="start-screen">
+  <h1>THE WRECK OF THE ELDERMOOR</h1>
+  <div class="sub">a virtual escape room · 45 minutes · one screen, one crew</div>
+  <div class="parchment">
+    <p>The storm took the <em>Eldermoor</em> apart in the dark. You remember cold water, splintered wood, and then sand.</p>
+    <p>Dawn finds your crew alive on the beach of an island that appears on no chart. Up the ridge, half-swallowed by vines, stands an abandoned radio station — your one hope of calling for rescue and getting off this island.</p>
+    <p>Work fast. Solve what the island puts in front of you. And if you hear something moving in the treeline… don't stop to look.</p>
+  </div>
+  <button class="big-btn" id="start-btn">⚓ BEGIN — 45:00</button>
+  <p class="start-note">One player shares their screen and drives. Everyone else shouts ideas.<br>
+  Hints cost 30 seconds each. Wrong answers cost 5 seconds. Fastest clean escape wins.</p>
+
+  <button id="gm-btn">🔑 Game Master</button>
+  <div id="gm-panel" class="hidden"></div>
+</div>
+
+<!-- ==================== GAME SCREEN ==================== -->
+<div id="hud" class="hidden">
+  <div class="room-label" id="hud-room"></div>
+  <div id="timer">45:00</div>
+  <div class="stats">
+    <span>Elapsed <b id="stat-elapsed">0:00</b></span>
+    <span>Hints <b id="stat-hints">0</b></span>
+    <span>Penalties <b id="stat-pen">+0:00</b></span>
+  </div>
+</div>
+
+<div id="game-screen" class="hidden">
+  <div class="room-header"><h2 id="room-title"></h2></div>
+  <div class="room-intro" id="room-intro"></div>
+  <div id="objects"></div>
+  <div class="room-complete hidden" id="room-complete">
+    <p id="room-complete-text"></p>
+    <button class="big-btn" id="continue-btn">Continue ➤</button>
+  </div>
+</div>
+
+<!-- monster narrative beat pop-up -->
+<div id="beat"></div>
+
+<!-- object modal -->
+<div id="overlay" class="hidden"><div id="modal"></div></div>
+
+<!-- end / game over screens injected here -->
+<div id="end-root"></div>
+
+<script>
+/* ============================================================
+   THE WRECK OF THE ELDERMOOR — game logic
+   ------------------------------------------------------------
+   HOW TO MODIFY:
+   - All content lives in the ROOMS array below. Each room has
+     an `objects` list. An object with a `puzzle` key is a
+     puzzle; without one it's atmosphere/flavor.
+   - Puzzle chaining is controlled by two optional object keys:
+       hiddenUntil: '<objectId>'  -> object doesn't appear until
+                                     that puzzle is solved
+       revealedBy:  '<objectId>'  -> object is visible from the
+                                     start, but swaps its `desc`
+                                     for `revealDesc` once that
+                                     puzzle is solved
+   - Answers are normalized before comparison: uppercased and
+     stripped of everything but A-Z0-9 (so "121.5" == "1215",
+     "b d a e c" == "BDAEC"). List answers already normalized.
+   - `type:'signal'` marks the special short/long flare puzzle.
+   - To add a room: append to ROOMS and add a body.room-<id>
+     accent block in the CSS.
+   ============================================================ */
+
+/* ---------- narrative beats (the thing on the island) ---------- */
+const WRONG_BEATS = [
+  "Somewhere behind you, wet sand shifts under a weight that isn't the tide.",
+  "Three slow knocks. Wood on wood. Then nothing.",
+  "The birds have stopped. You didn't notice until just now.",
+  "A long exhale — too long — from somewhere in the green.",
+  "For a moment the light dims, as if something very tall passed between you and the sun."
+];
+
+/* ---------- game content ---------- */
+const ROOMS = [
+/* ================= ROOM 1 — THE BEACH ================= */
+{
+  id:'beach', name:'Room 1 — The Beach', cls:'room-beach',
+  intro:"You wade out of the surf into a graveyard of cargo and canvas. The Eldermoor's bones lie broken along the tideline. Somewhere inland, a rusted antenna pokes above the palms — but first, the wreckage may hold what you need. The sand above the high-water mark is marked with long, dragging prints. Not yours.",
+  entryBeat:"As you take your first steps up the beach, the treeline goes quiet all at once — the way a room goes quiet when something walks in.",
+  completeText:"Chart in hand, you leave the wreck behind. Eight paces north, two east, and a trail opens in the vines like a mouth.",
+  chain:"Driftwood anagram (SAIL) → sail reveals symbol order → crate stencils give combo 8351 → crate holds brass key stamped TIDE → box riddle answer TIDE → box holds chart → chart math gives 82 → path to radio station.",
+  objects:[
+    { id:'hull', icon:'🚢', name:"Shattered Hull",
+      desc:"What's left of the Eldermoor lies on its side, ribs open to the sky. Inside, the dark holds its breath. You call out. Your echo comes back a half-second too late, and slightly… wrong.\n\nThere's nothing useful in there. You're almost sure." },
+    { id:'driftwood', icon:'🪵', name:'Driftwood Planks',
+      desc:"Four planks from a lifeboat bench have washed up in a rough row. Someone — before the wreck, surely — carved a single letter into each:\n\nL   ·   I   ·   A   ·   S\n\nThe sea has jumbled their order.",
+      puzzle:{
+        prompt:"Rearrange the four carved letters into a word. Where should you look next?",
+        placeholder:"FOUR LETTERS",
+        answers:['SAIL'],
+        hints:[
+          "Four letters, four planks. The sea shuffled them on the way in — un-shuffle them.",
+          "Rearrange L, I, A, S into something no ship can move without.",
+          "It's hanging in tatters just up the beach: the answer is SAIL."
+        ],
+        solvedText:"SAIL. Of course. Up the beach, the Eldermoor's torn mainsail is snagged across a rock — and now that you look properly, there's something painted on it.",
+        solveBeat:null
+      }
+    },
+    { id:'sail', icon:'⛵', name:'Torn Sail', revealedBy:'driftwood',
+      desc:"A great sheet of salt-stiff canvas, snagged on the rocks. It's crusted and folded on itself — you can't make anything of it yet. Maybe something else on the beach will tell you why it matters.",
+      revealDesc:"You haul the canvas flat. Painted along its edge in tar — a loading mark from some old port — is a row of four shapes, in this exact order:\n\n" },
+    { id:'crate', icon:'📦', name:'Cargo Crate',
+      desc:"A heavy cargo crate, banded in iron, sealed with a 4-digit dial lock. Stencilled on its side are four shapes, each with a number — but they're printed in no particular order:\n\n■ 5      ◆ 1      ▲ 8      ● 3\n\nNumbers, but no sequence. Something must give you the order.",
+      puzzle:{
+        prompt:"Enter the 4-digit combination.",
+        placeholder:"0000",
+        answers:['8351'],
+        hints:[
+          "The stencilled shapes each have a number — what you're missing is the ORDER to read them in.",
+          "The torn sail shows the same four shapes painted in a specific order. Read the crate's numbers in the sail's order.",
+          "Sail order is triangle, circle, square, diamond → 8, 3, 5, 1. Enter 8351."
+        ],
+        solvedText:"The lock falls open. Inside, wrapped in oilcloth: a small brass key, stamped with one word — TIDE — and a scrap of paper: “the box answers to what the key remembers.”",
+        solveBeat:"As the crate lid creaks open, something big shifts its weight in the treeline. One branch snaps. Then the silence resumes, heavier than before."
+      }
+    },
+    { id:'box', icon:'🧰', name:'Weatherproof Box',
+      desc:"A ship's weatherproof document box, bolted shut with a 4-letter combination lock. A riddle is engraved on the lid in fine script:\n\n“Twice each day I come, and twice I leave.\nThe moon commands me; no anchor holds me.\nI kiss the shore, then take it with me.\nWhat am I?”",
+      puzzle:{
+        prompt:"Set the four letter dials.",
+        placeholder:"FOUR LETTERS",
+        answers:['TIDE'],
+        hints:[
+          "The riddle describes something the ocean does on a schedule.",
+          "Twice a day, commanded by the moon… and check what's stamped on the brass key from the crate.",
+          "The key already told you: the answer is TIDE."
+        ],
+        solvedText:"The dials click to T-I-D-E and the box sighs open. Inside: a torn nautical chart of this very island, annotated in a hurried hand.",
+        solveBeat:null
+      }
+    },
+    { id:'chart', icon:'🗺️', name:'Chart Fragment', hiddenUntil:'box',
+      desc:"The chart shows the island, the wreck site — and a route to a circled square labelled RADIO STN. The margin notes read:\n\n“12 souls boarded at Port Ashen. 4 were taken by the water. From the tallest palm, walk NORTH as many paces as remain.”\n\n“7 crates washed ashore. 5 broke open on the rocks. Walk EAST as many paces as survived intact.”",
+      puzzle:{
+        prompt:"Enter the paces: north digit, then east digit.",
+        placeholder:"TWO DIGITS",
+        answers:['82'],
+        hints:[
+          "Two small calculations — one gives the north paces, one gives the east.",
+          "North: how many of 12 souls remain after 4 were lost? East: how many of 7 crates stayed intact when 5 broke?",
+          "8 paces north, 2 paces east — enter 82."
+        ],
+        solvedText:"Eight north, two east from the tallest palm — and there it is: a trailhead cut into the jungle wall, and far up the ridge, the dull glint of an antenna.",
+        solveBeat:"You count your paces aloud. On “six,” something in the undergrowth counts one pace with you. On “seven,” it doesn't."
+      }
+    }
+  ]
+},
+/* ================= ROOM 2 — THE RADIO STATION ================= */
+{
+  id:'radio', name:'Room 2 — The Radio Station', cls:'room-radio',
+  intro:"You push open the rusted door. Dust hangs in the green glow of instruments that should not still have power. A logbook lies open on the desk, its last entry unfinished mid-word. The operator's chair faces the window — turned, as if whoever sat here was watching for something to come out of the trees.",
+  entryBeat:"The door swings shut behind you on its own. Rusted hinges don't do that quietly. This one did.",
+  completeText:"The transmitter hums, your distress call looping out to sea. A stencilled arrow on the equipment rack points to a back door: ANTENNA LINE — THIS WAY. The cable runs straight into the jungle.",
+  chain:"Logbook clue (day 121, entry 5) → tune radio to 121.5 → broadcast is morse for UNDER → look under the rug: floor hatch → Caesar-shifted plate (shift 3) decodes to STORM → hatch opens to transmitter → punch card sequences (fibonacci 13, odd numbers 31) give code 1331.",
+  objects:[
+    { id:'logbook', icon:'📖', name:"Operator's Logbook",
+      desc:"The final entry, in a deteriorating hand:\n\n“Day 121, entry 5. It circles the station after dark now. I will make one last broadcast on the emergency band and then I will not transmit again. If anyone finds this: the band is where the day meets the entry. Listen. Then get UNDER—”\n\nThe entry stops there. The pen is still in the crease of the page." },
+    { id:'window', icon:'🪟', name:'Salt-Crusted Window',
+      desc:"The glass is fogged with years of salt. Through it, the clearing, the treeline, the ordinary green.\n\nIn the bottom corner of the pane, for just a moment, there is a shape. Tall. Patient. It's gone when you look directly at it.\n\nYou decide, as a crew, to stop looking out the window." },
+    { id:'poster', icon:'📜', name:'Morse Chart Poster',
+      desc:"A yellowed training poster is pinned above the desk: INTERNATIONAL MORSE CODE.\n\nA = ·−    B = −···    C = −·−·    D = −··    E = ·\nF = ··−·    G = −−·    H = ····    I = ··    J = ·−−−\nK = −·−    L = ·−··    M = −−    N = −·    O = −−−\nP = ·−−·    Q = −−·−    R = ·−·    S = ···    T = −\nU = ··−    V = ···−    W = ·−−    X = −··−    Y = −·−−    Z = −−··\n\nSomeone has underlined five of the letters so hard the paper tore." },
+    { id:'radio', icon:'📻', name:'Radio Receiver', flicker:true,
+      desc:"The heart of the station: a wall of dials and meters, still warm, its panel light flickering like a failing heartbeat. The main tuning dial waits at 000.0. A brass plate reads: EMERGENCY MONITORING STATION 7 — TUNE WITH CARE.\n\nStatic washes from the speaker like surf.",
+      puzzle:{
+        prompt:"Tune the dial — enter the frequency.",
+        placeholder:"FREQUENCY",
+        answers:['1215'],
+        hints:[
+          "The logbook's final entry hides the number. Read it again, slowly.",
+          "“Day 121, entry 5 … the band is where the day meets the entry.” Put the day and the entry together.",
+          "Tune to 121.5 — type 1215."
+        ],
+        solvedText:"At 121.5 the static parts like a curtain. A recorded voice, looped for years, keys the same five letters over and over. You copy the pulses down exactly. (A new signal is coming through — check THE BROADCAST.)",
+        solveBeat:null
+      }
+    },
+    { id:'broadcast', icon:'📡', name:'The Broadcast', hiddenUntil:'radio', flicker:true,
+      desc:"The loop repeats every few seconds. Five letters, keyed slow and deliberate:\n\n··−   −·   −··   ·   ·−·\n\nThe operator wanted this understood by whoever came after.",
+      puzzle:{
+        prompt:"Decode the message. What is the broadcast telling you?",
+        placeholder:"FIVE LETTERS",
+        answers:['UNDER'],
+        hints:[
+          "Dots and dashes — the training poster on the wall pairs every pattern with a letter.",
+          "Five letters. ··− is U. −·−… no — −· is N. Keep going, one letter per group.",
+          "··− −· −·· · ·−· spells UNDER. The logbook even started to say it: “get UNDER—”"
+        ],
+        solvedText:"U-N-D-E-R. Under. Your eyes drop to the floor — to the woven rug beneath the operator's desk. You drag it aside. A steel hatch, flush with the boards.",
+        solveBeat:"As you copy the last letter, three slow knocks land on the outside of the station wall. Deliberate. Evenly spaced. Nobody on your crew is outside."
+      }
+    },
+    { id:'hatch', icon:'🕳️', name:'Floor Hatch', hiddenUntil:'broadcast',
+      desc:"A steel hatch with a five-letter wheel lock. Riveted beside it, a brass plate stamped with nonsense:\n\nWKH  ZKHHO  RSHQV  WR:  VWRUP\n\nBeneath it, scratched by hand: “Caesar marched his men three paces forward. Walk them back.”",
+      puzzle:{
+        prompt:"Set the wheel to the decoded word.",
+        placeholder:"FIVE LETTERS",
+        answers:['STORM'],
+        hints:[
+          "The letters look wrong because every one of them has been marched forward through the alphabet.",
+          "It's a Caesar cipher, shift 3. Take each letter three steps BACK: W→T, K→H, H→E…",
+          "VWRUP shifted back three is STORM. The plate reads: THE WHEEL OPENS TO: STORM."
+        ],
+        solvedText:"S-T-O-R-M. The wheel spins free and the hatch lifts on a narrow crawlspace — and a squat emergency transmitter on a battery bank, its keypad glowing faintly.",
+        solveBeat:null
+      }
+    },
+    { id:'transmitter', icon:'🔌', name:'Emergency Transmitter', hiddenUntil:'hatch', flicker:true,
+      desc:"The emergency transmitter wants a 4-digit arming code. Taped to its casing is a punch card in the operator's hand:\n\n“ARM CODE = [next number] [next number]\n\n  1, 1, 2, 3, 5, 8, __\n  25, 27, 29, __ ”\n\nBelow, tiny and urgent: “REMEMBER THE BAND. YOU WILL NEED IT AGAIN.”",
+      puzzle:{
+        prompt:"Enter the 4-digit arming code.",
+        placeholder:"0000",
+        answers:['1331'],
+        hints:[
+          "Two number patterns. Work out what comes next in each; the answers join into four digits.",
+          "First pattern: every number is the sum of the two before it. Second pattern: the numbers climb by two.",
+          "1,1,2,3,5,8 → 13. 25,27,29 → 31. The code is 1331."
+        ],
+        solvedText:"1-3-3-1. The transmitter thumps to life and begins looping a distress call out to sea. MAYDAY, MAYDAY, MAYDAY. Someone, somewhere, might be listening. Now — the antenna cable runs out the back door and into the jungle. That's your path.",
+        solveBeat:"The moment the distress call starts broadcasting, something outside answers it — one long, low sound from deep in the island, too slow to be any bird."
+      }
+    }
+  ]
+},
+/* ================= ROOM 3 — THE JUNGLE PATH ================= */
+{
+  id:'jungle', name:'Room 3 — The Jungle Path', cls:'room-jungle',
+  intro:"You follow the antenna cable into the green dark. The canopy closes overhead and the temperature drops. Branches along the trail are snapped at head height — well above YOUR head height. Every few minutes you hear it: something large, keeping pace with you, always just out of sight.",
+  entryBeat:"Ten steps in, you find one of the operator's boots. Just the one. It has been placed, neatly, in the exact center of the path — facing back the way you came.",
+  completeText:"You cross the rope bridge at a dead sprint and cut the lines behind you. Below the cliffs lies a hidden cove — and stacked on the sand, under a tarp, materials for a raft. The operator planned an escape. You're going to finish it.",
+  chain:"Tree riddle (RIVER) → river crossing stones ordered by polygon sides spell DARK → ranger's pack paces (6, 3, 9) give 639 → pack holds morse crib + lamp → light across the gorge blinks morse RUN → gate opens to rope bridge and the cove.",
+  objects:[
+    { id:'branches', icon:'🌿', name:'Snapped Branches',
+      desc:"The trail-side branches are broken inward, all along one side, at a height that makes your neck prickle. The breaks are fresh — sap still bleeding.\n\nWhatever walks here doesn't go around things. It goes through them. You keep your voices low from now on." },
+    { id:'tree', icon:'🌴', name:'Carved Tree',
+      desc:"A massive palm, carved long ago with a riddle — the letters darkened with tar so they'd survive the seasons:\n\n“I have a bed, but I never sleep.\nI have a mouth, but I never speak.\nI run, but I never walk.\nFind me, and follow.”\n\nSomewhere off to the left, you can hear water moving.",
+      puzzle:{
+        prompt:"What must you find and follow?",
+        placeholder:"ANSWER",
+        answers:['RIVER','ARIVER','THERIVER'],
+        hints:[
+          "It's not a creature. It's a feature of the island — you can hear it from here.",
+          "It has a bed, a mouth, and it runs without legs. Water is involved.",
+          "The answer is RIVER. Head toward the sound of water."
+        ],
+        solvedText:"A river. You push through the ferns toward the sound and find it: fast, dark water — with a line of flat marker stones offering a way across.",
+        solveBeat:null
+      }
+    },
+    { id:'stones', icon:'🪨', name:'River Crossing Stones', hiddenUntil:'tree',
+      desc:"Four flat stones cross the river, each chiseled with a letter and a shape. From where you stand (not in crossing order):\n\nR — pentagon ⬟ (five sides)\nK — hexagon ⬢ (six sides)\nD — triangle ▲ (three sides)\nA — square ■ (four sides)\n\nA mossy carving on the bank warns: “Step only where the sides increase. The wrong stone tips.”",
+      puzzle:{
+        prompt:"Enter the letters in stepping order.",
+        placeholder:"FOUR LETTERS",
+        answers:['DARK'],
+        hints:[
+          "Count the sides of each stone's shape. That's your ordering rule.",
+          "Step from fewest sides to most: 3, then 4, then 5, then 6. Read the letters in that order.",
+          "Triangle-D (3), square-A (4), pentagon-R (5), hexagon-K (6): the crossing spells DARK."
+        ],
+        solvedText:"D… A… R… K. Each stone holds. You reach the far bank just as the light under the canopy dims a shade — and you try not to think about what the stones spell. Ahead, half-buried in ferns: a ranger's pack.",
+        solveBeat:"Halfway across, the river goes strangely quiet upstream — the sound of water breaking around something that has stepped into the current behind you. You do not turn around."
+      }
+    },
+    { id:'pack', icon:'🎒', name:"Ranger's Pack", hiddenUntil:'stones',
+      desc:"A weathered ranger's pack, sealed with a 3-digit padlock. A waterproof tag hangs from the zip, the writing still legible:\n\n“My cache code, so I don't forget —\nFrom the twin palms I walked:\nSIX paces north.\nHalf so many east.\nTheir sum south.”",
+      puzzle:{
+        prompt:"Enter the 3-digit code.",
+        placeholder:"000",
+        answers:['639'],
+        hints:[
+          "Turn the three walking directions into three digits, in the order given.",
+          "Six north. Half of six east. Six plus three south.",
+          "6, 3, 9 — enter 639."
+        ],
+        solvedText:"6-3-9. Inside: a machete, a battery signal lamp, and a torn page from the station's operator manual — a pocket morse alphabet, creased from use. Why would a ranger need to flee with a morse crib?",
+        solveBeat:null
+      }
+    },
+    { id:'gate', icon:'🌉', name:'Gorge Gate', revealedBy:'pack',
+      desc:"The trail ends at a deep gorge spanned by an old rope bridge. Its gate is barred with a 3-letter tumbler lock. Far across the gorge, fixed to the far post, an old signal lamp sits dark.\n\nNothing else here moves. Maybe something you're carrying could wake that lamp.",
+      revealDesc:"You raise the ranger's lamp and flash it across the gorge. A heartbeat later the far lamp wakes and answers — an automated relay, blinking the same three letters, over and over, faster each time. As if it's urgent:\n\n·−·   ··−   −·\n\nThe gate's tumbler lock waits for three letters.",
+      puzzle:{
+        prompt:"Enter the 3-letter word the far lamp is flashing.",
+        placeholder:"3 LETTERS",
+        answers:['RUN'],
+        hints:[
+          "The light across the gorge is blinking with purpose — long and short flashes. You've decoded this kind of thing before.",
+          "It's morse, three letters. The manual page from the ranger's pack has the alphabet: ·−· is R.",
+          "·−· ··− −· spells RUN. So… run."
+        ],
+        solvedText:"R-U-N. The gate swings open — and at that exact moment, behind you, the undergrowth erupts. You don't look. You RUN, boots hammering the planks, the whole bridge bucking under something that steps onto it behind you.",
+        solveBeat:null
+      }
+    }
+  ]
+},
+/* ================= ROOM 4 — THE ESCAPE RAFT ================= */
+{
+  id:'raft', name:'Room 4 — The Escape Raft', cls:'room-raft',
+  intro:"Dusk. A hidden cove below the cliffs, and the operator's unfinished escape: logs, lashings, a folded sail, a sealed flare locker, a launch winch bolted to the rock. Out on the darkening water, the lights of a passing ship crawl along the horizon. You have one chance to build, signal, and launch — and the drag-marks in the sand say you're not the first thing to walk this cove tonight.",
+  entryBeat:"Fresh prints circle the raft materials — the same long, dragging prints from the beach where you started. It has been here. It has been waiting to see if you'd make it this far.",
+  completeText:"",
+  chain:"Assembly tags logic gives order B-D-A-E-C → flare locker plaque recalls Room 2's emergency band: 1215 → tide table: launch 90 min before 6:40 high tide = 5:10 → winch shape tumblers recall Room 1's sail/crate code: 8351 → fire flares in SOS pattern (···−−−···) → LAUNCH.",
+  objects:[
+    { id:'dragmarks', icon:'👣', name:'Drag-Marks in the Sand',
+      desc:"Long furrows circle the cove, the same as the beach at dawn — but here they're layered dozens deep, old over older, like a patrol route walked for years.\n\nAt the center of the pattern, planted upright in the sand: the operator's other boot.\n\nBuild fast." },
+    { id:'raftkit', icon:'🛶', name:'Raft Materials',
+      desc:"The operator staged everything and labeled each step with a tag — but the tags have scattered in the wind:\n\nTAG A — “Raise the mast. Only after the deck is laid.”\nTAG B — “Lash the logs together. This comes first of all.”\nTAG C — “Rig the sail. Nothing comes after this.”\nTAG D — “Lay the deck across the logs.”\nTAG E — “Fix the rudder. After the mast is up, before the sail is rigged.”",
+      puzzle:{
+        prompt:"Enter the five tag letters in build order.",
+        placeholder:"FIVE LETTERS",
+        answers:['BDAEC'],
+        hints:[
+          "One tag says it comes “first of all,” and one says “nothing comes after.” That's both ends of your sequence.",
+          "Logs first, sail last. The deck needs the logs; the mast needs the deck; the rudder goes after the mast but before the sail.",
+          "The build order is B, D, A, E, C — enter BDAEC."
+        ],
+        solvedText:"Logs, deck, mast, rudder, sail. It comes together fast under ten hands — an ugly, beautiful, seaworthy-enough raft. Now you need the flares and the tide.",
+        solveBeat:"As the mast goes up, from the clifftop above the cove comes a sound like slow applause — two heavy limbs striking together. Once. Twice. Then nothing."
+      }
+    },
+    { id:'locker', icon:'🧨', name:'Flare Locker',
+      desc:"A steel flare locker, painted with fading emergency stripes, sealed with a 4-digit lock. The plaque riveted to the lid reads:\n\n“PROPERTY OF STATION 7.\nAN OPERATOR NEVER FORGETS THE EMERGENCY BAND.”",
+      puzzle:{
+        prompt:"Enter the 4-digit code.",
+        placeholder:"0000",
+        answers:['1215'],
+        hints:[
+          "“An operator never forgets the emergency band.” You tuned to it yourself, back in the station.",
+          "Think back to the radio room — the frequency hidden in the logbook's last entry.",
+          "The emergency band was 121.5 — enter 1215."
+        ],
+        solvedText:"121.5 — the band that started all this. The locker opens on a bundle of signal flares, dry and intact, and beneath them a laminated tide table for the cove.",
+        solveBeat:null
+      }
+    },
+    { id:'tide', icon:'🌊', name:'Tide Table & Winch Notes', hiddenUntil:'locker',
+      desc:"The laminated card, in the operator's neat hand:\n\n“COVE LAUNCH WINDOW —\nHigh tide tonight: 6:40.\nThe reef only clears on the RISING tide.\nSet the winch timer to launch exactly 90 minutes BEFORE high tide, or the raft grounds on the reef in the dark.”\n\nThe launch winch has a timer dial: hour digit, then minutes.",
+      puzzle:{
+        prompt:"Set the launch time (hour then minutes, e.g. 730).",
+        placeholder:"H:MM",
+        answers:['510','0510'],
+        hints:[
+          "Work backwards from high tide.",
+          "What time is 90 minutes before 6:40?",
+          "6:40 minus 1:30 is 5:10 — enter 510."
+        ],
+        solvedText:"5:10. The timer arms with a clunk — and the brass key from the beach, the one stamped TIDE, turns smoothly in the winch housing, as if the whole island had been one machine waiting for you to wind it.",
+        solveBeat:null
+      }
+    },
+    { id:'winch', icon:'⚙️', name:'Launch Winch Tumblers', hiddenUntil:'tide',
+      desc:"The winch release is guarded by four numbered tumblers — and above them, chiseled deep into the rock, four familiar shapes in a familiar order:\n\n▲   ●   ■   ◆\n\nBeneath them: “AS THE CRATE ONCE OPENED, SO SHALL THE SEA.”\n\nYou've seen these shapes before. On a beach. A lifetime ago this morning.",
+      puzzle:{
+        prompt:"Enter the 4-digit release code.",
+        placeholder:"0000",
+        answers:['8351'],
+        hints:[
+          "Those four shapes — you've opened something with them before.",
+          "The torn sail gave the order, the cargo crate gave the numbers. Back on the beach, Room 1.",
+          "Same code as the cargo crate: triangle 8, circle 3, square 5, diamond 1 → 8351."
+        ],
+        solvedText:"8-3-5-1. The tumblers align and the winch release lever frees with a heavy CLACK. Everything is ready. All that's left is to bring that ship — fire the flares in a signal no sailor on Earth can ignore.",
+        solveBeat:"From the treeline at the cove's edge, for the first time, you hear it breathe. It is very close now. It has stopped hiding."
+      }
+    },
+    { id:'signal', icon:'🔥', name:'Fire the Signal Flares', hiddenUntil:'winch',
+      desc:"The flare rack holds nine flares: enough for one message. Short bursts and long burns — the oldest distress signal there is. Get the pattern right and that ship WILL turn.\n\nGet it wrong, and you've lit yourself up for something other than rescue.",
+      puzzle:{
+        type:'signal',
+        prompt:"Fire the flares in the international distress pattern, then hit SEND SIGNAL.",
+        answers:['...---...'],
+        hints:[
+          "Three letters every sailor on Earth knows.",
+          "S is three shorts. O is three longs. Spell the distress call.",
+          "Fire: short short short, long long long, short short short — SOS."
+        ],
+        solvedText:"", /* victory handles the payoff */
+        solveBeat:null
+      }
+    }
+  ]
+}
+];
+
+/* ---------- ratings (based on elapsed + penalties) ---------- */
+function ratingFor(totalSec, hints, overtime){
+  if(overtime) return "🌙 Rescued After Dark";
+  if(totalSec <= 30*60 && hints <= 3) return "🏆 Master Navigator";
+  if(totalSec <= 40*60) return "⚓ Able Seafarer";
+  if(totalSec <= 50*60) return "🪢 Deck Hand";
+  return "🛟 Barely Made It";
+}
+
+/* ============================================================
+   STATE & TIMER
+   ============================================================ */
+const START_SECONDS = 45*60;          // 45:00 countdown
+const HINT_PENALTY  = 30;             // seconds per hint
+const WRONG_PENALTY = 5;              // seconds per wrong answer
+
+const S = {
+  started:false, finished:false, overtime:false,
+  roomIndex:0,
+  solved:new Set(),                   // object ids with solved puzzles
+  hintsShown:{},                      // objectId -> count revealed (0..3)
+  hintsUsed:0, wrongCount:0, penaltySec:0,
+  startTime:null, endElapsed:null,    // ms epoch / final elapsed seconds
+  signalPattern:''                    // buffer for the flare puzzle
+};
+
+const $ = id => document.getElementById(id);
+
+function elapsedSec(){
+  if(S.endElapsed !== null) return S.endElapsed;
+  return S.startTime ? Math.floor((Date.now()-S.startTime)/1000) : 0;
+}
+function fmt(sec){
+  sec = Math.max(0, Math.floor(sec));
+  const m = Math.floor(sec/60), s = sec%60;
+  return m + ':' + String(s).padStart(2,'0');
+}
+
+function tick(){
+  if(!S.started || S.finished) return;
+  const used = elapsedSec() + S.penaltySec;
+  const remaining = START_SECONDS - used;
+  const t = $('timer');
+  if(remaining >= 0 && !S.overtime){
+    t.textContent = fmt(remaining);
+    t.classList.toggle('low', remaining <= 300);
+    t.classList.remove('overtime');
+    if(remaining === 0) return gameOver();
+  } else if(!S.overtime){
+    return gameOver();
+  } else {
+    t.textContent = '+' + fmt(used - START_SECONDS);   // overtime counts up
+    t.classList.add('overtime'); t.classList.remove('low');
+  }
+  $('stat-elapsed').textContent = fmt(elapsedSec());
+  $('stat-hints').textContent = S.hintsUsed;
+  $('stat-pen').textContent = '+' + fmt(S.penaltySec);
+}
+setInterval(tick, 250);
+
+/* ============================================================
+   NARRATIVE BEATS
+   ============================================================ */
+let beatTimer=null, beatQueue=[];
+function showBeat(text){
+  if(!text) return;
+  beatQueue.push(text);
+  if(!beatTimer) nextBeat();
+}
+function nextBeat(){
+  const text = beatQueue.shift();
+  if(!text){ beatTimer=null; return; }
+  const b = $('beat');
+  b.textContent = text;
+  b.classList.add('show');
+  beatTimer = setTimeout(()=>{
+    b.classList.remove('show');
+    beatTimer = setTimeout(nextBeat, 1800);   // fade-out gap before next beat
+  }, 6500);
+}
+
+/* ============================================================
+   RENDERING
+   ============================================================ */
+function currentRoom(){ return ROOMS[S.roomIndex]; }
+function objVisible(o){ return !o.hiddenUntil || S.solved.has(o.hiddenUntil); }
+function objDesc(o){
+  if(o.revealedBy && S.solved.has(o.revealedBy) && o.revealDesc){
+    // Special case: the torn sail appends the painted symbol row.
+    return o.id==='sail' ? o.revealDesc + '▲   ●   ■   ◆' : o.revealDesc;
+  }
+  return o.desc;
+}
+
+function renderRoom(){
+  const room = currentRoom();
+  document.body.className = room.cls;
+  $('hud-room').textContent = room.name;
+  $('room-title').textContent = room.name;
+  $('room-intro').textContent = room.intro;
+
+  const grid = $('objects');
+  grid.innerHTML = '';
+  room.objects.filter(objVisible).forEach(o=>{
+    const card = document.createElement('button');
+    card.className = 'obj-card' + (S.solved.has(o.id)?' solved':'') + (o.flicker?' flicker':'');
+    card.innerHTML = `<span class="icon">${o.icon}</span><span class="name">${o.name}</span>`;
+    card.onclick = ()=>openModal(o.id);
+    grid.appendChild(card);
+  });
+
+  const done = room.objects.filter(o=>o.puzzle).every(o=>S.solved.has(o.id));
+  $('room-complete').classList.toggle('hidden', !done);
+  if(done){
+    $('room-complete-text').textContent = room.completeText || '';
+    $('continue-btn').textContent = S.roomIndex < ROOMS.length-1 ? 'Continue ➤' : 'LAUNCH THE RAFT ⛵';
+  }
+}
+
+function openModal(objId){
+  const o = currentRoom().objects.find(x=>x.id===objId);
+  const solved = S.solved.has(o.id);
+  const m = $('modal');
+  let html = `<button class="close-x" onclick="closeModal()">✕</button>
+    <h3>${o.icon} ${o.name}</h3>
+    <div class="obj-desc">${objDesc(o)}</div>`;
+
+  if(o.puzzle){
+    if(solved){
+      html += `<div class="solved-note">✓ ${o.puzzle.solvedText || 'Solved.'}</div>`;
+    } else if(o.puzzle.type === 'signal'){
+      html += renderSignalPad(o);
+    } else {
+      html += `<div class="puzzle-box">
+        <div class="prompt">${o.puzzle.prompt}</div>
+        <div class="answer-row">
+          <input id="answer-input" placeholder="${o.puzzle.placeholder||''}" autocomplete="off"
+                 onkeydown="if(event.key==='Enter')submitAnswer('${o.id}')">
+          <button onclick="submitAnswer('${o.id}')">Try It</button>
+        </div>
+        <div class="feedback" id="feedback"></div>
+      </div>`;
+      html += renderHints(o);
+    }
+    if(o.puzzle.type==='signal' && !solved) html += renderHints(o);
+  }
+  m.innerHTML = html;
+  $('overlay').classList.remove('hidden');
+  const inp = $('answer-input'); if(inp) inp.focus();
+}
+function closeModal(){ $('overlay').classList.add('hidden'); S.signalPattern=''; }
+$('overlay').addEventListener('click', e=>{ if(e.target.id==='overlay') closeModal(); });
+
+function renderHints(o){
+  const shown = S.hintsShown[o.id] || 0;
+  let html = `<div class="hints"><b style="font-size:.85rem;color:var(--dim)">STUCK?</b> `;
+  html += `<button class="hint-btn" onclick="revealHint('${o.id}')" ${shown>=3?'disabled':''}>
+     Reveal hint ${Math.min(shown+1,3)}/3</button><span class="hint-cost">each hint adds +0:30 to the clock</span>`;
+  for(let i=0;i<shown;i++) html += `<div class="hint-text">Hint ${i+1}: ${o.puzzle.hints[i]}</div>`;
+  html += `</div>`;
+  return html;
+}
+function revealHint(objId){
+  const shown = S.hintsShown[objId] || 0;
+  if(shown>=3) return;
+  S.hintsShown[objId] = shown+1;
+  S.hintsUsed++; S.penaltySec += HINT_PENALTY;
+  openModal(objId);   // re-render modal with the new hint
+  tick();
+}
+
+/* ---------- answer checking ---------- */
+function norm(s){ return (s||'').toUpperCase().replace(/[^A-Z0-9]/g,''); }
+
+function submitAnswer(objId){
+  const o = currentRoom().objects.find(x=>x.id===objId);
+  const inp = $('answer-input');
+  const guess = norm(inp.value);
+  if(!guess) return;
+  if(o.puzzle.answers.includes(guess)) return solvePuzzle(o);
+  // wrong answer: 5s penalty + shake + occasional beat
+  S.wrongCount++; S.penaltySec += WRONG_PENALTY;
+  const fb = $('feedback');
+  fb.className='feedback bad';
+  fb.textContent = '✗ Nothing happens. (+0:05 penalty)';
+  inp.classList.remove('shake'); void inp.offsetWidth; inp.classList.add('shake');
+  inp.select();
+  if(S.wrongCount % 3 === 0) showBeat(WRONG_BEATS[(S.wrongCount/3 - 1) % WRONG_BEATS.length]);
+  tick();
+}
+
+function solvePuzzle(o){
+  S.solved.add(o.id);
+  if(o.puzzle.solveBeat) showBeat(o.puzzle.solveBeat);
+  const room = currentRoom();
+  const allDone = room.objects.filter(x=>x.puzzle).every(x=>S.solved.has(x.id));
+  if(allDone && S.roomIndex === ROOMS.length-1) return victory();
+  openModal(o.id);        // show the solved payoff text
+  renderRoom();           // reveal any newly unlocked objects behind the modal
+}
+
+/* ---------- the flare signal (SOS) puzzle ---------- */
+function renderSignalPad(o){
+  return `<div class="puzzle-box">
+    <div class="prompt">${o.puzzle.prompt}</div>
+    <div class="signal-pad">
+      <div class="signal-display" id="signal-display">${S.signalPattern || '&nbsp;'}</div>
+      <button class="signal-btn" onclick="signalAdd('.')">🔥 SHORT BURST ·</button>
+      <button class="signal-btn long" onclick="signalAdd('-')">🔥 LONG BURN −</button>
+      <button class="signal-btn clear" onclick="signalClear()">RESET RACK</button>
+      <br>
+      <button class="signal-btn" style="margin-top:12px;min-width:200px" onclick="signalSend('${o.id}')">📡 SEND SIGNAL</button>
+      <div class="feedback" id="feedback"></div>
+    </div>
+  </div>`;
+}
+function signalAdd(ch){
+  if(S.signalPattern.length>=12) return;
+  S.signalPattern += ch;
+  $('signal-display').textContent = S.signalPattern;
+}
+function signalClear(){
+  S.signalPattern='';
+  $('signal-display').innerHTML='&nbsp;';
+  const fb=$('feedback'); if(fb){fb.textContent='';fb.className='feedback';}
+}
+function signalSend(objId){
+  const o = currentRoom().objects.find(x=>x.id===objId);
+  if(S.signalPattern === o.puzzle.answers[0]) return solvePuzzle(o);
+  S.wrongCount++; S.penaltySec += WRONG_PENALTY;
+  const fb=$('feedback');
+  fb.className='feedback bad';
+  fb.textContent='✗ The flares sputter into the wrong pattern. The ship sails on. (+0:05 — rack reset)';
+  const d=$('signal-display'); d.classList.remove('shake'); void d.offsetWidth; d.classList.add('shake');
+  S.signalPattern=''; d.innerHTML='&nbsp;';
+  if(S.wrongCount % 3 === 0) showBeat(WRONG_BEATS[(S.wrongCount/3 - 1) % WRONG_BEATS.length]);
+  tick();
+}
+
+/* ============================================================
+   FLOW: start / room advance / game over / victory
+   ============================================================ */
+$('start-btn').onclick = ()=>{
+  S.started = true;
+  S.startTime = Date.now();
+  $('start-screen').classList.add('hidden');
+  $('gm-btn').classList.add('hidden');          // GM key is start-screen only
+  $('gm-panel').classList.add('hidden');
+  $('hud').classList.remove('hidden');
+  $('game-screen').classList.remove('hidden');
+  renderRoom();
+  showBeat(currentRoom().entryBeat);
+  tick();
+};
+
+$('continue-btn').onclick = ()=>{
+  if(S.roomIndex < ROOMS.length-1){
+    S.roomIndex++;
+    window.scrollTo(0,0);
+    renderRoom();
+    showBeat(currentRoom().entryBeat);
+  }
+};
+
+function gameOver(){
+  if(S.finished || S.overtime) return;
+  S.finished = true;   // pause until they choose
+  $('end-root').innerHTML = `<div class="screen-center"><div class="end-card">
+    <h2>⏳ TIME'S UP</h2>
+    <p style="font-style:italic;margin:10px 0">The sun slips below the horizon. The treeline is very quiet now — the patient kind of quiet.<br><br>The ship's lights are still out there. Barely.</p>
+    <div class="btn-row">
+      <button class="big-btn" onclick="continueOvertime()">Press On (overtime)</button>
+      <button class="big-btn" style="background:linear-gradient(180deg,#8a6f52,#5b4632);border-color:#a5896a" onclick="location.reload()">Restart</button>
+    </div>
+  </div></div>`;
+}
+function continueOvertime(){
+  S.finished = false; S.overtime = true;
+  $('end-root').innerHTML='';
+  tick();
+}
+
+function victory(){
+  S.finished = true;
+  S.endElapsed = elapsedSec();
+  closeModal();
+  const total = S.endElapsed + S.penaltySec;
+  const rating = ratingFor(total, S.hintsUsed, S.overtime);
+  const share =
+`🏝️ THE WRECK OF THE ELDERMOOR — ESCAPED!
+⏱️ Time: ${fmt(total)} (play ${fmt(S.endElapsed)} + penalties ${fmt(S.penaltySec)})
+💡 Hints used: ${S.hintsUsed}   ❌ Wrong answers: ${S.wrongCount}
+🏅 Rating: ${rating.replace(/^\S+\s/,'')}`;
+  $('end-root').innerHTML = `<div class="screen-center"><div class="end-card">
+    <h2>🚀 THE RAFT IS AWAY</h2>
+    <p style="font-style:italic">Three short. Three long. Three short. The flares hang burning over the cove — and out on the black water, the ship's lights swing toward you. The winch releases, the tide takes the raft, and the island falls away behind you.<br><br>
+    On the beach where you started, at the very edge of the flare-light, something tall stands motionless at the waterline, watching you go. It does not follow. It has never needed to follow anyone before.<br><br>
+    You don't look away until the island is gone.</p>
+    <div class="rating">${rating}</div>
+    <div class="stat-grid">
+      <div class="stat"><div class="k">Total time</div><div class="v">${fmt(total)}</div></div>
+      <div class="stat"><div class="k">Play time</div><div class="v">${fmt(S.endElapsed)}</div></div>
+      <div class="stat"><div class="k">Hints used</div><div class="v">${S.hintsUsed} (+${fmt(S.hintsUsed*HINT_PENALTY)})</div></div>
+      <div class="stat"><div class="k">Wrong answers</div><div class="v">${S.wrongCount} (+${fmt(S.wrongCount*WRONG_PENALTY)})</div></div>
+    </div>
+    <pre class="share" id="share-text">${share}</pre>
+    <div class="btn-row">
+      <button class="big-btn" onclick="copyShare()">📋 Copy Results</button>
+      <button class="big-btn" style="background:linear-gradient(180deg,#8a6f52,#5b4632);border-color:#a5896a" onclick="location.reload()">Play Again</button>
+    </div>
+  </div></div>`;
+}
+function copyShare(){
+  const text = $('share-text').textContent;
+  (navigator.clipboard ? navigator.clipboard.writeText(text) : Promise.reject())
+    .catch(()=>{ // fallback for older browsers / file:// quirks
+      const ta=document.createElement('textarea'); ta.value=text; document.body.appendChild(ta);
+      ta.select(); document.execCommand('copy'); ta.remove();
+    })
+    .finally(()=>{ const b=event.target; b.textContent='✓ Copied!'; setTimeout(()=>b.textContent='📋 Copy Results',1500); });
+}
+
+/* ============================================================
+   GAME MASTER PANEL (start screen only)
+   ============================================================ */
+$('gm-btn').onclick = ()=>{
+  const p = $('gm-panel');
+  if(!p.dataset.built){ buildGmPanel(); p.dataset.built='1'; }
+  p.classList.toggle('hidden');
+};
+function buildGmPanel(){
+  let html = `<h2>🔑 Game Master Answer Key</h2>
+  <p style="color:var(--dim)">Facilitator eyes only. This panel is unreachable once the game starts.
+  Hints cost +0:30 each; wrong answers cost +0:05.</p>`;
+  ROOMS.forEach(room=>{
+    html += `<h3>${room.name}</h3><div class="chain">CHAIN: ${room.chain}</div>`;
+    room.objects.filter(o=>o.puzzle).forEach(o=>{
+      const disp = o.puzzle.type==='signal' ? '··· −−− ··· (short×3, long×3, short×3)' : o.puzzle.answers[0];
+      html += `<div class="gm-puzzle"><b>${o.icon} ${o.name}</b> — answer: <span class="gm-answer">${disp}</span>
+        <ul>${o.puzzle.hints.map((h,i)=>`<li>Hint ${i+1}: ${h}</li>`).join('')}</ul></div>`;
+    });
+  });
+  $('gm-panel').innerHTML = html;
+}
+</script>
+</body>
+</html>
