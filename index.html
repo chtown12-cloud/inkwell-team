@@ -10,70 +10,231 @@
 <link href="https://fonts.googleapis.com/css2?family=Special+Elite&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
 /* ============================================================
-   THE WRECK OF THE ELDERMOOR — styles
-   Palette: dark teal / sandy beige / weathered wood / parchment.
-   Each room overrides accent variables for a distinct feel.
+   THE WRECK OF THE ELDERMOOR — v2 "immersive engine"
+   Point-and-click illustrated scenes (SVG) + Canvas FX + WebAudio.
+   Palette: dark teal / sand / weathered wood / parchment.
    ============================================================ */
 :root{
-  --ink:#e8e0cf;            /* main text (parchment) */
-  --dim:#a99f88;            /* secondary text */
-  --bg0:#0b1d21;            /* deep teal background */
-  --bg1:#12292e;
-  --panel:#1a2f33;
-  --wood:#5b4632;
-  --wood-hi:#8a6f52;
-  --sand:#d8c39a;
-  --teal:#2e6f6a;
-  --teal-hi:#4fa39b;
-  --danger:#c9553d;
-  --ok:#7fae6a;
-  --accent:#4fa39b;         /* per-room accent */
-  --room-glow:rgba(79,163,155,.15);
+  --ink:#e8e0cf; --dim:#a99f88; --sand:#d8c39a;
+  --teal:#2e6f6a; --teal-hi:#4fa39b; --wood:#5b4632; --wood-hi:#8a6f52;
+  --danger:#c9553d; --ok:#7fae6a;
 }
 *{box-sizing:border-box;margin:0;padding:0}
-html,body{height:100%}
-body{
-  font-family:'Inter',system-ui,sans-serif;
-  background:radial-gradient(ellipse at 50% -20%, var(--room-glow), transparent 60%),
-             linear-gradient(180deg,var(--bg0),var(--bg1) 70%, #0a161a);
-  background-attachment:fixed;
-  color:var(--ink);
-  min-height:100vh;
-  line-height:1.55;
-}
+html,body{height:100%;overflow:hidden;background:#000}
+body{font-family:'Inter',system-ui,sans-serif;color:var(--ink);line-height:1.55}
 h1,h2,h3,.headline{font-family:'Special Elite',serif;letter-spacing:.5px;font-weight:400}
 button{font-family:'Inter',sans-serif;cursor:pointer}
 .hidden{display:none !important}
 
-/* ---------- start screen ---------- */
-#start-screen{max-width:860px;margin:0 auto;padding:6vh 24px 60px;text-align:center;position:relative}
-#start-screen h1{font-size:clamp(2.1rem,5.5vw,3.6rem);color:var(--sand);text-shadow:0 3px 14px rgba(0,0,0,.6)}
-#start-screen .sub{color:var(--teal-hi);font-family:'Special Elite',serif;font-size:1.05rem;margin-top:8px}
+/* ---------- the 1600x900 stage, scaled to fit the viewport ---------- */
+#stage-wrap{position:fixed;inset:0;overflow:hidden;background:#000}
+#stage{
+  position:absolute;left:50%;top:50%;width:1600px;height:900px;
+  transform:translate(-50%,-50%) scale(1);transform-origin:center;
+}
+#stage.shake{animation:shakeS .45s}
+@keyframes shakeS{0%,100%{margin-left:0}20%{margin-left:-14px}40%{margin-left:12px}60%{margin-left:-9px}80%{margin-left:7px}}
+#scene, #scene svg{position:absolute;inset:0;width:100%;height:100%}
+#fx{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:5}
+#hotspots{position:absolute;inset:0;z-index:6}
+
+/* ---------- hotspots: discoverable glowing rings in the scene ---------- */
+.hotspot{position:absolute;background:none;border:none;z-index:6}
+.hotspot .ring{
+  position:absolute;left:50%;top:50%;width:46px;height:46px;transform:translate(-50%,-50%);
+  border:2px solid rgba(240,220,170,.65);border-radius:50%;
+  box-shadow:0 0 18px rgba(240,220,170,.35), inset 0 0 12px rgba(240,220,170,.25);
+  animation:ringpulse 2.6s ease-in-out infinite;
+}
+.hotspot .ring::after{
+  content:"";position:absolute;left:50%;top:50%;width:8px;height:8px;transform:translate(-50%,-50%);
+  background:rgba(255,240,200,.9);border-radius:50%;
+}
+@keyframes ringpulse{0%,100%{transform:translate(-50%,-50%) scale(1);opacity:.75}50%{transform:translate(-50%,-50%) scale(1.25);opacity:.35}}
+.hotspot.done .ring{border-color:rgba(127,174,106,.85);box-shadow:0 0 14px rgba(127,174,106,.4);animation:none;opacity:.8}
+.hotspot.done .ring::after{content:"✓";width:auto;height:auto;background:none;color:#bfe3a8;font-weight:700;font-size:15px}
+.hotspot .tag{
+  position:absolute;left:50%;top:calc(50% + 34px);transform:translateX(-50%);
+  white-space:nowrap;font-family:'Special Elite',serif;font-size:19px;color:#f4ecd8;
+  background:rgba(10,16,15,.85);border:1px solid rgba(240,220,170,.4);border-radius:20px;
+  padding:5px 16px;opacity:0;transition:opacity .18s;pointer-events:none;
+  box-shadow:0 4px 14px rgba(0,0,0,.6);
+}
+.hotspot:hover .tag,.hotspot:focus .tag{opacity:1}
+.hotspot:hover .ring{border-color:#ffe9b8}
+.hotspot.new .ring{animation:ringpulse 1s ease-in-out infinite;border-color:#ffe9b8}
+
+/* ---------- global cinematic overlays ---------- */
+#vignette{
+  position:fixed;inset:0;pointer-events:none;z-index:30;
+  background:radial-gradient(ellipse at 50% 46%, transparent 52%, rgba(0,0,0,.62) 100%);
+  transition:opacity .8s;
+}
+#vignette.tense{background:radial-gradient(ellipse at 50% 46%, transparent 38%, rgba(10,0,0,.82) 100%)}
+#vignette.pulse{animation:vigpulse 1.05s ease-in-out infinite}
+@keyframes vigpulse{0%,100%{opacity:.85}50%{opacity:1}}
+#redflash{position:fixed;inset:0;pointer-events:none;z-index:31;background:radial-gradient(ellipse at center, rgba(160,30,10,.28), rgba(90,10,0,.5));opacity:0;transition:opacity .5s}
+#redflash.on{opacity:1;transition:opacity .06s}
+#grain{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:32;opacity:.045}
+#dimmer{position:fixed;inset:0;pointer-events:none;z-index:29;background:#000;opacity:0;transition:opacity 1.4s}
+
+/* ---------- HUD ---------- */
+#hud{
+  position:fixed;top:0;left:0;right:0;z-index:40;display:flex;align-items:center;
+  justify-content:space-between;gap:14px;padding:8px 18px;
+  background:linear-gradient(180deg,rgba(4,10,10,.88),rgba(4,10,10,.55) 75%,transparent);
+}
+#hud .room-label{font-family:'Special Elite',serif;color:var(--sand);font-size:1.05rem;text-shadow:0 2px 6px #000}
+#timer{
+  font-family:'Special Elite',serif;font-size:2rem;color:var(--sand);
+  background:rgba(6,14,14,.8);border:1px solid #37504e;border-radius:10px;
+  padding:1px 20px;min-width:158px;text-align:center;text-shadow:0 0 14px rgba(216,195,154,.35);
+}
+#timer.low{color:#ff8a70;border-color:#8a3524;animation:pulseT 1s infinite}
+#timer.overtime{color:var(--danger)}
+@keyframes pulseT{0%,100%{box-shadow:0 0 0 rgba(201,85,61,0)}50%{box-shadow:0 0 22px rgba(201,85,61,.75)}}
+#hud .stats{display:flex;gap:14px;font-size:.78rem;color:var(--dim);white-space:nowrap;align-items:center}
+#hud .stats b{color:var(--ink)}
+#mute-btn{background:rgba(6,14,14,.8);border:1px solid #37504e;border-radius:8px;color:var(--sand);font-size:1.05rem;padding:4px 11px}
+#mute-btn:hover{border-color:var(--teal-hi)}
+
+/* ---------- objective ribbon ---------- */
+#objective{
+  position:fixed;bottom:14px;left:50%;transform:translateX(-50%);z-index:40;
+  font-size:.8rem;color:var(--dim);background:rgba(4,10,10,.72);border:1px solid #22383a;
+  border-radius:20px;padding:6px 18px;max-width:min(760px,92vw);text-align:center;
+}
+#objective b{color:var(--sand);font-family:'Special Elite',serif}
+
+/* ---------- room transition card ---------- */
+#room-card{
+  position:fixed;inset:0;z-index:55;background:#000;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;text-align:center;padding:20px;
+  animation:cardfade 2.6s forwards;
+}
+#room-card h2{font-size:clamp(2rem,5vw,3.4rem);color:var(--sand);letter-spacing:3px}
+#room-card p{color:var(--dim);font-style:italic;margin-top:12px;max-width:640px}
+@keyframes cardfade{0%{opacity:0}18%{opacity:1}78%{opacity:1}100%{opacity:0}}
+
+/* ---------- monster narrative beats ---------- */
+#beat{
+  position:fixed;top:78px;left:50%;transform:translateX(-50%);z-index:56;max-width:560px;width:calc(100% - 32px);
+  background:linear-gradient(170deg,rgba(22,17,30,.96),rgba(10,8,16,.96));color:#cfc4de;
+  border:1px solid #3d3350;border-radius:10px;padding:16px 22px;font-style:italic;text-align:center;
+  box-shadow:0 10px 40px rgba(0,0,0,.8);opacity:0;pointer-events:none;transition:opacity 1.6s;font-size:1.02rem;
+}
+#beat.show{opacity:1}
+#beat::before{content:"· · ·";display:block;color:#5c4f74;letter-spacing:9px;font-style:normal;margin-bottom:5px}
+
+/* ---------- modal (examine / puzzle panel) ---------- */
+#overlay{
+  position:fixed;inset:0;background:rgba(2,6,7,.72);z-index:60;display:flex;
+  align-items:flex-start;justify-content:center;padding:5vh 16px;overflow-y:auto;backdrop-filter:blur(2px);
+}
+#modal{
+  width:min(700px,100%);background:linear-gradient(165deg,#1e3237,#111f23);
+  border:1px solid #3d5a60;border-radius:14px;padding:26px 30px 24px;position:relative;
+  box-shadow:0 22px 60px rgba(0,0,0,.8);animation:modalin .22s ease-out;
+}
+@keyframes modalin{from{transform:translateY(14px) scale(.98);opacity:0}to{transform:none;opacity:1}}
+#modal h3{color:var(--sand);font-size:1.55rem;margin-bottom:4px}
+#modal .obj-desc{margin:12px 0;white-space:pre-line}
+#modal .close-x{position:absolute;top:10px;right:12px;background:none;border:none;color:var(--dim);font-size:1.5rem;line-height:1;padding:6px}
+#modal .close-x:hover{color:var(--ink)}
+.puzzle-box{margin-top:16px;padding:16px;background:rgba(0,0,0,.32);border:1px solid #2c4144;border-radius:10px}
+.puzzle-box .prompt{font-family:'Special Elite',serif;color:var(--teal-hi);margin-bottom:10px}
+.answer-row{display:flex;gap:10px;flex-wrap:wrap}
+.answer-row input{
+  flex:1;min-width:170px;padding:12px 14px;font-size:1.2rem;letter-spacing:3px;
+  background:#0b1619;color:var(--sand);border:1px solid #3a565c;border-radius:8px;
+  font-family:'Special Elite',serif;text-transform:uppercase;
+}
+.answer-row input:focus{outline:none;border-color:var(--teal-hi);box-shadow:0 0 12px rgba(79,163,155,.25)}
+.answer-row button,.hint-btn,.signal-btn,.morse-btn,#dial-lock{
+  padding:12px 22px;font-size:1rem;font-weight:600;border-radius:8px;border:1px solid #6dc0b8;
+  background:linear-gradient(180deg,var(--teal-hi),var(--teal));color:#eafaf7;
+}
+.answer-row button:hover{filter:brightness(1.12)}
+.feedback{min-height:22px;margin-top:10px;font-size:.9rem}
+.feedback.bad{color:#ff9a82;font-weight:600}
+.feedback.good{color:var(--ok);font-weight:600}
+.shakein{animation:shakeI .4s}
+@keyframes shakeI{0%,100%{transform:translateX(0)}20%{transform:translateX(-8px)}40%{transform:translateX(8px)}60%{transform:translateX(-6px)}80%{transform:translateX(6px)}}
+.solved-note{margin-top:14px;padding:14px;background:rgba(127,174,106,.12);border:1px solid #3f5c37;border-radius:10px;white-space:pre-line}
+.hints{margin-top:16px;border-top:1px dashed #2c4144;padding-top:12px}
+.hint-btn{background:linear-gradient(180deg,var(--wood-hi),var(--wood));border-color:#a5896a;font-size:.85rem;padding:8px 16px}
+.hint-btn:disabled{opacity:.45;cursor:not-allowed}
+.hint-text{margin-top:8px;padding:10px 12px;background:rgba(216,195,154,.09);border-left:3px solid var(--wood-hi);border-radius:0 6px 6px 0;font-size:.92rem;color:var(--sand)}
+.hint-cost{color:var(--dim);font-size:.75rem;margin-left:8px}
+.symbols{font-size:1.7rem;letter-spacing:12px;color:var(--sand);text-align:center;margin:8px 0}
+.morse{font-family:'Special Elite',serif;font-size:1.4rem;letter-spacing:4px;color:var(--teal-hi);text-align:center;margin:8px 0;word-break:break-all}
+.morse .lit{color:#ffe9b8;text-shadow:0 0 10px #ffda8c}
+.morse-btn{display:block;margin:6px auto 2px;font-size:.9rem;padding:9px 20px}
+
+/* ---------- radio tuning dial ---------- */
+.dial-ui{margin-top:14px;text-align:center}
+.freq-readout{
+  display:inline-block;font-family:'Special Elite',serif;font-size:2.3rem;letter-spacing:4px;
+  color:#9df0b4;background:#06130a;border:2px solid #1f4a2c;border-radius:8px;padding:2px 26px;
+  text-shadow:0 0 16px rgba(120,255,160,.5);animation:crt 4s infinite;
+}
+@keyframes crt{0%,100%{opacity:1}92%{opacity:1}93%{opacity:.7}94%{opacity:1}97%{opacity:.85}98%{opacity:1}}
+.dial-row{display:flex;align-items:center;gap:10px;margin:16px 4px 4px}
+.dial-row input[type=range]{flex:1;accent-color:#7fae6a;height:34px;cursor:ew-resize}
+.dial-fine{background:#243a3e;border:1px solid #3a565c;color:var(--sand);border-radius:6px;font-size:1.15rem;width:44px;height:38px}
+.sig-meter{height:10px;border-radius:6px;background:#0b1619;border:1px solid #2c4144;margin:12px auto 4px;max-width:420px;overflow:hidden}
+.sig-meter i{display:block;height:100%;width:0%;background:linear-gradient(90deg,#3f6b3a,#9df0b4);transition:width .15s}
+.sig-label{font-size:.72rem;color:var(--dim);letter-spacing:2px}
+
+/* ---------- flare signal pad ---------- */
+.signal-pad{margin-top:12px;text-align:center}
+.signal-btn{margin:4px 6px;min-width:138px}
+.signal-btn.long{background:linear-gradient(180deg,var(--wood-hi),var(--wood));border-color:#a5896a}
+.signal-btn.clear{background:#243a3e;border-color:#3a565c}
+.signal-display{
+  min-height:46px;margin:12px auto 4px;max-width:430px;font-family:'Special Elite',serif;
+  font-size:1.8rem;letter-spacing:7px;color:var(--sand);background:#0b1619;border:1px solid #3a565c;
+  border-radius:8px;padding:6px 10px;
+}
+
+/* ---------- start screen (storm) ---------- */
+#start-screen{position:fixed;inset:0;z-index:50;overflow-y:auto;background:linear-gradient(180deg,#050a10,#0a1620 55%,#071018)}
+#rain{position:fixed;inset:0;width:100%;height:100%;pointer-events:none}
+#lightning{position:fixed;inset:0;background:#cfe4ef;opacity:0;pointer-events:none}
+#lightning.flash{animation:lflash .8s}
+@keyframes lflash{0%{opacity:0}4%{opacity:.55}9%{opacity:.05}14%{opacity:.7}20%{opacity:.08}30%{opacity:.25}100%{opacity:0}}
+#start-inner{position:relative;max-width:880px;margin:0 auto;padding:5vh 24px 70px;text-align:center;z-index:2}
+#start-inner h1{
+  font-size:clamp(2.2rem,6vw,4rem);color:var(--sand);text-shadow:0 4px 22px rgba(0,0,0,.9),0 0 40px rgba(216,180,106,.18);
+  animation:titleflick 7s infinite;
+}
+@keyframes titleflick{0%,100%{opacity:1}88%{opacity:1}89%{opacity:.6}90%{opacity:1}95%{opacity:.8}96%{opacity:1}}
+#start-inner .sub{color:var(--teal-hi);font-family:'Special Elite',serif;font-size:1.05rem;margin-top:8px}
+#ship-art{width:min(560px,86%);margin:16px auto 4px;display:block;filter:drop-shadow(0 10px 30px rgba(0,0,0,.8))}
 .parchment{
-  margin:34px auto;max-width:640px;text-align:left;padding:26px 30px;
-  background:linear-gradient(160deg,#e9dcbc,#d8c39a 55%,#cbb489);
-  color:#3a2d1c;border-radius:4px;
-  box-shadow:0 12px 30px rgba(0,0,0,.55), inset 0 0 60px rgba(120,90,40,.28);
+  margin:22px auto;max-width:640px;text-align:left;padding:26px 30px;
+  background:linear-gradient(160deg,#e9dcbc,#d8c39a 55%,#cbb489);color:#3a2d1c;border-radius:4px;
+  box-shadow:0 12px 34px rgba(0,0,0,.65), inset 0 0 60px rgba(120,90,40,.28);
   border:1px solid #b49a6d;font-size:1.02rem;
 }
 .parchment p+p{margin-top:12px}
 .big-btn{
   margin-top:10px;padding:16px 46px;font-size:1.25rem;font-family:'Special Elite',serif;
   background:linear-gradient(180deg,var(--teal-hi),var(--teal));color:#eafaf7;
-  border:1px solid #6dc0b8;border-radius:8px;box-shadow:0 6px 18px rgba(0,0,0,.5);
+  border:1px solid #6dc0b8;border-radius:8px;box-shadow:0 6px 20px rgba(0,0,0,.6);
   transition:transform .12s, box-shadow .12s;
 }
-.big-btn:hover{transform:translateY(-2px);box-shadow:0 10px 22px rgba(0,0,0,.55)}
+.big-btn:hover{transform:translateY(-2px);box-shadow:0 10px 26px rgba(0,0,0,.65)}
+.big-btn.alt{background:linear-gradient(180deg,#8a6f52,#5b4632);border-color:#a5896a}
 .start-note{color:var(--dim);font-size:.85rem;margin-top:18px}
-/* Discreet Game Master toggle — start screen only */
 #gm-btn{
-  position:fixed;bottom:14px;right:16px;font-size:.72rem;color:#5c6f6d;background:none;
+  position:fixed;bottom:14px;right:16px;z-index:51;font-size:.72rem;color:#5c6f6d;background:rgba(0,0,0,.4);
   border:1px solid #2c4144;border-radius:6px;padding:5px 10px;opacity:.65;
 }
 #gm-btn:hover{opacity:1;color:var(--dim)}
 #gm-panel{
-  max-width:860px;margin:30px auto;text-align:left;background:#101c1e;border:1px solid #2c4144;
-  border-radius:10px;padding:26px 30px;font-size:.9rem;
+  position:relative;z-index:2;max-width:880px;margin:10px auto 60px;text-align:left;background:rgba(12,20,22,.96);
+  border:1px solid #2c4144;border-radius:10px;padding:26px 30px;font-size:.9rem;
 }
 #gm-panel h2{color:var(--sand);margin-bottom:6px}
 #gm-panel h3{color:var(--teal-hi);margin:22px 0 6px;border-bottom:1px dashed #2c4144;padding-bottom:4px}
@@ -82,135 +243,13 @@ button{font-family:'Inter',sans-serif;cursor:pointer}
 #gm-panel .gm-answer{color:var(--ok);font-weight:700}
 #gm-panel ul{margin:4px 0 0 22px;color:var(--dim)}
 
-/* ---------- HUD / header ---------- */
-#hud{
-  position:sticky;top:0;z-index:40;display:flex;align-items:center;justify-content:space-between;
-  gap:16px;padding:10px 20px;background:rgba(8,18,21,.92);backdrop-filter:blur(4px);
-  border-bottom:1px solid #23393d;
+/* ---------- end / game-over screens ---------- */
+.screen-center{position:fixed;inset:0;z-index:70;display:flex;align-items:center;justify-content:center;background:rgba(3,8,9,.9);padding:20px;overflow-y:auto}
+.end-card{
+  max-width:620px;width:100%;text-align:center;padding:38px 34px;
+  background:linear-gradient(165deg,#1e3237,#0f1e22);border:1px solid #3d5a60;border-radius:16px;
+  box-shadow:0 30px 80px rgba(0,0,0,.8);animation:modalin .4s ease-out;
 }
-#hud .room-label{font-family:'Special Elite',serif;color:var(--accent);font-size:1.05rem}
-#timer{
-  font-family:'Special Elite',serif;font-size:1.9rem;color:var(--sand);
-  background:#0d1a1d;border:1px solid #2c4144;border-radius:8px;padding:2px 18px;min-width:150px;text-align:center;
-}
-#timer.low{color:#ff8a70;border-color:#7e3324;animation:pulse 1s infinite}
-#timer.overtime{color:var(--danger)}
-@keyframes pulse{0%,100%{box-shadow:0 0 0 rgba(201,85,61,0)}50%{box-shadow:0 0 18px rgba(201,85,61,.7)}}
-#hud .stats{display:flex;gap:14px;font-size:.8rem;color:var(--dim);white-space:nowrap}
-#hud .stats b{color:var(--ink)}
-
-/* ---------- room / object grid ---------- */
-#game-screen{max-width:1080px;margin:0 auto;padding:26px 22px 90px}
-.room-header{margin-bottom:6px}
-.room-header h2{font-size:clamp(1.5rem,3.4vw,2.3rem);color:var(--sand)}
-.room-intro{
-  margin:12px 0 26px;padding:16px 20px;background:rgba(0,0,0,.28);border-left:4px solid var(--accent);
-  border-radius:0 8px 8px 0;color:var(--ink);font-style:italic;max-width:820px;
-}
-#objects{display:grid;grid-template-columns:repeat(auto-fill,minmax(215px,1fr));gap:16px}
-.obj-card{
-  background:linear-gradient(170deg,var(--panel),#14262a);
-  border:1px solid #2c4144;border-radius:12px;padding:18px 16px 14px;text-align:center;
-  cursor:pointer;transition:transform .12s, border-color .12s, box-shadow .12s;position:relative;
-  min-height:132px;
-}
-.obj-card:hover{transform:translateY(-3px);border-color:var(--accent);box-shadow:0 8px 20px rgba(0,0,0,.45)}
-.obj-card .icon{font-size:2.4rem;display:block;filter:drop-shadow(0 3px 4px rgba(0,0,0,.5))}
-.obj-card .name{font-family:'Special Elite',serif;margin-top:10px;color:var(--ink);font-size:1rem}
-.obj-card.solved{border-color:var(--ok)}
-.obj-card.solved::after{
-  content:"✓ SOLVED";position:absolute;top:8px;right:8px;font-size:.62rem;font-weight:700;
-  color:#12291a;background:var(--ok);padding:2px 7px;border-radius:10px;letter-spacing:.5px;
-}
-.obj-card.flicker .icon{animation:flick 3.2s infinite}
-@keyframes flick{
-  0%,100%{opacity:1}72%{opacity:1}74%{opacity:.35}76%{opacity:1}83%{opacity:.5}85%{opacity:1}
-}
-.room-complete{
-  margin-top:30px;text-align:center;padding:24px;background:rgba(46,111,106,.16);
-  border:1px dashed var(--teal-hi);border-radius:12px;
-}
-.room-complete p{font-style:italic;margin-bottom:14px}
-
-/* ---------- object modal ---------- */
-#overlay{
-  position:fixed;inset:0;background:rgba(4,10,12,.78);z-index:60;display:flex;
-  align-items:flex-start;justify-content:center;padding:6vh 16px;overflow-y:auto;
-}
-#modal{
-  width:min(680px,100%);background:linear-gradient(165deg,#1c3136,#122327);
-  border:1px solid #37545a;border-radius:14px;padding:26px 28px 24px;position:relative;
-  box-shadow:0 18px 50px rgba(0,0,0,.65);
-}
-#modal h3{color:var(--sand);font-size:1.5rem;margin-bottom:4px}
-#modal .obj-desc{margin:12px 0;white-space:pre-line}
-#modal .obj-desc em{color:var(--teal-hi)}
-#modal .close-x{
-  position:absolute;top:10px;right:12px;background:none;border:none;color:var(--dim);
-  font-size:1.5rem;line-height:1;padding:6px;
-}
-#modal .close-x:hover{color:var(--ink)}
-.puzzle-box{margin-top:16px;padding:16px;background:rgba(0,0,0,.3);border:1px solid #2c4144;border-radius:10px}
-.puzzle-box .prompt{font-family:'Special Elite',serif;color:var(--teal-hi);margin-bottom:10px}
-.answer-row{display:flex;gap:10px;flex-wrap:wrap}
-.answer-row input{
-  flex:1;min-width:180px;padding:12px 14px;font-size:1.15rem;letter-spacing:2px;
-  background:#0d191c;color:var(--sand);border:1px solid #3a565c;border-radius:8px;
-  font-family:'Special Elite',serif;text-transform:uppercase;
-}
-.answer-row input:focus{outline:none;border-color:var(--accent)}
-.answer-row button, .hint-btn, .signal-btn{
-  padding:12px 22px;font-size:1rem;font-weight:600;border-radius:8px;border:1px solid #6dc0b8;
-  background:linear-gradient(180deg,var(--teal-hi),var(--teal));color:#eafaf7;
-}
-.answer-row button:hover{filter:brightness(1.1)}
-.feedback{min-height:22px;margin-top:10px;font-size:.9rem}
-.feedback.bad{color:#ff9a82;font-weight:600}
-.feedback.good{color:var(--ok);font-weight:600}
-.shake{animation:shake .4s}
-@keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-8px)}40%{transform:translateX(8px)}60%{transform:translateX(-6px)}80%{transform:translateX(6px)}}
-.solved-note{
-  margin-top:14px;padding:14px;background:rgba(127,174,106,.12);border:1px solid #3f5c37;
-  border-radius:10px;white-space:pre-line;
-}
-.hints{margin-top:16px;border-top:1px dashed #2c4144;padding-top:12px}
-.hint-btn{background:linear-gradient(180deg,var(--wood-hi),var(--wood));border-color:#a5896a;font-size:.85rem;padding:8px 16px}
-.hint-btn:disabled{opacity:.45;cursor:not-allowed}
-.hint-text{margin-top:8px;padding:10px 12px;background:rgba(216,195,154,.09);border-left:3px solid var(--wood-hi);border-radius:0 6px 6px 0;font-size:.92rem;color:var(--sand)}
-.hint-cost{color:var(--dim);font-size:.75rem;margin-left:8px}
-.symbols{font-size:1.6rem;letter-spacing:10px;color:var(--sand);text-align:center;margin:8px 0}
-.morse{font-family:'Special Elite',serif;font-size:1.35rem;letter-spacing:4px;color:var(--teal-hi);text-align:center;margin:8px 0;word-break:break-all}
-table.crib{margin:10px auto;border-collapse:collapse;font-size:.82rem;color:var(--dim)}
-table.crib td{padding:2px 9px;border:1px solid #24393d;text-align:center}
-table.crib td b{color:var(--sand);font-family:'Special Elite',serif}
-
-/* ---------- signal (SOS) puzzle ---------- */
-.signal-pad{margin-top:12px;text-align:center}
-.signal-btn{margin:4px 6px;min-width:130px}
-.signal-btn.long{background:linear-gradient(180deg,var(--wood-hi),var(--wood));border-color:#a5896a}
-.signal-btn.clear{background:#243a3e;border-color:#3a565c}
-.signal-display{
-  min-height:44px;margin:12px auto 4px;max-width:420px;font-family:'Special Elite',serif;
-  font-size:1.7rem;letter-spacing:6px;color:var(--sand);background:#0d191c;border:1px solid #3a565c;
-  border-radius:8px;padding:6px 10px;
-}
-
-/* ---------- monster beat pop-up ---------- */
-#beat{
-  position:fixed;top:74px;left:50%;transform:translateX(-50%);z-index:80;max-width:520px;width:calc(100% - 32px);
-  background:linear-gradient(170deg,#181420,#0e0c14);color:#cfc4de;border:1px solid #3d3350;
-  border-radius:10px;padding:16px 20px;font-style:italic;text-align:center;
-  box-shadow:0 10px 34px rgba(0,0,0,.7);opacity:0;pointer-events:none;transition:opacity 1.6s;
-}
-#beat.show{opacity:1}
-#beat::before{content:"· · ·";display:block;color:#5c4f74;letter-spacing:8px;font-style:normal;margin-bottom:4px}
-
-/* ---------- transition / end screens ---------- */
-.screen-center{
-  position:fixed;inset:0;z-index:70;display:flex;align-items:center;justify-content:center;
-  background:rgba(5,12,14,.94);padding:20px;overflow-y:auto;
-}
-.end-card{max-width:600px;width:100%;text-align:center;padding:40px 34px;background:linear-gradient(165deg,#1c3136,#101f23);border:1px solid #37545a;border-radius:16px}
 .end-card h2{font-size:2.2rem;color:var(--sand);margin-bottom:10px}
 .end-card .rating{font-family:'Special Elite',serif;font-size:1.5rem;color:var(--teal-hi);margin:14px 0}
 .end-card .stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:20px 0;text-align:left}
@@ -218,43 +257,110 @@ table.crib td b{color:var(--sand);font-family:'Special Elite',serif}
 .end-card .stat .k{font-size:.72rem;color:var(--dim);text-transform:uppercase;letter-spacing:1px}
 .end-card .stat .v{font-family:'Special Elite',serif;font-size:1.3rem;color:var(--sand)}
 .end-card .btn-row{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:18px}
-pre.share{
-  text-align:left;background:#0b1517;border:1px solid #2c4144;border-radius:8px;padding:14px;
-  font-size:.85rem;color:var(--ink);white-space:pre-wrap;margin-top:16px;
+pre.share{text-align:left;background:#0a1416;border:1px solid #2c4144;border-radius:8px;padding:14px;font-size:.85rem;color:var(--ink);white-space:pre-wrap;margin-top:16px}
+
+/* ---------- room-complete ribbon ---------- */
+#room-complete{
+  position:fixed;bottom:52px;left:50%;transform:translateX(-50%);z-index:45;text-align:center;
+  background:rgba(10,22,20,.94);border:1px solid var(--teal-hi);border-radius:14px;padding:18px 30px;
+  box-shadow:0 14px 40px rgba(0,0,0,.7);max-width:min(680px,92vw);animation:modalin .4s ease-out;
 }
-/* ---------- per-room accents ---------- */
-body.room-beach {--accent:#d8b46a;--room-glow:rgba(216,180,106,.13)}
-body.room-radio {--accent:#7fae6a;--room-glow:rgba(127,174,106,.12)}
-body.room-jungle{--accent:#4f8a5c;--room-glow:rgba(30,80,45,.22)}
-body.room-raft  {--accent:#c98a5a;--room-glow:rgba(201,138,90,.15)}
-body.room-jungle{background:radial-gradient(ellipse at 50% -20%,var(--room-glow),transparent 60%),linear-gradient(180deg,#0a1710,#0d1d14 70%,#07110b);background-attachment:fixed}
-body.room-raft{background:radial-gradient(ellipse at 50% -20%,var(--room-glow),transparent 60%),linear-gradient(180deg,#1a1420,#241a22 60%,#120d14);background-attachment:fixed}
-@media (max-width:640px){
-  #hud .stats{display:none}
-  .end-card .stat-grid{grid-template-columns:1fr}
-}
+#room-complete p{font-style:italic;margin-bottom:12px;font-size:.95rem}
+
+/* ---------- SVG scene animation classes ---------- */
+.wave{transform-box:fill-box}
+.w1{animation:waveX 8s ease-in-out infinite alternate}
+.w2{animation:waveX 6.4s ease-in-out infinite alternate-reverse}
+.w3{animation:waveX 5s ease-in-out infinite alternate}
+@keyframes waveX{from{transform:translateX(-70px)}to{transform:translateX(50px)}}
+.cloud{transform-box:fill-box}
+.c1{animation:cloudX 60s linear infinite alternate}
+.c2{animation:cloudX 85s linear infinite alternate-reverse}
+.c3{animation:cloudX 70s linear infinite alternate}
+@keyframes cloudX{from{transform:translateX(-100px)}to{transform:translateX(120px)}}
+.palm{transform-box:fill-box;transform-origin:50% 100%;animation:sway 5.6s ease-in-out infinite alternate}
+.palm.p2{animation-duration:7.2s}
+@keyframes sway{from{transform:rotate(-1.6deg)}to{transform:rotate(2deg)}}
+.flag{transform-box:fill-box;transform-origin:0% 0%;animation:flagwave 2.8s ease-in-out infinite alternate}
+@keyframes flagwave{from{transform:skewY(-4deg)}to{transform:skewY(5deg)}}
+.lampswing{transform-box:fill-box;transform-origin:50% 0%;animation:swing 6.5s ease-in-out infinite alternate}
+@keyframes swing{from{transform:rotate(-2.4deg)}to{transform:rotate(2.4deg)}}
+.flick{animation:dialflick 3.4s infinite}
+@keyframes dialflick{0%,100%{opacity:1}71%{opacity:1}73%{opacity:.3}75%{opacity:1}82%{opacity:.55}84%{opacity:1}}
+.glowdial{filter:drop-shadow(0 0 7px rgba(140,240,170,.8))}
+.win-shadow{animation:winshadow 47s linear infinite}
+@keyframes winshadow{0%,91%{transform:translateX(-90px);opacity:0}92.5%{opacity:.85}95%{transform:translateX(300px);opacity:.85}96%,100%{transform:translateX(300px);opacity:0}}
+.eyes{animation:eyeblink 53s linear infinite}
+@keyframes eyeblink{0%,93%{opacity:0}94%{opacity:.75}95.5%{opacity:.75}96%{opacity:0}97%{opacity:.6}98%,100%{opacity:0}}
+.fogband{transform-box:fill-box;animation:fogdrift 26s ease-in-out infinite alternate}
+.fogband.f2{animation-duration:34s}
+@keyframes fogdrift{from{transform:translateX(-120px)}to{transform:translateX(120px)}}
+.tw{animation:twinkle 4s ease-in-out infinite}
+@keyframes twinkle{0%,100%{opacity:.25}50%{opacity:1}}
+.shiplights{animation:shipdrift 40s ease-in-out infinite alternate}
+@keyframes shipdrift{from{transform:translateX(-50px)}to{transform:translateX(60px)}}
+.flame{transform-box:fill-box;transform-origin:50% 100%;animation:flamewob
+ .35s ease-in-out infinite alternate}
+@keyframes flamewob{from{transform:scaleY(.92) skewX(-4deg)}to{transform:scaleY(1.1) skewX(5deg)}}
+.rivershine{animation:rivshine 3.5s linear infinite}
+@keyframes rivshine{0%{stroke-dashoffset:0}100%{stroke-dashoffset:-160}}
+.sunglow{animation:sunpulse 9s ease-in-out infinite alternate}
+@keyframes sunpulse{from{opacity:.8}to{opacity:1}}
+
+@media (max-width:640px){#hud .stats{display:none}.end-card .stat-grid{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
 
-<!-- ==================== START SCREEN ==================== -->
+<!-- ==================== START SCREEN (storm) ==================== -->
 <div id="start-screen">
-  <h1>THE WRECK OF THE ELDERMOOR</h1>
-  <div class="sub">a virtual escape room · 45 minutes · one screen, one crew</div>
-  <div class="parchment">
-    <p>The storm took the <em>Eldermoor</em> apart in the dark. You remember cold water, splintered wood, and then sand.</p>
-    <p>Dawn finds your crew alive on the beach of an island that appears on no chart. Up the ridge, half-swallowed by vines, stands an abandoned radio station — your one hope of calling for rescue and getting off this island.</p>
-    <p>Work fast. Solve what the island puts in front of you. And if you hear something moving in the treeline… don't stop to look.</p>
+  <canvas id="rain"></canvas>
+  <div id="lightning"></div>
+  <div id="start-inner">
+    <h1>THE WRECK OF THE ELDERMOOR</h1>
+    <div class="sub">a virtual escape room · 45 minutes · one screen, one crew</div>
+    <svg id="ship-art" viewBox="0 0 560 200">
+      <defs><linearGradient id="stSea" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#12333c"/><stop offset="1" stop-color="#050d10"/></linearGradient></defs>
+      <rect y="130" width="560" height="70" fill="url(#stSea)"/>
+      <path class="wave w2" d="M-40 140 Q 40 132 120 140 T 280 140 T 440 140 T 620 140 V 160 H -40 Z" fill="#27504f" opacity=".6"/>
+      <g class="lampswing">
+        <path d="M120 150 q 60 -34 160 -30 l 170 8 q 20 14 6 26 l -300 8 q -30 -4 -36 -12 z" fill="#0d0a07"/>
+        <rect x="252" y="18" width="7" height="106" fill="#0d0a07" transform="rotate(7 255 70)"/>
+        <rect x="352" y="42" width="6" height="84" fill="#0d0a07" transform="rotate(10 355 84)"/>
+        <path class="flag" d="M259 20 l 44 10 -44 12 z" fill="#1c1410"/>
+        <path d="M231 40 L 262 118 L 214 122 Z" fill="#151009"/>
+        <path d="M337 62 L 360 120 L 320 124 Z" fill="#151009"/>
+      </g>
+      <path class="wave w1" d="M-40 156 Q 60 148 160 156 T 360 156 T 560 156 T 760 156 V 200 H -40 Z" fill="#0e2429" opacity=".9"/>
+    </svg>
+    <div class="parchment">
+      <p>The storm took the <em>Eldermoor</em> apart in the dark. You remember cold water, splintered wood, and then sand.</p>
+      <p>Dawn finds your crew alive on the beach of an island that appears on no chart. Up the ridge, half-swallowed by vines, stands an abandoned radio station — your one hope of calling for rescue and getting off this island.</p>
+      <p>Work fast. Solve what the island puts in front of you. And if you hear something moving in the treeline… don't stop to look.</p>
+    </div>
+    <button class="big-btn" id="start-btn">⚓ BEGIN — 45:00</button>
+    <p class="start-note">🔊 Best with sound on — the island talks. One player shares their screen and drives; everyone else shouts ideas.<br>
+    Explore each scene: glowing rings mark things worth examining. Hints cost 30 seconds. Wrong answers cost 5. Fastest clean escape wins.</p>
+    <div id="gm-panel" class="hidden"></div>
   </div>
-  <button class="big-btn" id="start-btn">⚓ BEGIN — 45:00</button>
-  <p class="start-note">One player shares their screen and drives. Everyone else shouts ideas.<br>
-  Hints cost 30 seconds each. Wrong answers cost 5 seconds. Fastest clean escape wins.</p>
-
   <button id="gm-btn">🔑 Game Master</button>
-  <div id="gm-panel" class="hidden"></div>
 </div>
 
-<!-- ==================== GAME SCREEN ==================== -->
+<!-- ==================== GAME STAGE ==================== -->
+<div id="stage-wrap" class="hidden">
+  <div id="stage">
+    <div id="scene"></div>
+    <canvas id="fx" width="1600" height="900"></canvas>
+    <div id="hotspots"></div>
+  </div>
+</div>
+
+<div id="dimmer"></div>
+<div id="vignette" class="hidden"></div>
+<div id="redflash"></div>
+<canvas id="grain" width="480" height="270"></canvas>
+
 <div id="hud" class="hidden">
   <div class="room-label" id="hud-room"></div>
   <div id="timer">45:00</div>
@@ -262,52 +368,662 @@ body.room-raft{background:radial-gradient(ellipse at 50% -20%,var(--room-glow),t
     <span>Elapsed <b id="stat-elapsed">0:00</b></span>
     <span>Hints <b id="stat-hints">0</b></span>
     <span>Penalties <b id="stat-pen">+0:00</b></span>
+    <button id="mute-btn" title="Toggle sound">🔊</button>
   </div>
 </div>
 
-<div id="game-screen" class="hidden">
-  <div class="room-header"><h2 id="room-title"></h2></div>
-  <div class="room-intro" id="room-intro"></div>
-  <div id="objects"></div>
-  <div class="room-complete hidden" id="room-complete">
-    <p id="room-complete-text"></p>
-    <button class="big-btn" id="continue-btn">Continue ➤</button>
-  </div>
+<div id="objective" class="hidden"></div>
+
+<div id="room-complete" class="hidden">
+  <p id="room-complete-text"></p>
+  <button class="big-btn" id="continue-btn">Continue ➤</button>
 </div>
 
-<!-- monster narrative beat pop-up -->
 <div id="beat"></div>
-
-<!-- object modal -->
 <div id="overlay" class="hidden"><div id="modal"></div></div>
-
-<!-- end / game over screens injected here -->
 <div id="end-root"></div>
+<div id="card-root"></div>
 
 <script>
 /* ============================================================
-   THE WRECK OF THE ELDERMOOR — game logic
+   THE WRECK OF THE ELDERMOOR — v2 engine
    ------------------------------------------------------------
-   HOW TO MODIFY:
-   - All content lives in the ROOMS array below. Each room has
-     an `objects` list. An object with a `puzzle` key is a
-     puzzle; without one it's atmosphere/flavor.
-   - Puzzle chaining is controlled by two optional object keys:
-       hiddenUntil: '<objectId>'  -> object doesn't appear until
-                                     that puzzle is solved
-       revealedBy:  '<objectId>'  -> object is visible from the
-                                     start, but swaps its `desc`
-                                     for `revealDesc` once that
-                                     puzzle is solved
-   - Answers are normalized before comparison: uppercased and
-     stripped of everything but A-Z0-9 (so "121.5" == "1215",
-     "b d a e c" == "BDAEC"). List answers already normalized.
-   - `type:'signal'` marks the special short/long flare puzzle.
-   - To add a room: append to ROOMS and add a body.room-<id>
-     accent block in the CSS.
+   Layout of this script:
+     1. AUDIO   — WebAudio soundscape, fully synthesized (no files)
+     2. FX      — canvas particles (rain, fog, motes, fireflies,
+                  embers, flares) + film grain
+     3. SCENES  — illustrated SVG scene builders, one per room
+     4. DATA    — the ROOMS array: puzzles, hints, hotspot coords
+     5. ENGINE  — rendering, hotspots, modals, puzzle types
+                  (text / dial / signal), timer, beats, endings
+   HOW TO MODIFY PUZZLES: edit ROOMS (section 4). Chaining uses
+   `hiddenUntil` (object appears when that puzzle is solved) and
+   `revealedBy` (description upgrades when that puzzle is solved).
+   Answers are normalized: uppercased, stripped to A-Z0-9.
    ============================================================ */
+</script>
+<script>
+/* ============================================================
+   1. AUDIO — everything synthesized with WebAudio. No files.
+   ============================================================ */
+let AC=null, master=null, muted=false;
+let amb={};            // persistent ambience nodes
+let heartbeatTimer=null;
 
-/* ---------- narrative beats (the thing on the island) ---------- */
+function initAudio(){
+  if(AC) return;
+  try{
+    AC = new (window.AudioContext||window.webkitAudioContext)();
+    master = AC.createGain(); master.gain.value = 0.9; master.connect(AC.destination);
+
+    // shared looping noise buffer (2s white noise)
+    const len = AC.sampleRate*2, buf = AC.createBuffer(1,len,AC.sampleRate);
+    const d = buf.getChannelData(0);
+    for(let i=0;i<len;i++) d[i]=Math.random()*2-1;
+    amb.noiseBuf = buf;
+
+    // SURF: noise -> lowpass -> gain, with a slow swell LFO
+    const surfSrc=AC.createBufferSource(); surfSrc.buffer=buf; surfSrc.loop=true;
+    const surfLP=AC.createBiquadFilter(); surfLP.type='lowpass'; surfLP.frequency.value=420;
+    amb.surf=AC.createGain(); amb.surf.gain.value=0;
+    const swell=AC.createOscillator(); swell.frequency.value=0.08;
+    const swellG=AC.createGain(); swellG.gain.value=0.35;
+    swell.connect(swellG); swellG.connect(amb.surf.gain);
+    surfSrc.connect(surfLP); surfLP.connect(amb.surf); amb.surf.connect(master);
+    surfSrc.start(); swell.start();
+
+    // WIND: noise -> bandpass (wandering frequency) -> gain
+    const windSrc=AC.createBufferSource(); windSrc.buffer=buf; windSrc.loop=true;
+    const windBP=AC.createBiquadFilter(); windBP.type='bandpass'; windBP.frequency.value=600; windBP.Q.value=1.4;
+    const wLFO=AC.createOscillator(); wLFO.frequency.value=0.05;
+    const wLFOg=AC.createGain(); wLFOg.gain.value=280;
+    wLFO.connect(wLFOg); wLFOg.connect(windBP.frequency);
+    amb.wind=AC.createGain(); amb.wind.gain.value=0;
+    windSrc.connect(windBP); windBP.connect(amb.wind); amb.wind.connect(master);
+    windSrc.start(); wLFO.start();
+
+    // DRONE: two detuned low sines — the dread pedal
+    const o1=AC.createOscillator(), o2=AC.createOscillator();
+    o1.frequency.value=55; o2.frequency.value=55.8;
+    amb.drone=AC.createGain(); amb.drone.gain.value=0;
+    o1.connect(amb.drone); o2.connect(amb.drone); amb.drone.connect(master);
+    o1.start(); o2.start();
+  }catch(e){ AC=null; }
+}
+function setAmbience(p){ // p = {surf, wind, drone}
+  if(!AC) return;
+  const t=AC.currentTime;
+  amb.surf.gain.setTargetAtTime(p.surf, t, 2.5);
+  amb.wind.gain.setTargetAtTime(p.wind, t, 2.5);
+  amb.drone.gain.setTargetAtTime(p.drone, t, 4);
+}
+const ROOM_AMBIENCE=[
+  {surf:.34, wind:.10, drone:.012},   // beach
+  {surf:.05, wind:.09, drone:.028},   // radio station
+  {surf:0,   wind:.16, drone:.045},   // jungle
+  {surf:.22, wind:.10, drone:.055}    // cove
+];
+
+/* --- one-shot SFX helpers --- */
+function tone(freq,dur,when,gain=0.15,type='sine'){
+  if(!AC) return;
+  const t=when??AC.currentTime;
+  const o=AC.createOscillator(), g=AC.createGain();
+  o.type=type; o.frequency.value=freq;
+  g.gain.setValueAtTime(0.0001,t);
+  g.gain.exponentialRampToValueAtTime(gain,t+0.012);
+  g.gain.exponentialRampToValueAtTime(0.0001,t+dur);
+  o.connect(g); g.connect(master); o.start(t); o.stop(t+dur+0.05);
+}
+function noiseBurst(dur,filterFreq,gain=0.2,type='lowpass',when){
+  if(!AC) return;
+  const t=when??AC.currentTime;
+  const s=AC.createBufferSource(); s.buffer=amb.noiseBuf;
+  const f=AC.createBiquadFilter(); f.type=type; f.frequency.value=filterFreq;
+  const g=AC.createGain();
+  g.gain.setValueAtTime(gain,t);
+  g.gain.exponentialRampToValueAtTime(0.0001,t+dur);
+  s.connect(f); f.connect(g); g.connect(master); s.start(t); s.stop(t+dur+0.05);
+}
+function sfxKnock(n=3){
+  if(!AC) return;
+  for(let i=0;i<n;i++){
+    const t=AC.currentTime+0.05+i*0.72;
+    tone(68,0.22,t,0.5); noiseBurst(0.1,160,0.28,'lowpass',t);
+  }
+}
+function sfxThud(){ tone(85,0.18,undefined,0.4); noiseBurst(0.08,300,0.16); }
+function sfxChime(){ [523,659,784,1046].forEach((f,i)=>tone(f,0.5,AC?AC.currentTime+i*0.09:0,0.09,'triangle')); }
+function sfxGrowl(){
+  if(!AC) return;
+  const t=AC.currentTime;
+  const o=AC.createOscillator(); o.type='sawtooth';
+  o.frequency.setValueAtTime(52,t); o.frequency.exponentialRampToValueAtTime(30,t+1.1);
+  const f=AC.createBiquadFilter(); f.type='lowpass'; f.frequency.value=170;
+  const g=AC.createGain();
+  g.gain.setValueAtTime(0.0001,t); g.gain.exponentialRampToValueAtTime(0.35,t+0.25);
+  g.gain.exponentialRampToValueAtTime(0.0001,t+1.3);
+  o.connect(f); f.connect(g); g.connect(master); o.start(t); o.stop(t+1.4);
+  noiseBurst(1.1,120,0.1,'lowpass',t);
+}
+function sfxWhoosh(){ // flare launch
+  if(!AC) return;
+  const t=AC.currentTime;
+  const s=AC.createBufferSource(); s.buffer=amb.noiseBuf;
+  const f=AC.createBiquadFilter(); f.type='bandpass'; f.Q.value=2;
+  f.frequency.setValueAtTime(300,t); f.frequency.exponentialRampToValueAtTime(2600,t+0.5);
+  const g=AC.createGain();
+  g.gain.setValueAtTime(0.0001,t); g.gain.exponentialRampToValueAtTime(0.3,t+0.08);
+  g.gain.exponentialRampToValueAtTime(0.0001,t+0.6);
+  s.connect(f); f.connect(g); g.connect(master); s.start(t); s.stop(t+0.7);
+  tone(900,0.35,t+0.45,0.07,'triangle');
+}
+function sfxStatic(dur=0.4,gain=0.15){ noiseBurst(dur,2200,gain,'highpass'); }
+function playMorse(pattern,gain=0.16,unit=0.085,freq=640){
+  if(!AC) return 0;
+  let t=AC.currentTime+0.05;
+  for(const ch of pattern){
+    if(ch==='.'){ tone(freq,unit,t,gain,'sine'); t+=unit*2; }
+    else if(ch==='-'){ tone(freq,unit*3,t,gain,'sine'); t+=unit*4; }
+    else t+=unit*2;
+  }
+  return t-(AC.currentTime);
+}
+function startHeartbeat(){
+  if(heartbeatTimer||!AC) return;
+  heartbeatTimer=setInterval(()=>{
+    if(muted||!AC) return;
+    const t=AC.currentTime;
+    tone(52,0.13,t,0.4); tone(48,0.15,t+0.22,0.3);
+  },950);
+}
+function stopHeartbeat(){ clearInterval(heartbeatTimer); heartbeatTimer=null; }
+function toggleMute(){
+  muted=!muted;
+  if(master) master.gain.value = muted?0:0.9;
+  document.getElementById('mute-btn').textContent = muted?'🔇':'🔊';
+}
+
+/* ============================================================
+   2. FX — canvas particles + film grain
+   ============================================================ */
+const fxCanvas=document.getElementById('fx'), fxc=fxCanvas.getContext('2d');
+let particles=[], fxMode=null;
+
+function setFxMode(mode){
+  fxMode=mode; particles=[];
+  const N={mist:26, motes:60, fireflies:22, embers:0, none:0}[mode]||0;
+  for(let i=0;i<N;i++) particles.push(newParticle(mode,true));
+}
+function newParticle(mode,anywhere){
+  const r=Math.random;
+  if(mode==='mist')      return {m:'mist',x:r()*1600,y:520+r()*340,vx:.12+r()*.2,r1:90+r()*160,a:.028+r()*.03};
+  if(mode==='motes')     return {m:'motes',x:r()*1600,y:r()*900,vx:(r()-.5)*.14,vy:.06+r()*.12,r1:1+r()*1.6,a:.12+r()*.2};
+  if(mode==='fireflies') return {m:'fireflies',x:r()*1600,y:250+r()*550,vx:(r()-.5)*.5,vy:(r()-.5)*.35,r1:2+r()*1.6,ph:r()*6.28,a:.5};
+  return {m:'none',x:0,y:0};
+}
+// flares are pushed on demand: {m:'flare', x,y,vx,vy, life, hue}
+function spawnFlare(big){
+  const x=852, y=470;
+  particles.push({m:'flare',x,y,vx:(Math.random()-.5)*1.4,vy:big?-7.4:-5.6,life:0,maxlife:big?150:85,burst:big?46:26});
+  sfxWhoosh();
+}
+function fxLoop(){
+  fxc.clearRect(0,0,1600,900);
+  const t=performance.now()/1000;
+  for(let i=particles.length-1;i>=0;i--){
+    const p=particles[i];
+    if(p.m==='mist'){
+      p.x+=p.vx; if(p.x-p.r1>1600) p.x=-p.r1;
+      const g=fxc.createRadialGradient(p.x,p.y,0,p.x,p.y,p.r1);
+      g.addColorStop(0,`rgba(200,215,210,${p.a})`); g.addColorStop(1,'rgba(200,215,210,0)');
+      fxc.fillStyle=g; fxc.beginPath(); fxc.arc(p.x,p.y,p.r1,0,7); fxc.fill();
+    } else if(p.m==='motes'){
+      p.x+=p.vx; p.y+=p.vy;
+      if(p.y>900) {p.y=-4; p.x=Math.random()*1600;}
+      fxc.fillStyle=`rgba(230,220,190,${p.a*(0.6+0.4*Math.sin(t*2+p.x))})`;
+      fxc.fillRect(p.x,p.y,p.r1,p.r1);
+    } else if(p.m==='fireflies'){
+      p.x+=p.vx+Math.sin(t+p.ph)*.3; p.y+=p.vy+Math.cos(t*.7+p.ph)*.2;
+      if(p.x<0)p.x=1600; if(p.x>1600)p.x=0; if(p.y<150)p.y=800; if(p.y>860)p.y=200;
+      const glow=Math.max(0,Math.sin(t*1.4+p.ph));
+      if(glow>0.1){
+        const g=fxc.createRadialGradient(p.x,p.y,0,p.x,p.y,p.r1*4);
+        g.addColorStop(0,`rgba(210,255,160,${.55*glow})`); g.addColorStop(1,'rgba(210,255,160,0)');
+        fxc.fillStyle=g; fxc.beginPath(); fxc.arc(p.x,p.y,p.r1*4,0,7); fxc.fill();
+      }
+    } else if(p.m==='flare'){
+      p.life++;
+      if(p.life<p.maxlife*0.42){ // ascent
+        p.x+=p.vx; p.y+=p.vy; p.vy+=0.045;
+        fxc.strokeStyle='rgba(255,190,120,.9)'; fxc.lineWidth=3;
+        fxc.beginPath(); fxc.moveTo(p.x,p.y); fxc.lineTo(p.x-p.vx*4,p.y-p.vy*4); fxc.stroke();
+        fxc.fillStyle='rgba(255,240,200,1)'; fxc.beginPath(); fxc.arc(p.x,p.y,3.4,0,7); fxc.fill();
+      } else { // burning star
+        const k=(p.life-p.maxlife*0.42)/(p.maxlife*0.58);
+        p.y+=0.35; p.x+=Math.sin(p.life*.1)*.4;
+        const r1=p.burst*(1-k*.5);
+        const g=fxc.createRadialGradient(p.x,p.y,0,p.x,p.y,r1);
+        g.addColorStop(0,`rgba(255,120,90,${.95*(1-k)})`);
+        g.addColorStop(.4,`rgba(255,80,60,${.5*(1-k)})`);
+        g.addColorStop(1,'rgba(255,60,40,0)');
+        fxc.fillStyle=g; fxc.beginPath(); fxc.arc(p.x,p.y,r1,0,7); fxc.fill();
+      }
+      if(p.life>=p.maxlife) particles.splice(i,1);
+    }
+  }
+  requestAnimationFrame(fxLoop);
+}
+requestAnimationFrame(fxLoop);
+
+/* film grain — tiny canvas scaled to viewport */
+const grainC=document.getElementById('grain'), gctx=grainC.getContext('2d');
+setInterval(()=>{
+  const img=gctx.createImageData(480,270);
+  for(let i=0;i<img.data.length;i+=4){
+    const v=Math.random()*255|0;
+    img.data[i]=img.data[i+1]=img.data[i+2]=v; img.data[i+3]=255;
+  }
+  gctx.putImageData(img,0,0);
+},130);
+
+/* rain on the title screen */
+const rainC=document.getElementById('rain'), rctx=rainC.getContext('2d');
+let drops=[];
+function sizeRain(){ rainC.width=innerWidth; rainC.height=innerHeight; }
+sizeRain(); addEventListener('resize',sizeRain);
+for(let i=0;i<130;i++) drops.push({x:Math.random()*2000,y:Math.random()*1000,l:8+Math.random()*14,v:9+Math.random()*7});
+let rainOn=true;
+(function rainLoop(){
+  if(rainOn && !rainC.closest('.hidden')){
+    rctx.clearRect(0,0,rainC.width,rainC.height);
+    rctx.strokeStyle='rgba(160,190,205,.34)'; rctx.lineWidth=1.1;
+    for(const d of drops){
+      d.y+=d.v; d.x-=d.v*0.18;
+      if(d.y>rainC.height){ d.y=-20; d.x=Math.random()*(rainC.width+200); }
+      rctx.beginPath(); rctx.moveTo(d.x,d.y); rctx.lineTo(d.x+d.l*0.18,d.y+d.l); rctx.stroke();
+    }
+  }
+  requestAnimationFrame(rainLoop);
+})();
+/* title lightning: random flashes (visual only until audio unlocked) */
+setInterval(()=>{
+  if(document.getElementById('start-screen').classList.contains('hidden')) return;
+  if(Math.random()<0.42){
+    const L=document.getElementById('lightning');
+    L.classList.remove('flash'); void L.offsetWidth; L.classList.add('flash');
+    if(AC && !muted) noiseBurst(1.6,180,0.16,'lowpass');
+  }
+},5200);
+
+/* ============================================================
+   3. SCENES — illustrated SVG builders (1600x900 viewBox)
+   Objects that appear later carry id="el-<objectId>".
+   Groups with class="plx" data-depth="n" get mouse parallax.
+   ============================================================ */
+const SCENES={};
+
+SCENES.beach=()=>`
+<svg viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice">
+<defs>
+ <linearGradient id="bSky" x1="0" y1="0" x2="0" y2="1">
+  <stop offset="0" stop-color="#0b232e"/><stop offset=".5" stop-color="#2e5058"/>
+  <stop offset=".82" stop-color="#b96f36"/><stop offset="1" stop-color="#e09c55"/>
+ </linearGradient>
+ <linearGradient id="bSea" x1="0" y1="0" x2="0" y2="1">
+  <stop offset="0" stop-color="#cf8f4d"/><stop offset=".3" stop-color="#3c6a68"/><stop offset="1" stop-color="#11313a"/>
+ </linearGradient>
+ <linearGradient id="bSand" x1="0" y1="0" x2="0" y2="1">
+  <stop offset="0" stop-color="#b99763"/><stop offset="1" stop-color="#77593a"/>
+ </linearGradient>
+ <radialGradient id="bSun"><stop offset="0" stop-color="#ffe6b0" stop-opacity=".85"/><stop offset="1" stop-color="#ffca7a" stop-opacity="0"/></radialGradient>
+</defs>
+<rect width="1600" height="580" fill="url(#bSky)"/>
+<g class="plx" data-depth="5">
+  <circle class="sunglow" cx="1160" cy="452" r="170" fill="url(#bSun)"/>
+  <circle cx="1160" cy="452" r="56" fill="#ffd894"/>
+  <ellipse class="cloud c1" cx="360" cy="170" rx="190" ry="24" fill="#173238" opacity=".6"/>
+  <ellipse class="cloud c2" cx="880" cy="110" rx="250" ry="30" fill="#132a30" opacity=".55"/>
+  <ellipse class="cloud c3" cx="1380" cy="240" rx="150" ry="18" fill="#173238" opacity=".5"/>
+</g>
+<rect y="475" width="1600" height="215" fill="url(#bSea)"/>
+<g class="plx" data-depth="9">
+  <path class="wave w1" d="M-100 552 Q100 538 300 552 T700 552 T1100 552 T1500 552 T1900 552 V600 H-100 Z" fill="#5b8d86" opacity=".5"/>
+  <path class="wave w2" d="M-100 598 Q120 584 340 598 T780 598 T1220 598 T1700 598 V646 H-100 Z" fill="#79a99e" opacity=".45"/>
+  <path class="wave w3" d="M-100 644 Q150 628 400 644 T900 644 T1400 644 T1900 644 V692 H-100 Z" fill="#e8dcc0" opacity=".32"/>
+</g>
+<path d="M0 636 Q400 606 800 638 T1600 626 V900 H0 Z" fill="url(#bSand)"/>
+<!-- dark treeline creeping in from the left -->
+<g class="plx" data-depth="3">
+  <path d="M0 250 q90 -40 150 -10 q60 -50 130 -20 q40 -40 90 -5 l30 40 q-60 40 -130 45 q-90 40 -170 20 L0 340 Z" fill="#0c1f14" opacity=".92"/>
+  <path d="M0 320 q120 -30 210 10 q80 0 120 40 l-40 60 q-120 20 -200 -10 L0 400 Z" fill="#081409"/>
+</g>
+<!-- long dragging prints toward the treeline -->
+<g opacity=".5">
+  ${[0,1,2,3,4,5].map(i=>`<ellipse cx="${560-i*74}" cy="${796-i*44}" rx="${26-i*2}" ry="${8-i*0.7}" fill="#4a3821" transform="rotate(${-24-i*3} ${560-i*74} ${796-i*44})"/>`).join('')}
+</g>
+<!-- palms -->
+<g class="plx" data-depth="14">
+  <g class="palm"><path d="M120 900 q-14 -180 30 -300" stroke="#241a10" stroke-width="26" fill="none"/>
+    <g fill="#0f2416"><path d="M150 600 q-110 -60 -190 -20 q90 -18 190 20z"/><path d="M150 600 q-40 -110 -140 -130 q80 50 140 130z"/><path d="M150 600 q60 -100 160 -100 q-90 20 -160 100z"/><path d="M150 600 q110 -30 170 30 q-90 -20 -170 -30z"/><path d="M150 600 q10 -120 90 -160 q-50 70 -90 160z"/></g></g>
+  <g class="palm p2"><path d="M1560 900 q30 -160 -20 -280" stroke="#241a10" stroke-width="22" fill="none"/>
+    <g fill="#0f2416"><path d="M1540 620 q-110 -50 -180 -10 q95 -14 180 10z"/><path d="M1540 620 q-20 -110 -110 -140 q60 60 110 140z"/><path d="M1540 620 q70 -80 150 -70 q-80 10 -150 70z"/></g></g>
+</g>
+<!-- the wreck -->
+<g id="art-hull">
+  <path d="M1010 668 q40 -150 140 -185 l290 -68 q36 66 24 140 l-34 100 q-190 46 -420 13 z" fill="#221710"/>
+  ${[0,1,2,3,4].map(i=>`<path d="M${1105+i*72} ${640-i*10} q10 -90 46 -128" stroke="#171008" stroke-width="9" fill="none"/>`).join('')}
+  <rect x="1252" y="332" width="13" height="230" fill="#2a1d12" transform="rotate(16 1258 440)"/>
+  <path class="flag" d="M1290 344 l58 14 -58 18 z" fill="#3c2a20"/>
+  <ellipse cx="1210" cy="702" rx="240" ry="16" fill="#000" opacity=".28"/>
+</g>
+<!-- driftwood planks with carved letters -->
+<g id="art-driftwood">
+  ${[['L',96,742,-8],['I',172,760,5],['A',132,792,-3],['S',214,788,10]].map(([ch,x,y,r])=>
+   `<g transform="rotate(${r} ${x} ${y})"><rect x="${x-38}" y="${y-11}" width="76" height="22" rx="5" fill="#6a4f30"/><rect x="${x-38}" y="${y-11}" width="76" height="8" rx="4" fill="#7d6040"/><text x="${x}" y="${y+6}" text-anchor="middle" font-family="Special Elite" font-size="19" fill="#2c1e0f">${ch}</text></g>`).join('')}
+</g>
+<!-- torn sail on a rock -->
+<g id="art-sail">
+  <ellipse cx="430" cy="560" rx="90" ry="34" fill="#3a3128"/>
+  <path d="M355 552 L470 420 L520 556 q-60 26 -165 -4z" fill="#cfc0a0"/>
+  <path d="M420 470 l16 30 -30 4 z" fill="#8d7f62"/>
+  <path d="M470 420 L520 556" stroke="#8d7f62" stroke-width="3" fill="none"/>
+</g>
+<!-- cargo crate with stencils -->
+<g id="art-crate">
+  <rect x="770" y="632" width="128" height="96" fill="#5b452c"/>
+  <rect x="770" y="632" width="128" height="20" fill="#6d5436"/>
+  <rect x="770" y="632" width="10" height="96" fill="#48371f"/><rect x="888" y="632" width="10" height="96" fill="#48371f"/>
+  <text x="800" y="694" font-size="22" fill="#2c2010">■5</text><text x="852" y="694" font-size="22" fill="#2c2010">◆1</text>
+  <text x="800" y="720" font-size="22" fill="#2c2010">▲8</text><text x="852" y="720" font-size="22" fill="#2c2010">●3</text>
+</g>
+<!-- weatherproof box -->
+<g id="art-box">
+  <rect x="1236" y="748" width="104" height="66" rx="8" fill="#4a2b25"/>
+  <rect x="1236" y="748" width="104" height="18" rx="8" fill="#5c362d"/>
+  <rect x="1276" y="760" width="24" height="20" fill="#a8862a"/>
+</g>
+<!-- chart (appears when box is opened) -->
+<g id="el-chart">
+  <rect x="672" y="788" width="96" height="40" rx="14" fill="#d9cba6" transform="rotate(-8 720 808)"/>
+  <path d="M680 802 q40 -8 78 2" stroke="#7a5c34" stroke-width="2" fill="none"/>
+</g>
+</svg>`;
+
+SCENES.radio=()=>`
+<svg viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice">
+<defs>
+ <linearGradient id="rWall" x1="0" y1="0" x2="0" y2="1">
+  <stop offset="0" stop-color="#0b1512"/><stop offset="1" stop-color="#15231e"/>
+ </linearGradient>
+ <linearGradient id="rFloor" x1="0" y1="0" x2="0" y2="1">
+  <stop offset="0" stop-color="#2a2117"/><stop offset="1" stop-color="#171009"/>
+ </linearGradient>
+ <linearGradient id="rGlass" x1="0" y1="0" x2="0" y2="1">
+  <stop offset="0" stop-color="#1c3a26"/><stop offset="1" stop-color="#0a1810"/>
+ </linearGradient>
+ <radialGradient id="rLamp"><stop offset="0" stop-color="#ffe9b0" stop-opacity=".22"/><stop offset="1" stop-color="#ffe9b0" stop-opacity="0"/></radialGradient>
+</defs>
+<rect width="1600" height="620" fill="url(#rWall)"/>
+<rect y="620" width="1600" height="280" fill="url(#rFloor)"/>
+${[0,1,2,3,4,5,6,7].map(i=>`<line x1="${i*220-60}" y1="620" x2="${i*260-260}" y2="900" stroke="#0d0a06" stroke-width="5"/>`).join('')}
+<line x1="0" y1="620" x2="1600" y2="620" stroke="#060503" stroke-width="7"/>
+<!-- wall boards -->
+${[0,1,2,3,4,5].map(i=>`<line x1="0" y1="${90+i*95}" x2="1600" y2="${90+i*95}" stroke="#08110d" stroke-width="3" opacity=".7"/>`).join('')}
+<!-- window with the passing shadow -->
+<g id="art-window">
+  <rect x="104" y="170" width="300" height="240" fill="#241d13"/>
+  <rect x="118" y="184" width="272" height="212" fill="url(#rGlass)"/>
+  <path d="M118 330 q50 -40 90 -18 q40 -34 80 -12 q50 -30 102 -6 l0 102 -272 0 z" fill="#07130b"/>
+  <rect class="win-shadow" x="60" y="196" width="64" height="200" rx="26" fill="#020604" opacity="0"/>
+  <rect x="118" y="282" width="272" height="9" fill="#241d13"/>
+  <rect x="248" y="184" width="9" height="212" fill="#241d13"/>
+  <rect x="104" y="170" width="300" height="240" fill="none" stroke="#312817" stroke-width="10"/>
+  <path d="M120 196 l70 90" stroke="#a8c2b0" stroke-width="2" opacity=".12"/>
+</g>
+<!-- hanging lamp + light cone -->
+<g class="lampswing">
+  <line x1="800" y1="0" x2="800" y2="128" stroke="#161006" stroke-width="6"/>
+  <path d="M770 128 h60 l14 26 h-88 z" fill="#2c2213"/>
+  <circle class="flick" cx="800" cy="166" r="15" fill="#ffdf9c"/>
+  <path d="M760 160 L560 620 H1040 L840 160 Z" fill="url(#rLamp)"/>
+</g>
+<!-- morse poster -->
+<g id="art-poster">
+  <rect x="1226" y="176" width="176" height="248" fill="#cbb489" transform="rotate(1.5 1314 300)"/>
+  <text x="1314" y="208" text-anchor="middle" font-family="Special Elite" font-size="17" fill="#4a3517">MORSE CODE</text>
+  ${[0,1,2,3,4,5,6,7].map(i=>`<text x="1246" y="${234+i*23}" font-family="Special Elite" font-size="12" fill="#5d4423">${['A ·−   B −···','E ·   H ····','N −·   O −−−','R ·−·   S ···','T −   U ··−','D −··   K −·−','M −−   I ··','W ·−−   G −−·'][i]}</text>`).join('')}
+  <circle cx="1314" cy="182" r="4" fill="#6a5533"/>
+</g>
+<!-- desk -->
+<rect x="420" y="540" width="860" height="26" fill="#4a3922"/>
+<rect x="430" y="566" width="840" height="130" fill="#3a2c19"/>
+<rect x="450" y="696" width="30" height="120" fill="#241a0e"/><rect x="1220" y="696" width="30" height="120" fill="#241a0e"/>
+<!-- radio rack -->
+<g id="art-radio">
+  <rect x="620" y="360" width="440" height="182" rx="8" fill="#1d2a26" stroke="#3a4a44" stroke-width="4"/>
+  <rect x="640" y="378" width="180" height="44" rx="4" fill="#06130a"/>
+  <text class="flick" x="730" y="410" text-anchor="middle" font-family="Special Elite" font-size="28" fill="#8fe0a0" style="text-shadow:0 0 8px #4fda7c">---.-</text>
+  <g class="glowdial">
+    <circle cx="700" cy="482" r="32" fill="#0f1a14" stroke="#4a5a52" stroke-width="5"/>
+    <line x1="700" y1="482" x2="716" y2="458" stroke="#8fe0a0" stroke-width="4"/>
+    <circle class="flick" cx="836" cy="482" r="26" fill="#0f1a14" stroke="#4a5a52" stroke-width="5"/>
+    <line x1="836" y1="482" x2="822" y2="462" stroke="#e0c48f" stroke-width="4"/>
+  </g>
+  <rect x="900" y="390" width="140" height="60" rx="4" fill="#0f1a14" stroke="#3a4a44" stroke-width="3"/>
+  <path d="M910 436 q34 -40 60 -6 q30 -30 56 -4" stroke="#8fe0a0" stroke-width="2.5" fill="none" class="flick"/>
+  ${[0,1,2,3,4].map(i=>`<circle cx="${906+i*32}" cy="512" r="7" fill="${i%2?'#3a4a44':'#5c4423'}"/>`).join('')}
+</g>
+<!-- speaker (the broadcast) -->
+<g id="el-broadcast">
+  <circle cx="512" cy="452" r="58" fill="#241d13" stroke="#3a2c19" stroke-width="8"/>
+  ${[40,28,16].map(r=>`<circle cx="512" cy="452" r="${r}" fill="none" stroke="#0d0a06" stroke-width="6"/>`).join('')}
+  <circle class="flick" cx="512" cy="452" r="7" fill="#8fe0a0"/>
+</g>
+<!-- logbook -->
+<g id="art-logbook">
+  <path d="M460 590 l90 -12 8 44 -90 14 z" fill="#d9cba6"/>
+  <path d="M550 578 l86 8 -2 44 -88 -6 z" fill="#cfc0a0"/>
+  ${[0,1,2].map(i=>`<line x1="472" y1="${596+i*11}" x2="538" y2="${588+i*11}" stroke="#7a5c34" stroke-width="2"/>`).join('')}
+  <line x1="562" y1="592" x2="622" y2="596" stroke="#7a5c34" stroke-width="2"/>
+</g>
+<!-- operator's chair, turned to the window -->
+<g opacity=".9">
+  <rect x="270" y="560" width="90" height="16" rx="6" fill="#241a0e"/>
+  <rect x="278" y="470" width="20" height="100" rx="6" fill="#241a0e" transform="rotate(-14 288 520)"/>
+  <rect x="268" y="576" width="14" height="110" fill="#171009"/><rect x="340" y="576" width="14" height="110" fill="#171009"/>
+</g>
+<!-- rug and (hidden) hatch -->
+<g id="art-rug"><ellipse cx="800" cy="800" rx="190" ry="52" fill="#43261f"/><ellipse cx="800" cy="800" rx="150" ry="38" fill="none" stroke="#5c362d" stroke-width="7"/><ellipse cx="800" cy="800" rx="100" ry="24" fill="none" stroke="#5c362d" stroke-width="5"/></g>
+<g id="el-hatch">
+  <path d="M700 768 L900 768 L930 832 L670 832 Z" fill="#39413f" stroke="#20272a" stroke-width="6"/>
+  <circle cx="800" cy="800" r="24" fill="none" stroke="#6a7a74" stroke-width="8"/>
+  <line x1="776" y1="800" x2="824" y2="800" stroke="#6a7a74" stroke-width="7"/><line x1="800" y1="778" x2="800" y2="822" stroke="#6a7a74" stroke-width="7"/>
+</g>
+<!-- emergency transmitter below (hidden) -->
+<g id="el-transmitter">
+  <rect x="1130" y="726" width="180" height="110" rx="10" fill="#232c28" stroke="#3a4a44" stroke-width="5"/>
+  ${[0,1,2].map(r=>[0,1,2].map(c=>`<rect class="flick" x="${1152+c*38}" y="${744+r*26}" width="26" height="16" rx="3" fill="#0f1a14" stroke="#4fda7c" stroke-width="1.5"/>`).join('')).join('')}
+  <circle class="flick glowdial" cx="1284" cy="752" r="9" fill="#8fe0a0"/>
+</g>
+</svg>`;
+
+SCENES.jungle=()=>`
+<svg viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice">
+<defs>
+ <linearGradient id="jSky" x1="0" y1="0" x2="0" y2="1">
+  <stop offset="0" stop-color="#16341f"/><stop offset="1" stop-color="#081a10"/>
+ </linearGradient>
+ <linearGradient id="jPath" x1="0" y1="0" x2="0" y2="1">
+  <stop offset="0" stop-color="#3a2f1c"/><stop offset="1" stop-color="#5a4830"/>
+ </linearGradient>
+ <linearGradient id="jRiver" x1="0" y1="0" x2="0" y2="1">
+  <stop offset="0" stop-color="#1a453c"/><stop offset="1" stop-color="#102e2a"/>
+ </linearGradient>
+</defs>
+<rect width="1600" height="900" fill="url(#jSky)"/>
+<!-- god rays -->
+<g opacity=".12">
+  <polygon points="500,0 620,0 380,700 280,700" fill="#cfe8b0"/>
+  <polygon points="900,0 990,0 840,600 760,600" fill="#cfe8b0"/>
+  <polygon points="1250,0 1330,0 1200,500 1130,500" fill="#cfe8b0"/>
+</g>
+<!-- the gorge, bridge and relay lamp far ahead -->
+<g class="plx" data-depth="4">
+  <path d="M690 130 q110 -40 220 0 l-30 260 q-80 26 -160 0 z" fill="#10281a"/>
+  <path d="M700 320 q100 30 200 0" stroke="#3a2a18" stroke-width="7" fill="none"/>
+  <path d="M700 344 q100 30 200 0" stroke="#3a2a18" stroke-width="5" fill="none"/>
+  ${[0,1,2,3,4,5,6].map(i=>`<line x1="${716+i*28}" y1="${330+Math.round(Math.sin(i)*6)}" x2="${716+i*28}" y2="${352+Math.round(Math.sin(i)*6)}" stroke="#3a2a18" stroke-width="4"/>`).join('')}
+  <rect x="906" y="290" width="8" height="60" fill="#3a2a18"/>
+  <circle id="gorge-lamp" cx="910" cy="284" r="7" fill="#ffdf9c" opacity=".08"/>
+</g>
+<!-- fog bands -->
+<rect class="fogband" x="-200" y="360" width="2000" height="90" fill="#9fb8a8" opacity=".09" rx="45"/>
+<rect class="fogband f2" x="-200" y="470" width="2000" height="70" fill="#9fb8a8" opacity=".07" rx="35"/>
+<!-- path -->
+<path d="M760 900 L900 900 L850 560 L800 560 Z" fill="url(#jPath)" opacity=".85"/>
+<!-- far foliage -->
+<g class="plx" data-depth="7" fill="#142c1b">
+  <path d="M0 0 h420 q-30 140 -120 220 q-90 110 -60 240 L0 500 Z"/>
+  <path d="M1600 0 h-430 q40 150 130 230 q80 100 60 220 l240 60 Z"/>
+  <ellipse cx="560" cy="120" rx="200" ry="90"/>
+  <ellipse cx="1120" cy="90" rx="230" ry="100"/>
+</g>
+<!-- eyes, deep in the growth: rare, brief -->
+<g class="eyes"><circle cx="1296" cy="338" r="5" fill="#cfe3b0"/><circle cx="1322" cy="336" r="5" fill="#cfe3b0"/></g>
+<!-- the carved tree -->
+<g id="art-tree">
+  <path d="M282 900 q-24 -300 6 -520 q10 -80 46 -110 q40 30 48 110 q26 220 4 520 z" fill="#2c1d10"/>
+  ${[0,1,2,3].map(i=>`<path d="M${292+i*6} ${380+i*90} q30 ${8-i*4} 68 0" stroke="#0d0803" stroke-width="5" fill="none"/>`).join('')}
+  <rect x="300" y="470" width="72" height="90" rx="8" fill="#2c1e0f"/>
+  ${[0,1,2,3].map(i=>`<line x1="310" y1="${488+i*18}" x2="${348+(i%2)*14}" y2="${488+i*18}" stroke="#c9b384" stroke-width="3" opacity=".8"/>`).join('')}
+  <g fill="#16321e"><path d="M330 268 q-130 -70 -230 -30 q110 -16 230 30z"/><path d="M330 268 q-40 -120 -150 -150 q80 60 150 150z"/><path d="M330 268 q80 -110 190 -104 q-100 24 -190 104z"/><path d="M330 268 q130 -30 200 40 q-110 -30 -200 -40z"/></g>
+</g>
+<!-- snapped branches -->
+<g id="art-branches">
+  <line x1="120" y1="420" x2="230" y2="480" stroke="#3a2a18" stroke-width="12"/>
+  <line x1="230" y1="480" x2="252" y2="580" stroke="#3a2a18" stroke-width="9" transform="rotate(38 230 480)"/>
+  <line x1="86" y1="520" x2="196" y2="560" stroke="#3a2a18" stroke-width="10"/>
+  <line x1="196" y1="560" x2="210" y2="650" stroke="#3a2a18" stroke-width="8" transform="rotate(30 196 560)"/>
+  <path d="M225 476 l14 -8 M191 556 l13 -7" stroke="#c9b384" stroke-width="4" opacity=".7"/>
+</g>
+<!-- the river -->
+<g id="art-river">
+  <path d="M0 640 Q400 610 800 648 T1600 636 L1600 730 Q1200 762 800 726 T0 738 Z" fill="url(#jRiver)"/>
+  <path class="rivershine" d="M40 676 Q400 650 800 684 T1560 672" stroke="#3f7a6e" stroke-width="4" fill="none" stroke-dasharray="26 26" opacity=".6"/>
+  <path class="rivershine" d="M80 706 Q460 680 860 710 T1580 700" stroke="#2c5a52" stroke-width="3" fill="none" stroke-dasharray="18 30" opacity=".5"/>
+</g>
+<!-- crossing stones (hidden until riddle) -->
+<g id="el-stones">
+  ${[['R','⬟',560,690],['K','⬢',700,672],['D','▲',830,700],['A','■',960,676]].map(([ch,sh,x,y])=>
+   `<g><ellipse cx="${x}" cy="${y}" rx="52" ry="22" fill="#3a3d38"/><ellipse cx="${x}" cy="${y-6}" rx="52" ry="20" fill="#565a52"/>
+   <text x="${x-20}" y="${y+2}" text-anchor="middle" font-family="Special Elite" font-size="24" fill="#171a15">${ch}</text>
+   <text x="${x+16}" y="${y+3}" text-anchor="middle" font-size="20" fill="#22261f">${sh}</text></g>`).join('')}
+</g>
+<!-- ranger's pack (hidden until stones) -->
+<g id="el-pack">
+  <path d="M1108 690 q-10 -70 44 -78 q56 -6 52 70 l-6 40 q-44 16 -84 0 z" fill="#2c3320"/>
+  <rect x="1122" y="640" width="60" height="16" rx="8" fill="#1c2114"/>
+  <rect x="1138" y="676" width="28" height="24" rx="4" fill="#454f2e"/>
+  <circle cx="1152" cy="688" r="4" fill="#8a8250"/>
+</g>
+<!-- near frame foliage -->
+<g class="plx" data-depth="18" fill="#0c1a0f">
+  <path d="M0 900 V520 q90 20 130 110 q60 30 70 130 q40 60 40 140 Z"/>
+  <path d="M1600 900 V480 q-100 30 -140 130 q-70 40 -80 150 q-30 60 -40 140 Z"/>
+  <path d="M0 0 h240 q-40 60 -140 80 L0 130 Z"/>
+  <path d="M1600 0 h-260 q50 70 160 90 l100 50 Z"/>
+</g>
+</svg>`;
+
+SCENES.cove=()=>`
+<svg viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice">
+<defs>
+ <linearGradient id="cSky" x1="0" y1="0" x2="0" y2="1">
+  <stop offset="0" stop-color="#120b26"/><stop offset=".55" stop-color="#4a2440"/>
+  <stop offset=".85" stop-color="#c06438"/><stop offset="1" stop-color="#d8824a"/>
+ </linearGradient>
+ <linearGradient id="cSea" x1="0" y1="0" x2="0" y2="1">
+  <stop offset="0" stop-color="#a35a34"/><stop offset=".2" stop-color="#1a2436"/><stop offset="1" stop-color="#0a0f1c"/>
+ </linearGradient>
+ <linearGradient id="cSand" x1="0" y1="0" x2="0" y2="1">
+  <stop offset="0" stop-color="#6a5136"/><stop offset="1" stop-color="#45331f"/>
+ </linearGradient>
+ <radialGradient id="cTorch"><stop offset="0" stop-color="#ffb45e" stop-opacity=".3"/><stop offset="1" stop-color="#ffb45e" stop-opacity="0"/></radialGradient>
+</defs>
+<rect width="1600" height="520" fill="url(#cSky)"/>
+${Array.from({length:30},(_,i)=>`<circle class="tw" cx="${(i*127+40)%1560}" cy="${(i*53)%260+16}" r="${1+(i%3)*.7}" fill="#ffe9c0" style="animation-delay:${(i*.63)%4.5}s"/>`).join('')}
+<rect y="470" width="1600" height="230" fill="url(#cSea)"/>
+<line x1="0" y1="472" x2="1600" y2="472" stroke="#e8945a" stroke-width="3" opacity=".65"/>
+<!-- the passing ship: a cluster of tiny lights, drifting -->
+<g id="el-ship" class="shiplights">
+  <rect x="1180" y="452" width="120" height="10" rx="4" fill="#05070d"/>
+  ${[0,1,2,3].map(i=>`<circle class="tw" cx="${1196+i*28}" cy="${454}" r="3" fill="#ffd98c" style="animation-delay:${i*.9}s"/>`).join('')}
+  <circle cx="1292" cy="444" r="2.5" fill="#8cd9c0"/>
+</g>
+<g class="plx" data-depth="8">
+  <path class="wave w2" d="M-100 560 Q140 546 380 560 T860 560 T1340 560 T1820 560 V610 H-100 Z" fill="#1c2a40" opacity=".8"/>
+  <path class="wave w1" d="M-100 615 Q180 602 460 615 T1020 615 T1580 615 T2140 615 V668 H-100 Z" fill="#26374f" opacity=".7"/>
+</g>
+<!-- cliffs framing the cove -->
+<g class="plx" data-depth="4" fill="#0a0812">
+  <path d="M0 0 V760 q120 -30 170 -160 q80 -70 60 -220 q60 -90 20 -230 L0 60 Z"/>
+  <path d="M1600 0 V740 q-140 -40 -180 -180 q-70 -80 -50 -230 q-50 -80 -10 -220 l100 -60 Z"/>
+</g>
+<!-- sand -->
+<path d="M0 700 Q460 660 900 700 T1600 690 V900 H0 Z" fill="#5c4630"/>
+<!-- drag-marks, layered old over older -->
+<g id="art-dragmarks" opacity=".55">
+  ${[0,1,2,3].map(i=>`<path d="M${360+i*60} ${812+i*14} q140 ${-26-i*6} 320 0" stroke="#3a2c1c" stroke-width="${9-i}" fill="none"/>`).join('')}
+  <rect x="560" y="768" width="18" height="42" rx="6" fill="#241a10" transform="rotate(-6 569 789)"/>
+</g>
+<!-- torch light -->
+<g>
+  <rect x="384" y="600" width="12" height="130" fill="#2c1e0f"/>
+  <circle cx="390" cy="580" r="120" fill="url(#cTorch)"/>
+  <path class="flame" d="M390 604 q-22 -34 0 -66 q22 32 0 66z" fill="#ffb45e"/>
+  <path class="flame" d="M390 600 q-12 -22 0 -40 q12 18 0 40z" fill="#ffe9b0"/>
+</g>
+<!-- raft materials -->
+<g id="art-raftkit">
+  ${[0,1,2,3].map(i=>`<rect x="${620+i*10}" y="${640+i*22}" width="240" height="20" rx="10" fill="${i%2?'#4a3520':'#5b452c'}" transform="rotate(${i%2?-3:2} 740 ${650+i*22})"/>`).join('')}
+  <path d="M640 636 l180 -10 -20 -60 q-90 -14 -140 20 z" fill="#cfc0a0" opacity=".9"/>
+  ${['A','B','C','D','E'].map((ch,i)=>`<g transform="rotate(${(i-2)*9} ${660+i*46} 748)"><rect x="${644+i*46}" y="736" width="32" height="24" rx="4" fill="#d9cba6"/><text x="${660+i*46}" y="754" text-anchor="middle" font-family="Special Elite" font-size="15" fill="#4a3517">${ch}</text></g>`).join('')}
+</g>
+<!-- flare locker -->
+<g id="art-locker">
+  <rect x="1090" y="646" width="150" height="104" rx="8" fill="#5c1f1a"/>
+  <rect x="1090" y="646" width="150" height="26" rx="8" fill="#7a2a22"/>
+  ${[0,1,2].map(i=>`<rect x="${1102+i*48}" y="652" width="22" height="98" fill="#c9a04a" opacity=".8"/>`).join('')}
+  <rect x="1148" y="688" width="34" height="28" rx="4" fill="#20140f"/>
+  <circle cx="1165" cy="702" r="8" fill="#0d0a06" stroke="#c9a04a" stroke-width="2"/>
+</g>
+<!-- tide table on a rock (hidden until locker) -->
+<g id="el-tide">
+  <ellipse cx="1300" cy="560" rx="70" ry="34" fill="#241d20"/>
+  <rect x="1258" y="516" width="86" height="58" rx="4" fill="#d9cba6" transform="rotate(-7 1300 545)"/>
+  ${[0,1,2].map(i=>`<line x1="1268" y1="${532+i*13}" x2="1330" y2="${528+i*13}" stroke="#7a5c34" stroke-width="2.5"/>`).join('')}
+</g>
+<!-- launch winch (hidden until tide) -->
+<g id="el-winch">
+  <rect x="1404" y="640" width="16" height="130" fill="#241a10"/>
+  <circle cx="1412" cy="640" r="42" fill="#3a3d38" stroke="#20241f" stroke-width="6"/>
+  ${[0,1,2,3,4,5,6,7].map(i=>`<line x1="1412" y1="640" x2="${Math.round(1412+52*Math.cos(i*Math.PI/4))}" y2="${Math.round(640+52*Math.sin(i*Math.PI/4))}" stroke="#20241f" stroke-width="7"/>`).join('')}
+  <circle cx="1412" cy="640" r="12" fill="#c9a04a"/>
+  <text x="1412" y="596" text-anchor="middle" font-size="20" fill="#e0cfa2">▲●■◆</text>
+</g>
+<!-- flare rack (hidden until winch) -->
+<g id="el-signal">
+  <path d="M820 470 l64 0 12 60 -88 0 z" fill="#241a10"/>
+  ${[0,1,2].map(i=>`<g transform="rotate(${(i-1)*10} ${838+i*14} 470)"><rect x="${832+i*14}" y="418" width="12" height="54" rx="4" fill="#a83a28"/><rect x="${832+i*14}" y="412" width="12" height="10" rx="3" fill="#e0cfa2"/></g>`).join('')}
+</g>
+</svg>`;
+</script>
+<script>
+/* ============================================================
+   4. DATA — rooms, objects, puzzles, hints, hotspot coords
+   pos = {x,y,w,h} in % of the 1600x900 stage.
+   ============================================================ */
 const WRONG_BEATS = [
   "Somewhere behind you, wet sand shifts under a weight that isn't the tide.",
   "Three slow knocks. Wood on wood. Then nothing.",
@@ -315,323 +1031,302 @@ const WRONG_BEATS = [
   "A long exhale — too long — from somewhere in the green.",
   "For a moment the light dims, as if something very tall passed between you and the sun."
 ];
+const WRONG_SOUNDS = ['knock','knock','growl','growl','knock'];
 
-/* ---------- game content ---------- */
 const ROOMS = [
 /* ================= ROOM 1 — THE BEACH ================= */
 {
-  id:'beach', name:'Room 1 — The Beach', cls:'room-beach',
-  intro:"You wade out of the surf into a graveyard of cargo and canvas. The Eldermoor's bones lie broken along the tideline. Somewhere inland, a rusted antenna pokes above the palms — but first, the wreckage may hold what you need. The sand above the high-water mark is marked with long, dragging prints. Not yours.",
+  id:'beach', name:'Room 1 — The Beach', scene:'beach', fx:'mist',
+  intro:"Dawn. A graveyard of cargo and canvas. Find a way off this beach.",
+  objective:"Explore the wreckage — <b>glowing rings</b> mark what you can examine. Something here points the way inland.",
   entryBeat:"As you take your first steps up the beach, the treeline goes quiet all at once — the way a room goes quiet when something walks in.",
+  entrySound:null,
   completeText:"Chart in hand, you leave the wreck behind. Eight paces north, two east, and a trail opens in the vines like a mouth.",
   chain:"Driftwood anagram (SAIL) → sail reveals symbol order → crate stencils give combo 8351 → crate holds brass key stamped TIDE → box riddle answer TIDE → box holds chart → chart math gives 82 → path to radio station.",
   objects:[
-    { id:'hull', icon:'🚢', name:"Shattered Hull",
+    { id:'hull', icon:'🚢', name:"Shattered Hull", pos:{x:69,y:52,w:22,h:24},
       desc:"What's left of the Eldermoor lies on its side, ribs open to the sky. Inside, the dark holds its breath. You call out. Your echo comes back a half-second too late, and slightly… wrong.\n\nThere's nothing useful in there. You're almost sure." },
-    { id:'driftwood', icon:'🪵', name:'Driftwood Planks',
+    { id:'driftwood', icon:'🪵', name:'Driftwood Planks', pos:{x:4,y:78,w:12,h:14},
       desc:"Four planks from a lifeboat bench have washed up in a rough row. Someone — before the wreck, surely — carved a single letter into each:\n\nL   ·   I   ·   A   ·   S\n\nThe sea has jumbled their order.",
       puzzle:{
         prompt:"Rearrange the four carved letters into a word. Where should you look next?",
-        placeholder:"FOUR LETTERS",
-        answers:['SAIL'],
+        placeholder:"FOUR LETTERS", answers:['SAIL'],
         hints:[
           "Four letters, four planks. The sea shuffled them on the way in — un-shuffle them.",
           "Rearrange L, I, A, S into something no ship can move without.",
           "It's hanging in tatters just up the beach: the answer is SAIL."
         ],
-        solvedText:"SAIL. Of course. Up the beach, the Eldermoor's torn mainsail is snagged across a rock — and now that you look properly, there's something painted on it.",
-        solveBeat:null
+        solvedText:"SAIL. Of course. Up the beach, the Eldermoor's torn mainsail is snagged across a rock — and now that you look properly, there's something painted on it."
       }
     },
-    { id:'sail', icon:'⛵', name:'Torn Sail', revealedBy:'driftwood',
+    { id:'sail', icon:'⛵', name:'Torn Sail', pos:{x:23,y:53,w:12,h:16}, revealedBy:'driftwood',
       desc:"A great sheet of salt-stiff canvas, snagged on the rocks. It's crusted and folded on itself — you can't make anything of it yet. Maybe something else on the beach will tell you why it matters.",
-      revealDesc:"You haul the canvas flat. Painted along its edge in tar — a loading mark from some old port — is a row of four shapes, in this exact order:\n\n" },
-    { id:'crate', icon:'📦', name:'Cargo Crate',
+      revealDesc:"You haul the canvas flat. Painted along its edge in tar — a loading mark from some old port — is a row of four shapes, in this exact order:" },
+    { id:'crate', icon:'📦', name:'Cargo Crate', pos:{x:46,y:72,w:11,h:14},
       desc:"A heavy cargo crate, banded in iron, sealed with a 4-digit dial lock. Stencilled on its side are four shapes, each with a number — but they're printed in no particular order:\n\n■ 5      ◆ 1      ▲ 8      ● 3\n\nNumbers, but no sequence. Something must give you the order.",
       puzzle:{
-        prompt:"Enter the 4-digit combination.",
-        placeholder:"0000",
-        answers:['8351'],
+        prompt:"Enter the 4-digit combination.", placeholder:"0000", answers:['8351'],
         hints:[
           "The stencilled shapes each have a number — what you're missing is the ORDER to read them in.",
           "The torn sail shows the same four shapes painted in a specific order. Read the crate's numbers in the sail's order.",
           "Sail order is triangle, circle, square, diamond → 8, 3, 5, 1. Enter 8351."
         ],
         solvedText:"The lock falls open. Inside, wrapped in oilcloth: a small brass key, stamped with one word — TIDE — and a scrap of paper: “the box answers to what the key remembers.”",
-        solveBeat:"As the crate lid creaks open, something big shifts its weight in the treeline. One branch snaps. Then the silence resumes, heavier than before."
+        solveBeat:"As the crate lid creaks open, something big shifts its weight in the treeline. One branch snaps. Then the silence resumes, heavier than before.",
+        beatSound:'knock'
       }
     },
-    { id:'box', icon:'🧰', name:'Weatherproof Box',
+    { id:'box', icon:'🧰', name:'Weatherproof Box', pos:{x:75,y:82,w:10,h:10},
       desc:"A ship's weatherproof document box, bolted shut with a 4-letter combination lock. A riddle is engraved on the lid in fine script:\n\n“Twice each day I come, and twice I leave.\nThe moon commands me; no anchor holds me.\nI kiss the shore, then take it with me.\nWhat am I?”",
       puzzle:{
-        prompt:"Set the four letter dials.",
-        placeholder:"FOUR LETTERS",
-        answers:['TIDE'],
+        prompt:"Set the four letter dials.", placeholder:"FOUR LETTERS", answers:['TIDE'],
         hints:[
           "The riddle describes something the ocean does on a schedule.",
           "Twice a day, commanded by the moon… and check what's stamped on the brass key from the crate.",
           "The key already told you: the answer is TIDE."
         ],
-        solvedText:"The dials click to T-I-D-E and the box sighs open. Inside: a torn nautical chart of this very island, annotated in a hurried hand.",
-        solveBeat:null
+        solvedText:"The dials click to T-I-D-E and the box sighs open. Inside: a torn nautical chart of this very island, annotated in a hurried hand."
       }
     },
-    { id:'chart', icon:'🗺️', name:'Chart Fragment', hiddenUntil:'box',
+    { id:'chart', icon:'🗺️', name:'Chart Fragment', pos:{x:41,y:88,w:9,h:8}, hiddenUntil:'box',
       desc:"The chart shows the island, the wreck site — and a route to a circled square labelled RADIO STN. The margin notes read:\n\n“12 souls boarded at Port Ashen. 4 were taken by the water. From the tallest palm, walk NORTH as many paces as remain.”\n\n“7 crates washed ashore. 5 broke open on the rocks. Walk EAST as many paces as survived intact.”",
       puzzle:{
-        prompt:"Enter the paces: north digit, then east digit.",
-        placeholder:"TWO DIGITS",
-        answers:['82'],
+        prompt:"Enter the paces: north digit, then east digit.", placeholder:"TWO DIGITS", answers:['82'],
         hints:[
           "Two small calculations — one gives the north paces, one gives the east.",
           "North: how many of 12 souls remain after 4 were lost? East: how many of 7 crates stayed intact when 5 broke?",
           "8 paces north, 2 paces east — enter 82."
         ],
         solvedText:"Eight north, two east from the tallest palm — and there it is: a trailhead cut into the jungle wall, and far up the ridge, the dull glint of an antenna.",
-        solveBeat:"You count your paces aloud. On “six,” something in the undergrowth counts one pace with you. On “seven,” it doesn't."
+        solveBeat:"You count your paces aloud. On “six,” something in the undergrowth counts one pace with you. On “seven,” it doesn't.",
+        beatSound:'growl'
       }
     }
   ]
 },
 /* ================= ROOM 2 — THE RADIO STATION ================= */
 {
-  id:'radio', name:'Room 2 — The Radio Station', cls:'room-radio',
-  intro:"You push open the rusted door. Dust hangs in the green glow of instruments that should not still have power. A logbook lies open on the desk, its last entry unfinished mid-word. The operator's chair faces the window — turned, as if whoever sat here was watching for something to come out of the trees.",
+  id:'radio', name:'Room 2 — The Radio Station', scene:'radio', fx:'motes',
+  intro:"Dust hangs in the green glow of instruments that should not still have power.",
+  objective:"The operator left everything you need. Read the room — then <b>listen</b>.",
   entryBeat:"The door swings shut behind you on its own. Rusted hinges don't do that quietly. This one did.",
+  entrySound:'knock',
   completeText:"The transmitter hums, your distress call looping out to sea. A stencilled arrow on the equipment rack points to a back door: ANTENNA LINE — THIS WAY. The cable runs straight into the jungle.",
-  chain:"Logbook clue (day 121, entry 5) → tune radio to 121.5 → broadcast is morse for UNDER → look under the rug: floor hatch → Caesar-shifted plate (shift 3) decodes to STORM → hatch opens to transmitter → punch card sequences (fibonacci 13, odd numbers 31) give code 1331.",
+  chain:"Logbook clue (day 121, entry 5) → tune the dial to 121.5 → broadcast is morse for UNDER → rug hides floor hatch → Caesar plate (shift 3) decodes to STORM → hatch reveals transmitter → punch-card sequences (fibonacci 13, odds 31) give 1331.",
   objects:[
-    { id:'logbook', icon:'📖', name:"Operator's Logbook",
+    { id:'logbook', icon:'📖', name:"Operator's Logbook", pos:{x:29,y:63,w:11,h:9},
       desc:"The final entry, in a deteriorating hand:\n\n“Day 121, entry 5. It circles the station after dark now. I will make one last broadcast on the emergency band and then I will not transmit again. If anyone finds this: the band is where the day meets the entry. Listen. Then get UNDER—”\n\nThe entry stops there. The pen is still in the crease of the page." },
-    { id:'window', icon:'🪟', name:'Salt-Crusted Window',
+    { id:'window', icon:'🪟', name:'Salt-Crusted Window', pos:{x:6,y:19,w:19,h:27},
       desc:"The glass is fogged with years of salt. Through it, the clearing, the treeline, the ordinary green.\n\nIn the bottom corner of the pane, for just a moment, there is a shape. Tall. Patient. It's gone when you look directly at it.\n\nYou decide, as a crew, to stop looking out the window." },
-    { id:'poster', icon:'📜', name:'Morse Chart Poster',
-      desc:"A yellowed training poster is pinned above the desk: INTERNATIONAL MORSE CODE.\n\nA = ·−    B = −···    C = −·−·    D = −··    E = ·\nF = ··−·    G = −−·    H = ····    I = ··    J = ·−−−\nK = −·−    L = ·−··    M = −−    N = −·    O = −−−\nP = ·−−·    Q = −−·−    R = ·−·    S = ···    T = −\nU = ··−    V = ···−    W = ·−−    X = −··−    Y = −·−−    Z = −−··\n\nSomeone has underlined five of the letters so hard the paper tore." },
-    { id:'radio', icon:'📻', name:'Radio Receiver', flicker:true,
-      desc:"The heart of the station: a wall of dials and meters, still warm, its panel light flickering like a failing heartbeat. The main tuning dial waits at 000.0. A brass plate reads: EMERGENCY MONITORING STATION 7 — TUNE WITH CARE.\n\nStatic washes from the speaker like surf.",
+    { id:'poster', icon:'📜', name:'Morse Chart Poster', pos:{x:76,y:19,w:12,h:28},
+      desc:"A yellowed training poster is pinned above the desk: INTERNATIONAL MORSE CODE.\n\nA ·−    B −···    C −·−·    D −··    E ·\nF ··−·    G −−·    H ····    I ··    J ·−−−\nK −·−    L ·−··    M −−    N −·    O −−−\nP ·−−·    Q −−·−    R ·−·    S ···    T −\nU ··−    V ···−    W ·−−    X −··−    Y −·−−    Z −−··\n\nSomeone has underlined five of the letters so hard the paper tore." },
+    { id:'radio', icon:'📻', name:'Radio Receiver', pos:{x:39,y:40,w:27,h:20},
+      desc:"The heart of the station: a wall of dials and meters, still warm, its panel light flickering like a failing heartbeat. A brass plate reads: EMERGENCY MONITORING STATION 7 — TUNE WITH CARE.\n\nStatic washes from the speaker like surf. The main tuning dial waits.",
       puzzle:{
-        prompt:"Tune the dial — enter the frequency.",
-        placeholder:"FREQUENCY",
+        type:'dial',
+        prompt:"Sweep the dial. Find the frequency, then LOCK IT IN.",
         answers:['1215'],
         hints:[
           "The logbook's final entry hides the number. Read it again, slowly.",
           "“Day 121, entry 5 … the band is where the day meets the entry.” Put the day and the entry together.",
-          "Tune to 121.5 — type 1215."
+          "Tune the dial to exactly 121.5 and lock it in."
         ],
-        solvedText:"At 121.5 the static parts like a curtain. A recorded voice, looped for years, keys the same five letters over and over. You copy the pulses down exactly. (A new signal is coming through — check THE BROADCAST.)",
-        solveBeat:null
+        solvedText:"At 121.5 the static parts like a curtain. A recorded voice, looped for years, keys the same five letters over and over. The SPEAKER is carrying a signal now — go listen to it.",
       }
     },
-    { id:'broadcast', icon:'📡', name:'The Broadcast', hiddenUntil:'radio', flicker:true,
+    { id:'broadcast', icon:'📡', name:'The Broadcast', pos:{x:28,y:44,w:10,h:15}, hiddenUntil:'radio',
       desc:"The loop repeats every few seconds. Five letters, keyed slow and deliberate:\n\n··−   −·   −··   ·   ·−·\n\nThe operator wanted this understood by whoever came after.",
       puzzle:{
         prompt:"Decode the message. What is the broadcast telling you?",
-        placeholder:"FIVE LETTERS",
-        answers:['UNDER'],
+        placeholder:"FIVE LETTERS", answers:['UNDER'],
+        morse:'..- -. -.. . .-.',
         hints:[
-          "Dots and dashes — the training poster on the wall pairs every pattern with a letter.",
-          "Five letters. ··− is U. −·−… no — −· is N. Keep going, one letter per group.",
+          "Dots and dashes — there's a training poster on the wall that pairs every pattern with a letter.",
+          "Five letters. ··− is U. Keep going, one letter per group.",
           "··− −· −·· · ·−· spells UNDER. The logbook even started to say it: “get UNDER—”"
         ],
         solvedText:"U-N-D-E-R. Under. Your eyes drop to the floor — to the woven rug beneath the operator's desk. You drag it aside. A steel hatch, flush with the boards.",
-        solveBeat:"As you copy the last letter, three slow knocks land on the outside of the station wall. Deliberate. Evenly spaced. Nobody on your crew is outside."
+        solveBeat:"As you copy the last letter, three slow knocks land on the outside of the station wall. Deliberate. Evenly spaced. Nobody on your crew is outside.",
+        beatSound:'knock'
       }
     },
-    { id:'hatch', icon:'🕳️', name:'Floor Hatch', hiddenUntil:'broadcast',
+    { id:'hatch', icon:'🕳️', name:'Floor Hatch', pos:{x:44,y:85,w:12,h:11}, hiddenUntil:'broadcast',
       desc:"A steel hatch with a five-letter wheel lock. Riveted beside it, a brass plate stamped with nonsense:\n\nWKH  ZKHHO  RSHQV  WR:  VWRUP\n\nBeneath it, scratched by hand: “Caesar marched his men three paces forward. Walk them back.”",
       puzzle:{
-        prompt:"Set the wheel to the decoded word.",
-        placeholder:"FIVE LETTERS",
-        answers:['STORM'],
+        prompt:"Set the wheel to the decoded word.", placeholder:"FIVE LETTERS", answers:['STORM'],
         hints:[
           "The letters look wrong because every one of them has been marched forward through the alphabet.",
           "It's a Caesar cipher, shift 3. Take each letter three steps BACK: W→T, K→H, H→E…",
           "VWRUP shifted back three is STORM. The plate reads: THE WHEEL OPENS TO: STORM."
         ],
-        solvedText:"S-T-O-R-M. The wheel spins free and the hatch lifts on a narrow crawlspace — and a squat emergency transmitter on a battery bank, its keypad glowing faintly.",
-        solveBeat:null
+        solvedText:"S-T-O-R-M. The wheel spins free and the hatch lifts on a narrow crawlspace — and a squat emergency transmitter on a battery bank, its keypad glowing faintly."
       }
     },
-    { id:'transmitter', icon:'🔌', name:'Emergency Transmitter', hiddenUntil:'hatch', flicker:true,
+    { id:'transmitter', icon:'🔌', name:'Emergency Transmitter', pos:{x:69,y:79,w:13,h:14}, hiddenUntil:'hatch',
       desc:"The emergency transmitter wants a 4-digit arming code. Taped to its casing is a punch card in the operator's hand:\n\n“ARM CODE = [next number] [next number]\n\n  1, 1, 2, 3, 5, 8, __\n  25, 27, 29, __ ”\n\nBelow, tiny and urgent: “REMEMBER THE BAND. YOU WILL NEED IT AGAIN.”",
       puzzle:{
-        prompt:"Enter the 4-digit arming code.",
-        placeholder:"0000",
-        answers:['1331'],
+        prompt:"Enter the 4-digit arming code.", placeholder:"0000", answers:['1331'],
         hints:[
           "Two number patterns. Work out what comes next in each; the answers join into four digits.",
           "First pattern: every number is the sum of the two before it. Second pattern: the numbers climb by two.",
           "1,1,2,3,5,8 → 13. 25,27,29 → 31. The code is 1331."
         ],
         solvedText:"1-3-3-1. The transmitter thumps to life and begins looping a distress call out to sea. MAYDAY, MAYDAY, MAYDAY. Someone, somewhere, might be listening. Now — the antenna cable runs out the back door and into the jungle. That's your path.",
-        solveBeat:"The moment the distress call starts broadcasting, something outside answers it — one long, low sound from deep in the island, too slow to be any bird."
+        solveBeat:"The moment the distress call starts broadcasting, something outside answers it — one long, low sound from deep in the island, too slow to be any bird.",
+        beatSound:'growl'
       }
     }
   ]
 },
 /* ================= ROOM 3 — THE JUNGLE PATH ================= */
 {
-  id:'jungle', name:'Room 3 — The Jungle Path', cls:'room-jungle',
-  intro:"You follow the antenna cable into the green dark. The canopy closes overhead and the temperature drops. Branches along the trail are snapped at head height — well above YOUR head height. Every few minutes you hear it: something large, keeping pace with you, always just out of sight.",
+  id:'jungle', name:'Room 3 — The Jungle Path', scene:'jungle', fx:'fireflies',
+  intro:"The canopy closes overhead. Something large keeps pace with you, always just out of sight.",
+  objective:"Follow the antenna cable through the interior. Keep moving. <b>Keep quiet.</b>",
   entryBeat:"Ten steps in, you find one of the operator's boots. Just the one. It has been placed, neatly, in the exact center of the path — facing back the way you came.",
+  entrySound:'growl',
   completeText:"You cross the rope bridge at a dead sprint and cut the lines behind you. Below the cliffs lies a hidden cove — and stacked on the sand, under a tarp, materials for a raft. The operator planned an escape. You're going to finish it.",
-  chain:"Tree riddle (RIVER) → river crossing stones ordered by polygon sides spell DARK → ranger's pack paces (6, 3, 9) give 639 → pack holds morse crib + lamp → light across the gorge blinks morse RUN → gate opens to rope bridge and the cove.",
+  chain:"Tree riddle (RIVER) → crossing stones ordered by polygon sides spell DARK → ranger's pack paces (6,3,9) give 639 → pack holds morse crib + lamp → relay lamp across the gorge blinks morse RUN → gate opens to the rope bridge and the cove.",
   objects:[
-    { id:'branches', icon:'🌿', name:'Snapped Branches',
+    { id:'branches', icon:'🌿', name:'Snapped Branches', pos:{x:6,y:47,w:12,h:22},
       desc:"The trail-side branches are broken inward, all along one side, at a height that makes your neck prickle. The breaks are fresh — sap still bleeding.\n\nWhatever walks here doesn't go around things. It goes through them. You keep your voices low from now on." },
-    { id:'tree', icon:'🌴', name:'Carved Tree',
-      desc:"A massive palm, carved long ago with a riddle — the letters darkened with tar so they'd survive the seasons:\n\n“I have a bed, but I never sleep.\nI have a mouth, but I never speak.\nI run, but I never walk.\nFind me, and follow.”\n\nSomewhere off to the left, you can hear water moving.",
+    { id:'tree', icon:'🌴', name:'Carved Tree', pos:{x:17,y:48,w:9,h:26},
+      desc:"A massive trunk, carved long ago with a riddle — the letters darkened with tar so they'd survive the seasons:\n\n“I have a bed, but I never sleep.\nI have a mouth, but I never speak.\nI run, but I never walk.\nFind me, and follow.”\n\nSomewhere off to the left, you can hear water moving.",
       puzzle:{
-        prompt:"What must you find and follow?",
-        placeholder:"ANSWER",
-        answers:['RIVER','ARIVER','THERIVER'],
+        prompt:"What must you find and follow?", placeholder:"ANSWER", answers:['RIVER','ARIVER','THERIVER'],
         hints:[
           "It's not a creature. It's a feature of the island — you can hear it from here.",
           "It has a bed, a mouth, and it runs without legs. Water is involved.",
           "The answer is RIVER. Head toward the sound of water."
         ],
-        solvedText:"A river. You push through the ferns toward the sound and find it: fast, dark water — with a line of flat marker stones offering a way across.",
-        solveBeat:null
+        solvedText:"A river. You push through the ferns toward the sound and find it: fast, dark water — with a line of flat marker stones offering a way across."
       }
     },
-    { id:'stones', icon:'🪨', name:'River Crossing Stones', hiddenUntil:'tree',
+    { id:'stones', icon:'🪨', name:'River Crossing Stones', pos:{x:33,y:73,w:29,h:11}, hiddenUntil:'tree',
       desc:"Four flat stones cross the river, each chiseled with a letter and a shape. From where you stand (not in crossing order):\n\nR — pentagon ⬟ (five sides)\nK — hexagon ⬢ (six sides)\nD — triangle ▲ (three sides)\nA — square ■ (four sides)\n\nA mossy carving on the bank warns: “Step only where the sides increase. The wrong stone tips.”",
       puzzle:{
-        prompt:"Enter the letters in stepping order.",
-        placeholder:"FOUR LETTERS",
-        answers:['DARK'],
+        prompt:"Enter the letters in stepping order.", placeholder:"FOUR LETTERS", answers:['DARK'],
         hints:[
           "Count the sides of each stone's shape. That's your ordering rule.",
           "Step from fewest sides to most: 3, then 4, then 5, then 6. Read the letters in that order.",
           "Triangle-D (3), square-A (4), pentagon-R (5), hexagon-K (6): the crossing spells DARK."
         ],
         solvedText:"D… A… R… K. Each stone holds. You reach the far bank just as the light under the canopy dims a shade — and you try not to think about what the stones spell. Ahead, half-buried in ferns: a ranger's pack.",
-        solveBeat:"Halfway across, the river goes strangely quiet upstream — the sound of water breaking around something that has stepped into the current behind you. You do not turn around."
+        solveBeat:"Halfway across, the river goes strangely quiet upstream — the sound of water breaking around something that has stepped into the current behind you. You do not turn around.",
+        beatSound:'growl'
       }
     },
-    { id:'pack', icon:'🎒', name:"Ranger's Pack", hiddenUntil:'stones',
+    { id:'pack', icon:'🎒', name:"Ranger's Pack", pos:{x:67,y:69,w:9,h:13}, hiddenUntil:'stones',
       desc:"A weathered ranger's pack, sealed with a 3-digit padlock. A waterproof tag hangs from the zip, the writing still legible:\n\n“My cache code, so I don't forget —\nFrom the twin palms I walked:\nSIX paces north.\nHalf so many east.\nTheir sum south.”",
       puzzle:{
-        prompt:"Enter the 3-digit code.",
-        placeholder:"000",
-        answers:['639'],
+        prompt:"Enter the 3-digit code.", placeholder:"000", answers:['639'],
         hints:[
           "Turn the three walking directions into three digits, in the order given.",
           "Six north. Half of six east. Six plus three south.",
           "6, 3, 9 — enter 639."
         ],
-        solvedText:"6-3-9. Inside: a machete, a battery signal lamp, and a torn page from the station's operator manual — a pocket morse alphabet, creased from use. Why would a ranger need to flee with a morse crib?",
-        solveBeat:null
+        solvedText:"6-3-9. Inside: a machete, a battery signal lamp, and a torn page from the station's operator manual — a pocket morse alphabet, creased from use. Why would a ranger need to flee with a morse crib?"
       }
     },
-    { id:'gate', icon:'🌉', name:'Gorge Gate', revealedBy:'pack',
+    { id:'gate', icon:'🌉', name:'Gorge Gate', pos:{x:43,y:22,w:15,h:18}, revealedBy:'pack',
       desc:"The trail ends at a deep gorge spanned by an old rope bridge. Its gate is barred with a 3-letter tumbler lock. Far across the gorge, fixed to the far post, an old signal lamp sits dark.\n\nNothing else here moves. Maybe something you're carrying could wake that lamp.",
       revealDesc:"You raise the ranger's lamp and flash it across the gorge. A heartbeat later the far lamp wakes and answers — an automated relay, blinking the same three letters, over and over, faster each time. As if it's urgent:\n\n·−·   ··−   −·\n\nThe gate's tumbler lock waits for three letters.",
       puzzle:{
         prompt:"Enter the 3-letter word the far lamp is flashing.",
-        placeholder:"3 LETTERS",
-        answers:['RUN'],
+        placeholder:"3 LETTERS", answers:['RUN'],
+        morse:'.-. ..- -.', morseLocked:'pack',
         hints:[
           "The light across the gorge is blinking with purpose — long and short flashes. You've decoded this kind of thing before.",
           "It's morse, three letters. The manual page from the ranger's pack has the alphabet: ·−· is R.",
           "·−· ··− −· spells RUN. So… run."
         ],
-        solvedText:"R-U-N. The gate swings open — and at that exact moment, behind you, the undergrowth erupts. You don't look. You RUN, boots hammering the planks, the whole bridge bucking under something that steps onto it behind you.",
-        solveBeat:null
+        solvedText:"R-U-N. The gate swings open — and at that exact moment, behind you, the undergrowth erupts. You don't look. You RUN, boots hammering the planks, the whole bridge bucking under something that steps onto it behind you."
       }
     }
   ]
 },
 /* ================= ROOM 4 — THE ESCAPE RAFT ================= */
 {
-  id:'raft', name:'Room 4 — The Escape Raft', cls:'room-raft',
-  intro:"Dusk. A hidden cove below the cliffs, and the operator's unfinished escape: logs, lashings, a folded sail, a sealed flare locker, a launch winch bolted to the rock. Out on the darkening water, the lights of a passing ship crawl along the horizon. You have one chance to build, signal, and launch — and the drag-marks in the sand say you're not the first thing to walk this cove tonight.",
+  id:'raft', name:'Room 4 — The Escape Raft', scene:'cove', fx:'mist',
+  intro:"Dusk. One chance to build, signal, and launch.",
+  objective:"The operator staged an escape and never used it. <b>Finish it.</b> The ship's lights are already on the horizon.",
   entryBeat:"Fresh prints circle the raft materials — the same long, dragging prints from the beach where you started. It has been here. It has been waiting to see if you'd make it this far.",
+  entrySound:'knock',
   completeText:"",
-  chain:"Assembly tags logic gives order B-D-A-E-C → flare locker plaque recalls Room 2's emergency band: 1215 → tide table: launch 90 min before 6:40 high tide = 5:10 → winch shape tumblers recall Room 1's sail/crate code: 8351 → fire flares in SOS pattern (···−−−···) → LAUNCH.",
+  chain:"Assembly tags logic gives order B-D-A-E-C → flare locker plaque recalls Room 2's emergency band: 1215 → tide table: 90 min before 6:40 high tide = 5:10 → winch shape tumblers recall Room 1's sail/crate code: 8351 → fire flares in SOS (···−−−···) → LAUNCH.",
   objects:[
-    { id:'dragmarks', icon:'👣', name:'Drag-Marks in the Sand',
+    { id:'dragmarks', icon:'👣', name:'Drag-Marks in the Sand', pos:{x:24,y:87,w:16,h:9},
       desc:"Long furrows circle the cove, the same as the beach at dawn — but here they're layered dozens deep, old over older, like a patrol route walked for years.\n\nAt the center of the pattern, planted upright in the sand: the operator's other boot.\n\nBuild fast." },
-    { id:'raftkit', icon:'🛶', name:'Raft Materials',
+    { id:'raftkit', icon:'🛶', name:'Raft Materials', pos:{x:39,y:75,w:18,h:16},
       desc:"The operator staged everything and labeled each step with a tag — but the tags have scattered in the wind:\n\nTAG A — “Raise the mast. Only after the deck is laid.”\nTAG B — “Lash the logs together. This comes first of all.”\nTAG C — “Rig the sail. Nothing comes after this.”\nTAG D — “Lay the deck across the logs.”\nTAG E — “Fix the rudder. After the mast is up, before the sail is rigged.”",
       puzzle:{
-        prompt:"Enter the five tag letters in build order.",
-        placeholder:"FIVE LETTERS",
-        answers:['BDAEC'],
+        prompt:"Enter the five tag letters in build order.", placeholder:"FIVE LETTERS", answers:['BDAEC'],
         hints:[
           "One tag says it comes “first of all,” and one says “nothing comes after.” That's both ends of your sequence.",
           "Logs first, sail last. The deck needs the logs; the mast needs the deck; the rudder goes after the mast but before the sail.",
           "The build order is B, D, A, E, C — enter BDAEC."
         ],
         solvedText:"Logs, deck, mast, rudder, sail. It comes together fast under ten hands — an ugly, beautiful, seaworthy-enough raft. Now you need the flares and the tide.",
-        solveBeat:"As the mast goes up, from the clifftop above the cove comes a sound like slow applause — two heavy limbs striking together. Once. Twice. Then nothing."
+        solveBeat:"As the mast goes up, from the clifftop above the cove comes a sound like slow applause — two heavy limbs striking together. Once. Twice. Then nothing.",
+        beatSound:'knock'
       }
     },
-    { id:'locker', icon:'🧨', name:'Flare Locker',
+    { id:'locker', icon:'🧨', name:'Flare Locker', pos:{x:66,y:73,w:12,h:14},
       desc:"A steel flare locker, painted with fading emergency stripes, sealed with a 4-digit lock. The plaque riveted to the lid reads:\n\n“PROPERTY OF STATION 7.\nAN OPERATOR NEVER FORGETS THE EMERGENCY BAND.”",
       puzzle:{
-        prompt:"Enter the 4-digit code.",
-        placeholder:"0000",
-        answers:['1215'],
+        prompt:"Enter the 4-digit code.", placeholder:"0000", answers:['1215'],
         hints:[
           "“An operator never forgets the emergency band.” You tuned to it yourself, back in the station.",
           "Think back to the radio room — the frequency hidden in the logbook's last entry.",
           "The emergency band was 121.5 — enter 1215."
         ],
-        solvedText:"121.5 — the band that started all this. The locker opens on a bundle of signal flares, dry and intact, and beneath them a laminated tide table for the cove.",
-        solveBeat:null
+        solvedText:"121.5 — the band that started all this. The locker opens on a bundle of signal flares, dry and intact, and beneath them a laminated tide table for the cove."
       }
     },
-    { id:'tide', icon:'🌊', name:'Tide Table & Winch Notes', hiddenUntil:'locker',
+    { id:'tide', icon:'🌊', name:'Tide Table & Winch Notes', pos:{x:77,y:56,w:9,h:11}, hiddenUntil:'locker',
       desc:"The laminated card, in the operator's neat hand:\n\n“COVE LAUNCH WINDOW —\nHigh tide tonight: 6:40.\nThe reef only clears on the RISING tide.\nSet the winch timer to launch exactly 90 minutes BEFORE high tide, or the raft grounds on the reef in the dark.”\n\nThe launch winch has a timer dial: hour digit, then minutes.",
       puzzle:{
-        prompt:"Set the launch time (hour then minutes, e.g. 730).",
-        placeholder:"H:MM",
-        answers:['510','0510'],
+        prompt:"Set the launch time (hour then minutes, e.g. 730).", placeholder:"H:MM", answers:['510','0510'],
         hints:[
           "Work backwards from high tide.",
           "What time is 90 minutes before 6:40?",
           "6:40 minus 1:30 is 5:10 — enter 510."
         ],
-        solvedText:"5:10. The timer arms with a clunk — and the brass key from the beach, the one stamped TIDE, turns smoothly in the winch housing, as if the whole island had been one machine waiting for you to wind it.",
-        solveBeat:null
+        solvedText:"5:10. The timer arms with a clunk — and the brass key from the beach, the one stamped TIDE, turns smoothly in the winch housing, as if the whole island had been one machine waiting for you to wind it."
       }
     },
-    { id:'winch', icon:'⚙️', name:'Launch Winch Tumblers', hiddenUntil:'tide',
+    { id:'winch', icon:'⚙️', name:'Launch Winch Tumblers', pos:{x:85,y:67,w:10,h:16}, hiddenUntil:'tide',
       desc:"The winch release is guarded by four numbered tumblers — and above them, chiseled deep into the rock, four familiar shapes in a familiar order:\n\n▲   ●   ■   ◆\n\nBeneath them: “AS THE CRATE ONCE OPENED, SO SHALL THE SEA.”\n\nYou've seen these shapes before. On a beach. A lifetime ago this morning.",
       puzzle:{
-        prompt:"Enter the 4-digit release code.",
-        placeholder:"0000",
-        answers:['8351'],
+        prompt:"Enter the 4-digit release code.", placeholder:"0000", answers:['8351'],
         hints:[
           "Those four shapes — you've opened something with them before.",
           "The torn sail gave the order, the cargo crate gave the numbers. Back on the beach, Room 1.",
           "Same code as the cargo crate: triangle 8, circle 3, square 5, diamond 1 → 8351."
         ],
         solvedText:"8-3-5-1. The tumblers align and the winch release lever frees with a heavy CLACK. Everything is ready. All that's left is to bring that ship — fire the flares in a signal no sailor on Earth can ignore.",
-        solveBeat:"From the treeline at the cove's edge, for the first time, you hear it breathe. It is very close now. It has stopped hiding."
+        solveBeat:"From the treeline at the cove's edge, for the first time, you hear it breathe. It is very close now. It has stopped hiding.",
+        beatSound:'growl'
       }
     },
-    { id:'signal', icon:'🔥', name:'Fire the Signal Flares', hiddenUntil:'winch',
+    { id:'signal', icon:'🔥', name:'Fire the Signal Flares', pos:{x:49,y:47,w:11,h:14}, hiddenUntil:'winch',
       desc:"The flare rack holds nine flares: enough for one message. Short bursts and long burns — the oldest distress signal there is. Get the pattern right and that ship WILL turn.\n\nGet it wrong, and you've lit yourself up for something other than rescue.",
       puzzle:{
         type:'signal',
-        prompt:"Fire the flares in the international distress pattern, then hit SEND SIGNAL.",
+        prompt:"Fire the flares in the international distress pattern, then hit SEND SIGNAL. (Watch the sky behind this panel.)",
         answers:['...---...'],
         hints:[
           "Three letters every sailor on Earth knows.",
           "S is three shorts. O is three longs. Spell the distress call.",
           "Fire: short short short, long long long, short short short — SOS."
         ],
-        solvedText:"", /* victory handles the payoff */
-        solveBeat:null
+        solvedText:""
       }
     }
   ]
 }
 ];
 
-/* ---------- ratings (based on elapsed + penalties) ---------- */
 function ratingFor(totalSec, hints, overtime){
   if(overtime) return "🌙 Rescued After Dark";
   if(totalSec <= 30*60 && hints <= 3) return "🏆 Master Navigator";
@@ -639,50 +1334,63 @@ function ratingFor(totalSec, hints, overtime){
   if(totalSec <= 50*60) return "🪢 Deck Hand";
   return "🛟 Barely Made It";
 }
-
+</script>
+<script>
 /* ============================================================
-   STATE & TIMER
+   5. ENGINE — state, rendering, puzzle handling, flow
    ============================================================ */
-const START_SECONDS = 45*60;          // 45:00 countdown
-const HINT_PENALTY  = 30;             // seconds per hint
-const WRONG_PENALTY = 5;              // seconds per wrong answer
+const START_SECONDS = 45*60;
+const HINT_PENALTY  = 30;
+const WRONG_PENALTY = 5;
 
 const S = {
   started:false, finished:false, overtime:false,
   roomIndex:0,
-  solved:new Set(),                   // object ids with solved puzzles
-  hintsShown:{},                      // objectId -> count revealed (0..3)
-  hintsUsed:0, wrongCount:0, penaltySec:0,
-  startTime:null, endElapsed:null,    // ms epoch / final elapsed seconds
-  signalPattern:''                    // buffer for the flare puzzle
+  solved:new Set(),
+  hintsShown:{}, hintsUsed:0, wrongCount:0, penaltySec:0,
+  startTime:null, endElapsed:null,
+  signalPattern:''
 };
-
 const $ = id => document.getElementById(id);
 
+/* ---------- stage scaling & parallax ---------- */
+function fitStage(){
+  const s = Math.min(innerWidth/1600, innerHeight/900);
+  $('stage').style.transform = `translate(-50%,-50%) scale(${s})`;
+}
+addEventListener('resize', fitStage); fitStage();
+addEventListener('mousemove', e=>{
+  const dx=(e.clientX/innerWidth-0.5), dy=(e.clientY/innerHeight-0.5);
+  document.querySelectorAll('#scene .plx').forEach(g=>{
+    const d=+g.dataset.depth||0;
+    g.setAttribute('transform',`translate(${(-dx*d).toFixed(1)} ${(-dy*d*0.6).toFixed(1)})`);
+  });
+});
+
+/* ---------- timer ---------- */
 function elapsedSec(){
   if(S.endElapsed !== null) return S.endElapsed;
   return S.startTime ? Math.floor((Date.now()-S.startTime)/1000) : 0;
 }
 function fmt(sec){
   sec = Math.max(0, Math.floor(sec));
-  const m = Math.floor(sec/60), s = sec%60;
-  return m + ':' + String(s).padStart(2,'0');
+  return Math.floor(sec/60) + ':' + String(sec%60).padStart(2,'0');
 }
-
 function tick(){
   if(!S.started || S.finished) return;
   const used = elapsedSec() + S.penaltySec;
   const remaining = START_SECONDS - used;
   const t = $('timer');
-  if(remaining >= 0 && !S.overtime){
+  if(!S.overtime && remaining <= 0){ t.textContent='0:00'; return gameOver(); }
+  if(!S.overtime){
     t.textContent = fmt(remaining);
-    t.classList.toggle('low', remaining <= 300);
-    t.classList.remove('overtime');
-    if(remaining === 0) return gameOver();
-  } else if(!S.overtime){
-    return gameOver();
+    const low = remaining <= 300;
+    t.classList.toggle('low', low);
+    $('vignette').classList.toggle('tense', low);
+    $('vignette').classList.toggle('pulse', low);
+    if(low) startHeartbeat();
   } else {
-    t.textContent = '+' + fmt(used - START_SECONDS);   // overtime counts up
+    t.textContent = '+' + fmt(used - START_SECONDS);
     t.classList.add('overtime'); t.classList.remove('low');
   }
   $('stat-elapsed').textContent = fmt(elapsedSec());
@@ -691,166 +1399,291 @@ function tick(){
 }
 setInterval(tick, 250);
 
-/* ============================================================
-   NARRATIVE BEATS
-   ============================================================ */
+/* ---------- narrative beats (with sound) ---------- */
 let beatTimer=null, beatQueue=[];
-function showBeat(text){
+function showBeat(text, sound){
   if(!text) return;
-  beatQueue.push(text);
+  beatQueue.push({text,sound});
   if(!beatTimer) nextBeat();
 }
 function nextBeat(){
-  const text = beatQueue.shift();
-  if(!text){ beatTimer=null; return; }
-  const b = $('beat');
-  b.textContent = text;
-  b.classList.add('show');
-  beatTimer = setTimeout(()=>{
+  const item = beatQueue.shift();
+  if(!item){ beatTimer=null; return; }
+  const b=$('beat');
+  b.textContent=item.text; b.classList.add('show');
+  $('dimmer').style.opacity=0.3;
+  if(item.sound==='knock') sfxKnock();
+  else if(item.sound==='growl') sfxGrowl();
+  beatTimer=setTimeout(()=>{
     b.classList.remove('show');
-    beatTimer = setTimeout(nextBeat, 1800);   // fade-out gap before next beat
-  }, 6500);
+    $('dimmer').style.opacity=0;
+    beatTimer=setTimeout(nextBeat,1900);
+  },6800);
 }
 
-/* ============================================================
-   RENDERING
-   ============================================================ */
+/* ---------- gorge relay lamp: actually blinks morse ---------- */
+let lampTimer=null;
+function startGorgeLamp(){
+  stopGorgeLamp();
+  const seq='.-. ..- -.';
+  let i=0, on=false;
+  const lamp=()=>document.getElementById('gorge-lamp');
+  lampTimer=setInterval(()=>{
+    const el=lamp(); if(!el) return;
+    if(on){ el.setAttribute('opacity','0.1'); on=false; return; }
+    const ch=seq[i%seq.length]; i++;
+    if(ch==='.'){ el.setAttribute('opacity','1'); on=true; }
+    else if(ch==='-'){ el.setAttribute('opacity','1'); on=true; i+=0; }
+  },260);
+}
+function stopGorgeLamp(){ clearInterval(lampTimer); lampTimer=null; }
+
+/* ---------- room rendering ---------- */
 function currentRoom(){ return ROOMS[S.roomIndex]; }
 function objVisible(o){ return !o.hiddenUntil || S.solved.has(o.hiddenUntil); }
 function objDesc(o){
   if(o.revealedBy && S.solved.has(o.revealedBy) && o.revealDesc){
-    // Special case: the torn sail appends the painted symbol row.
-    return o.id==='sail' ? o.revealDesc + '▲   ●   ■   ◆' : o.revealDesc;
+    return o.id==='sail' ? o.revealDesc+'\n' : o.revealDesc;
   }
   return o.desc;
 }
 
-function renderRoom(){
-  const room = currentRoom();
-  document.body.className = room.cls;
+function renderScene(){
+  const room=currentRoom();
+  $('scene').innerHTML = SCENES[room.scene]();
+  setFxMode(room.fx);
+  setAmbience(ROOM_AMBIENCE[S.roomIndex]);
   $('hud-room').textContent = room.name;
-  $('room-title').textContent = room.name;
-  $('room-intro').textContent = room.intro;
+  $('objective').innerHTML = room.objective;
+  renderHotspots();
+  if(room.id==='jungle' && S.solved.has('pack')) startGorgeLamp(); else stopGorgeLamp();
+}
 
-  const grid = $('objects');
-  grid.innerHTML = '';
-  room.objects.filter(objVisible).forEach(o=>{
-    const card = document.createElement('button');
-    card.className = 'obj-card' + (S.solved.has(o.id)?' solved':'') + (o.flicker?' flicker':'');
-    card.innerHTML = `<span class="icon">${o.icon}</span><span class="name">${o.name}</span>`;
-    card.onclick = ()=>openModal(o.id);
-    grid.appendChild(card);
+function renderHotspots(){
+  const layer=$('hotspots'); layer.innerHTML='';
+  const room=currentRoom();
+  room.objects.forEach(o=>{
+    const el=document.getElementById('el-'+o.id);
+    if(el) el.style.display = objVisible(o) ? '' : 'none';
+    if(!objVisible(o)) return;
+    const b=document.createElement('button');
+    b.className='hotspot'+(S.solved.has(o.id)?' done':'')+(o.hiddenUntil&&!S.solved.has(o.id)?' new':'');
+    b.dataset.obj=o.id;
+    b.style.cssText=`left:${o.pos.x}%;top:${o.pos.y}%;width:${o.pos.w}%;height:${o.pos.h}%`;
+    b.innerHTML=`<span class="ring"></span><span class="tag">${o.icon} ${o.name}${S.solved.has(o.id)?' ✓':''}</span>`;
+    b.onclick=()=>openModal(o.id);
+    layer.appendChild(b);
   });
-
   const done = room.objects.filter(o=>o.puzzle).every(o=>S.solved.has(o.id));
-  $('room-complete').classList.toggle('hidden', !done);
+  $('room-complete').classList.toggle('hidden', !done || S.finished);
   if(done){
-    $('room-complete-text').textContent = room.completeText || '';
-    $('continue-btn').textContent = S.roomIndex < ROOMS.length-1 ? 'Continue ➤' : 'LAUNCH THE RAFT ⛵';
+    $('room-complete-text').textContent = room.completeText||'';
+    $('continue-btn').textContent = S.roomIndex<ROOMS.length-1 ? 'Continue ➤' : 'LAUNCH ⛵';
   }
 }
 
+/* ---------- modal ---------- */
 function openModal(objId){
-  const o = currentRoom().objects.find(x=>x.id===objId);
-  const solved = S.solved.has(o.id);
-  const m = $('modal');
-  let html = `<button class="close-x" onclick="closeModal()">✕</button>
+  const o=currentRoom().objects.find(x=>x.id===objId);
+  const solved=S.solved.has(o.id);
+  let html=`<button class="close-x" onclick="closeModal()">✕</button>
     <h3>${o.icon} ${o.name}</h3>
-    <div class="obj-desc">${objDesc(o)}</div>`;
-
+    <div class="obj-desc">${objDesc(o)}${o.id==='sail'&&S.solved.has('driftwood')?'<div class="symbols">▲ &nbsp;● &nbsp;■ &nbsp;◆</div>':''}</div>`;
   if(o.puzzle){
+    const p=o.puzzle;
+    const morseReady = p.morse && (!p.morseLocked || S.solved.has(p.morseLocked));
+    if(morseReady && !solved){
+      html+=`<div class="morse" id="morse-view">${p.morse.replaceAll('.','·').replaceAll('-','−')}</div>
+        <button class="morse-btn" onclick="playMorseUI('${o.id}')">▶ &nbsp;PLAY THE SIGNAL</button>`;
+    }
     if(solved){
-      html += `<div class="solved-note">✓ ${o.puzzle.solvedText || 'Solved.'}</div>`;
-    } else if(o.puzzle.type === 'signal'){
-      html += renderSignalPad(o);
+      html+=`<div class="solved-note">✓ ${p.solvedText||'Solved.'}</div>`;
+    } else if(p.type==='signal'){
+      html+=renderSignalPad(o)+renderHints(o);
+    } else if(p.type==='dial'){
+      html+=renderDial(o)+renderHints(o);
     } else {
-      html += `<div class="puzzle-box">
-        <div class="prompt">${o.puzzle.prompt}</div>
+      html+=`<div class="puzzle-box">
+        <div class="prompt">${p.prompt}</div>
         <div class="answer-row">
-          <input id="answer-input" placeholder="${o.puzzle.placeholder||''}" autocomplete="off"
+          <input id="answer-input" placeholder="${p.placeholder||''}" autocomplete="off"
                  onkeydown="if(event.key==='Enter')submitAnswer('${o.id}')">
           <button onclick="submitAnswer('${o.id}')">Try It</button>
         </div>
         <div class="feedback" id="feedback"></div>
-      </div>`;
-      html += renderHints(o);
+      </div>`+renderHints(o);
     }
-    if(o.puzzle.type==='signal' && !solved) html += renderHints(o);
   }
-  m.innerHTML = html;
+  $('modal').innerHTML=html;
   $('overlay').classList.remove('hidden');
-  const inp = $('answer-input'); if(inp) inp.focus();
+  if(o.puzzle && o.puzzle.type==='dial' && !solved) dialInit(o);
+  const inp=$('answer-input'); if(inp) inp.focus();
 }
-function closeModal(){ $('overlay').classList.add('hidden'); S.signalPattern=''; }
-$('overlay').addEventListener('click', e=>{ if(e.target.id==='overlay') closeModal(); });
+function closeModal(){
+  $('overlay').classList.add('hidden');
+  S.signalPattern='';
+  dialTeardown();
+}
+$('overlay').addEventListener('click',e=>{ if(e.target.id==='overlay') closeModal(); });
 
+/* play a puzzle's morse audio + light up the glyphs */
+function playMorseUI(objId){
+  const o=currentRoom().objects.find(x=>x.id===objId);
+  const seq=o.puzzle.morse;
+  playMorse(seq);
+  const view=$('morse-view'); if(!view) return;
+  const glyphs=seq.replaceAll('.','·').replaceAll('-','−').split('');
+  let t=50;
+  glyphs.forEach((ch,i)=>{
+    const dur=(ch==='−'?255:85);
+    if(ch!==' '){
+      setTimeout(()=>{ view.innerHTML=glyphs.map((g,j)=>j===i?`<span class="lit">${g}</span>`:g).join(''); },t);
+      t+=dur+85;
+    } else t+=170;
+  });
+  setTimeout(()=>{ if($('morse-view')) $('morse-view').textContent=glyphs.join(''); },t+300);
+}
+
+/* ---------- hints ---------- */
 function renderHints(o){
-  const shown = S.hintsShown[o.id] || 0;
-  let html = `<div class="hints"><b style="font-size:.85rem;color:var(--dim)">STUCK?</b> `;
-  html += `<button class="hint-btn" onclick="revealHint('${o.id}')" ${shown>=3?'disabled':''}>
-     Reveal hint ${Math.min(shown+1,3)}/3</button><span class="hint-cost">each hint adds +0:30 to the clock</span>`;
-  for(let i=0;i<shown;i++) html += `<div class="hint-text">Hint ${i+1}: ${o.puzzle.hints[i]}</div>`;
-  html += `</div>`;
-  return html;
+  const shown=S.hintsShown[o.id]||0;
+  let html=`<div class="hints"><b style="font-size:.85rem;color:var(--dim)">STUCK?</b> `;
+  html+=`<button class="hint-btn" onclick="revealHint('${o.id}')" ${shown>=3?'disabled':''}>Reveal hint ${Math.min(shown+1,3)}/3</button><span class="hint-cost">each hint adds +0:30 to the clock</span>`;
+  for(let i=0;i<shown;i++) html+=`<div class="hint-text">Hint ${i+1}: ${o.puzzle.hints[i]}</div>`;
+  return html+`</div>`;
 }
 function revealHint(objId){
-  const shown = S.hintsShown[objId] || 0;
+  const shown=S.hintsShown[objId]||0;
   if(shown>=3) return;
-  S.hintsShown[objId] = shown+1;
-  S.hintsUsed++; S.penaltySec += HINT_PENALTY;
-  openModal(objId);   // re-render modal with the new hint
-  tick();
+  S.hintsShown[objId]=shown+1;
+  S.hintsUsed++; S.penaltySec+=HINT_PENALTY;
+  sfxStatic(0.25,0.08);
+  openModal(objId); tick();
 }
 
-/* ---------- answer checking ---------- */
+/* ---------- answers ---------- */
 function norm(s){ return (s||'').toUpperCase().replace(/[^A-Z0-9]/g,''); }
-
 function submitAnswer(objId){
-  const o = currentRoom().objects.find(x=>x.id===objId);
-  const inp = $('answer-input');
-  const guess = norm(inp.value);
+  const o=currentRoom().objects.find(x=>x.id===objId);
+  const inp=$('answer-input');
+  const guess=norm(inp.value);
   if(!guess) return;
   if(o.puzzle.answers.includes(guess)) return solvePuzzle(o);
-  // wrong answer: 5s penalty + shake + occasional beat
-  S.wrongCount++; S.penaltySec += WRONG_PENALTY;
-  const fb = $('feedback');
-  fb.className='feedback bad';
-  fb.textContent = '✗ Nothing happens. (+0:05 penalty)';
-  inp.classList.remove('shake'); void inp.offsetWidth; inp.classList.add('shake');
+  wrongAnswer();
+  const fb=$('feedback');
+  fb.className='feedback bad'; fb.textContent='✗ Nothing happens. (+0:05 penalty)';
+  inp.classList.remove('shakein'); void inp.offsetWidth; inp.classList.add('shakein');
   inp.select();
-  if(S.wrongCount % 3 === 0) showBeat(WRONG_BEATS[(S.wrongCount/3 - 1) % WRONG_BEATS.length]);
+}
+function wrongAnswer(){
+  S.wrongCount++; S.penaltySec+=WRONG_PENALTY;
+  sfxThud();
+  const st=$('stage'); st.classList.remove('shake'); void st.offsetWidth; st.classList.add('shake');
+  const rf=$('redflash'); rf.classList.add('on'); setTimeout(()=>rf.classList.remove('on'),160);
+  if(S.wrongCount%3===0){
+    const k=(S.wrongCount/3-1)%WRONG_BEATS.length;
+    showBeat(WRONG_BEATS[k], WRONG_SOUNDS[k]);
+  }
   tick();
 }
-
 function solvePuzzle(o){
   S.solved.add(o.id);
-  if(o.puzzle.solveBeat) showBeat(o.puzzle.solveBeat);
-  const room = currentRoom();
-  const allDone = room.objects.filter(x=>x.puzzle).every(x=>S.solved.has(x.id));
-  if(allDone && S.roomIndex === ROOMS.length-1) return victory();
-  openModal(o.id);        // show the solved payoff text
-  renderRoom();           // reveal any newly unlocked objects behind the modal
+  sfxChime();
+  if(o.puzzle.solveBeat) showBeat(o.puzzle.solveBeat, o.puzzle.beatSound);
+  const room=currentRoom();
+  const allDone=room.objects.filter(x=>x.puzzle).every(x=>S.solved.has(x.id));
+  if(allDone && S.roomIndex===ROOMS.length-1) return victory();
+  openModal(o.id);
+  renderHotspots();
+  if(room.id==='jungle' && o.id==='pack') startGorgeLamp();
 }
 
-/* ---------- the flare signal (SOS) puzzle ---------- */
+/* ---------- the radio tuning dial ---------- */
+let dialNodes=null;
+function renderDial(o){
+  return `<div class="puzzle-box">
+    <div class="prompt">${o.puzzle.prompt}</div>
+    <div class="dial-ui">
+      <span class="freq-readout" id="freq-readout">088.0</span>
+      <div class="dial-row">
+        <button class="dial-fine" onclick="dialNudge(-1)">−</button>
+        <input type="range" id="dial-slider" min="880" max="1350" step="1" value="880">
+        <button class="dial-fine" onclick="dialNudge(1)">+</button>
+      </div>
+      <div class="sig-meter"><i id="sig-bar"></i></div>
+      <div class="sig-label">SIGNAL STRENGTH</div>
+      <button id="dial-lock" style="margin-top:14px" onclick="dialLock('${o.id}')">🔒 LOCK IT IN</button>
+      <div class="feedback" id="feedback"></div>
+    </div>
+  </div>`;
+}
+function dialInit(o){
+  const slider=$('dial-slider');
+  if(!slider) return;
+  // live static bed while the dial is open
+  if(AC){
+    const s=AC.createBufferSource(); s.buffer=amb.noiseBuf; s.loop=true;
+    const f=AC.createBiquadFilter(); f.type='bandpass'; f.frequency.value=1800; f.Q.value=0.6;
+    const g=AC.createGain(); g.gain.value=0.11;
+    s.connect(f); f.connect(g); g.connect(master); s.start();
+    dialNodes={src:s,gain:g,beepTimer:setInterval(()=>{
+      const v=+($('dial-slider')?.value??0);
+      const prox=Math.max(0,1-Math.abs(v-1215)/40);
+      if(prox>0.75) playMorse('..- -. -.. . .-.', 0.05+prox*0.08, 0.07);
+    },3400)};
+  }
+  slider.addEventListener('input',()=>dialUpdate());
+  dialUpdate();
+}
+function dialUpdate(){
+  const v=+$('dial-slider').value;
+  $('freq-readout').textContent=(v/10).toFixed(1).padStart(5,'0');
+  const prox=Math.max(0,1-Math.abs(v-1215)/120);
+  $('sig-bar').style.width=(prox*100)+'%';
+  if(dialNodes) dialNodes.gain.gain.value=0.11*(1-prox*0.82)+0.01;
+}
+function dialNudge(d){
+  const s=$('dial-slider'); if(!s) return;
+  s.value=+s.value+d; dialUpdate();
+}
+function dialTeardown(){
+  if(!dialNodes) return;
+  try{ dialNodes.src.stop(); }catch(e){}
+  clearInterval(dialNodes.beepTimer);
+  dialNodes=null;
+}
+function dialLock(objId){
+  const o=currentRoom().objects.find(x=>x.id===objId);
+  const v=+$('dial-slider').value;
+  if(v===1215){ dialTeardown(); return solvePuzzle(o); }
+  wrongAnswer();
+  sfxStatic(0.5,0.2);
+  const fb=$('feedback');
+  fb.className='feedback bad';
+  fb.textContent=`✗ ${(v/10).toFixed(1)} — nothing but static out there. (+0:05 penalty)`;
+}
+
+/* ---------- the flare signal pad ---------- */
 function renderSignalPad(o){
   return `<div class="puzzle-box">
     <div class="prompt">${o.puzzle.prompt}</div>
     <div class="signal-pad">
-      <div class="signal-display" id="signal-display">${S.signalPattern || '&nbsp;'}</div>
+      <div class="signal-display" id="signal-display">&nbsp;</div>
       <button class="signal-btn" onclick="signalAdd('.')">🔥 SHORT BURST ·</button>
       <button class="signal-btn long" onclick="signalAdd('-')">🔥 LONG BURN −</button>
       <button class="signal-btn clear" onclick="signalClear()">RESET RACK</button>
       <br>
-      <button class="signal-btn" style="margin-top:12px;min-width:200px" onclick="signalSend('${o.id}')">📡 SEND SIGNAL</button>
+      <button class="signal-btn" style="margin-top:12px;min-width:210px" onclick="signalSend('${o.id}')">📡 SEND SIGNAL</button>
       <div class="feedback" id="feedback"></div>
     </div>
   </div>`;
 }
 function signalAdd(ch){
   if(S.signalPattern.length>=12) return;
-  S.signalPattern += ch;
-  $('signal-display').textContent = S.signalPattern;
+  S.signalPattern+=ch;
+  $('signal-display').textContent=S.signalPattern.replaceAll('.','·').replaceAll('-','−');
+  spawnFlare(ch==='-');           // real flare goes up behind the panel
+  tone(ch==='-'?420:640, ch==='-'?0.5:0.16, undefined, 0.1, 'triangle');
 }
 function signalClear(){
   S.signalPattern='';
@@ -858,73 +1691,91 @@ function signalClear(){
   const fb=$('feedback'); if(fb){fb.textContent='';fb.className='feedback';}
 }
 function signalSend(objId){
-  const o = currentRoom().objects.find(x=>x.id===objId);
-  if(S.signalPattern === o.puzzle.answers[0]) return solvePuzzle(o);
-  S.wrongCount++; S.penaltySec += WRONG_PENALTY;
+  const o=currentRoom().objects.find(x=>x.id===objId);
+  if(S.signalPattern===o.puzzle.answers[0]) return solvePuzzle(o);
+  wrongAnswer();
   const fb=$('feedback');
   fb.className='feedback bad';
   fb.textContent='✗ The flares sputter into the wrong pattern. The ship sails on. (+0:05 — rack reset)';
-  const d=$('signal-display'); d.classList.remove('shake'); void d.offsetWidth; d.classList.add('shake');
+  const d=$('signal-display'); d.classList.remove('shakein'); void d.offsetWidth; d.classList.add('shakein');
   S.signalPattern=''; d.innerHTML='&nbsp;';
-  if(S.wrongCount % 3 === 0) showBeat(WRONG_BEATS[(S.wrongCount/3 - 1) % WRONG_BEATS.length]);
-  tick();
 }
 
-/* ============================================================
-   FLOW: start / room advance / game over / victory
-   ============================================================ */
-$('start-btn').onclick = ()=>{
-  S.started = true;
-  S.startTime = Date.now();
+/* ---------- flow ---------- */
+function enterRoom(idx){
+  S.roomIndex=idx;
+  const room=currentRoom();
+  const card=document.createElement('div');
+  card.id='room-card';
+  card.innerHTML=`<h2>${room.name.toUpperCase()}</h2><p>${room.intro}</p>`;
+  $('card-root').appendChild(card);
+  setTimeout(()=>card.remove(),2600);
+  setTimeout(()=>{
+    renderScene();
+    showBeat(room.entryBeat, room.entrySound);
+  },1100);
+}
+$('start-btn').onclick=()=>{
+  initAudio();
+  if(AC && AC.state==='suspended') AC.resume();
+  S.started=true; S.startTime=Date.now();
+  rainOn=false;
   $('start-screen').classList.add('hidden');
-  $('gm-btn').classList.add('hidden');          // GM key is start-screen only
+  $('gm-btn').classList.add('hidden');
   $('gm-panel').classList.add('hidden');
+  $('stage-wrap').classList.remove('hidden');
   $('hud').classList.remove('hidden');
-  $('game-screen').classList.remove('hidden');
-  renderRoom();
-  showBeat(currentRoom().entryBeat);
+  $('objective').classList.remove('hidden');
+  $('vignette').classList.remove('hidden');
+  fitStage();
+  enterRoom(0);
   tick();
 };
-
-$('continue-btn').onclick = ()=>{
-  if(S.roomIndex < ROOMS.length-1){
-    S.roomIndex++;
-    window.scrollTo(0,0);
-    renderRoom();
-    showBeat(currentRoom().entryBeat);
-  }
+$('continue-btn').onclick=()=>{
+  $('room-complete').classList.add('hidden');
+  if(S.roomIndex<ROOMS.length-1) enterRoom(S.roomIndex+1);
 };
+$('mute-btn').onclick=toggleMute;
 
 function gameOver(){
-  if(S.finished || S.overtime) return;
-  S.finished = true;   // pause until they choose
-  $('end-root').innerHTML = `<div class="screen-center"><div class="end-card">
+  if(S.finished||S.overtime) return;
+  S.finished=true;
+  stopHeartbeat();
+  $('end-root').innerHTML=`<div class="screen-center"><div class="end-card">
     <h2>⏳ TIME'S UP</h2>
     <p style="font-style:italic;margin:10px 0">The sun slips below the horizon. The treeline is very quiet now — the patient kind of quiet.<br><br>The ship's lights are still out there. Barely.</p>
     <div class="btn-row">
       <button class="big-btn" onclick="continueOvertime()">Press On (overtime)</button>
-      <button class="big-btn" style="background:linear-gradient(180deg,#8a6f52,#5b4632);border-color:#a5896a" onclick="location.reload()">Restart</button>
+      <button class="big-btn alt" onclick="location.reload()">Restart</button>
     </div>
   </div></div>`;
 }
 function continueOvertime(){
-  S.finished = false; S.overtime = true;
+  S.finished=false; S.overtime=true;
   $('end-root').innerHTML='';
   tick();
 }
 
 function victory(){
-  S.finished = true;
-  S.endElapsed = elapsedSec();
+  S.finished=true;
+  S.endElapsed=elapsedSec();
+  stopHeartbeat();
   closeModal();
-  const total = S.endElapsed + S.penaltySec;
-  const rating = ratingFor(total, S.hintsUsed, S.overtime);
-  const share =
+  $('room-complete').classList.add('hidden');
+  // cinematic: the SOS goes up over the cove, then the score card
+  const seq=[0,350,700, 1400,2200,3000, 3800,4150,4500];
+  seq.forEach((t,i)=>setTimeout(()=>spawnFlare(i>=3&&i<6),t));
+  setTimeout(showVictoryCard, 5600);
+}
+function showVictoryCard(){
+  const total=S.endElapsed+S.penaltySec;
+  const rating=ratingFor(total,S.hintsUsed,S.overtime);
+  const share=
 `🏝️ THE WRECK OF THE ELDERMOOR — ESCAPED!
 ⏱️ Time: ${fmt(total)} (play ${fmt(S.endElapsed)} + penalties ${fmt(S.penaltySec)})
 💡 Hints used: ${S.hintsUsed}   ❌ Wrong answers: ${S.wrongCount}
 🏅 Rating: ${rating.replace(/^\S+\s/,'')}`;
-  $('end-root').innerHTML = `<div class="screen-center"><div class="end-card">
+  $('end-root').innerHTML=`<div class="screen-center"><div class="end-card">
     <h2>🚀 THE RAFT IS AWAY</h2>
     <p style="font-style:italic">Three short. Three long. Three short. The flares hang burning over the cove — and out on the black water, the ship's lights swing toward you. The winch releases, the tide takes the raft, and the island falls away behind you.<br><br>
     On the beach where you started, at the very edge of the flare-light, something tall stands motionless at the waterline, watching you go. It does not follow. It has never needed to follow anyone before.<br><br>
@@ -938,42 +1789,43 @@ function victory(){
     </div>
     <pre class="share" id="share-text">${share}</pre>
     <div class="btn-row">
-      <button class="big-btn" onclick="copyShare()">📋 Copy Results</button>
-      <button class="big-btn" style="background:linear-gradient(180deg,#8a6f52,#5b4632);border-color:#a5896a" onclick="location.reload()">Play Again</button>
+      <button class="big-btn" onclick="copyShare(event)">📋 Copy Results</button>
+      <button class="big-btn alt" onclick="location.reload()">Play Again</button>
     </div>
   </div></div>`;
 }
-function copyShare(){
-  const text = $('share-text').textContent;
-  (navigator.clipboard ? navigator.clipboard.writeText(text) : Promise.reject())
-    .catch(()=>{ // fallback for older browsers / file:// quirks
+function copyShare(ev){
+  const text=$('share-text').textContent;
+  (navigator.clipboard?navigator.clipboard.writeText(text):Promise.reject())
+    .catch(()=>{
       const ta=document.createElement('textarea'); ta.value=text; document.body.appendChild(ta);
       ta.select(); document.execCommand('copy'); ta.remove();
     })
-    .finally(()=>{ const b=event.target; b.textContent='✓ Copied!'; setTimeout(()=>b.textContent='📋 Copy Results',1500); });
+    .finally(()=>{ const b=ev.target; b.textContent='✓ Copied!'; setTimeout(()=>b.textContent='📋 Copy Results',1500); });
 }
 
-/* ============================================================
-   GAME MASTER PANEL (start screen only)
-   ============================================================ */
-$('gm-btn').onclick = ()=>{
-  const p = $('gm-panel');
+/* ---------- Game Master panel (start screen only) ---------- */
+$('gm-btn').onclick=()=>{
+  const p=$('gm-panel');
   if(!p.dataset.built){ buildGmPanel(); p.dataset.built='1'; }
   p.classList.toggle('hidden');
+  if(!p.classList.contains('hidden')) p.scrollIntoView({behavior:'smooth'});
 };
 function buildGmPanel(){
-  let html = `<h2>🔑 Game Master Answer Key</h2>
+  let html=`<h2>🔑 Game Master Answer Key</h2>
   <p style="color:var(--dim)">Facilitator eyes only. This panel is unreachable once the game starts.
   Hints cost +0:30 each; wrong answers cost +0:05.</p>`;
   ROOMS.forEach(room=>{
-    html += `<h3>${room.name}</h3><div class="chain">CHAIN: ${room.chain}</div>`;
+    html+=`<h3>${room.name}</h3><div class="chain">CHAIN: ${room.chain}</div>`;
     room.objects.filter(o=>o.puzzle).forEach(o=>{
-      const disp = o.puzzle.type==='signal' ? '··· −−− ··· (short×3, long×3, short×3)' : o.puzzle.answers[0];
-      html += `<div class="gm-puzzle"><b>${o.icon} ${o.name}</b> — answer: <span class="gm-answer">${disp}</span>
+      const disp=o.puzzle.type==='signal'?'··· −−− ··· (short×3, long×3, short×3)':
+                 o.puzzle.type==='dial'?'tune to 121.5, then LOCK IT IN':
+                 o.puzzle.answers[0];
+      html+=`<div class="gm-puzzle"><b>${o.icon} ${o.name}</b> — answer: <span class="gm-answer">${disp}</span>
         <ul>${o.puzzle.hints.map((h,i)=>`<li>Hint ${i+1}: ${h}</li>`).join('')}</ul></div>`;
     });
   });
-  $('gm-panel').innerHTML = html;
+  $('gm-panel').innerHTML=html;
 }
 </script>
 </body>

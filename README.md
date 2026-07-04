@@ -1,15 +1,24 @@
 # The Wreck of the Eldermoor 🏝️
 
-A browser-based virtual escape room for remote teams. One person shares their
-screen and drives; everyone else collaborates over a video call. Four rooms,
-17 puzzles, a 45-minute countdown, and something in the treeline that you
-never quite see.
+A browser-based virtual escape room for remote teams, built as a point-and-click
+adventure. One person shares their screen and drives; everyone else collaborates
+over a video call. Four rooms, 17 puzzles, a 45-minute countdown, and something
+in the treeline that you never quite see.
+
+Every room is a full illustrated, animated scene (layered SVG with mouse
+parallax, drifting fog, fireflies, film grain, a storm-lashed title screen) with
+discoverable glowing hotspots instead of menus. The soundscape is synthesized
+live with the WebAudio API — ocean surf, wind, a low dread-drone that deepens
+room by room, knocks on the station wall, morse code you can actually *hear*,
+a radio dial you tune through static by ear, flares that streak up over the
+cove, and a heartbeat when the clock drops under five minutes. No image or
+audio files: everything is generated in the browser.
 
 ## How to run it
 
-Open `index.html` in any modern browser. That's it — no server, no build step,
-no dependencies except Google Fonts loaded from a CDN (the game still works
-offline, just with fallback fonts).
+Open `index.html` in any modern browser — **sound on, fullscreen recommended**.
+No server, no build step, no dependencies except Google Fonts loaded from a CDN
+(the game still works offline, just with fallback fonts).
 
 Multiple teams can compete by opening the file in separate browser tabs or on
 separate machines and comparing the shareable score text at the end.
@@ -65,7 +74,7 @@ sequences → 1331.
 
 | # | Puzzle | Answer |
 |---|--------|--------|
-| 1 | Radio Receiver (frequency from logbook) | **1215** (121.5) |
+| 1 | Radio Receiver (sweep the tuning dial, then LOCK IT IN) | **121.5** |
 | 2 | The Broadcast (morse ··− −· −·· · ·−·) | **UNDER** |
 | 3 | Floor Hatch (Caesar +3: WKH ZKHHO RSHQV WR VWRUP) | **STORM** |
 | 4 | Emergency Transmitter (1,1,2,3,5,8,__ and 25,27,29,__) | **1331** |
@@ -131,7 +140,12 @@ Hints:
 
 ## Modifying the game
 
-All puzzles, hints, flavor text, and narrative beats live in the `ROOMS` array
-in `index.html`, with comments explaining the chaining keys (`hiddenUntil`,
-`revealedBy`) and answer normalization. Adding a room means appending to that
-array and adding one CSS accent block.
+`index.html` is organized into five commented sections: **AUDIO** (WebAudio
+synth soundscape), **FX** (canvas particles + grain), **SCENES** (one SVG
+builder per room), **DATA** (the `ROOMS` array — puzzles, hints, flavor text,
+narrative beats, and hotspot coordinates in % of the 1600×900 stage), and
+**ENGINE** (rendering, puzzle types, timer, endings). Chaining uses
+`hiddenUntil` (object appears when that puzzle is solved) and `revealedBy`
+(description upgrades when that puzzle is solved); answers are normalized to
+A–Z0–9. Adding a room means a new entry in `ROOMS`, a scene builder in
+`SCENES`, and an ambience preset.
