@@ -307,6 +307,18 @@ pre.share{text-align:left;background:#0a1416;border:1px solid #2c4144;border-rad
 .sunglow{animation:sunpulse 9s ease-in-out infinite alternate}
 @keyframes sunpulse{from{opacity:.8}to{opacity:1}}
 
+/* ---------- crew muster (team name + emoji) ---------- */
+#crew-box{max-width:520px;margin:4px auto 20px;background:rgba(10,18,20,.85);border:1px solid #2c4144;border-radius:12px;padding:16px 20px}
+.crew-title{font-family:'Special Elite',serif;color:var(--teal-hi);letter-spacing:3px;font-size:.85rem;margin-bottom:10px}
+#team-name{width:100%;padding:11px 14px;font-size:1.15rem;letter-spacing:2px;text-transform:uppercase;background:#0b1619;color:var(--sand);border:1px solid #3a565c;border-radius:8px;font-family:'Special Elite',serif;text-align:center}
+#team-name:focus{outline:none;border-color:var(--teal-hi);box-shadow:0 0 12px rgba(79,163,155,.25)}
+#emoji-row{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-top:12px}
+.emoji-btn{font-size:1.5rem;line-height:1;padding:7px 9px;background:#0b1619;border:1px solid #2c4144;border-radius:8px;transition:transform .1s}
+.emoji-btn:hover{transform:scale(1.15);border-color:var(--teal-hi)}
+.emoji-btn.selected{border-color:var(--sand);background:#1d3237;box-shadow:0 0 10px rgba(216,195,154,.35)}
+#team-badge{display:inline-block;background:rgba(6,14,14,.8);border:1px solid #37504e;border-radius:8px;padding:2px 10px;margin-right:10px;font-size:.95rem;color:var(--sand)}
+#team-badge:empty{display:none}
+.team-line{font-family:'Special Elite',serif;font-size:1.4rem;color:var(--sand);margin:2px 0 6px;letter-spacing:1px}
 @media (max-width:640px){#hud .stats{display:none}.end-card .stat-grid{grid-template-columns:1fr}}
 </style>
 </head>
@@ -339,6 +351,11 @@ pre.share{text-align:left;background:#0a1416;border:1px solid #2c4144;border-rad
       <p>Dawn finds your crew alive on the beach of an island that appears on no chart. Up the ridge, half-swallowed by vines, stands an abandoned radio station — your one hope of calling for rescue and getting off this island.</p>
       <p>Work fast. Solve what the island puts in front of you. And if you hear something moving in the treeline… don't stop to look.</p>
     </div>
+    <div id="crew-box">
+      <div class="crew-title">⚓ MUSTER YOUR CREW</div>
+      <input id="team-name" maxlength="22" placeholder="TEAM NAME" autocomplete="off">
+      <div id="emoji-row"></div>
+    </div>
     <button class="big-btn" id="start-btn">⚓ BEGIN — 45:00</button>
     <p class="start-note">🔊 Best with sound on — the island talks. One player shares their screen and drives; everyone else shouts ideas.<br>
     Explore each scene: glowing rings mark things worth examining. Hints cost 30 seconds. Wrong answers cost 5. Fastest clean escape wins.</p>
@@ -362,7 +379,7 @@ pre.share{text-align:left;background:#0a1416;border:1px solid #2c4144;border-rad
 <canvas id="grain" width="480" height="270"></canvas>
 
 <div id="hud" class="hidden">
-  <div class="room-label" id="hud-room"></div>
+  <div class="room-label"><span id="team-badge"></span><span id="hud-room"></span></div>
   <div id="timer">45:00</div>
   <div class="stats">
     <span>Elapsed <b id="stat-elapsed">0:00</b></span>
@@ -687,6 +704,16 @@ SCENES.beach=()=>`
   <ellipse class="cloud c3" cx="1380" cy="240" rx="150" ry="18" fill="#173238" opacity=".5"/>
 </g>
 <rect y="475" width="1600" height="215" fill="url(#bSea)"/>
+<!-- distant islet + gulls -->
+<g class="plx" data-depth="6">
+  <path d="M140 474 q44 -16 96 -7 q52 -8 96 7 l0 4 -192 0 z" fill="#16383f" opacity=".9"/>
+  <path d="M196 464 q26 -10 50 -1 z" fill="#12333a"/>
+</g>
+<g class="cloud c2" stroke="#0c2027" stroke-width="4" fill="none" stroke-linecap="round">
+  <path d="M520 150 q10 -11 20 0 q10 -11 20 0"/>
+  <path d="M600 192 q8 -9 16 0 q8 -9 16 0"/>
+  <path d="M462 214 q7 -8 14 0 q7 -8 14 0"/>
+</g>
 <g class="plx" data-depth="9">
   <path class="wave w1" d="M-100 552 Q100 538 300 552 T700 552 T1100 552 T1500 552 T1900 552 V600 H-100 Z" fill="#5b8d86" opacity=".5"/>
   <path class="wave w2" d="M-100 598 Q120 584 340 598 T780 598 T1220 598 T1700 598 V646 H-100 Z" fill="#79a99e" opacity=".45"/>
@@ -717,6 +744,29 @@ SCENES.beach=()=>`
   <path class="flag" d="M1290 344 l58 14 -58 18 z" fill="#3c2a20"/>
   <ellipse cx="1210" cy="702" rx="240" ry="16" fill="#000" opacity=".28"/>
 </g>
+<!-- salvage scattered along the tideline -->
+<g>
+  <ellipse cx="800" cy="668" rx="430" ry="14" fill="#e8dcc0" opacity=".08"/>
+  <path d="M580 664 q20 -9 44 0 q-18 11 -44 0z M1180 668 q16 -8 36 0 q-14 10 -36 0z M240 662 q14 -7 30 0 q-12 9 -30 0z" fill="#12331f" opacity=".85"/>
+  <g transform="rotate(-22 1044 744)">
+    <rect x="1038" y="686" width="11" height="88" rx="5" fill="#2a2e36"/>
+    <path d="M1008 762 q36 34 72 0 l-12 -12 q-24 22 -48 0 z" fill="#2a2e36"/>
+    <circle cx="1044" cy="680" r="10" fill="none" stroke="#2a2e36" stroke-width="7"/>
+  </g>
+  <ellipse cx="1046" cy="782" rx="86" ry="10" fill="#000" opacity=".14"/>
+  <g transform="rotate(12 950 700)">
+    <rect x="922" y="676" width="56" height="42" rx="10" fill="#5b452c"/>
+    <line x1="922" y1="690" x2="978" y2="690" stroke="#3a2a18" stroke-width="4"/>
+    <line x1="922" y1="704" x2="978" y2="704" stroke="#3a2a18" stroke-width="4"/>
+  </g>
+  <ellipse cx="352" cy="704" rx="34" ry="12" fill="#6a4f30"/>
+  <ellipse cx="352" cy="701" rx="22" ry="7.5" fill="#7d6040"/>
+  <ellipse cx="352" cy="699" rx="10" ry="3.5" fill="#6a4f30"/>
+  <rect x="640" y="700" width="60" height="9" rx="4" fill="#6a4f30" transform="rotate(-7 670 704)"/>
+  <rect x="1330" y="702" width="52" height="8" rx="4" fill="#5b452c" transform="rotate(9 1356 706)"/>
+</g>
+<!-- fallen rigging from the wreck -->
+<path d="M1262 352 Q1180 480 1110 566 M1264 362 Q1330 470 1358 566" stroke="#171008" stroke-width="3" fill="none" opacity=".75"/>
 <!-- driftwood planks with carved letters -->
 <g id="art-driftwood">
   ${[['CASTAWAY','III',96,742,-8],['GALE','II',172,760,5],['ADRIFT','IIII',132,792,-3],['SALVAGE','III',214,788,10]].map(([w,t,x,y,r])=>
@@ -770,6 +820,33 @@ ${[0,1,2,3,4,5,6,7].map(i=>`<line x1="${i*220-60}" y1="620" x2="${i*260-260}" y2
 <line x1="0" y1="620" x2="1600" y2="620" stroke="#060503" stroke-width="7"/>
 <!-- wall boards -->
 ${[0,1,2,3,4,5].map(i=>`<line x1="0" y1="${90+i*95}" x2="1600" y2="${90+i*95}" stroke="#08110d" stroke-width="3" opacity=".7"/>`).join('')}
+<!-- wall details: stopped clock, marked calendar, cracks, cobwebs -->
+<g>
+  <g transform="rotate(-4 560 226)">
+    <circle cx="560" cy="226" r="34" fill="#d9cba6" stroke="#2c2213" stroke-width="6"/>
+    <line x1="560" y1="226" x2="560" y2="204" stroke="#2c2213" stroke-width="4"/>
+    <line x1="560" y1="226" x2="577" y2="234" stroke="#2c2213" stroke-width="3"/>
+    <circle cx="560" cy="226" r="3.5" fill="#2c2213"/>
+  </g>
+  <g transform="rotate(2 1150 262)">
+    <rect x="1108" y="210" width="84" height="106" fill="#cbb489"/>
+    <text x="1150" y="228" text-anchor="middle" font-family="Special Elite" font-size="11" fill="#4a3517">DAY 121</text>
+    ${[0,1,2,3].map(r=>[0,1,2,3].map(c=>`<line x1="${1118+c*17}" y1="${238+r*19}" x2="${1129+c*17}" y2="${250+r*19}" stroke="#7a3a2a" stroke-width="2.5"/>`).join('')).join('')}
+  </g>
+  <path d="M60 82 q60 30 40 92 M100 60 q30 42 72 52" stroke="#08110d" stroke-width="3" fill="none"/>
+  <path d="M0 0 q60 10 92 48 M0 26 q42 8 64 36 M22 0 q20 26 54 42" stroke="#a8c2b0" stroke-width="1.5" fill="none" opacity=".14"/>
+  <path d="M1600 62 q-52 4 -78 38 M1600 92 q-36 2 -54 26" stroke="#a8c2b0" stroke-width="1.5" fill="none" opacity=".12"/>
+</g>
+<!-- the back door, ajar on the dark -->
+<g>
+  <rect x="1396" y="298" width="122" height="322" fill="#241d13"/>
+  <rect x="1396" y="298" width="34" height="322" fill="#070505"/>
+  <rect x="1396" y="298" width="122" height="322" fill="none" stroke="#312817" stroke-width="8"/>
+  <line x1="1436" y1="336" x2="1512" y2="386" stroke="#3a2f1c" stroke-width="10"/>
+  <line x1="1436" y1="560" x2="1512" y2="504" stroke="#3a2f1c" stroke-width="10"/>
+  <circle cx="1500" cy="464" r="6" fill="#6a5533"/>
+  <text x="1462" y="290" text-anchor="middle" font-family="Special Elite" font-size="14" fill="#8fa596">ANTENNA →</text>
+</g>
 <!-- window with the passing shadow -->
 <g id="art-window">
   <rect x="104" y="170" width="300" height="240" fill="#241d13"/>
@@ -827,6 +904,15 @@ ${[0,1,2,3,4,5].map(i=>`<line x1="0" y1="${90+i*95}" x2="1600" y2="${90+i*95}" s
   ${[0,1,2].map(i=>`<line x1="472" y1="${596+i*11}" x2="538" y2="${588+i*11}" stroke="#7a5c34" stroke-width="2"/>`).join('')}
   <line x1="562" y1="592" x2="622" y2="596" stroke="#7a5c34" stroke-width="2"/>
 </g>
+<!-- desk clutter & cabling -->
+<g>
+  <rect x="1064" y="556" width="30" height="30" rx="4" fill="#5b6a62"/>
+  <path d="M1094 562 q13 5 0 13" stroke="#5b6a62" stroke-width="5" fill="none"/>
+  <path d="M690 566 l64 -8 6 26 -64 9 z" fill="#cfc0a0" transform="rotate(-5 720 578)"/>
+  <path d="M756 574 l50 -5 4 20 -50 6 z" fill="#d9cba6" transform="rotate(3 780 584)"/>
+  <path d="M1058 540 q42 62 26 142 M1062 540 q80 42 122 62" stroke="#0d0a06" stroke-width="5" fill="none"/>
+  <path d="M1184 602 q120 -12 214 -64" stroke="#0d0a06" stroke-width="5" fill="none"/>
+</g>
 <!-- operator's chair, turned to the window -->
 <g opacity=".9">
   <rect x="270" y="560" width="90" height="16" rx="6" fill="#241a0e"/>
@@ -868,15 +954,49 @@ SCENES.jungle=()=>`
   <polygon points="900,0 990,0 840,600 760,600" fill="#cfe8b0"/>
   <polygon points="1250,0 1330,0 1200,500 1130,500" fill="#cfe8b0"/>
 </g>
-<!-- the gorge, bridge and relay lamp far ahead -->
+<!-- the gorge: a chasm, a rope bridge, the relay lamp -->
 <g class="plx" data-depth="4">
-  <path d="M690 130 q110 -40 220 0 l-30 260 q-80 26 -160 0 z" fill="#10281a"/>
-  <path d="M700 320 q100 30 200 0" stroke="#3a2a18" stroke-width="7" fill="none"/>
-  <path d="M700 344 q100 30 200 0" stroke="#3a2a18" stroke-width="5" fill="none"/>
-  ${[0,1,2,3,4,5,6].map(i=>`<line x1="${716+i*28}" y1="${330+Math.round(Math.sin(i)*6)}" x2="${716+i*28}" y2="${352+Math.round(Math.sin(i)*6)}" stroke="#3a2a18" stroke-width="4"/>`).join('')}
-  <rect x="906" y="290" width="8" height="60" fill="#3a2a18"/>
-  <circle id="gorge-lamp" cx="910" cy="284" r="7" fill="#ffdf9c" opacity=".08"/>
+  <!-- open air of the gap -->
+  <rect x="668" y="118" width="272" height="302" fill="#10281c"/>
+  <rect x="668" y="150" width="272" height="270" fill="#16341f" opacity=".45"/>
+  <!-- far rim treeline across the gorge -->
+  <path d="M668 118 h272 v44 q-70 30 -136 18 q-80 16 -136 -18 z" fill="#0e2415"/>
+  <!-- mist rising out of the chasm -->
+  <ellipse cx="760" cy="396" rx="92" ry="26" fill="#9fb8a8" opacity=".16"/>
+  <ellipse cx="866" cy="362" rx="70" ry="20" fill="#9fb8a8" opacity=".13"/>
+  <ellipse cx="804" cy="330" rx="104" ry="18" fill="#9fb8a8" opacity=".06"/>
+  <!-- left cliff face -->
+  <path d="M596 108 L710 128 L700 200 L716 268 L704 340 L718 420 L596 432 Z" fill="#06100a"/>
+  <path d="M710 128 L700 200 L716 268 L704 340 L718 420" stroke="#26543a" stroke-width="3" fill="none" opacity=".8"/>
+  <path d="M700 200 L716 268 M704 340 L718 420 M660 160 L668 250" stroke="#050d08" stroke-width="4" fill="none"/>
+  <!-- right cliff face -->
+  <path d="M1004 108 L896 130 L908 210 L892 280 L904 352 L890 420 L1004 434 Z" fill="#06100a"/>
+  <path d="M896 130 L908 210 L892 280 L904 352 L890 420" stroke="#26543a" stroke-width="3" fill="none" opacity=".8"/>
+  <path d="M908 210 L892 280 M904 352 L890 420 M948 164 L940 254" stroke="#050d08" stroke-width="4" fill="none"/>
+  <!-- anchor posts, both rims -->
+  <rect x="704" y="252" width="9" height="60" fill="#2c1d10"/>
+  <rect x="893" y="246" width="9" height="60" fill="#2c1d10"/>
+  <!-- sagging plank deck -->
+  <path d="M710 306 Q805 340 898 300" stroke="#3a2a18" stroke-width="7" fill="none"/>
+  ${[1,2,3,4,5,6,7,8].map(i=>{const t=i/9,x=710+t*188,y=(1-t)*(1-t)*306+2*(1-t)*t*340+t*t*300;return `<line x1="${x.toFixed(0)}" y1="${(y-3).toFixed(0)}" x2="${x.toFixed(0)}" y2="${(y+9).toFixed(0)}" stroke="#2c1d10" stroke-width="5"/>`;}).join('')}
+  <!-- rope handrails + hangers -->
+  <path d="M710 258 Q805 294 898 254" stroke="#3a2a18" stroke-width="3" fill="none"/>
+  ${[1,3,5,7].map(i=>{const t=i/9,x=710+t*188,yd=(1-t)*(1-t)*306+2*(1-t)*t*340+t*t*300,yr=(1-t)*(1-t)*258+2*(1-t)*t*294+t*t*254;return `<line x1="${x.toFixed(0)}" y1="${yr.toFixed(0)}" x2="${x.toFixed(0)}" y2="${yd.toFixed(0)}" stroke="#2c1d10" stroke-width="2"/>`;}).join('')}
+  <!-- a frayed rope dangling into the dark -->
+  <path d="M760 316 q6 40 -4 78" stroke="#2c1d10" stroke-width="3" fill="none"/>
+  <!-- the barred gate at the near end -->
+  <rect x="692" y="248" width="8" height="84" fill="#2c1d10"/>
+  <rect x="722" y="250" width="8" height="82" fill="#2c1d10"/>
+  <line x1="688" y1="268" x2="736" y2="260" stroke="#2c1d10" stroke-width="9"/>
+  <line x1="688" y1="296" x2="736" y2="288" stroke="#2c1d10" stroke-width="9"/>
+  <rect x="698" y="272" width="28" height="17" rx="3" fill="#3a3d38"/>
+  <circle cx="712" cy="280" r="4" fill="#171a15"/>
+  <!-- relay lamp on the far post -->
+  <circle id="gorge-lamp" cx="897" cy="238" r="7" fill="#ffdf9c" opacity=".08"/>
+  <circle cx="897" cy="252" r="3.5" fill="#5c5236"/>
 </g>
+<!-- spur of trail climbing to the bridge -->
+<path d="M792 560 L818 428 L838 428 L850 560 Z" fill="url(#jPath)" opacity=".45"/>
 <!-- fog bands -->
 <rect class="fogband" x="-200" y="360" width="2000" height="90" fill="#9fb8a8" opacity=".09" rx="45"/>
 <rect class="fogband f2" x="-200" y="470" width="2000" height="70" fill="#9fb8a8" opacity=".07" rx="35"/>
@@ -928,6 +1048,35 @@ SCENES.jungle=()=>`
   <rect x="1138" y="676" width="28" height="24" rx="4" fill="#454f2e"/>
   <circle cx="1152" cy="688" r="4" fill="#8a8250"/>
 </g>
+<!-- hanging vines -->
+<g class="plx" data-depth="12" stroke="#122718" fill="none">
+  <path d="M430 0 q-14 90 22 150 q10 30 -8 62" stroke-width="7"/>
+  <path d="M1190 0 q16 70 -12 130 q-8 40 12 82" stroke-width="8"/>
+  <path d="M1060 0 q-10 60 8 112" stroke-width="5"/>
+  <path d="M545 0 q12 70 -6 122" stroke-width="5"/>
+</g>
+<g fill="#16321e">
+  <ellipse cx="444" cy="214" rx="16" ry="7" transform="rotate(24 444 214)"/>
+  <ellipse cx="1190" cy="214" rx="18" ry="8" transform="rotate(-18 1190 214)"/>
+  <ellipse cx="1068" cy="114" rx="13" ry="6" transform="rotate(30 1068 114)"/>
+  <ellipse cx="539" cy="124" rx="12" ry="6" transform="rotate(-24 539 124)"/>
+</g>
+<!-- roots at the carved tree's base -->
+<path d="M292 900 q-30 -60 -64 -74 M336 900 q10 -52 44 -68 M306 878 q-14 -30 -42 -38" stroke="#2c1d10" stroke-width="10" fill="none"/>
+<!-- faintly glowing mushrooms among the roots -->
+<g>
+  <circle cx="250" cy="836 " r="18" fill="#9fd0a0" opacity=".10"/>
+  <circle cx="380" cy="850" r="14" fill="#9fd0a0" opacity=".09"/>
+  <path d="M242 838 q8 -13 17 0 z" fill="#7ba883"/><rect x="249" y="838" width="4" height="10" fill="#5c7a5e"/>
+  <path d="M373 852 q7 -11 15 0 z" fill="#7ba883"/><rect x="379" y="852" width="4" height="9" fill="#5c7a5e"/>
+  <path d="M270 862 q6 -9 13 0 z" fill="#6d9a74"/><rect x="275" y="862" width="3" height="8" fill="#5c7a5e"/>
+</g>
+<!-- ferns crowding the river bank -->
+<g stroke="#1d3a24" stroke-width="4" fill="none">
+  ${[[120,640],[1300,632],[1440,700],[60,760]].map(([x,y])=>[-2,-1,0,1,2].map(k=>`<path d="M${x} ${y} q${k*18} -34 ${k*30} -52"/>`).join('')).join('')}
+</g>
+<!-- the antenna cable, still leading the way -->
+<path d="M700 900 Q766 760 806 640 Q824 540 812 470 Q806 444 810 424" stroke="#101c12" stroke-width="6" fill="none" stroke-dasharray="18 9" opacity=".85"/>
 <!-- near frame foliage -->
 <g class="plx" data-depth="18" fill="#0c1a0f">
   <path d="M0 900 V520 q90 20 130 110 q60 30 70 130 q40 60 40 140 Z"/>
@@ -954,6 +1103,20 @@ SCENES.cove=()=>`
 </defs>
 <rect width="1600" height="520" fill="url(#cSky)"/>
 ${Array.from({length:30},(_,i)=>`<circle class="tw" cx="${(i*127+40)%1560}" cy="${(i*53)%260+16}" r="${1+(i%3)*.7}" fill="#ffe9c0" style="animation-delay:${(i*.63)%4.5}s"/>`).join('')}
+<!-- moon, horizon haze, bats -->
+<g class="plx" data-depth="3">
+  <circle cx="262" cy="148" r="60" fill="#f4e9c8" opacity=".07"/>
+  <circle cx="262" cy="148" r="44" fill="#f4e9c8" opacity=".88"/>
+  <circle cx="282" cy="138" r="38" fill="#1d112e"/>
+  <ellipse cx="500" cy="400" rx="210" ry="6" fill="#2a1638" opacity=".38"/>
+  <ellipse cx="1100" cy="422" rx="250" ry="5" fill="#2a1638" opacity=".34"/>
+  <ellipse cx="820" cy="448" rx="320" ry="5" fill="#38203f" opacity=".38"/>
+</g>
+<g class="cloud c3" stroke="#0a0812" stroke-width="3.5" fill="none" stroke-linecap="round">
+  <path d="M1240 192 q7 -9 14 0 q7 -9 14 0"/>
+  <path d="M1306 152 q6 -8 12 0 q6 -8 12 0"/>
+  <path d="M1180 130 q5 -7 10 0 q5 -7 10 0"/>
+</g>
 <rect y="470" width="1600" height="230" fill="url(#cSea)"/>
 <line x1="0" y1="472" x2="1600" y2="472" stroke="#e8945a" stroke-width="3" opacity=".65"/>
 <!-- the passing ship: a cluster of tiny lights, drifting -->
@@ -978,6 +1141,29 @@ ${Array.from({length:30},(_,i)=>`<circle class="tw" cx="${(i*127+40)%1560}" cy="
   ${[0,1,2,3].map(i=>`<path d="M${360+i*60} ${812+i*14} q140 ${-26-i*6} 320 0" stroke="#3a2c1c" stroke-width="${9-i}" fill="none"/>`).join('')}
   <rect x="560" y="768" width="18" height="42" rx="6" fill="#241a10" transform="rotate(-6 569 789)"/>
 </g>
+<!-- sea stacks catching the last light -->
+<g>
+  <path d="M148 470 l26 -72 q10 -17 22 0 l20 72 z" fill="#0a0812"/>
+  <path d="M228 470 l14 -42 q8 -13 17 0 l12 42 z" fill="#0a0812"/>
+  <line x1="154" y1="468" x2="212" y2="468" stroke="#e8945a" stroke-width="2" opacity=".5"/>
+</g>
+<!-- tide pools holding the sky -->
+<ellipse cx="520" cy="772" rx="60" ry="12" fill="#1a2436" opacity=".8"/>
+<ellipse cx="520" cy="770" rx="60" ry="12" fill="none" stroke="#e8945a" stroke-width="1.5" opacity=".3"/>
+<ellipse cx="1240" cy="826" rx="80" ry="13" fill="#1a2436" opacity=".7"/>
+<ellipse cx="1240" cy="824" rx="80" ry="13" fill="none" stroke="#e8945a" stroke-width="1.5" opacity=".22"/>
+<!-- winch line run down to the raft -->
+<path d="M1404 702 Q1150 764 880 704" stroke="#3a2a18" stroke-width="5" fill="none" stroke-dasharray="16 7" opacity=".9"/>
+<!-- supplies staged by the locker -->
+<g>
+  <rect x="1006" y="686" width="54" height="46" fill="#4a3520"/>
+  <rect x="1006" y="686" width="54" height="12" fill="#5b452c"/>
+  <rect x="982" y="716" width="40" height="30" fill="#3a2a18" transform="rotate(-8 1002 731)"/>
+</g>
+<!-- folded tarp + driftwood -->
+<path d="M556 722 l92 -14 30 26 -98 18 z" fill="#3f4a52" opacity=".9"/>
+<rect x="298" y="758" width="70" height="9" rx="4" fill="#4a3520" transform="rotate(-6 333 762)"/>
+<rect x="1330" y="782" width="60" height="8" rx="4" fill="#4a3520" transform="rotate(8 1360 786)"/>
 <!-- torch light -->
 <g>
   <rect x="384" y="600" width="12" height="130" fill="#2c1e0f"/>
@@ -1709,6 +1895,7 @@ function signalSend(objId){
 /* ---------- flow ---------- */
 function enterRoom(idx){
   S.roomIndex=idx;
+  beatQueue.length=0;   // stale beats don't follow the crew into a new room
   const room=currentRoom();
   const card=document.createElement('div');
   card.id='room-card';
@@ -1720,9 +1907,27 @@ function enterRoom(idx){
     showBeat(room.entryBeat, room.entrySound);
   },1100);
 }
+/* ---------- crew registration ---------- */
+const TEAM_EMOJIS=['⚓','🏴‍☠️','🦜','🌊','🦈','🐙','🧭','🔥','🥥','🦀','⛵','💀'];
+S.teamName='THE CASTAWAYS'; S.teamEmoji=TEAM_EMOJIS[0];
+(function buildEmojiRow(){
+  const row=document.getElementById('emoji-row');
+  TEAM_EMOJIS.forEach((e,i)=>{
+    const b=document.createElement('button');
+    b.className='emoji-btn'+(i===0?' selected':'');
+    b.textContent=e; b.dataset.emoji=e;
+    b.onclick=()=>{ S.teamEmoji=e;
+      row.querySelectorAll('.emoji-btn').forEach(x=>x.classList.toggle('selected',x===b)); };
+    row.appendChild(b);
+  });
+})();
+function esc(s){return s.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+
 $('start-btn').onclick=()=>{
   initAudio();
   if(AC && AC.state==='suspended') AC.resume();
+  S.teamName=(document.getElementById('team-name').value.trim()||'The Castaways').toUpperCase();
+  $('team-badge').textContent=S.teamEmoji+' '+S.teamName;
   S.started=true; S.startTime=Date.now();
   rainOn=false;
   $('start-screen').classList.add('hidden');
@@ -1748,6 +1953,7 @@ function gameOver(){
   stopHeartbeat();
   $('end-root').innerHTML=`<div class="screen-center"><div class="end-card">
     <h2>⏳ TIME'S UP</h2>
+    <div class="team-line">${S.teamEmoji} ${esc(S.teamName)}</div>
     <p style="font-style:italic;margin:10px 0">The sun slips below the horizon. The treeline is very quiet now — the patient kind of quiet.<br><br>The ship's lights are still out there. Barely.</p>
     <div class="btn-row">
       <button class="big-btn" onclick="continueOvertime()">Press On (overtime)</button>
@@ -1776,18 +1982,19 @@ function showVictoryCard(){
   const total=S.endElapsed+S.penaltySec;
   const rating=ratingFor(total,S.hintsUsed,S.overtime);
   const share=
-`🏝️ THE WRECK OF THE ELDERMOOR — ESCAPED!
-⏱️ Time: ${fmt(total)} (play ${fmt(S.endElapsed)} + penalties ${fmt(S.penaltySec)})
+`${S.teamEmoji} TEAM ${S.teamName} — ESCAPED THE ELDERMOOR!
+⏱️ Finishing time: ${fmt(total)} (play ${fmt(S.endElapsed)} + penalties ${fmt(S.penaltySec)})
 💡 Hints used: ${S.hintsUsed}   ❌ Wrong answers: ${S.wrongCount}
 🏅 Rating: ${rating.replace(/^\S+\s/,'')}`;
   $('end-root').innerHTML=`<div class="screen-center"><div class="end-card">
     <h2>🚀 THE RAFT IS AWAY</h2>
+    <div class="team-line">${S.teamEmoji} TEAM ${esc(S.teamName)} — ${fmt(total)}</div>
     <p style="font-style:italic">Three short. Three long. Three short. The flares hang burning over the cove — and out on the black water, the ship's lights swing toward you. The winch releases, the tide takes the raft, and the island falls away behind you.<br><br>
     On the beach where you started, at the very edge of the flare-light, something tall stands motionless at the waterline, watching you go. It does not follow. It has never needed to follow anyone before.<br><br>
     You don't look away until the island is gone.</p>
     <div class="rating">${rating}</div>
     <div class="stat-grid">
-      <div class="stat"><div class="k">Total time</div><div class="v">${fmt(total)}</div></div>
+      <div class="stat"><div class="k">Finishing time</div><div class="v">${fmt(total)}</div></div>
       <div class="stat"><div class="k">Play time</div><div class="v">${fmt(S.endElapsed)}</div></div>
       <div class="stat"><div class="k">Hints used</div><div class="v">${S.hintsUsed} (+${fmt(S.hintsUsed*HINT_PENALTY)})</div></div>
       <div class="stat"><div class="k">Wrong answers</div><div class="v">${S.wrongCount} (+${fmt(S.wrongCount*WRONG_PENALTY)})</div></div>
