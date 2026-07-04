@@ -8,11 +8,14 @@ in the treeline that you never quite see.
 Every room is a full illustrated, animated scene (layered SVG with mouse
 parallax, drifting fog, fireflies, film grain, a storm-lashed title screen) with
 discoverable glowing hotspots instead of menus. The soundscape is synthesized
-live with the WebAudio API — ocean surf, wind, a low dread-drone that deepens
-room by room, knocks on the station wall, morse code you can actually *hear*,
-a radio dial you tune through static by ear, flares that streak up over the
-cove, and a heartbeat when the clock drops under five minutes. No image or
-audio files: everything is generated in the browser.
+live with the WebAudio API, and every room has its own sonic signature — surf
+and gull cries on the beach; electrical mains hum and radio crackle in the
+station; leaf rustle, crickets and wooden creaks in the jungle; slow breakers
+and the deepest dread-drone in the cove — plus knocks on the station wall,
+morse code you can actually *hear*, a radio dial you tune through static by
+ear, flares that streak up over the cove, and a heartbeat when the clock drops
+under five minutes. No image or audio files: everything is generated in the
+browser.
 
 **Difficulty design (built for a crew of ~5):** no answer is readable from a
 single object. Every puzzle either combines two or three separate clue sources,

@@ -439,14 +439,17 @@ function initAudio(){
     for(let i=0;i<len;i++) d[i]=Math.random()*2-1;
     amb.noiseBuf = buf;
 
-    // SURF: noise -> lowpass -> gain, with a slow swell LFO
+    // SURF: noise -> lowpass -> swell VCA (multiplier) -> room gain.
+    // The swell LFO drives an intermediate stage so rooms with surf=0
+    // stay truly silent instead of leaking ocean swells indoors.
     const surfSrc=AC.createBufferSource(); surfSrc.buffer=buf; surfSrc.loop=true;
     const surfLP=AC.createBiquadFilter(); surfLP.type='lowpass'; surfLP.frequency.value=420;
-    amb.surf=AC.createGain(); amb.surf.gain.value=0;
+    const swellVCA=AC.createGain(); swellVCA.gain.value=0.7;
     const swell=AC.createOscillator(); swell.frequency.value=0.08;
-    const swellG=AC.createGain(); swellG.gain.value=0.35;
-    swell.connect(swellG); swellG.connect(amb.surf.gain);
-    surfSrc.connect(surfLP); surfLP.connect(amb.surf); amb.surf.connect(master);
+    const swellG=AC.createGain(); swellG.gain.value=0.3;
+    swell.connect(swellG); swellG.connect(swellVCA.gain);
+    amb.surf=AC.createGain(); amb.surf.gain.value=0;
+    surfSrc.connect(surfLP); surfLP.connect(swellVCA); swellVCA.connect(amb.surf); amb.surf.connect(master);
     surfSrc.start(); swell.start();
 
     // WIND: noise -> bandpass (wandering frequency) -> gain
@@ -465,21 +468,100 @@ function initAudio(){
     amb.drone=AC.createGain(); amb.drone.gain.value=0;
     o1.connect(amb.drone); o2.connect(amb.drone); amb.drone.connect(master);
     o1.start(); o2.start();
+
+    // MAINS HUM: 60Hz + faint 120Hz harmonic — the station's dying power
+    const h1=AC.createOscillator(); h1.type='sine'; h1.frequency.value=60;
+    const h2=AC.createOscillator(); h2.type='triangle'; h2.frequency.value=120;
+    const h2g=AC.createGain(); h2g.gain.value=0.3; h2.connect(h2g);
+    amb.hum=AC.createGain(); amb.hum.gain.value=0;
+    h1.connect(amb.hum); h2g.connect(amb.hum); amb.hum.connect(master);
+    h1.start(); h2.start();
+
+    // LEAF RUSTLE: high bandpassed noise breathing via its own VCA
+    const rSrc=AC.createBufferSource(); rSrc.buffer=buf; rSrc.loop=true;
+    const rBP=AC.createBiquadFilter(); rBP.type='bandpass'; rBP.frequency.value=3400; rBP.Q.value=0.7;
+    const rVCA=AC.createGain(); rVCA.gain.value=0.6;
+    const rLFO=AC.createOscillator(); rLFO.frequency.value=0.27;
+    const rLFOg=AC.createGain(); rLFOg.gain.value=0.35;
+    rLFO.connect(rLFOg); rLFOg.connect(rVCA.gain);
+    amb.rustle=AC.createGain(); amb.rustle.gain.value=0;
+    rSrc.connect(rBP); rBP.connect(rVCA); rVCA.connect(amb.rustle); amb.rustle.connect(master);
+    rSrc.start(); rLFO.start();
   }catch(e){ AC=null; }
 }
-function setAmbience(p){ // p = {surf, wind, drone}
+function setAmbience(p){ // p = {surf, wind, drone, hum, rustle}
   if(!AC) return;
   const t=AC.currentTime;
   amb.surf.gain.setTargetAtTime(p.surf, t, 2.5);
   amb.wind.gain.setTargetAtTime(p.wind, t, 2.5);
   amb.drone.gain.setTargetAtTime(p.drone, t, 4);
+  amb.hum.gain.setTargetAtTime(p.hum, t, 2);
+  amb.rustle.gain.setTargetAtTime(p.rustle, t, 2.5);
 }
+/* Each room has its own sonic signature (plus one-shot events below):
+   beach = surf & gulls · radio = mains hum & crackle ·
+   jungle = leaf rustle & crickets · cove = slow surf, crashes, deep drone */
 const ROOM_AMBIENCE=[
-  {surf:.34, wind:.10, drone:.012},   // beach
-  {surf:.05, wind:.09, drone:.028},   // radio station
-  {surf:0,   wind:.16, drone:.045},   // jungle
-  {surf:.22, wind:.10, drone:.055}    // cove
+  {surf:.40, wind:.08, drone:.012, hum:0,    rustle:0},
+  {surf:0,   wind:.015,drone:.03,  hum:.045, rustle:0},
+  {surf:0,   wind:.05, drone:.05,  hum:0,    rustle:.15},
+  {surf:.16, wind:.10, drone:.065, hum:0,    rustle:.05}
 ];
+/* one-shot ambient events, rolled every few seconds per room */
+let roomEventTimer=null;
+function startRoomEvents(idx){
+  clearInterval(roomEventTimer);
+  const roll=[
+    ()=>{ if(Math.random()<.45) sfxGull(); },
+    ()=>{ if(Math.random()<.6)  sfxCrackle(); },
+    ()=>{ Math.random()<.7 ? sfxCrickets() : sfxCreak(); },
+    ()=>{ if(Math.random()<.5)  sfxWaveCrash(); }
+  ][idx];
+  roomEventTimer=setInterval(()=>{ if(!AC||muted||S.finished) return; roll(); }, 5200);
+}
+function sfxGull(){
+  if(!AC) return;
+  const t=AC.currentTime+Math.random()*1.5;
+  for(let i=0;i<2;i++){
+    const s=t+i*0.28, o=AC.createOscillator(), g=AC.createGain();
+    o.type='triangle';
+    o.frequency.setValueAtTime(1350,s); o.frequency.exponentialRampToValueAtTime(880,s+0.22);
+    g.gain.setValueAtTime(0.0001,s); g.gain.exponentialRampToValueAtTime(0.032,s+0.04);
+    g.gain.exponentialRampToValueAtTime(0.0001,s+0.24);
+    o.connect(g); g.connect(master); o.start(s); o.stop(s+0.3);
+  }
+}
+function sfxCrackle(){
+  if(!AC) return;
+  const t=AC.currentTime, n=2+Math.floor(Math.random()*3);
+  for(let i=0;i<n;i++) noiseBurst(0.03+Math.random()*0.05, 2600, 0.045+Math.random()*0.05, 'highpass', t+Math.random()*1.6);
+}
+function sfxCrickets(){
+  if(!AC) return;
+  const t=AC.currentTime+Math.random(), n=4+Math.floor(Math.random()*3);
+  for(let i=0;i<n;i++) tone(4300+Math.random()*300, 0.045, t+i*0.11, 0.02, 'sine');
+}
+function sfxCreak(){
+  if(!AC) return;
+  const t=AC.currentTime, o=AC.createOscillator(), f=AC.createBiquadFilter(), g=AC.createGain();
+  o.type='sawtooth'; o.frequency.setValueAtTime(140,t); o.frequency.exponentialRampToValueAtTime(90,t+0.7);
+  f.type='lowpass'; f.frequency.value=420;
+  g.gain.setValueAtTime(0.0001,t); g.gain.exponentialRampToValueAtTime(0.035,t+0.2);
+  g.gain.exponentialRampToValueAtTime(0.0001,t+0.8);
+  o.connect(f); f.connect(g); g.connect(master); o.start(t); o.stop(t+0.9);
+}
+function sfxWaveCrash(){
+  if(!AC) return;
+  const t=AC.currentTime+Math.random();
+  const s=AC.createBufferSource(); s.buffer=amb.noiseBuf;
+  const f=AC.createBiquadFilter(); f.type='lowpass';
+  f.frequency.setValueAtTime(260,t); f.frequency.exponentialRampToValueAtTime(700,t+0.8);
+  f.frequency.exponentialRampToValueAtTime(200,t+2.2);
+  const g=AC.createGain();
+  g.gain.setValueAtTime(0.0001,t); g.gain.exponentialRampToValueAtTime(0.085,t+0.7);
+  g.gain.exponentialRampToValueAtTime(0.0001,t+2.4);
+  s.connect(f); f.connect(g); g.connect(master); s.start(t); s.stop(t+2.5);
+}
 
 /* --- one-shot SFX helpers --- */
 function tone(freq,dur,when,gain=0.15,type='sine'){
@@ -1644,6 +1726,7 @@ function renderScene(){
   $('scene').innerHTML = SCENES[room.scene]();
   setFxMode(room.fx);
   setAmbience(ROOM_AMBIENCE[S.roomIndex]);
+  startRoomEvents(S.roomIndex);
   $('hud-room').textContent = room.name;
   $('objective').innerHTML = room.objective;
   renderHotspots();
