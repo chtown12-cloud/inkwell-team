@@ -1,148 +1,142 @@
-# The Wreck of the Eldermoor 🏝️
+# Escape the Night 🌙
 
-A browser-based virtual escape room for remote teams, built as a point-and-click
-adventure. One person shares their screen and drives; everyone else collaborates
-over a video call. Four rooms, 17 puzzles, a 45-minute countdown, and something
-in the treeline that you never quite see.
+Five browser-based virtual escape rooms for remote teams, built as point-and-click
+adventures on one shared engine. One person shares their screen and drives;
+everyone else collaborates over a video call. Pick a scenario on the first
+screen, muster your crew (team name + emoji), and race the 45-minute clock.
 
-Every room is a full illustrated, animated scene (layered SVG with mouse
-parallax, drifting fog, fireflies, film grain, a storm-lashed title screen) with
-discoverable glowing hotspots instead of menus. The soundscape is synthesized
-live with the WebAudio API, and every room has its own sonic signature — surf
-and gull cries on the beach; electrical mains hum and radio crackle in the
-station; leaf rustle, crickets and wooden creaks in the jungle; slow breakers
-and the deepest dread-drone in the cove — plus knocks on the station wall,
-morse code you can actually *hear*, a radio dial you tune through static by
-ear, flares that streak up over the cove, and a heartbeat when the clock drops
-under five minutes. No image or audio files: everything is generated in the
-browser.
+| Scenario | Setting | The thing you never see |
+|----------|---------|--------------------------|
+| 🏝️ **The Wreck of the Eldermoor** | Shipwreck on an uncharted island | Something pacing the treeline |
+| 🚀 **Derelict: The Prospero** | Dead colony ship, 40 years off course | Something living in the vents |
+| ⚡ **Castle Vorstag** | The Baron's castle, slab empty | Something dragging its feet in the halls |
+| ❄️ **Station Erebus** | Silent Antarctic research station | Something that thawed out of core E-9 |
+| 🚂 **The Midnight Special** | A 1927 express that never arrives | The Conductor, punching tickets nobody bought |
 
-**Difficulty design (built for a crew of ~5):** no answer is readable from a
-single object. Every puzzle either combines two or three separate clue sources,
-hides its rule until someone induces it, or carries enough raw workload (morse
-decoding, stone-by-stone checks, constraint deduction) that the crew should
-split it up and compare notes. Expect several minutes of genuine argument per
-puzzle in the later rooms.
+Every scenario: 4 rooms, 17 puzzles, illustrated animated scenes (SVG parallax,
+fog, snow, fireflies, film grain), discoverable glowing hotspots, an unseen
+monster delivered through narrative beats, and a fully synthesized WebAudio
+soundscape with a distinct signature per room (surf and gulls; reactor hum and
+sonar pings; thunder and organ; blizzard and generator chug; rail clack and far
+whistles). No image or audio files — everything is generated in the browser.
+
+**Difficulty (all five tuned for a crew of ~5):** no answer is readable from a
+single object. Every puzzle combines two or three clue sources, hides its rule
+until someone induces it, or carries enough workload (10-letter morse decodes,
+item-by-item rule checks, mastermind-style deduction, scheduling constraints)
+that the crew should split it up and compare notes.
 
 ## How to run it
 
 Open `index.html` in any modern browser — **sound on, fullscreen recommended**.
-No server, no build step, no dependencies except Google Fonts loaded from a CDN
-(the game still works offline, just with fallback fonts). A `vercel.json` is
-included so the repo deploys as a static site.
-
-Multiple teams can compete by opening the game in separate browser tabs or on
-separate machines and comparing the shareable score text at the end.
+No server, no build step; Google Fonts is the only CDN dependency, and a
+`vercel.json` is included for static deployment. Deep-link a team straight to a
+scenario with `?s=eldermoor`, `?s=prospero`, `?s=vorstag`, `?s=erebus`, or
+`?s=midnight` — handy when multiple teams race different (or the same)
+scenarios in separate tabs and compare the shareable score text afterward.
 
 ## Rules at a glance
 
-- Countdown starts at **45:00**. Timer pulses red under 5 minutes.
-- Each puzzle has up to **3 hints**, each costing **+30 seconds**.
-- Wrong answers cost **+5 seconds**.
-- If time runs out you can press on in overtime (rating capped) or restart.
-- Final screen shows total time, hints, penalties, a rating, and a
-  copy-to-clipboard result block for comparing over chat.
+- Countdown starts at **45:00**; the timer pulses red under 5 minutes.
+- Up to 3 hints per puzzle, escalating: **+0:30, then +1:00, then +2:00**
+  (the cost is shown on the button before you commit).
+- Wrong answers cost **+0:05**.
+- Time out → continue in overtime (rating capped) or restart.
+- Victory screen: team emoji + name + finishing time, full stats, themed
+  rating, and a copy-to-clipboard results block.
 
 ## Facilitator setup
 
-On the **start screen only**, a small "🔑 Game Master" button in the bottom-right
-corner opens the full answer key (every answer, chain, and hint). It disappears
-the moment the game starts, so screen-share safely — just don't open it in
-front of the players.
+On each scenario's **title screen only**, the 🔑 **Game Master** button opens
+that scenario's complete answer key — every answer, chain, and hint with its
+cost. It disappears once the game starts. The in-game panel renders from live
+data, so it is always the canonical cheat sheet; the tables below are the
+quick-reference version.
 
 ---
 
-# GAME MASTER REFERENCE CARD
+# GAME MASTER QUICK REFERENCE
 
-Screenshot this section (or the in-game Game Master panel) before handing the
-game to players.
+Answers per scenario, in solve order. (Full chains and all hint text: in-game GM panel.)
 
-## ROOM 1 — THE BEACH (warm-up, multi-source)
+## 🏝️ The Wreck of the Eldermoor
 
-**Chain:** Plank tally-strokes index into carved words → SAIL → sail pairs each
-shape with a wind letter → hull keel plate: "READ THE WIND SUNWISE FROM NORTH"
-(N,E,S,W) → crate digits in that order → crate holds mirror-stamped key TIDE →
-box riddle answers TIDE, engraving says speak it backward → box holds chart →
-chart cross-references hull muster, drift days, crate manifest.
+| Room | Answers |
+|------|---------|
+| 1 · The Beach | SAIL → **8513** (winds N,E,S,W: hull rule + sail pairs) → EDIT (TIDE backward) → **54** |
+| 2 · The Radio Station | tune **121.5** (day 121 + 5 sill gouges) → LOOK UNDER (morse) → STORM (Caesar 3) → **394** (lamp deduction) |
+| 3 · The Jungle Path | RIVER → DROWN (sides > moss) → **693** (algebra) → LEAVE (lamp morse) |
+| 4 · The Escape Raft | BDAEC (scheduling) → **2430** (121.5 × 2) → **510** (6:40 tide − 90 min) → **3158** (8513 reversed) → SOS flares |
 
-| # | Puzzle | Answer | Logic |
-|---|--------|--------|-------|
-| 1 | Driftwood Planks | **SAIL** | CASTAWAY(3rd)=S, GALE(2nd)=A, ADRIFT(4th)=I, SALVAGE(3rd)=L |
-| 2 | Cargo Crate | **8513** | Winds N,E,S,W (hull rule) → ▲8, ■5, ◆1, ●3 (sail pairs shapes↔winds) |
-| 3 | Weatherproof Box | **EDIT** | Riddle = TIDE; "name me as the ebb would — backward" → EDIT |
-| 4 | Chart Fragment | **54** | N: (12 souls − 4 struck) − 3 days adrift = 5; E: 2 unbroken crates × 2 = 4 |
+## 🚀 Derelict: The Prospero
 
-## ROOM 2 — THE RADIO STATION (medium, listen + deduce)
+| Room | Answers |
+|------|---------|
+| 1 · The Cryo Bay | LOCKER (bunk№ indexes surnames) → **6942** (shutdown order: reactor/power/water/cryo) → RATS (STAR inside-out) → **34** (9 souls − 6 pods; 2 cores × 2) |
+| 2 · The Bridge | tune **47.15** (Day 47 + 15 scratches) → SEAL VENTS (morse) → GAMMA (Caesar 5) → **651** (lamp deduction) |
+| 3 · Hydroponics | VENT → STARVE (sprouted > wilted) → **642** (F=3L, M=F−L, Σ12) → PURGE (airlock morse) |
+| 4 · The Escape Pod Bay | EBDAC (scheduling, oxygen 3rd) → **9430** (47.15 × 2) → **435** (5:20 pass − 45 min) → **2496** (6942 reversed) → SOS thrusters |
 
-**Chain:** Logbook ("the band is the day I stopped counting, then the point,
-then the count of the knocks", last entry Day 121) + five gouges under the
-window sill → tune 121.5 → broadcast is 10 letters of morse = LOOK UNDER →
-rug hides hatch → Caesar plate with no stated shift (crack via WKH = THE,
-shift 3) → STORM → transmitter calibration-lamp deduction → 394.
+## ⚡ Castle Vorstag
 
-| # | Puzzle | Answer | Logic |
-|---|--------|--------|-------|
-| 1 | Radio Receiver | **121.5** | Day 121 (logbook) + point + 5 knocks (window gouges); sweep dial, LOCK IT IN |
-| 2 | The Broadcast | **LOOK UNDER** | ·−·· −−− −−− −·− / ··− −· −·· · ·−· via the wall poster |
-| 3 | Floor Hatch | **STORM** | WKH ZKHHO RSHQV WR: VWRUP — WKH=THE ⇒ shift 3 back |
-| 4 | Emergency Transmitter | **394** | Mastermind-style: 123/456/925 one lit seated wrong, 612 dark, 839 two lit both wrong — unique solution 394 |
+| Room | Answers |
+|------|---------|
+| 1 · The Gatehouse Court | WELL (star№ indexes crests) → **9357** (seasons from spring: ⚘✠♜☾) → NOCTIS (NIGHT in the old tongue) → **56** (11 guests − 6 wolves; 3 dead candles × 2) |
+| 2 · The Library | organ stop **119.3** (hymn CXIX + third verse) → STAY INSIDE (chime morse) → SPARK (Caesar 4) → **763** (flame deduction) |
+| 3 · The Laboratory | LIGHTNING → RISEN (charge > cracks) → **624** (F=M+L, M=L/2, Σ12) → ALIVE (dumbwaiter bell morse) |
+| 4 · The Tower | EADCB (scheduling, capacitor 2nd) → **2386** (119.3 × 2) → **1040** (11:30 strike − 50 min) → **7539** (9357 reversed) → SOS lamp |
 
-## ROOM 3 — THE JUNGLE PATH (medium-hard, divide the work)
+## ❄️ Station Erebus
 
-**Chain:** Tree riddle = RIVER → eight stones, rule "sides must OUTNUMBER moss";
-safe stones in crossing order spell DROWN → pack tag algebra = 693 → pack holds
-morse crib + lamp → relay lamp blinks LEAVE → rope bridge.
+| Room | Answers |
+|------|---------|
+| 1 · The Perimeter | GARAGE (knot№ indexes flags) → **6841** (resupply order: food/fuel/medical/flares) → SOUTH (riddle = NORTH, "we drilled the other way") → **73** (14 bunks − 7 rotated; 3 full drums) |
+| 2 · Crew Quarters | tune **88.2** (day 88 + 2 radio checks) → MELT NOTHING (tape morse) → FROST (Caesar 2) → **842** (lamp deduction) |
+| 3 · The Ice Core Lab | ICE → BURIED (rings > fractures) → **936** (F=M+L, L=2M, Σ18) → BELOW (intercom morse) |
+| 4 · The Radio Tower | DEBAC (scheduling, plugs 2nd) → **1764** (88.2 × 2) → **530** (6:10 window − 40 min) → **1486** (6841 reversed) → SOS drum line |
 
-| # | Puzzle | Answer | Logic |
-|---|--------|--------|-------|
-| 1 | Carved Tree | **RIVER** | Sings shallow, silent deep, grows with rain, swallows crews |
-| 2 | River Crossing Stones | **DROWN** | Safe = sides > moss: D(5>2) R(6>1) O(4>2) W(5>3) N(6>4); B, E (3=3), A tip |
-| 3 | Ranger's Pack | **693** | F=2L, M=F+L ⇒ M=3L; F+M+L=6L=18 ⇒ 6-9-3 |
-| 4 | Gorge Gate | **LEAVE** | Lamp morse ·−·· · ·− ···− · |
+## 🚂 The Midnight Special
 
-## ROOM 4 — THE ESCAPE RAFT (hard, synthesis + callbacks)
+| Room | Answers |
+|------|---------|
+| 1 · The Baggage Car | PORTER (strap№ indexes trunks) → **8253** (takings, first class → freight) → EMIT (TIME backward) → **49** (11 − 7 crates; 3 sacks × 3) |
+| 2 · The Sleeper Corridor | gramophone **78.4** (78 rpm + fourth song) → WRONG STOP (run-out groove morse) → BRAKE (Caesar 6) → **276** (lamp deduction) |
+| 3 · The Dining Car | MIRROR → HUNGRY (forks > knives) → **385** (F=L−2, M=F+L, Σ16) → AGAIN (service bell morse) |
+| 4 · The Locomotive | CBEDA (scheduling, feed 2nd) → **1568** (78.4 × 2) → **340** (4:45 junction − 65 min) → **3528** (8253 reversed) → SOS whistle |
 
-**Chain:** Five tags with positional constraints → B-D-A-E-C → locker: "the
-military listens at TWICE the band" = 121.5×2 → 2430 → tide table: only the
-6:40/11 ft tide clears the 9-ft reef before dark, minus 90 min → 510 → winch:
-"the sea returns all things reversed" → crate code 8513 backward → 3158 →
-SOS flares → LAUNCH.
-
-| # | Puzzle | Answer | Logic |
-|---|--------|--------|-------|
-| 1 | Raft Materials | **BDAEC** | D fixed 2nd; B<D ⇒ B 1st; one gap B→A ⇒ A 3rd; E not adjacent to D ⇒ E 4th; C after E ⇒ C 5th |
-| 2 | Flare Locker | **2430** | Room 2 frequency 121.5 doubled = 243.0 (the real military UHF guard band) |
-| 3 | Tide Table | **510** | 4:10 too shallow (8 ft), 9:55 after dark; 6:40 − 90 min = 5:10 |
-| 4 | Launch Winch | **3158** | Crate code 8513 (Room 1) reversed |
-| 5 | Signal Flares | **··· −−− ···** | Fire short×3, long×3, short×3, then SEND |
-
-## Full hint text
-
-Every puzzle has 3 progressive hints (+30 s each); the exact wording is in the
-in-game Game Master panel (start screen → 🔑 Game Master), which renders the
-live data, so it can never drift out of date. Use that panel as the canonical
-cheat sheet.
+All five mastermind-style "lamp" codes (394 / 651 / 763 / 842 / 276) have
+verified unique solutions; all five scheduling puzzles have verified unique
+orders.
 
 ## Scoring / ratings
 
-| Rating | Condition |
-|--------|-----------|
-| 🏆 Master Navigator | ≤ 30:00 total and ≤ 3 hints |
-| ⚓ Able Seafarer | ≤ 40:00 total |
-| 🪢 Deck Hand | ≤ 50:00 total |
-| 🛟 Barely Made It | over 50:00 but within the clock |
-| 🌙 Rescued After Dark | finished in overtime |
+Thresholds are shared; the titles are themed per scenario (e.g. Master
+Navigator / Flight Commander / Master Galvanist / Polar Legend / Master of the
+Line):
+
+| Tier | Condition |
+|------|-----------|
+| 🏆 top | ≤ 30:00 total and ≤ 3 hints |
+| 2nd | ≤ 40:00 total |
+| 3rd | ≤ 50:00 total |
+| 4th | over 50:00 but within the clock |
+| overtime | finished after the clock ran out |
 
 (Total = play time + hint/wrong-answer penalties.)
 
-## Modifying the game
+## Code layout / modifying
 
-`index.html` is organized into five commented sections: **AUDIO** (WebAudio
-synth soundscape), **FX** (canvas particles + grain), **SCENES** (one SVG
-builder per room), **DATA** (the `ROOMS` array — puzzles, hints, flavor text,
-narrative beats, and hotspot coordinates in % of the 1600×900 stage), and
-**ENGINE** (rendering, puzzle types, timer, endings). Chaining uses
-`hiddenUntil` (object appears when that puzzle is solved) and `revealedBy`
-(description upgrades when that puzzle is solved); answers are normalized to
-A–Z0–9. Adding a room means a new entry in `ROOMS`, a scene builder in
-`SCENES`, and an ambience preset.
+- **`index.html`** — the scenario-agnostic engine: shared styles, WebAudio
+  synth (beds + one-shot library), canvas FX (mist/motes/fireflies/snow/embers,
+  flares, film grain, title backdrops: rain/stars/snow/rails), and the game
+  logic (hub, hotspots, modal, puzzle types `text`/`dial`/`signal`, timer,
+  beats, relay lamps, endings, GM panel).
+- **`scenarios/*.js`** — one file per scenario, self-registering via
+  `registerScenario({...})`: metadata, title art, story, emojis, ratings,
+  victory/game-over prose, ambience presets, ambient sound events, wrong-answer
+  beats, four SVG scene builders, and the `rooms` array (puzzles, hints,
+  hotspot coordinates in % of the 1600×900 stage). Chaining uses `hiddenUntil`
+  / `revealedBy`; answers are normalized to A–Z0–9.
+
+Adding a sixth scenario = one new file in `scenarios/` plus one `<script>` tag
+in `index.html`.
