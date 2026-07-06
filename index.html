@@ -1,0 +1,1255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Escape the Night — Five Virtual Escape Rooms</title>
+<!-- Google Fonts: the only external dependency. -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Special+Elite&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   ESCAPE THE NIGHT — shared engine styles
+   Five scenarios, one engine. Scenario content lives in
+   scenarios/*.js; this file is the engine + shared chrome.
+   ============================================================ */
+:root{
+  --ink:#e8e0cf; --dim:#a99f88; --sand:#d8c39a;
+  --teal:#2e6f6a; --teal-hi:#4fa39b; --wood:#5b4632; --wood-hi:#8a6f52;
+  --danger:#c9553d; --ok:#7fae6a; --accent:#4fa39b;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden;background:#000}
+body{font-family:'Inter',system-ui,sans-serif;color:var(--ink);line-height:1.55}
+h1,h2,h3,.headline{font-family:'Special Elite',serif;letter-spacing:.5px;font-weight:400}
+button{font-family:'Inter',sans-serif;cursor:pointer}
+.hidden{display:none !important}
+
+/* ---------- the 1600x900 stage ---------- */
+#stage-wrap{position:fixed;inset:0;overflow:hidden;background:#000}
+#stage{position:absolute;left:50%;top:50%;width:1600px;height:900px;transform:translate(-50%,-50%) scale(1);transform-origin:center}
+#stage.shake{animation:shakeS .45s}
+@keyframes shakeS{0%,100%{margin-left:0}20%{margin-left:-14px}40%{margin-left:12px}60%{margin-left:-9px}80%{margin-left:7px}}
+#scene, #scene svg{position:absolute;inset:0;width:100%;height:100%}
+#fx{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:5}
+#hotspots{position:absolute;inset:0;z-index:6}
+
+/* ---------- hotspots ---------- */
+.hotspot{position:absolute;background:none;border:none;z-index:6}
+.hotspot .ring{
+  position:absolute;left:50%;top:50%;width:46px;height:46px;transform:translate(-50%,-50%);
+  border:2px solid rgba(240,220,170,.65);border-radius:50%;
+  box-shadow:0 0 18px rgba(240,220,170,.35), inset 0 0 12px rgba(240,220,170,.25);
+  animation:ringpulse 2.6s ease-in-out infinite;
+}
+.hotspot .ring::after{content:"";position:absolute;left:50%;top:50%;width:8px;height:8px;transform:translate(-50%,-50%);background:rgba(255,240,200,.9);border-radius:50%}
+@keyframes ringpulse{0%,100%{transform:translate(-50%,-50%) scale(1);opacity:.75}50%{transform:translate(-50%,-50%) scale(1.25);opacity:.35}}
+.hotspot.done .ring{border-color:rgba(127,174,106,.85);box-shadow:0 0 14px rgba(127,174,106,.4);animation:none;opacity:.8}
+.hotspot.done .ring::after{content:"✓";width:auto;height:auto;background:none;color:#bfe3a8;font-weight:700;font-size:15px}
+.hotspot .tag{
+  position:absolute;left:50%;top:calc(50% + 34px);transform:translateX(-50%);
+  white-space:nowrap;font-family:'Special Elite',serif;font-size:19px;color:#f4ecd8;
+  background:rgba(10,16,15,.85);border:1px solid rgba(240,220,170,.4);border-radius:20px;
+  padding:5px 16px;opacity:0;transition:opacity .18s;pointer-events:none;box-shadow:0 4px 14px rgba(0,0,0,.6);
+}
+.hotspot:hover .tag,.hotspot:focus .tag{opacity:1}
+.hotspot:hover .ring{border-color:#ffe9b8}
+.hotspot.new .ring{animation:ringpulse 1s ease-in-out infinite;border-color:#ffe9b8}
+
+/* ---------- cinematic overlays ---------- */
+#vignette{position:fixed;inset:0;pointer-events:none;z-index:30;background:radial-gradient(ellipse at 50% 46%, transparent 52%, rgba(0,0,0,.62) 100%);transition:opacity .8s}
+#vignette.tense{background:radial-gradient(ellipse at 50% 46%, transparent 38%, rgba(10,0,0,.82) 100%)}
+#vignette.pulse{animation:vigpulse 1.05s ease-in-out infinite}
+@keyframes vigpulse{0%,100%{opacity:.85}50%{opacity:1}}
+#redflash{position:fixed;inset:0;pointer-events:none;z-index:31;background:radial-gradient(ellipse at center, rgba(160,30,10,.28), rgba(90,10,0,.5));opacity:0;transition:opacity .5s}
+#redflash.on{opacity:1;transition:opacity .06s}
+#grain{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:32;opacity:.045}
+#dimmer{position:fixed;inset:0;pointer-events:none;z-index:29;background:#000;opacity:0;transition:opacity 1.4s}
+
+/* ---------- HUD ---------- */
+#hud{position:fixed;top:0;left:0;right:0;z-index:40;display:flex;align-items:center;justify-content:space-between;gap:14px;padding:8px 18px;background:linear-gradient(180deg,rgba(4,10,10,.88),rgba(4,10,10,.55) 75%,transparent)}
+#hud .room-label{font-family:'Special Elite',serif;color:var(--sand);font-size:1.05rem;text-shadow:0 2px 6px #000}
+#team-badge{display:inline-block;background:rgba(6,14,14,.8);border:1px solid #37504e;border-radius:8px;padding:2px 10px;margin-right:10px;font-size:.95rem;color:var(--sand)}
+#team-badge:empty{display:none}
+#timer{font-family:'Special Elite',serif;font-size:2rem;color:var(--sand);background:rgba(6,14,14,.8);border:1px solid #37504e;border-radius:10px;padding:1px 20px;min-width:158px;text-align:center;text-shadow:0 0 14px rgba(216,195,154,.35)}
+#timer.low{color:#ff8a70;border-color:#8a3524;animation:pulseT 1s infinite}
+#timer.overtime{color:var(--danger)}
+@keyframes pulseT{0%,100%{box-shadow:0 0 0 rgba(201,85,61,0)}50%{box-shadow:0 0 22px rgba(201,85,61,.75)}}
+#hud .stats{display:flex;gap:14px;font-size:.78rem;color:var(--dim);white-space:nowrap;align-items:center}
+#hud .stats b{color:var(--ink)}
+#mute-btn{background:rgba(6,14,14,.8);border:1px solid #37504e;border-radius:8px;color:var(--sand);font-size:1.05rem;padding:4px 11px}
+#mute-btn:hover{border-color:var(--teal-hi)}
+
+#objective{position:fixed;bottom:14px;left:50%;transform:translateX(-50%);z-index:40;font-size:.8rem;color:var(--dim);background:rgba(4,10,10,.72);border:1px solid #22383a;border-radius:20px;padding:6px 18px;max-width:min(760px,92vw);text-align:center;pointer-events:none}
+#objective b{color:var(--sand);font-family:'Special Elite',serif}
+
+/* ---------- room transition card ---------- */
+#room-card{position:fixed;inset:0;z-index:55;background:#000;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:20px;animation:cardin .9s ease-out}
+#room-card h2{font-size:clamp(2rem,5vw,3.4rem);color:var(--sand);letter-spacing:3px}
+#room-card p{color:var(--dim);font-style:italic;margin-top:12px;max-width:640px;font-size:1.05rem}
+#room-card .card-note{margin-top:30px;font-size:.75rem;color:#5c6f6d;letter-spacing:2px}
+@keyframes cardin{from{opacity:0}to{opacity:1}}
+
+/* ---------- narrative beats ---------- */
+#beat{position:fixed;top:78px;left:50%;transform:translateX(-50%);z-index:56;max-width:560px;width:calc(100% - 32px);background:linear-gradient(170deg,rgba(22,17,30,.96),rgba(10,8,16,.96));color:#cfc4de;border:1px solid #3d3350;border-radius:10px;padding:16px 22px;font-style:italic;text-align:center;box-shadow:0 10px 40px rgba(0,0,0,.8);opacity:0;pointer-events:none;transition:opacity 1.6s;font-size:1.02rem}
+#beat.show{opacity:1}
+#beat::before{content:"· · ·";display:block;color:#5c4f74;letter-spacing:9px;font-style:normal;margin-bottom:5px}
+
+/* ---------- modal ---------- */
+#overlay{position:fixed;inset:0;background:rgba(2,6,7,.72);z-index:60;display:flex;align-items:flex-start;justify-content:center;padding:5vh 16px;overflow-y:auto;backdrop-filter:blur(2px)}
+#modal{width:min(700px,100%);background:linear-gradient(165deg,#1e3237,#111f23);border:1px solid #3d5a60;border-radius:14px;padding:26px 30px 24px;position:relative;box-shadow:0 22px 60px rgba(0,0,0,.8);animation:modalin .22s ease-out}
+@keyframes modalin{from{transform:translateY(14px) scale(.98);opacity:0}to{transform:none;opacity:1}}
+#modal h3{color:var(--sand);font-size:1.55rem;margin-bottom:4px}
+#modal .obj-desc{margin:12px 0;white-space:pre-line}
+#modal .close-x{position:absolute;top:10px;right:12px;background:none;border:none;color:var(--dim);font-size:1.5rem;line-height:1;padding:6px}
+#modal .close-x:hover{color:var(--ink)}
+.puzzle-box{margin-top:16px;padding:16px;background:rgba(0,0,0,.32);border:1px solid #2c4144;border-radius:10px}
+.puzzle-box .prompt{font-family:'Special Elite',serif;color:var(--teal-hi);margin-bottom:10px}
+.answer-row{display:flex;gap:10px;flex-wrap:wrap}
+.answer-row input{flex:1;min-width:170px;padding:12px 14px;font-size:1.2rem;letter-spacing:3px;background:#0b1619;color:var(--sand);border:1px solid #3a565c;border-radius:8px;font-family:'Special Elite',serif;text-transform:uppercase}
+.answer-row input:focus{outline:none;border-color:var(--teal-hi);box-shadow:0 0 12px rgba(79,163,155,.25)}
+.answer-row button,.hint-btn,.signal-btn,.morse-btn,#dial-lock{padding:12px 22px;font-size:1rem;font-weight:600;border-radius:8px;border:1px solid #6dc0b8;background:linear-gradient(180deg,var(--teal-hi),var(--teal));color:#eafaf7}
+.answer-row button:hover{filter:brightness(1.12)}
+.feedback{min-height:22px;margin-top:10px;font-size:.9rem}
+.feedback.bad{color:#ff9a82;font-weight:600}
+.feedback.good{color:var(--ok);font-weight:600}
+.shakein{animation:shakeI .4s}
+@keyframes shakeI{0%,100%{transform:translateX(0)}20%{transform:translateX(-8px)}40%{transform:translateX(8px)}60%{transform:translateX(-6px)}80%{transform:translateX(6px)}}
+.solved-note{margin-top:14px;padding:14px;background:rgba(127,174,106,.12);border:1px solid #3f5c37;border-radius:10px;white-space:pre-line}
+.hints{margin-top:16px;border-top:1px dashed #2c4144;padding-top:12px}
+.hint-btn{background:linear-gradient(180deg,var(--wood-hi),var(--wood));border-color:#a5896a;font-size:.85rem;padding:8px 16px}
+.hint-btn:disabled{opacity:.45;cursor:not-allowed}
+.hint-text{margin-top:8px;padding:10px 12px;background:rgba(216,195,154,.09);border-left:3px solid var(--wood-hi);border-radius:0 6px 6px 0;font-size:.92rem;color:var(--sand)}
+.hint-cost{color:var(--dim);font-size:.75rem;margin-left:8px}
+.how{margin-top:9px;font-size:.78rem;color:#7d8a84;font-style:italic;line-height:1.45}
+.symbols{font-size:1.7rem;letter-spacing:12px;color:var(--sand);text-align:center;margin:8px 0}
+.morse{font-family:'Special Elite',serif;font-size:1.4rem;letter-spacing:4px;color:var(--teal-hi);text-align:center;margin:8px 0;word-break:break-all}
+.morse .lit{color:#ffe9b8;text-shadow:0 0 10px #ffda8c}
+.morse-btn{display:inline-block;margin:6px 4px 2px;font-size:.9rem;padding:9px 20px}
+.morse-crib{display:grid;grid-template-columns:repeat(auto-fill,minmax(86px,1fr));gap:3px 10px;margin:10px auto 2px;max-width:560px;padding:12px 14px;background:rgba(216,195,154,.07);border:1px dashed #5c6f6d;border-radius:8px;font-family:'Special Elite',serif;font-size:.95rem;color:var(--sand);text-align:left}
+
+/* ---------- tuning dial ---------- */
+.dial-ui{margin-top:14px;text-align:center}
+.freq-readout{display:inline-block;font-family:'Special Elite',serif;font-size:2.3rem;letter-spacing:4px;color:#9df0b4;background:#06130a;border:2px solid #1f4a2c;border-radius:8px;padding:2px 26px;text-shadow:0 0 16px rgba(120,255,160,.5);animation:crt 4s infinite}
+@keyframes crt{0%,100%{opacity:1}92%{opacity:1}93%{opacity:.7}94%{opacity:1}97%{opacity:.85}98%{opacity:1}}
+.dial-row{display:flex;align-items:center;gap:10px;margin:16px 4px 4px}
+.dial-row input[type=range]{flex:1;accent-color:#7fae6a;height:34px;cursor:ew-resize}
+.dial-fine{background:#243a3e;border:1px solid #3a565c;color:var(--sand);border-radius:6px;font-size:1.15rem;width:44px;height:38px}
+.sig-meter{height:10px;border-radius:6px;background:#0b1619;border:1px solid #2c4144;margin:12px auto 4px;max-width:420px;overflow:hidden}
+.sig-meter i{display:block;height:100%;width:0%;background:linear-gradient(90deg,#3f6b3a,#9df0b4);transition:width .15s}
+.sig-label{font-size:.72rem;color:var(--dim);letter-spacing:2px}
+
+/* ---------- signal pad ---------- */
+.signal-pad{margin-top:12px;text-align:center}
+.signal-btn{margin:4px 6px;min-width:138px}
+.signal-btn.long{background:linear-gradient(180deg,var(--wood-hi),var(--wood));border-color:#a5896a}
+.signal-btn.clear{background:#243a3e;border-color:#3a565c}
+.signal-display{min-height:46px;margin:12px auto 4px;max-width:430px;font-family:'Special Elite',serif;font-size:1.8rem;letter-spacing:7px;color:var(--sand);background:#0b1619;border:1px solid #3a565c;border-radius:8px;padding:6px 10px}
+
+/* ---------- scenario hub ---------- */
+#hub-screen{position:fixed;inset:0;z-index:50;overflow-y:auto;background:radial-gradient(ellipse at 50% -10%, rgba(70,60,90,.25), transparent 55%),linear-gradient(180deg,#07090f,#0b0e14 60%,#06070b)}
+#hub-inner{max-width:1180px;margin:0 auto;padding:6vh 24px 60px;text-align:center;position:relative;z-index:2}
+#hub-inner h1{font-size:clamp(2rem,5vw,3.4rem);color:var(--sand);text-shadow:0 4px 22px rgba(0,0,0,.9);animation:titleflick 7s infinite}
+#hub-inner .sub{color:#8f86a8;font-family:'Special Elite',serif;margin-top:8px;font-size:1.02rem}
+#hub-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:18px;margin-top:38px}
+.hub-card{background:linear-gradient(170deg,#141a22,#0b0f15);border:1px solid #2a3342;border-radius:14px;padding:0 0 16px;cursor:pointer;transition:transform .15s, border-color .15s, box-shadow .15s;overflow:hidden;text-align:center}
+.hub-card:hover{transform:translateY(-5px);border-color:var(--sand);box-shadow:0 14px 34px rgba(0,0,0,.6)}
+.hub-card .art{width:100%;height:130px;display:block}
+.hub-card .art svg{width:100%;height:100%;display:block}
+.hub-card h3{color:var(--sand);font-size:1.12rem;margin:12px 10px 4px}
+.hub-card .tag{color:var(--dim);font-size:.78rem;font-style:italic;padding:0 14px;min-height:38px}
+.hub-card .meta{margin-top:10px;font-size:.68rem;letter-spacing:1.5px;color:#6f7a8a}
+.hub-note{margin-top:30px;color:var(--dim);font-size:.82rem}
+
+/* ---------- title screen ---------- */
+#start-screen{position:fixed;inset:0;z-index:50;overflow-y:auto;background:linear-gradient(180deg,#050a10,#0a1620 55%,#071018)}
+#titlefx{position:fixed;inset:0;width:100%;height:100%;pointer-events:none}
+#lightning{position:fixed;inset:0;background:#cfe4ef;opacity:0;pointer-events:none}
+#lightning.flash{animation:lflash .8s}
+@keyframes lflash{0%{opacity:0}4%{opacity:.55}9%{opacity:.05}14%{opacity:.7}20%{opacity:.08}30%{opacity:.25}100%{opacity:0}}
+#start-inner{position:relative;max-width:880px;margin:0 auto;padding:4vh 24px 70px;text-align:center;z-index:2}
+#start-inner h1{font-size:clamp(2.2rem,6vw,4rem);color:var(--sand);text-shadow:0 4px 22px rgba(0,0,0,.9),0 0 40px rgba(216,180,106,.18);animation:titleflick 7s infinite}
+@keyframes titleflick{0%,100%{opacity:1}88%{opacity:1}89%{opacity:.6}90%{opacity:1}95%{opacity:.8}96%{opacity:1}}
+#start-inner .sub{color:var(--teal-hi);font-family:'Special Elite',serif;font-size:1.05rem;margin-top:8px}
+#title-art{width:min(560px,86%);margin:16px auto 4px;display:block;filter:drop-shadow(0 10px 30px rgba(0,0,0,.8))}
+#title-art svg{width:100%;display:block}
+.parchment{margin:22px auto;max-width:640px;text-align:left;padding:26px 30px;background:linear-gradient(160deg,#e9dcbc,#d8c39a 55%,#cbb489);color:#3a2d1c;border-radius:4px;box-shadow:0 12px 34px rgba(0,0,0,.65), inset 0 0 60px rgba(120,90,40,.28);border:1px solid #b49a6d;font-size:1.02rem}
+.parchment p+p{margin-top:12px}
+.big-btn{margin-top:10px;padding:16px 46px;font-size:1.25rem;font-family:'Special Elite',serif;background:linear-gradient(180deg,var(--teal-hi),var(--teal));color:#eafaf7;border:1px solid #6dc0b8;border-radius:8px;box-shadow:0 6px 20px rgba(0,0,0,.6);transition:transform .12s, box-shadow .12s}
+.big-btn:hover{transform:translateY(-2px);box-shadow:0 10px 26px rgba(0,0,0,.65)}
+.big-btn.alt{background:linear-gradient(180deg,#8a6f52,#5b4632);border-color:#a5896a}
+.start-note{color:var(--dim);font-size:.85rem;margin-top:18px}
+#back-btn{position:fixed;top:14px;left:16px;z-index:51;font-size:.8rem;color:var(--dim);background:rgba(0,0,0,.45);border:1px solid #2c4144;border-radius:8px;padding:6px 14px}
+#back-btn:hover{color:var(--ink);border-color:var(--dim)}
+#gm-btn{position:fixed;bottom:14px;right:16px;z-index:51;font-size:.72rem;color:#5c6f6d;background:rgba(0,0,0,.4);border:1px solid #2c4144;border-radius:6px;padding:5px 10px;opacity:.65}
+#gm-btn:hover{opacity:1;color:var(--dim)}
+#gm-panel{position:relative;z-index:2;max-width:880px;margin:10px auto 60px;text-align:left;background:rgba(12,20,22,.96);border:1px solid #2c4144;border-radius:10px;padding:26px 30px;font-size:.9rem}
+#gm-panel h2{color:var(--sand);margin-bottom:6px}
+#gm-panel h3{color:var(--teal-hi);margin:22px 0 6px;border-bottom:1px dashed #2c4144;padding-bottom:4px}
+#gm-panel .chain{color:var(--dim);font-style:italic;margin-bottom:10px}
+#gm-panel .gm-puzzle{margin:10px 0 14px;padding-left:14px;border-left:3px solid var(--wood-hi)}
+#gm-panel .gm-answer{color:var(--ok);font-weight:700}
+#gm-panel ul{margin:4px 0 0 22px;color:var(--dim)}
+
+/* ---------- crew muster ---------- */
+#crew-box{max-width:520px;margin:4px auto 20px;background:rgba(10,18,20,.85);border:1px solid #2c4144;border-radius:12px;padding:16px 20px}
+.crew-title{font-family:'Special Elite',serif;color:var(--teal-hi);letter-spacing:3px;font-size:.85rem;margin-bottom:10px}
+#team-name{width:100%;padding:11px 14px;font-size:1.15rem;letter-spacing:2px;text-transform:uppercase;background:#0b1619;color:var(--sand);border:1px solid #3a565c;border-radius:8px;font-family:'Special Elite',serif;text-align:center}
+#team-name:focus{outline:none;border-color:var(--teal-hi);box-shadow:0 0 12px rgba(79,163,155,.25)}
+#emoji-row{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-top:12px}
+.emoji-btn{font-size:1.5rem;line-height:1;padding:7px 9px;background:#0b1619;border:1px solid #2c4144;border-radius:8px;transition:transform .1s}
+.emoji-btn:hover{transform:scale(1.15);border-color:var(--teal-hi)}
+.emoji-btn.selected{border-color:var(--sand);background:#1d3237;box-shadow:0 0 10px rgba(216,195,154,.35)}
+.team-line{font-family:'Special Elite',serif;font-size:1.4rem;color:var(--sand);margin:2px 0 6px;letter-spacing:1px}
+
+/* ---------- end screens ---------- */
+.screen-center{position:fixed;inset:0;z-index:70;display:flex;align-items:center;justify-content:center;background:rgba(3,8,9,.9);padding:20px;overflow-y:auto}
+.end-card{max-width:620px;width:100%;text-align:center;padding:38px 34px;background:linear-gradient(165deg,#1e3237,#0f1e22);border:1px solid #3d5a60;border-radius:16px;box-shadow:0 30px 80px rgba(0,0,0,.8);animation:modalin .4s ease-out}
+.end-card h2{font-size:2.2rem;color:var(--sand);margin-bottom:10px}
+.end-card .rating{font-family:'Special Elite',serif;font-size:1.5rem;color:var(--teal-hi);margin:14px 0}
+.end-card .stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:20px 0;text-align:left}
+.end-card .stat{background:rgba(0,0,0,.3);border:1px solid #2c4144;border-radius:8px;padding:10px 14px}
+.end-card .stat .k{font-size:.72rem;color:var(--dim);text-transform:uppercase;letter-spacing:1px}
+.end-card .stat .v{font-family:'Special Elite',serif;font-size:1.3rem;color:var(--sand)}
+.end-card .btn-row{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:18px}
+pre.share{text-align:left;background:#0a1416;border:1px solid #2c4144;border-radius:8px;padding:14px;font-size:.85rem;color:var(--ink);white-space:pre-wrap;margin-top:16px}
+
+#room-complete{position:fixed;bottom:52px;left:50%;transform:translateX(-50%);z-index:45;text-align:center;background:rgba(10,22,20,.94);border:1px solid var(--teal-hi);border-radius:14px;padding:18px 30px;box-shadow:0 14px 40px rgba(0,0,0,.7);max-width:min(680px,92vw);animation:modalin .4s ease-out}
+#room-complete p{font-style:italic;margin-bottom:12px;font-size:.95rem}
+
+/* ---------- shared SVG scene animation classes ---------- */
+.wave{transform-box:fill-box}
+.w1{animation:waveX 8s ease-in-out infinite alternate}
+.w2{animation:waveX 6.4s ease-in-out infinite alternate-reverse}
+.w3{animation:waveX 5s ease-in-out infinite alternate}
+@keyframes waveX{from{transform:translateX(-70px)}to{transform:translateX(50px)}}
+.cloud{transform-box:fill-box}
+.c1{animation:cloudX 60s linear infinite alternate}
+.c2{animation:cloudX 85s linear infinite alternate-reverse}
+.c3{animation:cloudX 70s linear infinite alternate}
+@keyframes cloudX{from{transform:translateX(-100px)}to{transform:translateX(120px)}}
+.palm{transform-box:fill-box;transform-origin:50% 100%;animation:sway 5.6s ease-in-out infinite alternate}
+.palm.p2{animation-duration:7.2s}
+@keyframes sway{from{transform:rotate(-1.6deg)}to{transform:rotate(2deg)}}
+.flag{transform-box:fill-box;transform-origin:0% 0%;animation:flagwave 2.8s ease-in-out infinite alternate}
+@keyframes flagwave{from{transform:skewY(-4deg)}to{transform:skewY(5deg)}}
+.lampswing{transform-box:fill-box;transform-origin:50% 0%;animation:swing 6.5s ease-in-out infinite alternate}
+@keyframes swing{from{transform:rotate(-2.4deg)}to{transform:rotate(2.4deg)}}
+.flick{animation:dialflick 3.4s infinite}
+@keyframes dialflick{0%,100%{opacity:1}71%{opacity:1}73%{opacity:.3}75%{opacity:1}82%{opacity:.55}84%{opacity:1}}
+.glowdial{filter:drop-shadow(0 0 7px rgba(140,240,170,.8))}
+.win-shadow{animation:winshadow 47s linear infinite}
+@keyframes winshadow{0%,91%{transform:translateX(-90px);opacity:0}92.5%{opacity:.85}95%{transform:translateX(300px);opacity:.85}96%,100%{transform:translateX(300px);opacity:0}}
+.eyes{animation:eyeblink 53s linear infinite}
+@keyframes eyeblink{0%,93%{opacity:0}94%{opacity:.75}95.5%{opacity:.75}96%{opacity:0}97%{opacity:.6}98%,100%{opacity:0}}
+.fogband{transform-box:fill-box;animation:fogdrift 26s ease-in-out infinite alternate}
+.fogband.f2{animation-duration:34s}
+@keyframes fogdrift{from{transform:translateX(-120px)}to{transform:translateX(120px)}}
+.tw{animation:twinkle 4s ease-in-out infinite}
+@keyframes twinkle{0%,100%{opacity:.25}50%{opacity:1}}
+.shiplights{animation:shipdrift 40s ease-in-out infinite alternate}
+@keyframes shipdrift{from{transform:translateX(-50px)}to{transform:translateX(60px)}}
+.flame{transform-box:fill-box;transform-origin:50% 100%;animation:flamewob .35s ease-in-out infinite alternate}
+@keyframes flamewob{from{transform:scaleY(.92) skewX(-4deg)}to{transform:scaleY(1.1) skewX(5deg)}}
+.rivershine{animation:rivshine 3.5s linear infinite}
+@keyframes rivshine{0%{stroke-dashoffset:0}100%{stroke-dashoffset:-160}}
+.sunglow{animation:sunpulse 9s ease-in-out infinite alternate}
+@keyframes sunpulse{from{opacity:.8}to{opacity:1}}
+/* extra shared classes for the newer scenarios */
+.slowblink{animation:slowblink 2.2s ease-in-out infinite}
+@keyframes slowblink{0%,100%{opacity:.15}50%{opacity:1}}
+.drift{transform-box:fill-box;animation:driftX 30s ease-in-out infinite alternate}
+@keyframes driftX{from{transform:translateX(-30px)}to{transform:translateX(30px)}}
+.bob{transform-box:fill-box;animation:bobY 4.5s ease-in-out infinite alternate}
+@keyframes bobY{from{transform:translateY(-6px)}to{transform:translateY(6px)}}
+.aurora{transform-box:fill-box;animation:auroraW 14s ease-in-out infinite alternate;filter:blur(2px)}
+@keyframes auroraW{from{transform:skewX(-6deg) translateX(-40px);opacity:.35}to{transform:skewX(7deg) translateX(40px);opacity:.6}}
+.steam{transform-box:fill-box;animation:steamUp 5s linear infinite}
+@keyframes steamUp{0%{transform:translateY(0);opacity:.35}100%{transform:translateY(-90px);opacity:0}}
+.railstripe{animation:railmove 1.1s linear infinite}
+@keyframes railmove{0%{stroke-dashoffset:0}100%{stroke-dashoffset:-120}}
+.sparkle{animation:sparkleA 2.8s ease-in-out infinite}
+@keyframes sparkleA{0%,100%{opacity:.2}50%{opacity:.9}}
+
+@media (max-width:640px){#hud .stats{display:none}.end-card .stat-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<!-- ==================== SCENARIO HUB ==================== -->
+<div id="hub-screen">
+  <div id="hub-inner">
+    <h1>ESCAPE THE NIGHT</h1>
+    <div class="sub">five virtual escape rooms · one crew, one screen · 45 minutes each</div>
+    <div id="hub-cards"></div>
+    <p class="hub-note">Pick your nightmare. Each scenario is a full 4-room, ~17-puzzle escape built for a crew of about five —
+    solve out loud together. Hints cost +0:30, then +1:00, then +2:00. Wrong answers cost +0:05.<br>
+    Facilitators: the 🔑 Game Master answer key lives on each scenario's title screen.</p>
+  </div>
+</div>
+
+<!-- ==================== TITLE SCREEN (populated per scenario) ==================== -->
+<div id="start-screen" class="hidden">
+  <canvas id="titlefx"></canvas>
+  <div id="lightning"></div>
+  <div id="start-inner">
+    <h1 id="title-h1"></h1>
+    <div class="sub" id="title-sub"></div>
+    <div id="title-art"></div>
+    <div class="parchment" id="title-story"></div>
+    <div id="crew-box">
+      <div class="crew-title">⚓ MUSTER YOUR CREW</div>
+      <input id="team-name" maxlength="22" placeholder="TEAM NAME" autocomplete="off">
+      <div id="emoji-row"></div>
+    </div>
+    <button class="big-btn" id="start-btn"></button>
+    <p class="start-note">🔊 Best with sound on. One player shares their screen and drives; everyone else shouts ideas.<br>
+    Glowing rings mark things worth examining. Hints cost +0:30 / +1:00 / +2:00. Wrong answers cost +0:05.</p>
+    <div id="gm-panel" class="hidden"></div>
+  </div>
+  <button id="back-btn">◀ ALL SCENARIOS</button>
+  <button id="gm-btn">🔑 Game Master</button>
+</div>
+
+<!-- ==================== GAME STAGE ==================== -->
+<div id="stage-wrap" class="hidden">
+  <div id="stage">
+    <div id="scene"></div>
+    <canvas id="fx" width="1600" height="900"></canvas>
+    <div id="hotspots"></div>
+  </div>
+</div>
+
+<div id="dimmer"></div>
+<div id="vignette" class="hidden"></div>
+<div id="redflash"></div>
+<canvas id="grain" width="480" height="270"></canvas>
+
+<div id="hud" class="hidden">
+  <div class="room-label"><span id="team-badge"></span><span id="hud-room"></span></div>
+  <div id="timer">45:00</div>
+  <div class="stats">
+    <span>Elapsed <b id="stat-elapsed">0:00</b></span>
+    <span>Hints <b id="stat-hints">0</b></span>
+    <span>Penalties <b id="stat-pen">+0:00</b></span>
+    <button id="mute-btn" title="Toggle sound">🔊</button>
+  </div>
+</div>
+
+<div id="objective" class="hidden"></div>
+
+<div id="room-complete" class="hidden">
+  <p id="room-complete-text"></p>
+  <button class="big-btn" id="continue-btn">Continue ➤</button>
+</div>
+
+<div id="beat"></div>
+<div id="overlay" class="hidden"><div id="modal"></div></div>
+<div id="end-root"></div>
+<div id="card-root"></div>
+
+<script>
+/* ============================================================
+   ESCAPE THE NIGHT — engine (scenario-agnostic)
+   Scenarios self-register from scenarios/*.js via
+   registerScenario({...}). See scenarios/eldermoor.js for the
+   full data contract.
+   ============================================================ */
+const SCENARIOS=[];
+/* the international code crib, available inside every morse puzzle */
+const MORSE_CRIB=['A ·−','B −···','C −·−·','D −··','E ·','F ··−·','G −−·','H ····','I ··','J ·−−−','K −·−','L ·−··','M −−','N −·','O −−−','P ·−−·','Q −−·−','R ·−·','S ···','T −','U ··−','V ···−','W ·−−','X −··−','Y −·−−','Z −−··'].map(x=>`<span>${x}</span>`).join('');
+function registerScenario(s){ SCENARIOS.push(s); }
+let ACTIVE=null;
+const $ = id => document.getElementById(id);
+function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+</script>
+<script>
+/* ============================================================
+   AUDIO — synthesized WebAudio. Beds: surf/wind/drone/hum/rustle.
+   Scenario ambience presets set bed levels per room; scenario
+   `events` reference one-shot primitives by name (AMBIENT_SFX).
+   ============================================================ */
+let AC=null, master=null, muted=false;
+let amb={}; let heartbeatTimer=null;
+
+function initAudio(){
+  if(AC) return;
+  try{
+    AC = new (window.AudioContext||window.webkitAudioContext)();
+    master = AC.createGain(); master.gain.value = 0.9; master.connect(AC.destination);
+    const len = AC.sampleRate*2, buf = AC.createBuffer(1,len,AC.sampleRate);
+    const d = buf.getChannelData(0);
+    for(let i=0;i<len;i++) d[i]=Math.random()*2-1;
+    amb.noiseBuf = buf;
+
+    // SURF (swell runs through a multiplier VCA so silent rooms stay silent)
+    const surfSrc=AC.createBufferSource(); surfSrc.buffer=buf; surfSrc.loop=true;
+    const surfLP=AC.createBiquadFilter(); surfLP.type='lowpass'; surfLP.frequency.value=420;
+    const swellVCA=AC.createGain(); swellVCA.gain.value=0.7;
+    const swell=AC.createOscillator(); swell.frequency.value=0.08;
+    const swellG=AC.createGain(); swellG.gain.value=0.3;
+    swell.connect(swellG); swellG.connect(swellVCA.gain);
+    amb.surf=AC.createGain(); amb.surf.gain.value=0;
+    surfSrc.connect(surfLP); surfLP.connect(swellVCA); swellVCA.connect(amb.surf); amb.surf.connect(master);
+    surfSrc.start(); swell.start();
+
+    // WIND
+    const windSrc=AC.createBufferSource(); windSrc.buffer=buf; windSrc.loop=true;
+    const windBP=AC.createBiquadFilter(); windBP.type='bandpass'; windBP.frequency.value=600; windBP.Q.value=1.4;
+    const wLFO=AC.createOscillator(); wLFO.frequency.value=0.05;
+    const wLFOg=AC.createGain(); wLFOg.gain.value=280;
+    wLFO.connect(wLFOg); wLFOg.connect(windBP.frequency);
+    amb.wind=AC.createGain(); amb.wind.gain.value=0;
+    windSrc.connect(windBP); windBP.connect(amb.wind); amb.wind.connect(master);
+    windSrc.start(); wLFO.start();
+
+    // DRONE
+    const o1=AC.createOscillator(), o2=AC.createOscillator();
+    o1.frequency.value=55; o2.frequency.value=55.8;
+    amb.drone=AC.createGain(); amb.drone.gain.value=0;
+    o1.connect(amb.drone); o2.connect(amb.drone); amb.drone.connect(master);
+    o1.start(); o2.start();
+
+    // MAINS HUM
+    const h1=AC.createOscillator(); h1.type='sine'; h1.frequency.value=60;
+    const h2=AC.createOscillator(); h2.type='triangle'; h2.frequency.value=120;
+    const h2g=AC.createGain(); h2g.gain.value=0.3; h2.connect(h2g);
+    amb.hum=AC.createGain(); amb.hum.gain.value=0;
+    h1.connect(amb.hum); h2g.connect(amb.hum); amb.hum.connect(master);
+    h1.start(); h2.start();
+
+    // LEAF RUSTLE
+    const rSrc=AC.createBufferSource(); rSrc.buffer=buf; rSrc.loop=true;
+    const rBP=AC.createBiquadFilter(); rBP.type='bandpass'; rBP.frequency.value=3400; rBP.Q.value=0.7;
+    const rVCA=AC.createGain(); rVCA.gain.value=0.6;
+    const rLFO=AC.createOscillator(); rLFO.frequency.value=0.27;
+    const rLFOg=AC.createGain(); rLFOg.gain.value=0.35;
+    rLFO.connect(rLFOg); rLFOg.connect(rVCA.gain);
+    amb.rustle=AC.createGain(); amb.rustle.gain.value=0;
+    rSrc.connect(rBP); rBP.connect(rVCA); rVCA.connect(amb.rustle); amb.rustle.connect(master);
+    rSrc.start(); rLFO.start();
+  }catch(e){ AC=null; }
+}
+function setAmbience(p){
+  if(!AC) return;
+  const t=AC.currentTime;
+  amb.surf.gain.setTargetAtTime(p.surf||0, t, 2.5);
+  amb.wind.gain.setTargetAtTime(p.wind||0, t, 2.5);
+  amb.drone.gain.setTargetAtTime(p.drone||0, t, 4);
+  amb.hum.gain.setTargetAtTime(p.hum||0, t, 2);
+  amb.rustle.gain.setTargetAtTime(p.rustle||0, t, 2.5);
+}
+
+/* --- one-shot primitives --- */
+function tone(freq,dur,when,gain=0.15,type='sine'){
+  if(!AC) return;
+  const t=when??AC.currentTime;
+  const o=AC.createOscillator(), g=AC.createGain();
+  o.type=type; o.frequency.value=freq;
+  g.gain.setValueAtTime(0.0001,t);
+  g.gain.exponentialRampToValueAtTime(gain,t+0.012);
+  g.gain.exponentialRampToValueAtTime(0.0001,t+dur);
+  o.connect(g); g.connect(master); o.start(t); o.stop(t+dur+0.05);
+}
+function noiseBurst(dur,filterFreq,gain=0.2,type='lowpass',when){
+  if(!AC) return;
+  const t=when??AC.currentTime;
+  const s=AC.createBufferSource(); s.buffer=amb.noiseBuf;
+  const f=AC.createBiquadFilter(); f.type=type; f.frequency.value=filterFreq;
+  const g=AC.createGain();
+  g.gain.setValueAtTime(gain,t);
+  g.gain.exponentialRampToValueAtTime(0.0001,t+dur);
+  s.connect(f); f.connect(g); g.connect(master); s.start(t); s.stop(t+dur+0.05);
+}
+function glide(f0,f1,dur,gain=0.1,type='sine',when){
+  if(!AC) return;
+  const t=when??AC.currentTime;
+  const o=AC.createOscillator(), g=AC.createGain();
+  o.type=type; o.frequency.setValueAtTime(f0,t); o.frequency.exponentialRampToValueAtTime(f1,t+dur);
+  g.gain.setValueAtTime(0.0001,t); g.gain.exponentialRampToValueAtTime(gain,t+dur*0.25);
+  g.gain.exponentialRampToValueAtTime(0.0001,t+dur);
+  o.connect(g); g.connect(master); o.start(t); o.stop(t+dur+0.05);
+}
+function sfxKnock(n=3){ if(!AC)return; for(let i=0;i<n;i++){const t=AC.currentTime+0.05+i*0.72; tone(68,0.22,t,0.5); noiseBurst(0.1,160,0.28,'lowpass',t);} }
+function sfxThud(){ tone(85,0.18,undefined,0.4); noiseBurst(0.08,300,0.16); }
+function sfxChime(){ [523,659,784,1046].forEach((f,i)=>tone(f,0.5,AC?AC.currentTime+i*0.09:0,0.09,'triangle')); }
+function sfxGrowl(){
+  if(!AC) return;
+  const t=AC.currentTime;
+  const o=AC.createOscillator(); o.type='sawtooth';
+  o.frequency.setValueAtTime(52,t); o.frequency.exponentialRampToValueAtTime(30,t+1.1);
+  const f=AC.createBiquadFilter(); f.type='lowpass'; f.frequency.value=170;
+  const g=AC.createGain();
+  g.gain.setValueAtTime(0.0001,t); g.gain.exponentialRampToValueAtTime(0.35,t+0.25);
+  g.gain.exponentialRampToValueAtTime(0.0001,t+1.3);
+  o.connect(f); f.connect(g); g.connect(master); o.start(t); o.stop(t+1.4);
+  noiseBurst(1.1,120,0.1,'lowpass',t);
+}
+function sfxWhoosh(){
+  if(!AC) return;
+  const t=AC.currentTime;
+  const s=AC.createBufferSource(); s.buffer=amb.noiseBuf;
+  const f=AC.createBiquadFilter(); f.type='bandpass'; f.Q.value=2;
+  f.frequency.setValueAtTime(300,t); f.frequency.exponentialRampToValueAtTime(2600,t+0.5);
+  const g=AC.createGain();
+  g.gain.setValueAtTime(0.0001,t); g.gain.exponentialRampToValueAtTime(0.3,t+0.08);
+  g.gain.exponentialRampToValueAtTime(0.0001,t+0.6);
+  s.connect(f); f.connect(g); g.connect(master); s.start(t); s.stop(t+0.7);
+  tone(900,0.35,t+0.45,0.07,'triangle');
+}
+function sfxStatic(dur=0.4,gain=0.15){ noiseBurst(dur,2200,gain,'highpass'); }
+function playMorse(pattern,gain=0.16,unit=0.085,freq=640){
+  if(!AC) return 0;
+  let t=AC.currentTime+0.05;
+  for(const ch of pattern){
+    if(ch==='.'){ tone(freq,unit,t,gain,'sine'); t+=unit*2; }
+    else if(ch==='-'){ tone(freq,unit*3,t,gain,'sine'); t+=unit*4; }
+    else t+=unit*2;
+  }
+  return t-(AC.currentTime);
+}
+function startHeartbeat(){
+  if(heartbeatTimer||!AC) return;
+  heartbeatTimer=setInterval(()=>{ if(muted||!AC) return; const t=AC.currentTime; tone(52,0.13,t,0.4); tone(48,0.15,t+0.22,0.3); },950);
+}
+function stopHeartbeat(){ clearInterval(heartbeatTimer); heartbeatTimer=null; }
+function toggleMute(){ muted=!muted; if(master) master.gain.value=muted?0:0.9; $('mute-btn').textContent=muted?'🔇':'🔊'; }
+
+/* --- ambient one-shot library (scenarios reference by name) --- */
+const AMBIENT_SFX={
+  gull(){ if(!AC)return; const t=AC.currentTime+Math.random()*1.5;
+    for(let i=0;i<2;i++){ glide(1350,880,0.24,0.032,'triangle',t+i*0.28); } },
+  crackle(){ if(!AC)return; const t=AC.currentTime,n=2+Math.floor(Math.random()*3);
+    for(let i=0;i<n;i++) noiseBurst(0.03+Math.random()*0.05,2600,0.045+Math.random()*0.05,'highpass',t+Math.random()*1.6); },
+  crickets(){ if(!AC)return; const t=AC.currentTime+Math.random(),n=4+Math.floor(Math.random()*3);
+    for(let i=0;i<n;i++) tone(4300+Math.random()*300,0.045,t+i*0.11,0.02,'sine'); },
+  creak(){ if(!AC)return; const t=AC.currentTime,o=AC.createOscillator(),f=AC.createBiquadFilter(),g=AC.createGain();
+    o.type='sawtooth'; o.frequency.setValueAtTime(140,t); o.frequency.exponentialRampToValueAtTime(90,t+0.7);
+    f.type='lowpass'; f.frequency.value=420;
+    g.gain.setValueAtTime(0.0001,t); g.gain.exponentialRampToValueAtTime(0.035,t+0.2); g.gain.exponentialRampToValueAtTime(0.0001,t+0.8);
+    o.connect(f); f.connect(g); g.connect(master); o.start(t); o.stop(t+0.9); },
+  wave(){ if(!AC)return; const t=AC.currentTime+Math.random();
+    const s=AC.createBufferSource(); s.buffer=amb.noiseBuf;
+    const f=AC.createBiquadFilter(); f.type='lowpass';
+    f.frequency.setValueAtTime(260,t); f.frequency.exponentialRampToValueAtTime(700,t+0.8); f.frequency.exponentialRampToValueAtTime(200,t+2.2);
+    const g=AC.createGain(); g.gain.setValueAtTime(0.0001,t); g.gain.exponentialRampToValueAtTime(0.085,t+0.7); g.gain.exponentialRampToValueAtTime(0.0001,t+2.4);
+    s.connect(f); f.connect(g); g.connect(master); s.start(t); s.stop(t+2.5); },
+  clank(){ if(!AC)return; const t=AC.currentTime+Math.random()*0.8;
+    tone(210,0.1,t,0.09,'square'); noiseBurst(0.06,900,0.08,'bandpass',t); tone(140,0.22,t+0.02,0.06,'triangle'); },
+  ping(){ if(!AC)return; const t=AC.currentTime+Math.random()*0.5;
+    tone(880,0.5,t,0.05,'sine'); tone(880,0.35,t+0.55,0.022,'sine'); },
+  drip(){ if(!AC)return; const t=AC.currentTime+Math.random();
+    glide(950,420,0.14,0.05,'sine',t); },
+  hiss(){ if(!AC)return; noiseBurst(0.9+Math.random(),3200,0.035,'highpass'); },
+  thunder(){ if(!AC)return; const t=AC.currentTime+Math.random()*0.6;
+    noiseBurst(2.2,150,0.16,'lowpass',t); tone(44,1.4,t,0.12,'sine'); },
+  chug(){ if(!AC)return; const t=AC.currentTime;
+    for(let i=0;i<4;i++){ tone(72,0.09,t+i*0.24,0.11,'square'); noiseBurst(0.05,300,0.05,'lowpass',t+i*0.24); } },
+  clack(){ if(!AC)return; const t=AC.currentTime;
+    [0,0.14,0.62,0.76].forEach(dt=>{ tone(95,0.05,t+dt,0.1,'square'); noiseBurst(0.03,700,0.05,'bandpass',t+dt); }); },
+  whistlefar(){ if(!AC)return; const t=AC.currentTime+Math.random();
+    glide(620,580,1.1,0.028,'triangle',t); glide(780,740,1.1,0.02,'triangle',t); },
+  bell(){ if(!AC)return; const t=AC.currentTime+Math.random()*0.6;
+    tone(660,1.4,t,0.05,'triangle'); tone(662,1.4,t,0.03,'sine'); },
+  wolf(){ if(!AC)return; const t=AC.currentTime+Math.random();
+    glide(320,480,0.9,0.02,'sine',t); glide(480,300,0.8,0.016,'sine',t+0.9); },
+  geiger(){ if(!AC)return; const t=AC.currentTime,n=3+Math.floor(Math.random()*5);
+    for(let i=0;i<n;i++) noiseBurst(0.012,4000,0.05,'highpass',t+Math.random()*1.4); }
+};
+const BEAT_SFX={ knock:()=>sfxKnock(), growl:()=>sfxGrowl(), clank:()=>AMBIENT_SFX.clank(),
+  hiss:()=>AMBIENT_SFX.hiss(), thunder:()=>AMBIENT_SFX.thunder(), bell:()=>AMBIENT_SFX.bell(),
+  whistle:()=>AMBIENT_SFX.whistlefar() };
+
+let roomEventTimer=null;
+function startRoomEvents(idx){
+  clearInterval(roomEventTimer);
+  const spec=(ACTIVE.events||[])[idx]||[];
+  roomEventTimer=setInterval(()=>{
+    if(!AC||muted||S.finished) return;
+    spec.forEach(ev=>{ if(Math.random()<ev.p) (AMBIENT_SFX[ev.s]||(()=>{}))(); });
+  },5200);
+}
+
+/* ============================================================
+   FX — stage particles, film grain, title-screen backdrops
+   ============================================================ */
+const fxCanvas=$('fx'), fxc=fxCanvas.getContext('2d');
+let particles=[], fxMode=null;
+function setFxMode(mode){
+  fxMode=mode; particles=[];
+  const N={mist:26, motes:60, fireflies:22, snow:110, embers:26, none:0}[mode]||0;
+  for(let i=0;i<N;i++) particles.push(newParticle(mode));
+}
+function newParticle(mode){
+  const r=Math.random;
+  if(mode==='mist')      return {m:'mist',x:r()*1600,y:520+r()*340,vx:.12+r()*.2,r1:90+r()*160,a:.028+r()*.03};
+  if(mode==='motes')     return {m:'motes',x:r()*1600,y:r()*900,vx:(r()-.5)*.14,vy:.06+r()*.12,r1:1+r()*1.6,a:.12+r()*.2};
+  if(mode==='fireflies') return {m:'fireflies',x:r()*1600,y:250+r()*550,vx:(r()-.5)*.5,vy:(r()-.5)*.35,r1:2+r()*1.6,ph:r()*6.28,a:.5};
+  if(mode==='snow')      return {m:'snow',x:r()*1600,y:r()*900,vx:-.6-r()*1.2,vy:.8+r()*1.6,r1:1+r()*2.2,a:.25+r()*.5};
+  if(mode==='embers')    return {m:'embers',x:r()*1600,y:600+r()*300,vx:(r()-.5)*.3,vy:-.3-r()*.6,r1:1+r()*1.8,ph:r()*6.28,a:.5};
+  return {m:'none',x:0,y:0};
+}
+function spawnFlare(big){
+  const c=(ACTIVE&&ACTIVE.flare)||{x:852,y:470,hue:[255,120,90]};
+  particles.push({m:'flare',x:c.x,y:c.y,vx:(Math.random()-.5)*1.4,vy:big?-7.4:-5.6,life:0,maxlife:big?150:85,burst:big?46:26,hue:c.hue});
+  sfxWhoosh();
+}
+function fxLoop(){
+  fxc.clearRect(0,0,1600,900);
+  const t=performance.now()/1000;
+  for(let i=particles.length-1;i>=0;i--){
+    const p=particles[i];
+    if(p.m==='mist'){
+      p.x+=p.vx; if(p.x-p.r1>1600) p.x=-p.r1;
+      const g=fxc.createRadialGradient(p.x,p.y,0,p.x,p.y,p.r1);
+      g.addColorStop(0,`rgba(200,215,210,${p.a})`); g.addColorStop(1,'rgba(200,215,210,0)');
+      fxc.fillStyle=g; fxc.beginPath(); fxc.arc(p.x,p.y,p.r1,0,7); fxc.fill();
+    } else if(p.m==='motes'){
+      p.x+=p.vx; p.y+=p.vy;
+      if(p.y>900){p.y=-4; p.x=Math.random()*1600;}
+      fxc.fillStyle=`rgba(230,220,190,${p.a*(0.6+0.4*Math.sin(t*2+p.x))})`;
+      fxc.fillRect(p.x,p.y,p.r1,p.r1);
+    } else if(p.m==='fireflies'){
+      p.x+=p.vx+Math.sin(t+p.ph)*.3; p.y+=p.vy+Math.cos(t*.7+p.ph)*.2;
+      if(p.x<0)p.x=1600; if(p.x>1600)p.x=0; if(p.y<150)p.y=800; if(p.y>860)p.y=200;
+      const glow=Math.max(0,Math.sin(t*1.4+p.ph));
+      if(glow>0.1){
+        const g=fxc.createRadialGradient(p.x,p.y,0,p.x,p.y,p.r1*4);
+        g.addColorStop(0,`rgba(210,255,160,${.55*glow})`); g.addColorStop(1,'rgba(210,255,160,0)');
+        fxc.fillStyle=g; fxc.beginPath(); fxc.arc(p.x,p.y,p.r1*4,0,7); fxc.fill();
+      }
+    } else if(p.m==='snow'){
+      p.x+=p.vx+Math.sin(t*1.3+p.y*0.01)*.4; p.y+=p.vy;
+      if(p.y>900){p.y=-4; p.x=Math.random()*1800;}
+      if(p.x<-20)p.x=1620;
+      fxc.fillStyle=`rgba(235,242,250,${p.a})`;
+      fxc.beginPath(); fxc.arc(p.x,p.y,p.r1,0,7); fxc.fill();
+    } else if(p.m==='embers'){
+      p.x+=p.vx+Math.sin(t*2+p.ph)*.3; p.y+=p.vy;
+      if(p.y<80){p.y=880; p.x=Math.random()*1600;}
+      const glow=0.4+0.6*Math.abs(Math.sin(t*3+p.ph));
+      fxc.fillStyle=`rgba(255,${140+Math.floor(60*glow)},70,${p.a*glow})`;
+      fxc.beginPath(); fxc.arc(p.x,p.y,p.r1,0,7); fxc.fill();
+    } else if(p.m==='flare'){
+      p.life++;
+      const [r1c,g1c,b1c]=p.hue;
+      if(p.life<p.maxlife*0.42){
+        p.x+=p.vx; p.y+=p.vy; p.vy+=0.045;
+        fxc.strokeStyle='rgba(255,220,160,.9)'; fxc.lineWidth=3;
+        fxc.beginPath(); fxc.moveTo(p.x,p.y); fxc.lineTo(p.x-p.vx*4,p.y-p.vy*4); fxc.stroke();
+        fxc.fillStyle='rgba(255,245,215,1)'; fxc.beginPath(); fxc.arc(p.x,p.y,3.4,0,7); fxc.fill();
+      } else {
+        const k=(p.life-p.maxlife*0.42)/(p.maxlife*0.58);
+        p.y+=0.35; p.x+=Math.sin(p.life*.1)*.4;
+        const rr=p.burst*(1-k*.5);
+        const g=fxc.createRadialGradient(p.x,p.y,0,p.x,p.y,rr);
+        g.addColorStop(0,`rgba(${r1c},${g1c},${b1c},${.95*(1-k)})`);
+        g.addColorStop(.4,`rgba(${r1c},${Math.max(0,g1c-40)},${Math.max(0,b1c-30)},${.5*(1-k)})`);
+        g.addColorStop(1,`rgba(${r1c},${Math.max(0,g1c-60)},${Math.max(0,b1c-50)},0)`);
+        fxc.fillStyle=g; fxc.beginPath(); fxc.arc(p.x,p.y,rr,0,7); fxc.fill();
+      }
+      if(p.life>=p.maxlife) particles.splice(i,1);
+    }
+  }
+  requestAnimationFrame(fxLoop);
+}
+requestAnimationFrame(fxLoop);
+
+/* film grain */
+const grainC=$('grain'), gctx=grainC.getContext('2d');
+setInterval(()=>{
+  const img=gctx.createImageData(480,270);
+  for(let i=0;i<img.data.length;i+=4){ const v=Math.random()*255|0; img.data[i]=img.data[i+1]=img.data[i+2]=v; img.data[i+3]=255; }
+  gctx.putImageData(img,0,0);
+},130);
+
+/* ---------- title backdrop: rain / stars / snow / rails ---------- */
+const titleC=$('titlefx'), tctx=titleC.getContext('2d');
+let titleMode='rain', titleBits=[];
+function sizeTitle(){ titleC.width=innerWidth; titleC.height=innerHeight; }
+sizeTitle(); addEventListener('resize',sizeTitle);
+function setTitleMode(mode){
+  titleMode=mode; titleBits=[];
+  const W=titleC.width,H=titleC.height,r=Math.random;
+  if(mode==='rain') for(let i=0;i<130;i++) titleBits.push({x:r()*(W+200),y:r()*H,l:8+r()*14,v:9+r()*7});
+  if(mode==='snow') for(let i=0;i<170;i++) titleBits.push({x:r()*W,y:r()*H,v:.7+r()*1.6,r1:1+r()*2.4,ph:r()*6.28,a:.3+r()*.5});
+  if(mode==='stars')for(let i=0;i<160;i++) titleBits.push({x:r()*W,y:r()*H,r1:.4+r()*1.4,ph:r()*6.28,v:.02+r()*.05});
+  if(mode==='rails')for(let i=0;i<46;i++) titleBits.push({y:r()*H,l:40+r()*160,v:14+r()*22,x:r()*W,a:.06+r()*.12});
+}
+(function titleLoop(){
+  if(!$('start-screen').classList.contains('hidden')){
+    const W=titleC.width,H=titleC.height,t=performance.now()/1000;
+    tctx.clearRect(0,0,W,H);
+    if(titleMode==='rain'){
+      tctx.strokeStyle='rgba(160,190,205,.34)'; tctx.lineWidth=1.1;
+      for(const d of titleBits){ d.y+=d.v; d.x-=d.v*0.18;
+        if(d.y>H){ d.y=-20; d.x=Math.random()*(W+200); }
+        tctx.beginPath(); tctx.moveTo(d.x,d.y); tctx.lineTo(d.x+d.l*0.18,d.y+d.l); tctx.stroke(); }
+    } else if(titleMode==='snow'){
+      for(const d of titleBits){ d.y+=d.v; d.x+=Math.sin(t+d.ph)*.5;
+        if(d.y>H){ d.y=-6; d.x=Math.random()*W; }
+        tctx.fillStyle=`rgba(235,242,250,${d.a})`; tctx.beginPath(); tctx.arc(d.x,d.y,d.r1,0,7); tctx.fill(); }
+    } else if(titleMode==='stars'){
+      for(const d of titleBits){ d.x-=d.v; if(d.x<0)d.x=W;
+        const a=.25+.6*Math.abs(Math.sin(t*1.2+d.ph));
+        tctx.fillStyle=`rgba(230,238,255,${a})`; tctx.beginPath(); tctx.arc(d.x,d.y,d.r1,0,7); tctx.fill(); }
+    } else if(titleMode==='rails'){
+      for(const d of titleBits){ d.x-=d.v; if(d.x+d.l<0){ d.x=W+Math.random()*200; d.y=Math.random()*H; }
+        tctx.strokeStyle=`rgba(216,195,154,${d.a})`; tctx.lineWidth=1.4;
+        tctx.beginPath(); tctx.moveTo(d.x,d.y); tctx.lineTo(d.x+d.l,d.y); tctx.stroke(); }
+    }
+  }
+  requestAnimationFrame(titleLoop);
+})();
+setInterval(()=>{
+  if($('start-screen').classList.contains('hidden')) return;
+  if(ACTIVE && ACTIVE.titleLightning && Math.random()<0.42){
+    const L=$('lightning'); L.classList.remove('flash'); void L.offsetWidth; L.classList.add('flash');
+    if(AC && !muted) noiseBurst(1.6,180,0.16,'lowpass');
+  }
+},5200);
+</script>
+<script>
+/* ============================================================
+   ENGINE — state, timer, hub, title screen, rooms, puzzles
+   ============================================================ */
+const START_SECONDS = 45*60;
+const HINT_COSTS = [30,60,120];         // escalating: 0:30 / 1:00 / 2:00
+const WRONG_PENALTY = 5;
+
+const S = {
+  started:false, finished:false, overtime:false,
+  roomIndex:0, solved:new Set(),
+  hintsShown:{}, hintsUsed:0, wrongCount:0, penaltySec:0,
+  startTime:null, endElapsed:null,
+  signalPattern:'', teamName:'THE CASTAWAYS', teamEmoji:'⚓'
+};
+
+/* ---------- stage scaling & parallax ---------- */
+function fitStage(){
+  const s = Math.min(innerWidth/1600, innerHeight/900);
+  $('stage').style.transform = `translate(-50%,-50%) scale(${s})`;
+}
+addEventListener('resize', fitStage); fitStage();
+addEventListener('mousemove', e=>{
+  const dx=(e.clientX/innerWidth-0.5), dy=(e.clientY/innerHeight-0.5);
+  document.querySelectorAll('#scene .plx').forEach(g=>{
+    const d=+g.dataset.depth||0;
+    g.setAttribute('transform',`translate(${(-dx*d).toFixed(1)} ${(-dy*d*0.6).toFixed(1)})`);
+  });
+});
+
+/* ---------- timer ---------- */
+function elapsedSec(){ if(S.endElapsed!==null) return S.endElapsed; return S.startTime?Math.floor((Date.now()-S.startTime)/1000):0; }
+function fmt(sec){ sec=Math.max(0,Math.floor(sec)); return Math.floor(sec/60)+':'+String(sec%60).padStart(2,'0'); }
+function tick(){
+  if(!S.started||S.finished) return;
+  const used=elapsedSec()+S.penaltySec, remaining=START_SECONDS-used, t=$('timer');
+  if(!S.overtime && remaining<=0){ t.textContent='0:00'; return gameOver(); }
+  if(!S.overtime){
+    t.textContent=fmt(remaining);
+    const low=remaining<=300;
+    t.classList.toggle('low',low);
+    $('vignette').classList.toggle('tense',low);
+    $('vignette').classList.toggle('pulse',low);
+    if(low) startHeartbeat();
+  } else { t.textContent='+'+fmt(used-START_SECONDS); t.classList.add('overtime'); t.classList.remove('low'); }
+  $('stat-elapsed').textContent=fmt(elapsedSec());
+  $('stat-hints').textContent=S.hintsUsed;
+  $('stat-pen').textContent='+'+fmt(S.penaltySec);
+}
+setInterval(tick,250);
+
+/* ---------- narrative beats ---------- */
+let beatTimer=null, beatQueue=[];
+function showBeat(text,sound){
+  if(!text) return;
+  beatQueue.push({text,sound});
+  if(!beatTimer) nextBeat();
+}
+function nextBeat(){
+  const item=beatQueue.shift();
+  if(!item){ beatTimer=null; return; }
+  const b=$('beat');
+  b.textContent=item.text; b.classList.add('show');
+  $('dimmer').style.opacity=0.3;
+  if(item.sound && BEAT_SFX[item.sound]) BEAT_SFX[item.sound]();
+  beatTimer=setTimeout(()=>{
+    b.classList.remove('show');
+    $('dimmer').style.opacity=0;
+    beatTimer=setTimeout(nextBeat,1900);
+  },6800);
+}
+
+/* ---------- relay lamp (a scene element blinking morse) ---------- */
+let lampTimer=null;
+function startRelay(cfg){
+  stopRelay();
+  let i=0,on=false;
+  lampTimer=setInterval(()=>{
+    const el=document.getElementById(cfg.el); if(!el) return;
+    if(on){ el.setAttribute('opacity','0.1'); on=false; return; }
+    const ch=cfg.seq[i%cfg.seq.length]; i++;
+    if(ch==='.'||ch==='-'){ el.setAttribute('opacity','1'); on=true; }
+  },260);
+}
+function stopRelay(){ clearInterval(lampTimer); lampTimer=null; }
+
+/* ---------- room rendering ---------- */
+function currentRoom(){ return ACTIVE.rooms[S.roomIndex]; }
+function objVisible(o){ return !o.hiddenUntil || S.solved.has(o.hiddenUntil); }
+function objDesc(o){
+  if(o.revealedBy && S.solved.has(o.revealedBy) && o.revealDesc) return o.revealDesc;
+  return o.desc;
+}
+function renderScene(){
+  const room=currentRoom();
+  $('scene').innerHTML = ACTIVE.scenes[room.scene]();
+  setFxMode(ACTIVE.fx[S.roomIndex]);
+  setAmbience(ACTIVE.ambience[S.roomIndex]);
+  startRoomEvents(S.roomIndex);
+  $('hud-room').textContent=room.name;
+  $('objective').innerHTML=room.objective;
+  renderHotspots();
+  if(room.relay && S.solved.has(room.relay.after)) startRelay(room.relay); else stopRelay();
+}
+function renderHotspots(){
+  const layer=$('hotspots'); layer.innerHTML='';
+  const room=currentRoom();
+  room.objects.forEach(o=>{
+    const el=document.getElementById('el-'+o.id);
+    if(el) el.style.display = objVisible(o)?'':'none';
+    if(!objVisible(o)) return;
+    const b=document.createElement('button');
+    b.className='hotspot'+(S.solved.has(o.id)?' done':'')+(o.hiddenUntil&&!S.solved.has(o.id)?' new':'');
+    b.dataset.obj=o.id;
+    b.style.cssText=`left:${o.pos.x}%;top:${o.pos.y}%;width:${o.pos.w}%;height:${o.pos.h}%`;
+    b.innerHTML=`<span class="ring"></span><span class="tag">${o.icon} ${o.name}${S.solved.has(o.id)?' ✓':''}</span>`;
+    b.onclick=()=>openModal(o.id);
+    layer.appendChild(b);
+  });
+  const done=room.objects.filter(o=>o.puzzle).every(o=>S.solved.has(o.id));
+  $('room-complete').classList.toggle('hidden',!done||S.finished);
+  if(done){
+    $('room-complete-text').textContent=room.completeText||'';
+    $('continue-btn').textContent=S.roomIndex<ACTIVE.rooms.length-1?'Continue ➤':(ACTIVE.finalButton||'FINISH');
+  }
+}
+
+/* ---------- modal ---------- */
+function openModal(objId){
+  const o=currentRoom().objects.find(x=>x.id===objId);
+  const solved=S.solved.has(o.id);
+  let html=`<button class="close-x" onclick="closeModal()">✕</button>
+    <h3>${o.icon} ${o.name}</h3>
+    <div class="obj-desc">${objDesc(o)}${(o.revealSymbols&&(!o.revealedBy||S.solved.has(o.revealedBy)))?`<div class="symbols">${o.revealSymbols}</div>`:''}</div>`;
+  if(o.puzzle){
+    const p=o.puzzle;
+    const morseReady=p.morse&&(!p.morseLocked||S.solved.has(p.morseLocked));
+    if(morseReady&&!solved){
+      html+=`<div class="morse" id="morse-view">${p.morse.replaceAll('.','·').replaceAll('-','−')}</div>
+        <div style="text-align:center"><button class="morse-btn" onclick="playMorseUI('${o.id}')">▶ &nbsp;PLAY THE SIGNAL</button>
+        <button class="morse-btn" onclick="$('morse-crib').classList.toggle('hidden')">📖 &nbsp;CODE CRIB</button></div>
+        <div id="morse-crib" class="morse-crib hidden">${MORSE_CRIB}</div>
+        <div class="how">▶ plays the signal out loud. 📖 opens the code chart — match each dot-dash group to a letter, in order. Type only the decoded word(s) below.</div>`;
+    }
+    if(solved){
+      html+=`<div class="solved-note">✓ ${p.solvedText||'Solved.'}</div>`;
+    } else if(p.type==='signal'){
+      html+=renderSignalPad(o)+renderHints(o);
+    } else if(p.type==='dial'){
+      html+=renderDial(o)+renderHints(o);
+    } else {
+      html+=`<div class="puzzle-box">
+        <div class="prompt">${p.prompt}</div>
+        <div class="answer-row">
+          <input id="answer-input" placeholder="${p.placeholder||''}" autocomplete="off"
+                 onkeydown="if(event.key==='Enter')submitAnswer('${o.id}')">
+          <button onclick="submitAnswer('${o.id}')">Try It</button>
+        </div>
+        <div class="how">Type the answer and press TRY IT (or Enter). Capitals, spaces and punctuation don't matter — a wrong try only costs 5 seconds.</div>
+        <div class="feedback" id="feedback"></div>
+      </div>`+renderHints(o);
+    }
+  }
+  $('modal').innerHTML=html;
+  $('overlay').classList.remove('hidden');
+  if(o.puzzle&&o.puzzle.type==='dial'&&!solved) dialInit(o);
+  const inp=$('answer-input'); if(inp) inp.focus();
+}
+function closeModal(){ $('overlay').classList.add('hidden'); S.signalPattern=''; dialTeardown(); }
+$('overlay').addEventListener('click',e=>{ if(e.target.id==='overlay') closeModal(); });
+
+function playMorseUI(objId){
+  const o=currentRoom().objects.find(x=>x.id===objId);
+  const seq=o.puzzle.morse;
+  playMorse(seq);
+  const view=$('morse-view'); if(!view) return;
+  const glyphs=seq.replaceAll('.','·').replaceAll('-','−').split('');
+  let t=50;
+  glyphs.forEach((ch,i)=>{
+    const dur=(ch==='−'?255:85);
+    if(ch!==' '){
+      setTimeout(()=>{ view.innerHTML=glyphs.map((g,j)=>j===i?`<span class="lit">${g}</span>`:g).join(''); },t);
+      t+=dur+85;
+    } else t+=170;
+  });
+  setTimeout(()=>{ if($('morse-view')) $('morse-view').textContent=glyphs.join(''); },t+300);
+}
+
+/* ---------- hints (escalating cost) ---------- */
+function renderHints(o){
+  const shown=S.hintsShown[o.id]||0;
+  const nextCost=HINT_COSTS[Math.min(shown,2)];
+  let html=`<div class="hints"><b style="font-size:.85rem;color:var(--dim)">STUCK?</b> `;
+  html+=`<button class="hint-btn" onclick="revealHint('${o.id}')" ${shown>=3?'disabled':''}>Reveal hint ${Math.min(shown+1,3)}/3 (+${fmt(nextCost)})</button><span class="hint-cost">hints cost +0:30, then +1:00, then +2:00</span>`;
+  for(let i=0;i<shown;i++) html+=`<div class="hint-text">Hint ${i+1}: ${o.puzzle.hints[i]}</div>`;
+  return html+`</div>`;
+}
+function revealHint(objId){
+  const shown=S.hintsShown[objId]||0;
+  if(shown>=3) return;
+  S.hintsShown[objId]=shown+1;
+  S.hintsUsed++; S.penaltySec+=HINT_COSTS[shown];
+  sfxStatic(0.25,0.08);
+  openModal(objId); tick();
+}
+
+/* ---------- answers ---------- */
+function norm(s){ return (s||'').toUpperCase().replace(/[^A-Z0-9]/g,''); }
+function submitAnswer(objId){
+  const o=currentRoom().objects.find(x=>x.id===objId);
+  const inp=$('answer-input');
+  const guess=norm(inp.value);
+  if(!guess) return;
+  if(o.puzzle.answers.includes(guess)) return solvePuzzle(o);
+  wrongAnswer();
+  const fb=$('feedback');
+  fb.className='feedback bad'; fb.textContent='✗ Nothing happens. (+0:05 penalty)';
+  inp.classList.remove('shakein'); void inp.offsetWidth; inp.classList.add('shakein');
+  inp.select();
+}
+function wrongAnswer(){
+  S.wrongCount++; S.penaltySec+=WRONG_PENALTY;
+  sfxThud();
+  const st=$('stage'); st.classList.remove('shake'); void st.offsetWidth; st.classList.add('shake');
+  const rf=$('redflash'); rf.classList.add('on'); setTimeout(()=>rf.classList.remove('on'),160);
+  if(S.wrongCount%3===0){
+    const k=(S.wrongCount/3-1)%ACTIVE.wrongBeats.length;
+    showBeat(ACTIVE.wrongBeats[k], ACTIVE.wrongSounds[k]);
+  }
+  tick();
+}
+function solvePuzzle(o){
+  S.solved.add(o.id);
+  sfxChime();
+  if(o.puzzle.solveBeat) showBeat(o.puzzle.solveBeat,o.puzzle.beatSound);
+  const room=currentRoom();
+  const allDone=room.objects.filter(x=>x.puzzle).every(x=>S.solved.has(x.id));
+  if(allDone && S.roomIndex===ACTIVE.rooms.length-1) return victory();
+  openModal(o.id);
+  renderHotspots();
+  if(room.relay && o.id===room.relay.after) startRelay(room.relay);
+}
+
+/* ---------- tuning dial (config via puzzle.dial) ---------- */
+let dialNodes=null;
+function dialFmt(o,v){
+  const d=o.puzzle.dial;
+  return (v/d.div).toFixed(d.div>=100?2:1).padStart(d.pad||5,'0');
+}
+function renderDial(o){
+  const d=o.puzzle.dial;
+  return `<div class="puzzle-box">
+    <div class="prompt">${o.puzzle.prompt}</div>
+    <div class="dial-ui">
+      <span class="freq-readout" id="freq-readout">${dialFmt(o,d.min)}</span>
+      <div class="dial-row">
+        <button class="dial-fine" onclick="dialNudge(-1)">−</button>
+        <input type="range" id="dial-slider" min="${d.min}" max="${d.max}" step="1" value="${d.min}">
+        <button class="dial-fine" onclick="dialNudge(1)">+</button>
+      </div>
+      <div class="sig-meter"><i id="sig-bar"></i></div>
+      <div class="sig-label">${d.meter||'SIGNAL STRENGTH'}</div>
+      <div class="how">Drag the slider to sweep, or tap − / + to move one step at a time. The meter fills as you close in on the right number — when the readout matches your answer exactly, lock it.</div>
+      <button id="dial-lock" style="margin-top:14px" onclick="dialLock('${o.id}')">🔒 ${d.lock||'LOCK IT IN'}</button>
+      <div class="feedback" id="feedback"></div>
+    </div>
+  </div>`;
+}
+function dialInit(o){
+  const slider=$('dial-slider'); if(!slider) return;
+  const d=o.puzzle.dial;
+  if(AC){
+    const s=AC.createBufferSource(); s.buffer=amb.noiseBuf; s.loop=true;
+    const f=AC.createBiquadFilter(); f.type='bandpass'; f.frequency.value=1800; f.Q.value=0.6;
+    const g=AC.createGain(); g.gain.value=0.11;
+    s.connect(f); f.connect(g); g.connect(master); s.start();
+    dialNodes={src:s,gain:g,beepTimer:setInterval(()=>{
+      const v=+($('dial-slider')?.value??0);
+      const prox=Math.max(0,1-Math.abs(v-d.target)/((d.max-d.min)*0.085));
+      if(prox>0.75&&d.nearMorse) playMorse(d.nearMorse,0.05+prox*0.08,0.06);
+    },3400)};
+  }
+  slider.addEventListener('input',()=>dialUpdate(o));
+  dialUpdate(o);
+}
+function dialUpdate(o){
+  const d=o.puzzle.dial, v=+$('dial-slider').value;
+  $('freq-readout').textContent=dialFmt(o,v);
+  const prox=Math.max(0,1-Math.abs(v-d.target)/((d.max-d.min)*0.26));
+  $('sig-bar').style.width=(prox*100)+'%';
+  if(dialNodes) dialNodes.gain.gain.value=0.11*(1-prox*0.82)+0.01;
+}
+function dialNudge(dv){
+  const s=$('dial-slider'); if(!s) return;
+  s.value=+s.value+dv;
+  const o=currentRoom().objects.find(x=>x.puzzle&&x.puzzle.type==='dial');
+  if(o) dialUpdate(o);
+}
+function dialTeardown(){
+  if(!dialNodes) return;
+  try{ dialNodes.src.stop(); }catch(e){}
+  clearInterval(dialNodes.beepTimer);
+  dialNodes=null;
+}
+function dialLock(objId){
+  const o=currentRoom().objects.find(x=>x.id===objId);
+  const d=o.puzzle.dial, v=+$('dial-slider').value;
+  if(v===d.target){ dialTeardown(); return solvePuzzle(o); }
+  wrongAnswer(); sfxStatic(0.5,0.2);
+  const fb=$('feedback');
+  fb.className='feedback bad';
+  fb.textContent=`✗ ${dialFmt(o,v)} — ${d.miss||'nothing but static out there.'} (+0:05 penalty)`;
+}
+
+/* ---------- signal pad (labels via puzzle.labels) ---------- */
+function renderSignalPad(o){
+  const L=Object.assign({short:'🔥 SHORT BURST ·',long:'🔥 LONG BURN −',reset:'RESET',send:'📡 SEND SIGNAL'},o.puzzle.labels||{});
+  return `<div class="puzzle-box">
+    <div class="prompt">${o.puzzle.prompt}</div>
+    <div class="signal-pad">
+      <div class="signal-display" id="signal-display">&nbsp;</div>
+      <button class="signal-btn" onclick="signalAdd('.')">${L.short}</button>
+      <button class="signal-btn long" onclick="signalAdd('-')">${L.long}</button>
+      <button class="signal-btn clear" onclick="signalClear()">${L.reset}</button>
+      <div class="how">Each press adds one beat to the pattern above: the first button adds a SHORT (·), the second a LONG (−). Build the whole pattern in order, then press send. Reset wipes it and starts over.</div>
+      <br>
+      <button class="signal-btn" style="margin-top:12px;min-width:210px" onclick="signalSend('${o.id}')">${L.send}</button>
+      <div class="feedback" id="feedback"></div>
+    </div>
+  </div>`;
+}
+function signalAdd(ch){
+  if(S.signalPattern.length>=12) return;
+  S.signalPattern+=ch;
+  $('signal-display').textContent=S.signalPattern.replaceAll('.','·').replaceAll('-','−');
+  spawnFlare(ch==='-');
+  tone(ch==='-'?420:640, ch==='-'?0.5:0.16, undefined, 0.1, 'triangle');
+}
+function signalClear(){
+  S.signalPattern='';
+  $('signal-display').innerHTML='&nbsp;';
+  const fb=$('feedback'); if(fb){fb.textContent='';fb.className='feedback';}
+}
+function signalSend(objId){
+  const o=currentRoom().objects.find(x=>x.id===objId);
+  if(S.signalPattern===o.puzzle.answers[0]) return solvePuzzle(o);
+  wrongAnswer();
+  const fb=$('feedback');
+  fb.className='feedback bad';
+  fb.textContent='✗ '+(o.puzzle.missText||'Wrong pattern.')+' (+0:05 — reset)';
+  const d=$('signal-display'); d.classList.remove('shakein'); void d.offsetWidth; d.classList.add('shakein');
+  S.signalPattern=''; d.innerHTML='&nbsp;';
+}
+
+/* ---------- hub & title flow ---------- */
+function buildHub(){
+  const grid=$('hub-cards'); grid.innerHTML='';
+  SCENARIOS.forEach(sc=>{
+    const card=document.createElement('button');
+    card.className='hub-card'; card.dataset.scenario=sc.id;
+    card.innerHTML=`<span class="art">${sc.card}</span>
+      <h3>${sc.icon} ${sc.title}</h3>
+      <div class="tag">${sc.tagline}</div>
+      <div class="meta">4 ROOMS · ${sc.rooms.reduce((n,r)=>n+r.objects.filter(o=>o.puzzle).length,0)} PUZZLES · 45:00</div>`;
+    card.onclick=()=>openTitle(sc.id);
+    grid.appendChild(card);
+  });
+}
+function openTitle(id){
+  ACTIVE=SCENARIOS.find(s=>s.id===id); if(!ACTIVE) return;
+  $('hub-screen').classList.add('hidden');
+  $('start-screen').classList.remove('hidden');
+  $('title-h1').textContent=ACTIVE.title.toUpperCase();
+  $('title-sub').textContent=ACTIVE.sub;
+  $('title-art').innerHTML=ACTIVE.titleArt||'';
+  $('title-story').innerHTML=ACTIVE.story.map(p=>`<p>${p}</p>`).join('');
+  $('start-btn').textContent=ACTIVE.begin||'BEGIN — 45:00';
+  $('gm-panel').classList.add('hidden'); $('gm-panel').dataset.built='';
+  setTitleMode(ACTIVE.titleFx||'rain');
+  buildEmojiRow();
+  try{ history.replaceState(null,'','?s='+id); }catch(e){}
+}
+$('back-btn').onclick=()=>{
+  $('start-screen').classList.add('hidden');
+  $('hub-screen').classList.remove('hidden');
+  try{ history.replaceState(null,'',location.pathname); }catch(e){}
+};
+
+function buildEmojiRow(){
+  const row=$('emoji-row'); row.innerHTML='';
+  const set=ACTIVE.emojis||['⚓','🏴‍☠️','🦜','🌊','🦈','🐙','🧭','🔥','🥥','🦀','⛵','💀'];
+  S.teamEmoji=set[0];
+  set.forEach((e,i)=>{
+    const b=document.createElement('button');
+    b.className='emoji-btn'+(i===0?' selected':'');
+    b.textContent=e; b.dataset.emoji=e;
+    b.onclick=()=>{ S.teamEmoji=e; row.querySelectorAll('.emoji-btn').forEach(x=>x.classList.toggle('selected',x===b)); };
+    row.appendChild(b);
+  });
+}
+
+function enterRoom(idx){
+  S.roomIndex=idx;
+  beatQueue.length=0;
+  const room=currentRoom();
+  const card=document.createElement('div');
+  card.id='room-card';
+  card.innerHTML=`<h2>${room.name.toUpperCase()}</h2><p>${room.intro}</p>
+    <button class="big-btn" id="enter-room-btn" style="margin-top:30px">ENTER ➤</button>
+    <div class="card-note">TAKE YOUR TIME — BUT THE CLOCK IS RUNNING</div>`;
+  $('card-root').appendChild(card);
+  renderScene();   // the room is ready and waiting behind the card
+  card.querySelector('#enter-room-btn').onclick=()=>{
+    card.remove();
+    showBeat(room.entryBeat,room.entrySound);
+  };
+}
+$('start-btn').onclick=()=>{
+  initAudio();
+  if(AC&&AC.state==='suspended') AC.resume();
+  S.teamName=($('team-name').value.trim()||'The Castaways').toUpperCase();
+  $('team-badge').textContent=S.teamEmoji+' '+S.teamName;
+  S.started=true; S.startTime=Date.now();
+  $('start-screen').classList.add('hidden');
+  $('gm-btn').classList.add('hidden');
+  $('back-btn').classList.add('hidden');
+  $('stage-wrap').classList.remove('hidden');
+  $('hud').classList.remove('hidden');
+  $('objective').classList.remove('hidden');
+  $('vignette').classList.remove('hidden');
+  fitStage();
+  enterRoom(0);
+  tick();
+};
+$('continue-btn').onclick=()=>{
+  $('room-complete').classList.add('hidden');
+  if(S.roomIndex<ACTIVE.rooms.length-1) enterRoom(S.roomIndex+1);
+};
+$('mute-btn').onclick=toggleMute;
+
+/* ---------- endings ---------- */
+function ratingFor(totalSec,hints,overtime){
+  const R=ACTIVE.ratings;
+  if(overtime) return R[4];
+  if(totalSec<=30*60&&hints<=3) return R[0];
+  if(totalSec<=40*60) return R[1];
+  if(totalSec<=50*60) return R[2];
+  return R[3];
+}
+function gameOver(){
+  if(S.finished||S.overtime) return;
+  S.finished=true; stopHeartbeat();
+  $('end-root').innerHTML=`<div class="screen-center"><div class="end-card">
+    <h2>⏳ TIME'S UP</h2>
+    <div class="team-line">${S.teamEmoji} ${esc(S.teamName)}</div>
+    <p style="font-style:italic;margin:10px 0">${ACTIVE.gameOverProse}</p>
+    <div class="btn-row">
+      <button class="big-btn" onclick="continueOvertime()">Press On (overtime)</button>
+      <button class="big-btn alt" onclick="location.reload()">Restart</button>
+    </div>
+  </div></div>`;
+}
+function continueOvertime(){ S.finished=false; S.overtime=true; $('end-root').innerHTML=''; tick(); }
+
+function victory(){
+  S.finished=true; S.endElapsed=elapsedSec();
+  stopHeartbeat(); closeModal();
+  $('room-complete').classList.add('hidden');
+  const seq=[0,350,700, 1400,2200,3000, 3800,4150,4500];
+  seq.forEach((t,i)=>setTimeout(()=>spawnFlare(i>=3&&i<6),t));
+  setTimeout(showVictoryCard,5600);
+}
+function showVictoryCard(){
+  const total=S.endElapsed+S.penaltySec;
+  const rating=ratingFor(total,S.hintsUsed,S.overtime);
+  const share=
+`${S.teamEmoji} TEAM ${S.teamName} — ${ACTIVE.shareTitle}
+⏱️ Finishing time: ${fmt(total)} (play ${fmt(S.endElapsed)} + penalties ${fmt(S.penaltySec)})
+💡 Hints used: ${S.hintsUsed}   ❌ Wrong answers: ${S.wrongCount}
+🏅 Rating: ${rating.replace(/^\S+\s/,'')}`;
+  $('end-root').innerHTML=`<div class="screen-center"><div class="end-card">
+    <h2>${ACTIVE.victoryTitle}</h2>
+    <div class="team-line">${S.teamEmoji} TEAM ${esc(S.teamName)} — ${fmt(total)}</div>
+    <p style="font-style:italic">${ACTIVE.victoryProse}</p>
+    <div class="rating">${rating}</div>
+    <div class="stat-grid">
+      <div class="stat"><div class="k">Finishing time</div><div class="v">${fmt(total)}</div></div>
+      <div class="stat"><div class="k">Play time</div><div class="v">${fmt(S.endElapsed)}</div></div>
+      <div class="stat"><div class="k">Hints used</div><div class="v">${S.hintsUsed} (+${fmt(S.penaltySec-S.wrongCount*WRONG_PENALTY)})</div></div>
+      <div class="stat"><div class="k">Wrong answers</div><div class="v">${S.wrongCount} (+${fmt(S.wrongCount*WRONG_PENALTY)})</div></div>
+    </div>
+    <pre class="share" id="share-text">${share}</pre>
+    <div class="btn-row">
+      <button class="big-btn" onclick="copyShare(event)">📋 Copy Results</button>
+      <button class="big-btn alt" onclick="location.reload()">Play Again</button>
+    </div>
+  </div></div>`;
+}
+function copyShare(ev){
+  const text=$('share-text').textContent;
+  (navigator.clipboard?navigator.clipboard.writeText(text):Promise.reject())
+    .catch(()=>{ const ta=document.createElement('textarea'); ta.value=text; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); ta.remove(); })
+    .finally(()=>{ const b=ev.target; b.textContent='✓ Copied!'; setTimeout(()=>b.textContent='📋 Copy Results',1500); });
+}
+
+/* ---------- Game Master panel ---------- */
+$('gm-btn').onclick=()=>{
+  const p=$('gm-panel');
+  if(!p.dataset.built){ buildGmPanel(); p.dataset.built='1'; }
+  p.classList.toggle('hidden');
+  if(!p.classList.contains('hidden')) p.scrollIntoView({behavior:'smooth'});
+};
+function buildGmPanel(){
+  let html=`<h2>🔑 Game Master Answer Key — ${ACTIVE.title}</h2>
+  <p style="color:var(--dim)">Facilitator eyes only. Unreachable once the game starts.
+  Hints cost +0:30 / +1:00 / +2:00; wrong answers +0:05.</p>`;
+  ACTIVE.rooms.forEach(room=>{
+    html+=`<h3>${room.name}</h3><div class="chain">CHAIN: ${room.chain}</div>`;
+    room.objects.filter(o=>o.puzzle).forEach(o=>{
+      const disp=o.puzzle.type==='signal'?'··· −−− ··· (short×3, long×3, short×3)':
+                 o.puzzle.type==='dial'?`tune to ${(o.puzzle.dial.target/o.puzzle.dial.div).toFixed(o.puzzle.dial.div>=100?2:1)}, then lock in`:
+                 o.puzzle.answers[0];
+      html+=`<div class="gm-puzzle"><b>${o.icon} ${o.name}</b> — answer: <span class="gm-answer">${disp}</span>
+        <ul>${o.puzzle.hints.map((h,i)=>`<li>Hint ${i+1} (+${fmt(HINT_COSTS[i])}): ${h}</li>`).join('')}</ul></div>`;
+    });
+  });
+  $('gm-panel').innerHTML=html;
+}
+
+/* ---------- boot ---------- */
+addEventListener('DOMContentLoaded',()=>{
+  buildHub();
+  const want=new URLSearchParams(location.search).get('s');
+  if(want && SCENARIOS.some(s=>s.id===want)) openTitle(want);
+});
+</script>
+<script src="scenarios/eldermoor.js"></script>
+<script src="scenarios/prospero.js"></script>
+<script src="scenarios/vorstag.js"></script>
+<script src="scenarios/erebus.js"></script>
+<script src="scenarios/midnight.js"></script>
+</body>
+</html>
