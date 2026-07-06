@@ -124,7 +124,8 @@ button{font-family:'Inter',sans-serif;cursor:pointer}
 .symbols{font-size:1.7rem;letter-spacing:12px;color:var(--sand);text-align:center;margin:8px 0}
 .morse{font-family:'Special Elite',serif;font-size:1.4rem;letter-spacing:4px;color:var(--teal-hi);text-align:center;margin:8px 0;word-break:break-all}
 .morse .lit{color:#ffe9b8;text-shadow:0 0 10px #ffda8c}
-.morse-btn{display:block;margin:6px auto 2px;font-size:.9rem;padding:9px 20px}
+.morse-btn{display:inline-block;margin:6px 4px 2px;font-size:.9rem;padding:9px 20px}
+.morse-crib{display:grid;grid-template-columns:repeat(auto-fill,minmax(86px,1fr));gap:3px 10px;margin:10px auto 2px;max-width:560px;padding:12px 14px;background:rgba(216,195,154,.07);border:1px dashed #5c6f6d;border-radius:8px;font-family:'Special Elite',serif;font-size:.95rem;color:var(--sand);text-align:left}
 
 /* ---------- tuning dial ---------- */
 .dial-ui{margin-top:14px;text-align:center}
@@ -354,6 +355,8 @@ pre.share{text-align:left;background:#0a1416;border:1px solid #2c4144;border-rad
    full data contract.
    ============================================================ */
 const SCENARIOS=[];
+/* the international code crib, available inside every morse puzzle */
+const MORSE_CRIB=['A ·−','B −···','C −·−·','D −··','E ·','F ··−·','G −−·','H ····','I ··','J ·−−−','K −·−','L ·−··','M −−','N −·','O −−−','P ·−−·','Q −−·−','R ·−·','S ···','T −','U ··−','V ···−','W ·−−','X −··−','Y −·−−','Z −−··'].map(x=>`<span>${x}</span>`).join('');
 function registerScenario(s){ SCENARIOS.push(s); }
 let ACTIVE=null;
 const $ = id => document.getElementById(id);
@@ -844,7 +847,9 @@ function openModal(objId){
     const morseReady=p.morse&&(!p.morseLocked||S.solved.has(p.morseLocked));
     if(morseReady&&!solved){
       html+=`<div class="morse" id="morse-view">${p.morse.replaceAll('.','·').replaceAll('-','−')}</div>
-        <button class="morse-btn" onclick="playMorseUI('${o.id}')">▶ &nbsp;PLAY THE SIGNAL</button>`;
+        <div style="text-align:center"><button class="morse-btn" onclick="playMorseUI('${o.id}')">▶ &nbsp;PLAY THE SIGNAL</button>
+        <button class="morse-btn" onclick="$('morse-crib').classList.toggle('hidden')">📖 &nbsp;CODE CRIB</button></div>
+        <div id="morse-crib" class="morse-crib hidden">${MORSE_CRIB}</div>`;
     }
     if(solved){
       html+=`<div class="solved-note">✓ ${p.solvedText||'Solved.'}</div>`;

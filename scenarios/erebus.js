@@ -37,11 +37,11 @@ ${Array.from({length:26},(_,i)=>`<circle class="tw" cx="${(i*67+20)%1600}" cy="$
 </g>
 <!-- route flags -->
 <g id="art-flags">
-${[['GRIMSHAW',150,700],['HALVORSEN',330,676],['BARENTS',510,700],['AMUNDSEN',690,678],['LANGNER',870,702],['KELLER',1050,680]].map(([nm,x,y],i)=>
+${[['CH 7',150,700],['CH 1',330,676],['CH 18',510,700],['CH 1',690,678],['CH 7',870,702],['CH 5',1050,680]].map(([nm,x,y],i)=>
  `<g><rect x="${x}" y="${y-110}" width="6" height="110" fill="#3a2d1a"/>
   <path class="flag" d="M${x+6} ${y-110} l52 12 -52 14z" fill="#c94a3d"/>
   <rect x="${x-30}" y="${y-6}" width="66" height="20" rx="4" fill="#dce8f2"/>
-  <text x="${x+3}" y="${y+8}" text-anchor="middle" font-family="Special Elite" font-size="9" fill="#2a3a48">${nm}</text></g>`).join('')}
+  <text x="${x+3}" y="${y+9}" text-anchor="middle" font-family="Special Elite" font-size="11" fill="#2a3a48">${nm}</text></g>`).join('')}
 </g>
 <!-- the half-buried snowcat -->
 <g id="art-garage">
@@ -303,23 +303,23 @@ const ROOMS=[
   entryBeat:"The route flags run dead straight toward the station — except the last fifty meters, where every flag has been pulled up and replanted, ever so slightly, to curve the path toward the dark side of the buildings.",
   entrySound:'hiss',
   completeText:"The inner door seals behind you with a hiss of warm air. Out on the ice, through the closing gap, the flag line is moving again — one flag at a time, patiently, back into a straight line.",
-  chain:"Route flags: knot-count indexes each depot name, spelling GARAGE → drum stencils pair supplies with digits; the resupply poster gives the order (food, fuel, medical, flares) → 6841 → main door riddle (NORTH — every direction from here is north) but the mirrored tag says the drill ran the other way = SOUTH → notice board cross-references the roster, the drums and the garage → 73.",
+  chain:"Route flags: channel numbers as A1Z26 letters spell GARAGE → drum stencils pair supplies with digits; the resupply poster gives the order (food, fuel, medical, flares) → 6841 → main door riddle (NORTH — every direction from here is north) but the mirrored tag says the drill ran the other way = SOUTH → notice board cross-references the roster, the drums and the garage → 73.",
   objects:[
     { id:'flags', icon:'🚩', name:'Route Flags', pos:{x:6,y:62,w:62,h:16},
-      desc:"Six route flags on the depot line, each staked with a name-board and a count of guy-line knots:\n\nGRIMSHAW — 1 knot\nHALVORSEN — 2 knots\nBARENTS — 3 knots\nAMUNDSEN — 1 knot\nLANGNER — 4 knots\nKELLER — 2 knots\n\nStandard survey practice, stencilled on the first stake: “THE KNOTS COUNT INTO THE NAMES.”",
+      desc:"Six route flags on the depot line, each staked with a radio-channel board, in order:\n\nFLAG 1 — CH 7\nFLAG 2 — CH 1\nFLAG 3 — CH 18\nFLAG 4 — CH 1\nFLAG 5 — CH 7\nFLAG 6 — CH 5\n\nStencilled on the first stake: “CHANNELS ARE LETTERED THE OLD WAY — A IS ONE.”",
       puzzle:{
         prompt:"The flag line hides a word. Where should you look first?",
         placeholder:"SIX LETTERS", answers:['GARAGE'],
         hints:[
-          "Each flag has a name AND a knot count. The stencil says the knots count INTO the names.",
-          "Letter at the knot-count's position: GRIMSHAW's 1st, HALVORSEN's 2nd, BARENTS' 3rd…",
+          "“A is one” — turn each channel number into its letter: 1=A, 2=B, 3=C… 26=Z.",
+          "7=G, 1=A, 18=R, 1=A, 7=G, 5=E. Read the flags in order.",
           "G, A, R, A, G, E — the snowcat GARAGE."
         ],
         solvedText:"G-A-R-A-G-E. The snowcat garage — half-buried, engine cold, and its supply cage locked with a 4-digit padlock."
       }
     },
     { id:'garage', icon:'🚜', name:'The Snowcat Garage', pos:{x:12,y:76,w:22,h:18},
-      desc:"The supply cage in the garage wears a 4-digit padlock. Stencilled on the fuel drums beside it, four supply glyphs, each with a digit — in no particular order:\n\n✚ MEDICAL 4      ● FUEL 8      ▲ FLARES 1      ■ FOOD 6\n\nDigits, but no sequence. Somewhere on this station is a standing order that puts supplies in order.",
+      desc:"The supply cage in the garage wears a 4-digit padlock. Stencilled on the fuel drums beside it, four supply glyphs, each with a digit — in no particular order:\n\n✚ MEDICAL 4      ● FUEL 8      ▲ FLARES 1      ■ FOOD 6\n\nAlong the back wall stand nine fuel drums; you knock down the line and six of them ring empty.\n\nDigits, but no sequence. Somewhere on this station is a standing order that puts supplies in order.",
       puzzle:{
         prompt:"Enter the 4-digit code.", placeholder:"0000", answers:['6841'],
         hints:[
@@ -333,7 +333,7 @@ const ROOMS=[
       }
     },
     { id:'maindoor', icon:'🚪', name:'The Main Door', pos:{x:72,y:60,w:10,h:20},
-      desc:"The station's outer door — letter-lock, five characters, and a riddle etched by some bored winter-over crew a decade ago:\n\n“Stand here, and every direction is me.\nEvery road home begins by walking me.\nWhat am I?”\n\nBelow it, scratched much more recently, much less steadily:\n\n“WE DRILLED THE OTHER WAY.”",
+      desc:"The station's outer door — letter-lock, five characters, and a riddle etched by some bored winter-over crew a decade ago:\n\n“Stand here, and every direction is me.\nEvery road home begins by walking me.\nWhat am I?”\n\nTaped beside the lock, the station's standing resupply notice:\n\n“UNLOAD IN THIS ORDER, ALWAYS:\n1. FOOD   2. FUEL   3. MEDICAL   4. FLARES”\n\nBelow it, scratched much more recently, much less steadily:\n\n“WE DRILLED THE OTHER WAY.”",
       puzzle:{
         prompt:"Set the five letter dials.", placeholder:"FIVE LETTERS", answers:['SOUTH'],
         hints:[
@@ -350,7 +350,7 @@ const ROOMS=[
         prompt:"Enter the 2-digit code.", placeholder:"TWO DIGITS", answers:['73'],
         hints:[
           "Two numbers are pinned right here. The third you saw in the garage.",
-          "14 bunks minus 7 rotated home is 7. The garage had nine drums; six stood empty — 3 full.",
+          "14 bunks minus 7 rotated home is 7. The garage held nine drums and six rang empty when you knocked — 3 full.",
           "7 then 3 — enter 73."
         ],
         solvedText:"7-3. The inner door unseals — heat, dark, and a smell you'll place later: nine days of nobody, and one bowl on the floor, freshly emptied.",
@@ -368,7 +368,7 @@ const ROOMS=[
   entryBeat:"Nine parkas on the hooks. Outside it is forty below. Wherever the crew went, they went without their coats — or they went as something that no longer felt the cold.",
   entrySound:'knock',
   completeText:"The generator panel accepts the code and the station's spine of lights marches on, building by building, out toward the core lab. The last building lights with something already standing at its window. By the time anyone can point, it isn't.",
-  chain:"Duty roster (last entry Station day 88) + radio log (two checks daily — “the point, then the checks”) → tune 88.2 → the reel-to-reel is morse = MELT NOTHING → foot locker Caesar plate (crack via VJG = THE, shift 2) = FROST → generator calibration lamps (deduction, unique) = 842.",
+  chain:"Duty roster (last entry Station day 88) + radio log (two checks daily — “the point, then the checks”) → tune 88.2 → the reel-to-reel is morse = MELT NOTHING → foot locker Vigenère (keyword ICE) = FROST → generator calibration lamps (deduction, unique) = 842.",
   objects:[
     { id:'roster', icon:'📋', name:'Duty Roster', pos:{x:3,y:46,w:10,h:20},
       desc:"The duty roster, filled in to a point and then not:\n\n“STATION DAY 86 — cores E-1 through E-8 catalogued. E-9 tomorrow.”\n“STATION DAY 87 — E-9 case will not stay shut. Weather radio at 0600 and 1800, as always. Two checks daily, never miss.”\n“STATION DAY 88 — ”\n\nDay 88 is blank. They stopped counting on 88. In the margin, tiny: “the band is the day we stopped, the point, then the checks.”" },
@@ -404,13 +404,13 @@ const ROOMS=[
       }
     },
     { id:'footlocker', icon:'🧳', name:'The Foot Locker', pos:{x:26,y:69,w:13,h:14}, hiddenUntil:'recorder',
-      desc:"A foot locker banded in steel, its 5-letter lock guarded by a stencilled line of nonsense:\n\nVJG  EQFG  KU:  HTQUV\n\nNo key. No alphabet. Just a dead man's habit of writing everything twice — once plainly, once not.",
+      desc:"A foot locker banded in steel, its 5-letter lock guarded by a Vigenère cipher — the scientist scratched the wheel and its keyword right onto the lid:\n\nKEYWORD: ICE  (the one thing this station studies)\nCIPHER:  N T S A V\n\n“Line the keyword under the cipher, repeating — I, C, E, I, C — and subtract each key letter (A=0). What's left is the word.”",
       puzzle:{
         prompt:"Enter the deciphered word.", placeholder:"FIVE LETTERS", answers:['FROST'],
         hints:[
-          "Every letter has been marched the same number of steps forward.",
-          "VJG is almost certainly THE. Count how far V sits from T, then walk everything back that far.",
-          "The shift is 2. HTQUV walks back to FROST. THE CODE IS: FROST."
+          "Number the alphabet A=0…Z=25. Under NTSAV write the repeating key ICE→ I,C,E,I,C, and subtract (wrap past A back to Z).",
+          "N(13)−I(8)=5=F.  T(19)−C(2)=17=R.  S(18)−E(4)=14=O.  A(0)−I(8)=18=S.  V(21)−C(2)=19=T.",
+          "The five letters spell FROST. THE CODE IS: FROST."
         ],
         solvedText:"F-R-O-S-T. Inside the locker: the generator's calibration card, a flare pistol with no flares — and someone's wedding ring, left square in the middle, the way you leave things you know you won't need."
       }
@@ -440,7 +440,7 @@ const ROOMS=[
   entryBeat:"Sample E-9's case didn't fail — the bolts were backed out from the inside of the case. Whatever the drill brought up through three hundred thousand years of ice was awake when it arrived.",
   entrySound:'clank',
   completeText:"The tower door unbolts. Behind you, over the intercom from the empty drill shed, the word repeats once more — softer now, like a thing satisfied you finally understand where it went.",
-  chain:"E-9's chalked riddle = ICE → core racks: trust only cores whose ring count outnumbers their fractures; survivors spell BURIED → cold safe tag algebra (F=M+L, L=2M, sum 18) = 936 → the drill-shed intercom clicks morse = BELOW.",
+  chain:"E-9's chalked riddle = ICE → core racks: keep only EVEN drill depths; survivors spell BURIED → cold safe tag algebra (F=M+L, L=2M, sum 18) = 936 → the drill-shed intercom clicks morse = BELOW.",
   objects:[
     { id:'coreE9', icon:'🧊', name:'Sample E-9', pos:{x:30,y:60,w:15,h:18},
       desc:"The shattered case, and beside it, in the frost on the steel table, someone wrote with a fingertip — the station's last riddle:\n\n“I hold yesterday's air in bubbles.\nI remember every winter that ever was.\nI break like glass and bleed like water,\nand I kept your visitor patient for a very long time.”",
@@ -455,13 +455,13 @@ const ROOMS=[
       }
     },
     { id:'cores', icon:'🔬', name:'The Core Racks', pos:{x:8,y:26,w:56,h:14}, hiddenUntil:'coreE9',
-      desc:"Eight cores in cold storage, each tagged with a letter, a ring count, and a fracture count. Left to right:\n\nB — 9 rings, 4 fractures\nT — 2 rings, 6 fractures\nU — 7 rings, 2 fractures\nR — 6 rings, 1 fracture\nO — 3 rings, 3 fractures\nI — 5 rings, 3 fractures\nE — 8 rings, 6 fractures\nD — 4 rings, 2 fractures\n\nThe survey rule, taped to the rack: “TRUST ONLY A CORE WHOSE RINGS OUTNUMBER ITS FRACTURES.”",
+      desc:"Eight cores in cold storage, each tagged with a letter and the depth it was drilled from (metres). Left to right:\n\nB — 812 m\nT — 435 m\nU — 604 m\nR — 286 m\nO — 3 m … (mislabelled, the tag notes)\nI — 550 m\nE — 178 m\nD — 944 m\n\nThe survey rule, taped to the rack: “ONLY CORES FROM AN EVEN DEPTH STAYED FROZEN THROUGH. ODD-DEPTH CORES CRACKED AND ARE CONTAMINATED.”",
       puzzle:{
         prompt:"Which cores can be trusted? Enter their letters in rack order.", placeholder:"LETTERS", answers:['BURIED'],
         hints:[
-          "Judge every core: do its rings strictly beat its fractures? Split the rack among the crew.",
-          "Equal doesn't count — O (3 vs 3) fails. Keep rings > fractures, read the survivors left to right.",
-          "B(9>4) U(7>2) R(6>1) I(5>3) E(8>6) D(4>2) — the rack spells BURIED."
+          "Even numbers end in 0, 2, 4, 6, 8. Check the last digit of each depth; split the rack among the crew.",
+          "Drop the odd depths — T(435) and O(3). Read the even-depth cores left to right.",
+          "B(812) U(604) R(286) I(550) E(178) D(944) are all even — the rack spells BURIED."
         ],
         solvedText:"B-U-R-I-E-D. The word the glacier kept trying to say. The trusted cores also hide the cold safe's tag, tucked behind R like a bookmark.",
         solveBeat:"Deep under the floor, the ice groans one long syllable — and the meltwater around E-9's case shivers in rings, in time with it.",

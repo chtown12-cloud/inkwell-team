@@ -319,18 +319,18 @@ const ROOMS=[
   entryBeat:"The bay's ceiling panels creak, one after another, in a slow line from the vent to the door — the sound of weight moving where no crew could walk.",
   entrySound:'clank',
   completeText:"The lift accepts the deck code and grinds upward toward the bridge. Behind you, in the bay, a pod lid whines open. You do not go back to check.",
-  chain:"Pod nameplates: bunk number indexes each surname, spelling LOCKER → locker stencils pair systems with digits; the evac placard gives the shutdown order (reactor, power, water, cryo) → 6942 → med terminal riddle (STAR) read inside-out = RATS → terminal log gives crew count; pods and placard give the rest → lift code 34.",
+  chain:"Pod status-log acrostic (first letters) spells LOCKER → locker stencils pair systems with digits; the evac placard gives the shutdown order (reactor, power, water, cryo) → 6942 → med terminal riddle (STAR) read inside-out = RATS → terminal log gives crew count; pods and placard give the rest → lift code 34.",
   objects:[
     { id:'vent', icon:'🌬️', name:'Vent Grille', pos:{x:66,y:2,w:12,h:14},
       desc:"The maintenance vent over the pods hangs open on one hinge. Two of its screws lie on the deck below — placed side by side, dead parallel, like surgical tools.\n\nThe shaft behind it is pitch dark and utterly silent, which is wrong: shafts hum. This one is holding still." },
     { id:'pods', icon:'🧊', name:'Cryo Pods', pos:{x:6,y:36,w:52,h:34},
-      desc:"Six pods. Five dark, their occupants gone — not thawed. GONE. Yours stands open, dripping.\n\nEach nameplate lists a surname and a bunk assignment:\n\nLOMAX — BUNK 1\nPOE — BUNK 2\nVICKERS — BUNK 3\nDEKKER — BUNK 4\nMAPLES — BUNK 5\nWALKER — BUNK 6\n\nSomeone scratched beneath the plates: “the bunk counts INTO the name.”",
+      desc:"Six pods. Five dark, their occupants gone — not thawed. GONE. Yours stands open, dripping.\n\nEach pod's status plate shows its last automated log line, top to bottom:\n\nPOD 1 — “Life-support nominal.”\nPOD 2 — “Occupant absent.”\nPOD 3 — “Cryo-seal breached.”\nPOD 4 — “Kelvin drift climbing.”\nPOD 5 — “Egress hatch open.”\nPOD 6 — “Return date overdue.”\n\nScratched beneath the plates: “read us the way you'd read a hidden name — down the front.”",
       puzzle:{
-        prompt:"The nameplates hide a word. Where should you look next?",
+        prompt:"The status log hides a word. Where should you look next?",
         placeholder:"SIX LETTERS", answers:['LOCKER'],
         hints:[
-          "Each pod has a surname AND a bunk number. The scratch says the number counts INTO the name.",
-          "Take the letter at the bunk-number's position: LOMAX's 1st letter, POE's 2nd, VICKERS' 3rd…",
+          "“Down the front” — an acrostic. Take the FIRST letter of each pod's log line, top to bottom.",
+          "Life… Occupant… Cryo… Kelvin… Egress… Return…",
           "L, O, C, K, E, R — the maintenance LOCKER across the bay."
         ],
         solvedText:"L-O-C-K-E-R. The maintenance locker by the bulkhead — tall, sealed, and stencilled with four system glyphs."
@@ -390,7 +390,7 @@ const ROOMS=[
   entryBeat:"The captain's chair faces the viewport. The dust on the armrests is disturbed — four long furrows on each side, as if something sat here recently. And gripped.",
   entrySound:'clank',
   completeText:"The reactor accepts the code and channels power aft. A service map blinks: ESCAPE POD — VIA HYDROPONICS. The green deck. The one the crew sealed first.",
-  chain:"Captain's log (Day 47: aimed the dish) + star chart gouges (15 scratches) → tune the dish to 47.15 → beacon loop is morse = SEAL VENTS → nav console Caesar plate (crack via YMJ = THE, shift 5) = GAMMA → reactor calibration lamps (deduction, unique) = 651.",
+  chain:"Captain's log (Day 47: aimed the dish) + star chart gouges (15 scratches) → tune the dish to 47.15 → beacon loop is morse = SEAL VENTS → nav console binary status line (5-bit A1Z26) = GAMMA → reactor calibration lamps (deduction, unique) = 651.",
   objects:[
     { id:'log', icon:'📖', name:"Captain's Log", pos:{x:18,y:66,w:10,h:12},
       desc:"The last entries, voice-to-text, punctuation failing with the speaker's nerve:\n\n“Day 44. Something answered our hail. Not on any channel we transmit on.”\n\n“Day 46. Crew hear it in the vents now. I have ordered the shafts welded.”\n\n“Day 47. I aimed the dish where the beacon died and I will not move it again. If anyone follows us: the heading is the day, then the scratches under the chart. Listen. Then get off this ship.”" },
@@ -428,13 +428,13 @@ const ROOMS=[
       }
     },
     { id:'console', icon:'🧭', name:'Nav Console', pos:{x:55,y:66,w:13,h:12}, hiddenUntil:'beacon',
-      desc:"The navigation console is locked. Riveted beside the keyboard, a brass plate stamped with what looks like garbage:\n\nYMJ  HTZWXJ  NX  QTHPJI  YT:  LFRRF\n\nNo key. No alphabet. Just the nonsense — and a captain paranoid enough to encode his own bridge.",
+      desc:"The navigation console is locked. Its status line blinks five groups of machine bits — the ship talks in binary when it doesn't trust its crew:\n\n00111   00001   01101   01101   00001\n\nA legend is etched below: “A=00001 · B=00010 · C=00011 · … each letter is its place in the alphabet, in five bits.”",
       puzzle:{
         prompt:"Enter the unlock word.", placeholder:"FIVE LETTERS", answers:['GAMMA'],
         hints:[
-          "Every letter has been marched the same number of steps up the alphabet.",
-          "That first three-letter word is almost certainly THE. Count how far Y sits from T — then walk everything back that far.",
-          "The shift is 5. LFRRF walks back to GAMMA. THE COURSE IS LOCKED TO: GAMMA."
+          "Each group is a number in binary (bit values 16-8-4-2-1). Convert it, then turn the number into a letter: 1=A, 2=B…",
+          "00111 = 4+2+1 = 7 = the 7th letter. Do the same for each group; split them among the crew.",
+          "7, 1, 13, 13, 1 → G, A, M, M, A. Enter GAMMA."
         ],
         solvedText:"G-A-M-M-A. The console unlocks — the ship has been holding station against a dead beacon for decades, burning fuel to stay near something that stopped talking. Aft power routing now needs the reactor code."
       }
@@ -464,7 +464,7 @@ const ROOMS=[
   entryBeat:"The weld on the entry hatch was cut from the inside of the deck — the metal is peeled outward in four long strips, evenly spaced. You all look at the spacing. Nobody says what it looks like.",
   entrySound:'growl',
   completeText:"The aft airlock cycles you through toward the pod bay. Behind you, in the green, the drip-lines swing gently where nothing has touched them.",
-  chain:"Overgrown row riddle = VENT → specimen trays: keep only trays where sprouted outnumber wilted; survivors spell STARVE → nutrient pump tag algebra (F=3L, M=F−L, sum 12) = 642 → the aft airlock panel blinks morse = PURGE.",
+  chain:"Overgrown row riddle = VENT → specimen trays: keep only PRIME seed counts; survivors spell STARVE → nutrient pump tag algebra (F=3L, M=F−L, sum 12) = 642 → the aft airlock panel blinks morse = PURGE.",
   objects:[
     { id:'grate', icon:'🕳️', name:'Torn Vent', pos:{x:55,y:2,w:12,h:13},
       desc:"The vent cover above the planters hangs by one bolt, bent double. Torn OUTWARD.\n\nInside the shaft, the dust shows a track — smooth, continuous, wider than a person. It has been used often. It is being used still." },
@@ -481,13 +481,13 @@ const ROOMS=[
       }
     },
     { id:'trays', icon:'🧪', name:'Specimen Trays', pos:{x:32,y:68,w:56,h:12}, hiddenUntil:'vines',
-      desc:"Nine specimen trays under the grow lights, each stamped with a letter and a growth log. Left to right:\n\nS — 7 sprouted, 2 wilted\nB — 3 sprouted, 4 wilted\nT — 5 sprouted, 1 wilted\nA — 6 sprouted, 3 wilted\nI — 2 sprouted, 2 wilted\nR — 4 sprouted, 2 wilted\nV — 8 sprouted, 5 wilted\nO — 1 sprouted, 3 wilted\nE — 5 sprouted, 4 wilted\n\nThe botanist's rule, stamped on the rack: “HARVEST ONLY WHERE THE SPROUTED OUTNUMBER THE WILTED.”",
+      desc:"Nine specimen trays under the grow lights, each stamped with a letter and a live seed count. Left to right:\n\nS — 7 seeds\nB — 4 seeds\nT — 5 seeds\nA — 3 seeds\nI — 8 seeds\nR — 2 seeds\nV — 11 seeds\nO — 9 seeds\nE — 13 seeds\n\nThe botanist's rule, stamped on the rack: “HARVEST ONLY THE TRAYS WHOSE COUNT IS A PRIME NUMBER — the rest cross-pollinated. Trust nothing divisible.”",
       puzzle:{
         prompt:"Which trays get harvested? Enter their letters in order.", placeholder:"LETTERS", answers:['STARVE'],
         hints:[
-          "Judge each tray: does sprouted strictly beat wilted? Split the nine trays among the crew.",
-          "Equal doesn't count — tray I (2 vs 2) fails. Keep sprouted > wilted, read the survivors left to right.",
-          "S(7>2) T(5>1) A(6>3) R(4>2) V(8>5) E(5>4) — the harvest spells STARVE."
+          "A prime is divisible only by 1 and itself. Check each tray's count; split the nine among the crew.",
+          "Drop 4 (2×2), 8 (2×4) and 9 (3×3). Keep 7, 5, 3, 2, 11, 13 and read those letters left to right.",
+          "S(7) T(5) A(3) R(2) V(11) E(13) are prime; B(4) I(8) O(9) are not — the harvest spells STARVE."
         ],
         solvedText:"S-T-A-R-V-E. Nobody reads it aloud. The harvested trays hide a maintenance fob for the nutrient pumps — and a thought none of you wants: forty years is a long time for anything to go hungry.",
         solveBeat:"Along the far planter row, one after another, the plants shiver — something passing beneath them, unhurried, the full length of the room.",

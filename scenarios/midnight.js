@@ -46,6 +46,12 @@ ${[['PEMBERTON',480,700,-3],['ROSSITER',650,730,2],['CARMODY',820,700,-2],['WHIT
   <rect x="${x-34}" y="${y+8}" width="68" height="22" rx="3" fill="#d9cba6"/>
   <text x="${x}" y="${y+23}" text-anchor="middle" font-family="Special Elite" font-size="9" fill="#3a2d1c">${nm}</text></g>`).join('')}
 </g>
+<!-- the fare card, framed on the wall -->
+<g id="art-farecard">
+  <rect x="640" y="200" width="120" height="150" fill="#d9cba6" stroke="#5c4423" stroke-width="7" transform="rotate(-2 700 275)"/>
+  <text x="700" y="232" text-anchor="middle" font-family="Special Elite" font-size="10" fill="#7a2a1a" transform="rotate(-2 700 275)">FARE CARD</text>
+  ${[0,1,2,3,4].map(i=>`<line x1="656" y1="${250+i*18}" x2="744" y2="${247+i*18}" stroke="#5a4a34" stroke-width="3" transform="rotate(-2 700 275)"/>`).join('')}
+</g>
 <!-- porter's desk -->
 <g id="art-desk">
   <rect x="430" y="440" width="240" height="18" fill="#5c4423"/>
@@ -316,27 +322,29 @@ const ROOMS=[
   entryBeat:"Six trunks, packed for six passengers you dined with at eight o'clock. The dust on the latches says the trunks have been here for years.",
   entrySound:'clack',
   completeText:"The forward door unbolts. Through it, the sleeper corridor sways gently — and at its far end, a shape in a peaked cap turns, unhurried, into a cabin that has no floor number.",
-  chain:"Trunk nameplates: strap-count indexes each surname, spelling PORTER → the porter's desk pairs punch-marks with classes; the fare card gives the order (first class down to freight) → 8253 → mail cage riddle (TIME) — “on this train it runs backward” = EMIT → the waybill cross-references Halifax crates, crates remaining, and the mail sacks → 49.",
+  chain:"Trunk tags: book cipher (line·word into the Standing Orders) spells PORTER → the porter's desk pairs punch-marks with classes; the fare card gives the order (first class down to freight) → 8253 → mail cage riddle (TIME) — “on this train it runs backward” = EMIT → the waybill cross-references Halifax crates, crates remaining, and the mail sacks → 49.",
   objects:[
     { id:'trunks', icon:'🧳', name:'Steamer Trunks', pos:{x:26,y:66,w:66,h:18},
-      desc:"Six steamer trunks in a luggage row, each with a brass nameplate and a count of straps:\n\nPEMBERTON — 1 strap\nROSSITER — 2 straps\nCARMODY — 3 straps\nWHITAKER — 4 straps\nKESTREL — 2 straps\nHARGREAVES — 3 straps\n\nStencilled on the rack rail: “THE STRAPS COUNT INTO THE NAMES.”",
+      desc:"Six steamer trunks in a luggage row. Each shipping tag carries a pair of numbers — a LINE and a WORD — keyed to the company's Standing Orders bolted to the wall above them:\n\n1. All passengers present tickets promptly on request.\n2. Passengers of the overnight service remain seated.\n3. Refreshments are served rearward, then removed.\n4. The evening express tolerates no exceptions ever.\n\nTAGS (line·word):  1·2   ·   2·4   ·   3·1   ·   4·4   ·   4·2   ·   3·4\n\nStencilled on the rail: “EACH TAG NAMES A WORD. THE WORD'S FIRST LETTER IS YOURS.”",
       puzzle:{
         prompt:"The trunks hide a word. Whose desk should you search?",
         placeholder:"SIX LETTERS", answers:['PORTER'],
         hints:[
-          "Each trunk has a name AND a strap count. The rail says the straps count INTO the names.",
-          "Letter at the strap-count's position: PEMBERTON's 1st, ROSSITER's 2nd, CARMODY's 3rd…",
-          "P, O, R, T, E, R — the PORTER's desk by the door."
+          "It's a book cipher: each pair points at a word in the Standing Orders (line, then word number). Take that word's FIRST letter.",
+          "1·2 = line 1, word 2 = “passengers” = P.  2·4 = “overnight” = O.  3·1 = “Refreshments” = R.",
+          "1·2 P, 2·4 O, 3·1 R, 4·4 “tolerates” T, 4·2 “evening” E, 3·4 “rearward” R — the PORTER's desk."
         ],
         solvedText:"P-O-R-T-E-R. The porter's desk — cash box locked at four digits, ledger open, chair still warm. You choose not to dwell on the chair."
       }
     },
+    { id:'farecard', icon:'🎫', name:'The Fare Card', pos:{x:38,y:20,w:10,h:22},
+      desc:"The company fare card, framed on the wall above the porter's desk:\n\n“GREAT NORTHERN & COASTAL RAILWAY —\nFARES SHALL BE RECKONED, AND TAKINGS COUNTED,\nFROM FIRST CLASS DOWN TO FREIGHT.\nNO EXCEPTIONS. NO REFUNDS.\nNO PASSAGE WITHOUT A PUNCHED TICKET.”\n\nSomeone has underlined the last line. The ink is fresh." },
     { id:'desk', icon:'🗃️', name:"The Porter's Desk", pos:{x:28,y:44,w:15,h:18},
-      desc:"The porter's cash box wears a 4-digit lock. His punch-mark chart is pasted to the desk — four punch shapes, each with a takings figure, in no particular order:\n\n★ 8      ✚ 2      ● 5      ■ 3\n\nAnd the company chart beside it pairs punches with classes:\n\n★ FIRST CLASS   ✚ SECOND CLASS   ● THIRD CLASS   ■ FREIGHT\n\nDigits, but no sequence. Somewhere here is the company's counting rule.",
+      desc:"The porter's cash box wears a 4-digit lock. His punch-mark chart is pasted to the desk — four punch shapes, each with a takings figure, in no particular order:\n\n★ 8      ✚ 2      ● 5      ■ 3\n\nAnd the company chart beside it pairs punches with classes:\n\n★ FIRST CLASS   ✚ SECOND CLASS   ● THIRD CLASS   ■ FREIGHT\n\nDigits, but no sequence. The framed FARE CARD on the wall carries the company's counting rule.",
       puzzle:{
         prompt:"Enter the 4-digit code.", placeholder:"0000", answers:['8253'],
         hints:[
-          "You need the classes in the official order — check the fare card pinned to the desk.",
+          "You need the classes in the official order — read the framed FARE CARD on the wall above the desk.",
           "The fare card: “COUNT THE TAKINGS FROM FIRST CLASS DOWN TO FREIGHT.”",
           "★8 ✚2 ●5 ■3 → enter 8253."
         ],
@@ -381,7 +389,7 @@ const ROOMS=[
   entryBeat:"Every cabin's berth is turned down, and on every pillow sits a ticket, neatly punched. You did not hear him pass. You never hear him pass.",
   entrySound:'clack',
   completeText:"Berth 13's door swings open on an empty room and a cold draft moving toward the dining car. You follow it, because the alternative is staying.",
-  chain:"Passenger diary (“he played it at 78, only ever the fourth song”) → set the gramophone to 78.4 → the run-out groove clicks morse = WRONG STOP → the valise Caesar plate (crack via ZNK = THE, shift 6) = BRAKE → berth 13's porter-lamp deduction (unique) = 276.",
+  chain:"Passenger diary (“he played it at 78, only ever the fourth song”) → set the gramophone to 78.4 → the run-out groove clicks morse = WRONG STOP → the valise rail-fence cipher (two rails, BAERK) = BRAKE → berth 13's porter-lamp deduction (unique) = 276.",
   objects:[
     { id:'diary', icon:'📔', name:"A Passenger's Diary", pos:{x:36,y:82,w:11,h:12},
       desc:"A lady's travel diary, dropped open on the runner:\n\n“The man in Cabin 3 plays his gramophone at all hours. Always at 78, and only ever the FOURTH song on the record — he lifts the needle back, again and again.”\n\n“I asked the Conductor to speak to him. The Conductor said — and I am sure I misheard — that Cabin 3 has been empty since the accident.”" },
@@ -417,13 +425,13 @@ const ROOMS=[
       }
     },
     { id:'valise', icon:'💼', name:'The Locked Valise', pos:{x:21,y:73,w:12,h:15}, hiddenUntil:'runout',
-      desc:"A gentleman's valise, banded shut, its 5-letter lock plate stamped with what looks like nonsense:\n\nZNK  IRGYV  UVKTY  ZU:  HXGQK\n\nNo key, no alphabet. Just the nonsense — and a first-class habit of trusting no porter with anything.",
+      desc:"A gentleman's valise, banded shut. Scratched on the lock plate, a zigzag and five letters:\n\nZIGZAG CIPHER · TWO RAILS\nBAERK\n\n“Written up and down two rails, then read straight off — top rail first. Put it back on the rails to read it true.”",
       puzzle:{
         prompt:"Enter the deciphered word.", placeholder:"FIVE LETTERS", answers:['BRAKE'],
         hints:[
-          "Every letter has been marched the same number of steps forward.",
-          "ZNK is almost certainly THE. Count how far Z sits from T, then walk everything back that far.",
-          "The shift is 6. HXGQK walks back to BRAKE. THE CLASP OPENS TO: BRAKE."
+          "Rail-fence, two rails: the first 3 letters (BAE) were the TOP rail, the last 2 (RK) the bottom rail.",
+          "Interleave them — top, bottom, top, bottom, top: B, R, A, K, E.",
+          "It spells BRAKE. THE CLASP OPENS TO: BRAKE."
         ],
         solvedText:"B-R-A-K-E. The valise opens on a railwayman's kit hidden under evening clothes: a brakeman's badge, berth 13's calibration card — and a revolver with six spent shells. Whatever he tried first, it wasn't puzzles."
       }
@@ -453,7 +461,7 @@ const ROOMS=[
   entryBeat:"Three tables are set with plates still steaming. The train has been abandoned for hours. Somebody keeps cooking.",
   entrySound:'bell',
   completeText:"The service door to the tender swings wide. Behind you, in the dining car, a chair scrapes politely back into place — supper, apparently, is over.",
-  chain:"Chef's board riddle = MIRROR → table settings: clear only settings with more forks than knives; survivors spell HUNGRY → the till tag algebra (F=L−2, M=F+L, sum 16) = 385 → the kitchen service bell rings morse = AGAIN.",
+  chain:"Chef's board riddle = MIRROR → table settings: clear only PERFECT-SQUARE covers; survivors spell HUNGRY → the till tag algebra (F=L−2, M=F+L, sum 16) = 385 → the kitchen service bell rings morse = AGAIN.",
   objects:[
     { id:'menu', icon:'🍽️', name:"The Chef's Board", pos:{x:64,y:33,w:8,h:18},
       desc:"Tonight's menu, chalked in a strong hand that failed at the dessert line. Under the entrées, a riddle — the chef's game with the waiters, every service:\n\n“I show you the whole car.\nI seat a second party opposite yours.\nNo guest of mine has ever paid,\nand no guest of mine has ever left.\nWhat am I?”",
@@ -470,13 +478,13 @@ const ROOMS=[
       }
     },
     { id:'tables', icon:'🍴', name:'The Table Settings', pos:{x:10,y:60,w:56,h:16}, hiddenUntil:'menu',
-      desc:"Eight settings across the dining car, each with a place card and its silver. Reading front of the car to back:\n\nH — 3 forks, 1 knife\nS — 2 forks, 2 knives\nU — 4 forks, 2 knives\nN — 5 forks, 3 knives\nO — 1 fork, 3 knives\nG — 2 forks, 1 knife\nR — 3 forks, 2 knives\nY — 4 forks, 1 knife\n\nThe etiquette card in the mirror's frame: “CLEAR ONLY A SETTING WHOSE FORKS OUTNUMBER ITS KNIVES.”",
+      desc:"Eight settings across the dining car, each place card stamped with a cover number. Reading front of the car to back:\n\nH — 4\nS — 3\nU — 9\nN — 1\nO — 2\nG — 4\nR — 9\nY — 1\n\nThe etiquette card in the mirror's frame: “A HONEST HOUSE SEATS ONLY SQUARE COMPANY. CLEAR EVERY SETTING WHOSE NUMBER IS A PERFECT SQUARE (1, 4, 9, 16…).”",
       puzzle:{
         prompt:"Which settings get cleared? Enter their letters in order.", placeholder:"LETTERS", answers:['HUNGRY'],
         hints:[
-          "Judge every setting: do the forks strictly beat the knives? Split the tables among the crew.",
-          "Equal doesn't count — S (2 vs 2) stays. Keep forks > knives and read the survivors front to back.",
-          "H(3>1) U(4>2) N(5>3) G(2>1) R(3>2) Y(4>1) — the cleared settings spell HUNGRY."
+          "A perfect square is some whole number times itself: 1(=1×1), 4(=2×2), 9(=3×3). Check each cover; split the tables among the crew.",
+          "Drop the non-squares — S(3) and O(2). Keep 4, 9, 1 and read the survivors front to back.",
+          "H(4) U(9) N(1) G(4) R(9) Y(1) are perfect squares — the cleared settings spell HUNGRY."
         ],
         solvedText:"H-U-N-G-R-Y. The word sits on the table linen like a spill. In the mirror, you'd swear the cleared seats are no longer empty — and every one of the seated shapes is facing the kitchen.",
         solveBeat:"The kitchen's serving hatch slides up two inches. Steam drifts out. Nothing looks through. It doesn't need to.",

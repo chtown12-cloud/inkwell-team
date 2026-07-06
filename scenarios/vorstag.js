@@ -45,13 +45,9 @@ ${[0,1,2,3,4].map(i=>`<line x1="${40+i*70}" y1="300" x2="${40+i*70}" y2="640" st
 </g>
 <!-- family crest shields -->
 <g id="art-crests">
-${[['WINTERHALT','I',90],['VERKONEN','II',196],['BLACKMOOR','II',302]].map(([nm,tal,x],i)=>
- `<g><path d="M${x-34} 420 h68 v54 q0 26 -34 40 q-34 -14 -34 -40z" fill="#3a2d4a" stroke="#5c4a74" stroke-width="4"/>
-  <text x="${x}" y="450" text-anchor="middle" font-family="Special Elite" font-size="9" fill="#c9bde0">${nm}</text>
-  <text x="${x}" y="478" text-anchor="middle" font-size="13" fill="#e0cfa2">${'★'.repeat(tal.length)}</text></g>`).join('')}
-  <g><path d="M120 540 h68 v54 q0 26 -34 40 q-34 -14 -34 -40z" fill="#3a2d4a" stroke="#5c4a74" stroke-width="4"/>
-  <text x="154" y="570" text-anchor="middle" font-family="Special Elite" font-size="9" fill="#c9bde0">HALLOWELL</text>
-  <text x="154" y="598" text-anchor="middle" font-size="13" fill="#e0cfa2">★★★</text></g>
+${[['L',90,420],['W',196,420],['L',302,420],['E',154,540]].map(([ch,x,y])=>
+ `<g><path d="M${x-34} ${y} h68 v54 q0 26 -34 40 q-34 -14 -34 -40z" fill="#3a2d4a" stroke="#5c4a74" stroke-width="4"/>
+  <text x="${x}" y="${y+52}" text-anchor="middle" font-family="Special Elite" font-size="30" fill="#e0cfa2">${ch}</text></g>`).join('')}
 </g>
 <!-- courtyard flagstones -->
 <path d="M0 660 h1600 v240 h-1600z" fill="#1c1626"/>
@@ -334,16 +330,16 @@ const ROOMS=[
   entryBeat:"As the portcullis seats itself into the stone, every window in the keep goes dark at once — except one, high in the tower, which comes on.",
   entrySound:'thunder',
   completeText:"The sealed doors accept the old word and swing inward on a hall of cold candles. Behind you in the court, the well rope creaks — paying out, slowly, though no one is drawing water.",
-  chain:"Family crests: star-count indexes each name, spelling WELL → well rim pairs symbols with digits; the tapestry pairs symbols with seasons; read the year from spring → 9357 → sealed doors riddle (NIGHT) answered in the old tongue = NOCTIS (the mirrored key) → gatekeeper's ledger cross-references the portrait's guests, the wolves, and the chandelier → 56.",
+  chain:"Gatehouse shields: anagram of the four scattered letters spells WELL → well rim pairs symbols with digits; the tapestry pairs symbols with seasons; read the year from spring → 9357 → sealed doors riddle (NIGHT) answered in the old tongue = NOCTIS (the mirrored key) → gatekeeper's ledger cross-references the portrait's guests, the wolves, and the chandelier → 56.",
   objects:[
     { id:'crests', icon:'🛡️', name:'Family Crests', pos:{x:3,y:42,w:19,h:28},
-      desc:"Four shields hang on the gatehouse wall, each carved with a family name and a count of stars:\n\nWINTERHALT — ★\nVERKONEN — ★★\nBLACKMOOR — ★★\nHALLOWELL — ★★★\n\nBeneath them, in iron letters: “THE STARS POINT INTO THE NAMES.”",
+      desc:"Four blank shields hang on the gatehouse wall — the family names chiselled off long ago, each now bearing a single carved letter. Left to right:\n\nL   ·   W   ·   L   ·   E\n\nBeneath them, in iron letters: “THE MASON SCATTERED WHAT THE SPRING GIVES. SET IT RIGHT.”",
       puzzle:{
-        prompt:"The crests hide a word. Where should you look next?",
+        prompt:"Rearrange the four letters. Where should you look next?",
         placeholder:"FOUR LETTERS", answers:['WELL'],
         hints:[
-          "Each shield has a name AND a star count. The iron letters say the stars point INTO the names.",
-          "Take the letter at the star-count's position: WINTERHALT's 1st, VERKONEN's 2nd, BLACKMOOR's 2nd, HALLOWELL's 3rd.",
+          "Four letters — L, W, L, E — scrambled. Rearrange them into a single word.",
+          "“What the spring gives” is water, drawn from one thing in this courtyard.",
           "W, E, L, L — the WELL in the middle of the court."
         ],
         solvedText:"W-E-L-L. The courtyard well — its crank is locked with a 4-digit mechanism, and its rim is carved with symbols."
@@ -374,7 +370,7 @@ const ROOMS=[
           "The riddle's answer is NIGHT. Now say it in the old tongue — the word stamped on the mirrored key.",
           "The key says it: NOCTIS. Latin for 'of the night'. Enter NOCTIS."
         ],
-        solvedText:"N-O-C-T-I-S. The lock's tumblers fall like a sigh, and the doors to the keep stand open. Inside, the candles are cold — but the wax is soft."
+        solvedText:"N-O-C-T-I-S. The lock's tumblers fall like a sigh, and the doors to the keep stand open. Inside, a great chandelier hangs over the hall — EIGHT candles, THREE of them long dead under fossilized wax. The living five are cold… but the wax is soft."
       }
     },
     { id:'ledger', icon:'📒', name:"Gatekeeper's Ledger", pos:{x:53,y:64,w:10,h:14}, hiddenUntil:'doors',
@@ -383,7 +379,7 @@ const ROOMS=[
         prompt:"Enter the 2-digit code.", placeholder:"TWO DIGITS", answers:['56'],
         hints:[
           "The guests and wolves are in the ledger's own margin. The candles are hanging above you in the hall.",
-          "Eleven guests minus six wolves is 5. The chandelier note by the crests: eight candles, three long dead — 3 doubled is 6.",
+          "Eleven guests minus six wolves is 5. The hall chandelier you saw when the doors opened: eight candles, three long dead — 3 doubled is 6.",
           "5 then 6 — enter 56."
         ],
         solvedText:"5-6. The inner hall opens toward the library — and the chandelier overhead sways once, gently, as though something crossed the floor above it.",
@@ -401,7 +397,7 @@ const ROOMS=[
   entryBeat:"The fire in the hearth is burning. It was not burning when the household died, and no one has been here since. Something keeps this room warm. Something likes it here.",
   entrySound:'knock',
   completeText:"The orrery clicks into alignment and a bookcase rolls aside on iron rails, breathing out forty years of cold air and the smell of a hospital. The laboratory stair leads down.",
-  chain:"Hymn board (CXIX = 119) + psalter margin (third verse) → set the organ stop to 119.3 → the hidden panel's bell chimes are morse = STAY INSIDE → the Baron's folio Caesar plate (crack via XLI = THE, shift 4) = SPARK → orrery calibration flames (deduction, unique) = 763.",
+  chain:"Hymn board (CXIX = 119) + psalter margin (third verse) → set the organ stop to 119.3 → the hidden panel's bell chimes are morse = STAY INSIDE → the Baron's folio Atbash mirror-script (GSV = THE) = SPARK → orrery calibration flames (deduction, unique) = 763.",
   objects:[
     { id:'hymnboard', icon:'🎼', name:'Hymn Board', pos:{x:66,y:26,w:9,h:20},
       desc:"The chapel hymn board, its brass letters furred with dust:\n\nHYMN: CXIX\nVERSE: (the tile is missing)\n\nTucked behind the board, a psalter falls open to a dog-eared page. In the margin, the Baron's hand: “Father sang only the THIRD verse when the storm came close. Only ever the third.”" },
@@ -437,13 +433,13 @@ const ROOMS=[
       }
     },
     { id:'folio', icon:'📜', name:"The Baron's Folio", pos:{x:22,y:56,w:14,h:16}, hiddenUntil:'chimes',
-      desc:"The Baron's working folio lies chained to its desk, the final page written in a cipher he trusted his life to:\n\nXLI  HSSV  STIRW  XS:  WTEVO\n\nNo key. No alphabet. Only a man's handwriting, getting faster and worse as it goes.",
+      desc:"The Baron's working folio lies chained to its desk, the last page in his alchemist's mirror-script. Pinned above it, his own key:\n\n“THE MIRROR ALPHABET — A becomes Z, B becomes Y, C becomes X… and back again.”\n\nThe final line reads:\n\nGSV  WLLI  LKVMH  GL:  HKZIP",
       puzzle:{
         prompt:"Enter the deciphered word.", placeholder:"FIVE LETTERS", answers:['SPARK'],
         hints:[
-          "Every letter has been marched the same number of steps forward through the alphabet.",
-          "That first three-letter word is almost certainly THE. Count how far X sits from T — then walk everything back that far.",
-          "The shift is 4. WTEVO walks back to SPARK. THE DOOR OPENS TO: SPARK."
+          "It's an Atbash mirror: A↔Z, B↔Y, C↔X. Each letter swaps with its opposite end of the alphabet. GSV decodes to THE, confirming it.",
+          "Mirror the last word: H↔S, K↔P, Z↔A, I↔R, P↔K.",
+          "HKZIP mirrors to SPARK. THE DOOR OPENS TO: SPARK."
         ],
         solvedText:"S-P-A-R-K. Of course. The whole castle is a machine for catching one, and the folio's last legible line: “it only ever feared the same thing that made it.”"
       }
@@ -473,7 +469,7 @@ const ROOMS=[
   entryBeat:"On the slab, the leather straps lie neatly unbuckled — not torn. It took its time. It folded them.",
   entrySound:'clank',
   completeText:"The dumbwaiter's word hangs in the air as you climb the tower stair. Below you, in the dark of the cellar, something begins — slowly, tunelessly, in a voice like wet gravel — to hum the Baron's hymn.",
-  chain:"The slab's chalked riddle = LIGHTNING → Leyden jar rack: keep only jars whose charge marks outnumber their cracks; survivors spell RISEN → galvanic switchboard tag algebra (F=M+L, M=L/2, sum 12) = 624 → the dumbwaiter bell rings morse from the cellar = ALIVE.",
+  chain:"The slab's chalked riddle = LIGHTNING → Leyden jar rack: keep only ODD charges; survivors spell RISEN → galvanic switchboard tag algebra (F=M+L, M=L/2, sum 12) = 624 → the dumbwaiter bell rings morse from the cellar = ALIVE.",
   objects:[
     { id:'slab', icon:'⛓️', name:'The Empty Slab', pos:{x:33,y:47,w:34,h:22},
       desc:"The slab. THE slab — scorched, strapped, and empty. Chalked along its edge in the Baron's hand, a riddle he wrote for his own machinery:\n\n“I am the Baron's oldest servant.\nI climb the tower without legs.\nI speak exactly once,\nand the sky breaks when I do.\nWhat am I?”",
@@ -488,13 +484,13 @@ const ROOMS=[
       }
     },
     { id:'jars', icon:'⚡', name:'Leyden Jar Rack', pos:{x:6,y:24,w:38,h:16}, hiddenUntil:'slab',
-      desc:"Eight Leyden jars on the rack, each chalked with a letter, each showing charge marks and cracks. Left to right:\n\nR — 5 charge marks, 1 crack\nM — 2 charge marks, 3 cracks\nI — 4 charge marks, 2 cracks\nU — 3 charge marks, 3 cracks\nS — 6 charge marks, 3 cracks\nE — 7 charge marks, 2 cracks\nD — 1 charge mark, 2 cracks\nN — 4 charge marks, 1 crack\n\nThe Baron's rule, burned into the shelf: “TRUST ONLY A JAR WHOSE CHARGE OUTNUMBERS ITS CRACKS.”",
+      desc:"Eight Leyden jars on the rack, each chalked with a letter and a charge reading. Left to right:\n\nR — 5\nM — 2\nI — 3\nU — 4\nS — 7\nE — 1\nD — 6\nN — 9\n\nThe Baron's rule, burned into the shelf: “AN EVEN CHARGE HAS ALREADY EARTHED ITSELF AND IS DEAD. TRUST ONLY THE ODD.”",
       puzzle:{
         prompt:"Which jars can be trusted? Enter their letters in rack order.", placeholder:"LETTERS", answers:['RISEN'],
         hints:[
-          "Judge every jar: do its charge marks strictly beat its cracks? Split the rack among the crew.",
-          "Equal doesn't count — U (3 vs 3) fails. Keep charge > cracks and read the survivors left to right.",
-          "R(5>1) I(4>2) S(6>3) E(7>2) N(4>1) — the rack spells RISEN."
+          "Odd numbers end in 1, 3, 5, 7, 9. Check each jar's charge; split the rack among the crew.",
+          "Drop the even charges — M(2), U(4), D(6). Read the odd ones left to right.",
+          "R(5) I(3) S(7) E(1) N(9) are odd — the rack spells RISEN."
         ],
         solvedText:"R-I-S-E-N. Nobody says it twice. The trusted jars still hold their charge — enough to wake the switchboard, if you can find its combination.",
         solveBeat:"The chains overhead swing, all four at once, in a room with no wind. Then they still themselves — carefully — as if embarrassed.",
