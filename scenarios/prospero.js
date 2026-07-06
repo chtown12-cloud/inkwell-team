@@ -324,7 +324,7 @@ const ROOMS=[
     { id:'vent', icon:'🌬️', name:'Vent Grille', pos:{x:66,y:2,w:12,h:14},
       desc:"The maintenance vent over the pods hangs open on one hinge. Two of its screws lie on the deck below — placed side by side, dead parallel, like surgical tools.\n\nThe shaft behind it is pitch dark and utterly silent, which is wrong: shafts hum. This one is holding still." },
     { id:'pods', icon:'🧊', name:'Cryo Pods', pos:{x:6,y:36,w:52,h:34},
-      desc:"Six pods. Five dark, their occupants gone — not thawed. GONE. Yours stands open, dripping.\n\nEach pod's status plate shows its last automated log line, top to bottom:\n\nPOD 1 — “Life-support nominal.”\nPOD 2 — “Occupant absent.”\nPOD 3 — “Cryo-seal breached.”\nPOD 4 — “Kelvin drift climbing.”\nPOD 5 — “Egress hatch open.”\nPOD 6 — “Return date overdue.”\n\nScratched beneath the plates: “read us the way you'd read a hidden name — down the front.”",
+      desc:"Six pods. Five dark, their occupants gone — not thawed. GONE. Yours stands open, dripping.\n\nEach pod's status plate shows its last automated log line, top to bottom:\n\nPOD 1 — “Life-support nominal.”\nPOD 2 — “Occupant absent.”\nPOD 3 — “Cryo-seal breached.”\nPOD 4 — “Kelvin drift climbing.”\nPOD 5 — “Egress hatch open.”\nPOD 6 — “Return date overdue.”\n\nSomeone scratched one line beneath the plates: “read us the way you'd read a hidden name — down the front.”",
       puzzle:{
         prompt:"The status log hides a word. Where should you look next?",
         placeholder:"SIX LETTERS", answers:['LOCKER'],
@@ -337,7 +337,7 @@ const ROOMS=[
       }
     },
     { id:'locker', icon:'🗄️', name:'Maintenance Locker', pos:{x:79,y:40,w:10,h:30},
-      desc:"A tall maintenance locker sealed with a 4-digit mag-lock. Stencilled above it, four system glyphs, each with a digit — in no particular order:\n\n⚡ POWER 9      ❄ CRYO 2      ☢ REACTOR 6      💧 WATER 4\n\nDigits, but no sequence. Somewhere on this deck there's a procedure that puts these systems in order.",
+      desc:"A tall maintenance locker sealed with a 4-digit mag-lock. Four system glyphs are stencilled above it, each with a digit — in no particular order:\n\n⚡ POWER 9      ❄ CRYO 2      ☢ REACTOR 6      💧 WATER 4\n\nDigits, but no sequence. Somewhere on this deck there's a procedure that puts these systems in order.",
       puzzle:{
         prompt:"Enter the 4-digit code.", placeholder:"0000", answers:['6942'],
         hints:[
@@ -351,7 +351,7 @@ const ROOMS=[
       }
     },
     { id:'placard', icon:'📋', name:'Evacuation Placard', pos:{x:88,y:35,w:9,h:16},
-      desc:"A laminated evacuation placard, corporate-cheerful under forty years of dust:\n\n“IN THE EVENT OF EVACUATION, SHUT DOWN SYSTEMS IN THIS ORDER:\n1. REACTOR   2. POWER   3. WATER   4. CRYO\n\nProspero carries TWIN reactor cores. Both must sleep before you do.”\n\nSomeone has underlined the word TWIN. Twice." },
+      desc:"A laminated evacuation placard hangs on the wall, corporate-cheerful under forty years of dust:\n\n“IN THE EVENT OF EVACUATION, SHUT DOWN SYSTEMS IN THIS ORDER:\n1. REACTOR   2. POWER   3. WATER   4. CRYO\n\nProspero carries TWIN reactor cores. Both must sleep before you do.”\n\nSomeone has underlined the word TWIN. Twice." },
     { id:'terminal', icon:'🖥️', name:'Med Terminal', pos:{x:56,y:44,w:12,h:16},
       desc:"The med terminal wants a password. Its screensaver has looped the same riddle for four decades:\n\n“I die each morning and am born each night.\nSailors of the void steer by my elders.\nWhat am I?”\n\nBelow, in the operator's hand: “ANSWER IT INSIDE OUT — the way the vents read everything.”",
       puzzle:{
@@ -469,7 +469,7 @@ const ROOMS=[
     { id:'grate', icon:'🕳️', name:'Torn Vent', pos:{x:55,y:2,w:12,h:13},
       desc:"The vent cover above the planters hangs by one bolt, bent double. Torn OUTWARD.\n\nInside the shaft, the dust shows a track — smooth, continuous, wider than a person. It has been used often. It is being used still." },
     { id:'vines', icon:'🌿', name:'The Overgrown Row', pos:{x:6,y:36,w:18,h:34},
-      desc:"The first planter row has gone feral, roots cracking the deck plates. Tied to a stake, a waterproof tag in the botanist's hand — a riddle, because the botanist never labeled anything plainly in her life:\n\n“I breathe for the ship.\nI whisper when I am empty\nand knock when I am full.\nEvery deck feeds me. What am I?”",
+      desc:"The first planter row has gone feral, roots cracking the deck plates. A waterproof tag hangs from a stake, written in the botanist's hand — a riddle, because she never labeled anything plainly in her life:\n\n“I breathe for the ship.\nI whisper when I am empty\nand knock when I am full.\nEvery deck feeds me. What am I?”",
       puzzle:{
         prompt:"What is the botanist pointing you at?", placeholder:"ANSWER", answers:['VENT','VENTS','THEVENTS','AVENT'],
         hints:[
@@ -574,7 +574,7 @@ const ROOMS=[
       }
     },
     { id:'clamps', icon:'🗜️', name:'Docking Clamps', pos:{x:72,y:56,w:16,h:22}, hiddenUntil:'window',
-      desc:"Four heavy clamps pin the pod to its cradle, released by four glyph tumblers — the same system glyphs from the cryo bay locker, in the same order:\n\n⚡   ❄   ☢   💧\n\nStamped beneath them:\n\n“SHUTDOWN RUNS FORWARD.\nRELEASE RUNS BACKWARD.”",
+      desc:"Four heavy clamps pin the pod to its cradle, released by four glyph tumblers — the same system glyphs from the cryo bay locker, in the same order:\n\n⚡   ❄   ☢   💧\n\nA single line is stamped beneath them:\n\n“SHUTDOWN RUNS FORWARD.\nRELEASE RUNS BACKWARD.”",
       puzzle:{
         prompt:"Enter the 4-digit release code.", placeholder:"0000", answers:['2496'],
         hints:[

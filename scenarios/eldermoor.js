@@ -579,7 +579,7 @@ const ROOMS = [
       revealDesc:"You haul the canvas flat. Tar-painted loading marks pair each shape with a single letter — winds, by the look of them — but the pairs are scattered in no useful order:",
       revealSymbols:"● W &nbsp;&nbsp;▲ N &nbsp;&nbsp;◆ S &nbsp;&nbsp;■ E" },
     { id:'crate', icon:'📦', name:'Cargo Crate', pos:{x:46,y:72,w:11,h:14},
-      desc:"A heavy cargo crate, banded in iron, sealed with a 4-digit dial lock. Stencilled on its lid: MANIFEST — ONE OF SEVEN. Around it in the sand, five sister crates lie burst open on the rocks.\n\nOn its side, four shapes, each with a number — printed in no particular order:\n\n■ 5      ◆ 1      ▲ 8      ● 3\n\nNumbers, but no sequence. Something on this beach pairs these shapes with something else — and something else again gives the order.",
+      desc:"A heavy cargo crate sits banded in iron, sealed with a 4-digit dial lock. Its lid is stencilled MANIFEST — ONE OF SEVEN, and around it in the sand five sister crates lie burst open on the rocks.\n\nOn its side, four shapes, each with a number — printed in no particular order:\n\n■ 5      ◆ 1      ▲ 8      ● 3\n\nNumbers, but no sequence. Something on this beach pairs these shapes with something else — and something else again gives the order.",
       puzzle:{
         prompt:"Enter the 4-digit combination.", placeholder:"0000", answers:['8513'],
         hints:[
@@ -668,7 +668,7 @@ const ROOMS = [
       }
     },
     { id:'hatch', icon:'🕳️', name:'Floor Hatch', pos:{x:44,y:85,w:12,h:11}, hiddenUntil:'broadcast',
-      desc:"A steel hatch with a five-letter wheel lock. Riveted beside it, a brass plate stamped with what looks like nonsense:\n\nWKH  ZKHHO  RSHQV  WR:  VWRUP\n\nNo key. No alphabet. Just the nonsense — and the nagging feeling that it isn't nonsense at all.",
+      desc:"A steel hatch with a five-letter wheel lock. A brass plate riveted beside the wheel is stamped with what looks like nonsense:\n\nWKH  ZKHHO  RSHQV  WR:  VWRUP\n\nNo key. No alphabet. Just the nonsense — and the nagging feeling that it isn't nonsense at all.",
       puzzle:{
         prompt:"Set the wheel to the decoded word.", placeholder:"FIVE LETTERS", answers:['STORM'],
         hints:[
@@ -680,7 +680,7 @@ const ROOMS = [
       }
     },
     { id:'transmitter', icon:'🔌', name:'Emergency Transmitter', pos:{x:69,y:79,w:13,h:14}, hiddenUntil:'hatch',
-      desc:"The emergency transmitter wants a 3-digit arming code. Taped beside the keypad, a calibration card in the operator's hand — five test codes, and what the panel lamps said to each:\n\n1 2 3 — one lamp lit, seated WRONG\n4 5 6 — one lamp lit, seated WRONG\n6 1 2 — all lamps dark\n9 2 5 — one lamp lit, seated WRONG\n8 3 9 — two lamps lit, both seated WRONG\n\n“A lit lamp: that digit is in the code. Seated true: right digit, right position. Seated wrong: right digit, wrong position.”\n\nBelow, tiny and urgent: “REMEMBER THE BAND. YOU WILL NEED IT AGAIN.”",
+      desc:"The emergency transmitter wants a 3-digit arming code. A calibration card in the operator's hand is taped beside the keypad — five test codes, and what the panel lamps said to each:\n\n1 2 3 — one lamp lit, seated WRONG\n4 5 6 — one lamp lit, seated WRONG\n6 1 2 — all lamps dark\n9 2 5 — one lamp lit, seated WRONG\n8 3 9 — two lamps lit, both seated WRONG\n\n“A lit lamp: that digit is in the code. Seated true: right digit, right position. Seated wrong: right digit, wrong position.”\n\nBelow, tiny and urgent: “REMEMBER THE BAND. YOU WILL NEED IT AGAIN.”",
       puzzle:{
         prompt:"Enter the 3-digit arming code.", placeholder:"000", answers:['394'],
         hints:[

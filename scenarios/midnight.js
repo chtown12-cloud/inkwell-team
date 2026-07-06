@@ -325,7 +325,7 @@ const ROOMS=[
   chain:"Trunk tags: book cipher (line·word into the Standing Orders) spells PORTER → the porter's desk pairs punch-marks with classes; the fare card gives the order (first class down to freight) → 8253 → mail cage riddle (TIME) — “on this train it runs backward” = EMIT → the waybill cross-references Halifax crates, crates remaining, and the mail sacks → 49.",
   objects:[
     { id:'trunks', icon:'🧳', name:'Steamer Trunks', pos:{x:26,y:66,w:66,h:18},
-      desc:"Six steamer trunks in a luggage row. Each shipping tag carries a pair of numbers — a LINE and a WORD — keyed to the company's Standing Orders bolted to the wall above them:\n\n1. All passengers present tickets promptly on request.\n2. Passengers of the overnight service remain seated.\n3. Refreshments are served rearward, then removed.\n4. The evening express tolerates no exceptions ever.\n\nTAGS (line·word):  1·2   ·   2·4   ·   3·1   ·   4·4   ·   4·2   ·   3·4\n\nStencilled on the rail: “EACH TAG NAMES A WORD. THE WORD'S FIRST LETTER IS YOURS.”",
+      desc:"Six steamer trunks in a luggage row. Each shipping tag carries a pair of numbers — a LINE and a WORD — keyed to the company's Standing Orders bolted to the wall above them:\n\n1. All passengers present tickets promptly on request.\n2. Passengers of the overnight service remain seated.\n3. Refreshments are served rearward, then removed.\n4. The evening express tolerates no exceptions ever.\n\nTAGS (line·word):  1·2   ·   2·4   ·   3·1   ·   4·4   ·   4·2   ·   3·4\n\nA stencil on the rack rail explains the tags: “EACH TAG NAMES A WORD. THE WORD'S FIRST LETTER IS YOURS.”",
       puzzle:{
         prompt:"The trunks hide a word. Whose desk should you search?",
         placeholder:"SIX LETTERS", answers:['PORTER'],
@@ -340,7 +340,7 @@ const ROOMS=[
     { id:'farecard', icon:'🎫', name:'The Fare Card', pos:{x:38,y:20,w:10,h:22},
       desc:"The company fare card, framed on the wall above the porter's desk:\n\n“GREAT NORTHERN & COASTAL RAILWAY —\nFARES SHALL BE RECKONED, AND TAKINGS COUNTED,\nFROM FIRST CLASS DOWN TO FREIGHT.\nNO EXCEPTIONS. NO REFUNDS.\nNO PASSAGE WITHOUT A PUNCHED TICKET.”\n\nSomeone has underlined the last line. The ink is fresh." },
     { id:'desk', icon:'🗃️', name:"The Porter's Desk", pos:{x:28,y:44,w:15,h:18},
-      desc:"The porter's cash box wears a 4-digit lock. His punch-mark chart is pasted to the desk — four punch shapes, each with a takings figure, in no particular order:\n\n★ 8      ✚ 2      ● 5      ■ 3\n\nAnd the company chart beside it pairs punches with classes:\n\n★ FIRST CLASS   ✚ SECOND CLASS   ● THIRD CLASS   ■ FREIGHT\n\nDigits, but no sequence. The framed FARE CARD on the wall carries the company's counting rule.",
+      desc:"The porter's cash box wears a 4-digit lock. His punch-mark chart is pasted to the desk — four punch shapes, each with a takings figure, in no particular order:\n\n★ 8      ✚ 2      ● 5      ■ 3\n\nAnd the company chart beside it pairs punches with classes:\n\n★ FIRST CLASS   ✚ SECOND CLASS   ● THIRD CLASS   ■ FREIGHT\n\nDigits, but no sequence. The company counted its money in one fixed order — every porter knew it by heart, and the rule is posted somewhere in this car.",
       puzzle:{
         prompt:"Enter the 4-digit code.", placeholder:"0000", answers:['8253'],
         hints:[
@@ -366,7 +366,7 @@ const ROOMS=[
       }
     },
     { id:'waybill', icon:'📄', name:'The Waybill', pos:{x:54,y:31,w:10,h:19}, hiddenUntil:'mailcage',
-      desc:"Clipped inside the cage, the car's waybill and the forward door's 2-digit lock. The bill reads:\n\n“FORWARD DOOR — first figure: crates loaded at Halifax, LESS the crates still standing in this car. Second figure: the mail sacks, TRIPLED.”\n\nThe manifest line above it: “ELEVEN crates loaded at Halifax.” You count the car: SEVEN remain.",
+      desc:"The car's waybill hangs clipped inside the cage, next to the forward door and its 2-digit lock. The bill reads:\n\n“FORWARD DOOR — first figure: crates loaded at Halifax, LESS the crates still standing in this car. Second figure: the mail sacks, TRIPLED.”\n\nThe manifest line above it: “ELEVEN crates loaded at Halifax.” You count the car: SEVEN remain.",
       puzzle:{
         prompt:"Enter the 2-digit code.", placeholder:"TWO DIGITS", answers:['49'],
         hints:[
@@ -425,7 +425,7 @@ const ROOMS=[
       }
     },
     { id:'valise', icon:'💼', name:'The Locked Valise', pos:{x:21,y:73,w:12,h:15}, hiddenUntil:'runout',
-      desc:"A gentleman's valise, banded shut. Scratched on the lock plate, a zigzag and five letters:\n\nZIGZAG CIPHER · TWO RAILS\nBAERK\n\n“Written up and down two rails, then read straight off — top rail first. Put it back on the rails to read it true.”",
+      desc:"A gentleman's valise, banded shut. Someone has scratched a zigzag and five letters into the lock plate:\n\nZIGZAG CIPHER · TWO RAILS\nBAERK\n\n“Written up and down two rails, then read straight off — top rail first. Put it back on the rails to read it true.”",
       puzzle:{
         prompt:"Enter the deciphered word.", placeholder:"FIVE LETTERS", answers:['BRAKE'],
         hints:[
@@ -437,7 +437,7 @@ const ROOMS=[
       }
     },
     { id:'berthlock', icon:'🚪', name:'Berth 13', pos:{x:82,y:26,w:11,h:42}, hiddenUntil:'valise',
-      desc:"Berth 13 — the cabin that isn't on the car plan — locked at 3 digits. Pinned to the door, three punched ticket stubs — SEAT 2, SEAT 6, SEAT 7 — and the brakeman's memory-note:\n\n“The lock takes the three seats in BOARDING order.\nSeat 7 boarded BETWEEN the other two.\nSeat 2 boarded somewhere BEFORE seat 6.”\n\nAnd scrawled under it: “REMEMBER THE RECORD. THE JUNCTION WILL ASK.”",
+      desc:"Berth 13 — the cabin that isn't on the car plan — locked at 3 digits. Three punched ticket stubs are pinned to the door — SEAT 2, SEAT 6, SEAT 7 — above the brakeman's memory-note:\n\n“The lock takes the three seats in BOARDING order.\nSeat 7 boarded BETWEEN the other two.\nSeat 2 boarded somewhere BEFORE seat 6.”\n\nAnd scrawled under it: “REMEMBER THE RECORD. THE JUNCTION WILL ASK.”",
       puzzle:{
         prompt:"Work out the boarding order of seats 2, 6 and 7, then enter the three digits.", placeholder:"000", answers:['276'],
         hints:[

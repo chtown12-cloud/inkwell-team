@@ -306,7 +306,7 @@ const ROOMS=[
   chain:"Route flags: channel numbers as A1Z26 letters spell GARAGE → drum stencils pair supplies with digits; the resupply poster gives the order (food, fuel, medical, flares) → 6841 → main door riddle (NORTH — every direction from here is north) but the mirrored tag says the drill ran the other way = SOUTH → notice board cross-references the roster, the drums and the garage → 73.",
   objects:[
     { id:'flags', icon:'🚩', name:'Route Flags', pos:{x:6,y:62,w:62,h:16},
-      desc:"Six route flags on the depot line, each staked with a radio-channel board, in order:\n\nFLAG 1 — CH 7\nFLAG 2 — CH 1\nFLAG 3 — CH 18\nFLAG 4 — CH 1\nFLAG 5 — CH 7\nFLAG 6 — CH 5\n\nStencilled on the first stake: “CHANNELS ARE LETTERED THE OLD WAY — A IS ONE.”",
+      desc:"Six route flags on the depot line, each staked with a radio-channel board, in order:\n\nFLAG 1 — CH 7\nFLAG 2 — CH 1\nFLAG 3 — CH 18\nFLAG 4 — CH 1\nFLAG 5 — CH 7\nFLAG 6 — CH 5\n\nThe first stake carries a stencil: “CHANNELS ARE LETTERED THE OLD WAY — A IS ONE.”",
       puzzle:{
         prompt:"The flag line hides a word. Where should you look first?",
         placeholder:"SIX LETTERS", answers:['GARAGE'],
@@ -319,7 +319,7 @@ const ROOMS=[
       }
     },
     { id:'garage', icon:'🚜', name:'The Snowcat Garage', pos:{x:12,y:76,w:22,h:18},
-      desc:"The supply cage in the garage wears a 4-digit padlock. Stencilled on the fuel drums beside it, four supply glyphs, each with a digit — in no particular order:\n\n✚ MEDICAL 4      ● FUEL 8      ▲ FLARES 1      ■ FOOD 6\n\nAlong the back wall stand nine fuel drums; you knock down the line and six of them ring empty.\n\nDigits, but no sequence. Somewhere on this station is a standing order that puts supplies in order.",
+      desc:"The supply cage in the garage wears a 4-digit padlock. Four supply glyphs are stencilled on the fuel drums beside it, each with a digit — in no particular order:\n\n✚ MEDICAL 4      ● FUEL 8      ▲ FLARES 1      ■ FOOD 6\n\nAlong the back wall stand nine fuel drums; you knock down the line and six of them ring empty.\n\nDigits, but no sequence. Somewhere on this station is a standing order that puts supplies in order.",
       puzzle:{
         prompt:"Enter the 4-digit code.", placeholder:"0000", answers:['6841'],
         hints:[
@@ -333,7 +333,7 @@ const ROOMS=[
       }
     },
     { id:'maindoor', icon:'🚪', name:'The Main Door', pos:{x:72,y:60,w:10,h:20},
-      desc:"The station's outer door — letter-lock, five characters, and a riddle etched by some bored winter-over crew a decade ago:\n\n“Stand here, and every direction is me.\nEvery road home begins by walking me.\nWhat am I?”\n\nTaped beside the lock, the station's standing resupply notice:\n\n“UNLOAD IN THIS ORDER, ALWAYS:\n1. FOOD   2. FUEL   3. MEDICAL   4. FLARES”\n\nBelow it, scratched much more recently, much less steadily:\n\n“WE DRILLED THE OTHER WAY.”",
+      desc:"The station's outer door — letter-lock, five characters, and a riddle etched by some bored winter-over crew a decade ago:\n\n“Stand here, and every direction is me.\nEvery road home begins by walking me.\nWhat am I?”\n\nThe station's standing resupply notice is taped beside the lock:\n\n“UNLOAD IN THIS ORDER, ALWAYS:\n1. FOOD   2. FUEL   3. MEDICAL   4. FLARES”\n\nBelow it, scratched much more recently, much less steadily:\n\n“WE DRILLED THE OTHER WAY.”",
       puzzle:{
         prompt:"Set the five letter dials.", placeholder:"FIVE LETTERS", answers:['SOUTH'],
         hints:[
@@ -345,7 +345,7 @@ const ROOMS=[
       }
     },
     { id:'noticeboard', icon:'📌', name:'The Notice Board', pos:{x:82,y:62,w:10,h:16}, hiddenUntil:'maindoor',
-      desc:"Inside the cold porch, a notice board and the inner door's 2-digit keypad. The posted standing order reads:\n\n“INNER DOOR — first figure: the bunks this station sleeps, LESS the crew rotated home last month. Second figure: fuel drums standing full in the garage.”\n\nPinned beside it: “STATION EREBUS SLEEPS 14” … and the rotation log: “7 rotated home on the last flight.”",
+      desc:"Inside the cold porch, a notice board and the inner door's 2-digit keypad. The posted standing order reads:\n\n“INNER DOOR — first figure: the bunks this station sleeps, LESS the crew rotated home last month. Second figure: fuel drums standing full in the garage.”\n\nA crew sheet pinned beside it reads “STATION EREBUS SLEEPS 14,” and the rotation log below adds: “7 rotated home on the last flight.”",
       puzzle:{
         prompt:"Enter the 2-digit code.", placeholder:"TWO DIGITS", answers:['73'],
         hints:[

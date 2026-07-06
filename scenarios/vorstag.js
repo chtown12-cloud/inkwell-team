@@ -346,7 +346,7 @@ const ROOMS=[
       }
     },
     { id:'well', icon:'⛲', name:'The Courtyard Well', pos:{x:34,y:66,w:18,h:18},
-      desc:"The well crank is bound by a 4-digit lock. Chiselled around the rim, four symbols, each with a digit — in no particular order:\n\n☾ 7      ✠ 3      ⚘ 9      ♜ 5\n\nAnd on the crossbeam, one line of the household's motto:\n\n“WIND THE YEAR FROM SPRING.”",
+      desc:"The well crank is bound by a 4-digit lock. Four symbols are chiselled around the rim, each with a digit — in no particular order:\n\n☾ 7      ✠ 3      ⚘ 9      ♜ 5\n\nAnd on the crossbeam, one line of the household's motto:\n\n“WIND THE YEAR FROM SPRING.”",
       puzzle:{
         prompt:"Enter the 4-digit crank code.", placeholder:"0000", answers:['9357'],
         hints:[
@@ -433,7 +433,7 @@ const ROOMS=[
       }
     },
     { id:'folio', icon:'📜', name:"The Baron's Folio", pos:{x:22,y:56,w:14,h:16}, hiddenUntil:'chimes',
-      desc:"The Baron's working folio lies chained to its desk, the last page in his alchemist's mirror-script. Pinned above it, his own key:\n\n“THE MIRROR ALPHABET — A becomes Z, B becomes Y, C becomes X… and back again.”\n\nThe final line reads:\n\nGSV  WLLI  LKVMH  GL:  HKZIP",
+      desc:"The Baron's working folio lies chained to its desk, the last page in his alchemist's mirror-script. His own key to the script is pinned above the page:\n\n“THE MIRROR ALPHABET — A becomes Z, B becomes Y, C becomes X… and back again.”\n\nThe final line reads:\n\nGSV  WLLI  LKVMH  GL:  HKZIP",
       puzzle:{
         prompt:"Enter the deciphered word.", placeholder:"FIVE LETTERS", answers:['SPARK'],
         hints:[
@@ -472,7 +472,7 @@ const ROOMS=[
   chain:"The slab's chalked riddle = LIGHTNING → Leyden jar rack: keep only ODD charges; survivors spell RISEN → galvanic switchboard fuse riddle (even digits, product 48) = 624 → the dumbwaiter bell rings morse from the cellar = ALIVE.",
   objects:[
     { id:'slab', icon:'⛓️', name:'The Empty Slab', pos:{x:33,y:47,w:34,h:22},
-      desc:"The slab. THE slab — scorched, strapped, and empty. Chalked along its edge in the Baron's hand, a riddle he wrote for his own machinery:\n\n“I am the Baron's oldest servant.\nI climb the tower without legs.\nI speak exactly once,\nand the sky breaks when I do.\nWhat am I?”",
+      desc:"The slab. THE slab — scorched, strapped, and empty. A riddle is chalked along its edge in the Baron's hand — one he wrote for his own machinery:\n\n“I am the Baron's oldest servant.\nI climb the tower without legs.\nI speak exactly once,\nand the sky breaks when I do.\nWhat am I?”",
       puzzle:{
         prompt:"Name the Baron's oldest servant.", placeholder:"ANSWER", answers:['LIGHTNING','THELIGHTNING','ABOLT','BOLT','LIGHTNINGBOLT'],
         hints:[
