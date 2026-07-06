@@ -56,6 +56,10 @@ ${[0,1,2,3,4,5].map(i=>{
    <text x="${x+66}" y="348" text-anchor="middle" font-family="Special Elite" font-size="13" fill="#7f97ab">POD ${i+1}</text>
   </g>`;}).join('')}
 </g>
+<!-- cryo vapor bleeding out of the open pod -->
+<ellipse class="steam" cx="620" cy="560" rx="26" ry="11" fill="#7fd4ff" opacity=".18"/>
+<ellipse class="steam" cx="652" cy="540" rx="18" ry="8" fill="#7fd4ff" opacity=".14" style="animation-delay:1.7s"/>
+<ellipse class="steam" cx="596" cy="520" rx="14" ry="7" fill="#c8ecff" opacity=".12" style="animation-delay:3.1s"/>
 <!-- maintenance locker -->
 <g id="art-locker">
   <rect x="1300" y="380" width="120" height="250" rx="8" fill="#1c2836" stroke="#31465c" stroke-width="5"/>
@@ -128,7 +132,8 @@ SCENES.bridge=()=>`
 <g id="art-antenna">
   <rect x="600" y="430" width="200" height="120" rx="10" fill="#121c28" stroke="#31465c" stroke-width="5"/>
   <circle cx="700" cy="490" r="44" fill="#06130c" stroke="#2a4258" stroke-width="4"/>
-  <line class="flick" x1="700" y1="490" x2="734" y2="462" stroke="#3fd68c" stroke-width="3"/>
+  <g class="radarsweep" style="transform-origin:700px 490px"><line x1="700" y1="490" x2="700" y2="450" stroke="#3fd68c" stroke-width="3"/><line x1="700" y1="490" x2="700" y2="452" stroke="#3fd68c" stroke-width="7" opacity=".25"/></g>
+  <circle class="slowblink" cx="722" cy="472" r="2.5" fill="#3fd68c"/>
   ${[16,30].map(r=>`<circle cx="700" cy="490" r="${r}" fill="none" stroke="#1c3a2a" stroke-width="2"/>`).join('')}
   <text class="flick" x="700" y="426" text-anchor="middle" font-family="Special Elite" font-size="17" fill="#3fd68c">DISH: --.--</text>
 </g>
@@ -184,6 +189,9 @@ ${[0,1,2].map(i=>`<g><rect x="${240+i*420}" y="60" width="300" height="18" rx="8
   <path d="M0 140 H1600"/>
   ${[0,1,2,3,4,5].map(i=>`<path d="M${200+i*250} 140 V 260"/>`).join('')}
 </g>
+<!-- condensation dripping off the feed pipes -->
+<g><circle class="dripdrop" cx="450" cy="262" r="3.5" fill="#9fe8b0" opacity=".8"/></g>
+<g><circle class="dripdrop d2" cx="950" cy="262" r="3" fill="#9fe8b0" opacity=".8"/></g>
 <!-- torn vent above, hanging open -->
 <g id="art-grate">
   <rect x="900" y="30" width="150" height="86" rx="8" fill="#05080d" stroke="#26313e" stroke-width="6"/>
@@ -266,6 +274,8 @@ SCENES.podbay=()=>`
 </g>
 <rect x="540" y="740" width="560" height="14" rx="6" fill="#1a2530"/>
 ${[0,1,2,3,4,5].map(i=>`<rect x="${560+i*96}" y="754" width="12" height="30" fill="#141c26"/>`).join('')}
+<!-- rotating hazard glow over the bay doors -->
+<ellipse class="rippleA" cx="810" cy="86" rx="60" ry="18" fill="#c94a3d" opacity=".4"/>
 <!-- launch checklist on gantry -->
 <g id="art-checklist">
   <rect x="220" y="480" width="120" height="160" rx="6" fill="#c2cad2" transform="rotate(-3 280 560)"/>

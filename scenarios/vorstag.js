@@ -22,6 +22,9 @@ SCENES.gatehouse=()=>`
 <ellipse class="cloud c1" cx="400" cy="110" rx="300" ry="40" fill="#080614" opacity=".8"/>
 <ellipse class="cloud c2" cx="1100" cy="70" rx="360" ry="46" fill="#0a0818" opacity=".8"/>
 <path class="flick" d="M980 90 l-30 70 26 -6 -38 90" stroke="#cfd6ff" stroke-width="4" fill="none" opacity=".5"/>
+<!-- bats crossing the storm -->
+<g class="batfly"><path d="M0 0 q8 -9 15 0 q8 -9 15 0" stroke="#080614" stroke-width="4" fill="none" stroke-linecap="round"/></g>
+<g class="batfly b2"><path d="M0 0 q6 -7 12 0 q6 -7 12 0" stroke="#080614" stroke-width="3.5" fill="none" stroke-linecap="round"/></g>
 <!-- castle keep behind -->
 <g class="plx" data-depth="4" fill="#120d1e">
   <rect x="1080" y="150" width="140" height="420"/>
@@ -125,6 +128,9 @@ ${[0,1].map(s=>`<g transform="translate(${40+s*270},0)">
   <path class="flame" d="M710 636 q-14 -40 10 -66 q6 26 22 34 q-4 -34 18 -52 q4 40 20 54 q10 12 4 30z" fill="#ff9a4a"/>
   <path class="flame" d="M726 636 q-6 -22 10 -38 q10 20 4 38z" fill="#ffd894" style="animation-delay:.2s"/>
   <rect x="600" y="410" width="280" height="20" fill="#3a3244"/>
+  <circle class="sparkup" cx="726" cy="600" r="2.6" fill="#ffb45e"/>
+  <circle class="sparkup s2" cx="748" cy="606" r="2.2" fill="#ffd894"/>
+  <circle class="sparkup s3" cx="762" cy="596" r="2" fill="#ff9a4a"/>
 </g>
 <!-- the pipe organ -->
 <g id="art-organ">
@@ -197,6 +203,9 @@ ${[0,1,2,3,4,5].map(i=>`<line x1="${i*300-120}" y1="620" x2="${i*340-220}" y2="9
 ${[380,520,1060,1200].map((x,i)=>`<g class="lampswing" style="animation-delay:${i*.8}s">
  <line x1="${x}" y1="0" x2="${x}" y2="${150+(i%2)*60}" stroke="#26313a" stroke-width="7" stroke-dasharray="12 6"/>
  <circle cx="${x}" cy="${158+(i%2)*60}" r="10" fill="none" stroke="#26313a" stroke-width="5"/></g>`).join('')}
+<!-- stray voltage arcing between the ceiling chains -->
+<path class="arcflick" d="M380 190 l24 10 -14 12 30 8 -16 14 28 10" stroke="#9fb8e8" stroke-width="2.5" fill="none"/>
+<path class="arcflick a2" d="M1060 210 l-22 12 16 10 -28 10 18 12 -24 10" stroke="#9fb8e8" stroke-width="2.5" fill="none"/>
 <!-- the empty slab -->
 <g id="art-slab">
   <ellipse cx="800" cy="600" rx="270" ry="26" fill="#070a09"/>
@@ -270,6 +279,9 @@ ${[0,1,2,3,4].map(i=>`<line x1="${i*380-60}" y1="660" x2="${i*400-120}" y2="900"
   ${[0,1,2].map(i=>`<line x1="779" y1="${220+i*110}" x2="${820+i*24}" y2="${250+i*110}" stroke="#26313a" stroke-width="7"/>`).join('')}
   <circle class="slowblink" cx="779" cy="600" r="12" fill="#c9d6ff"/>
 </g>
+<!-- the coil spitting early sparks -->
+<path class="arcflick" d="M515 400 l14 -16 -8 -6 16 -14" stroke="#c9d6ff" stroke-width="3" fill="none"/>
+<path class="arcflick a2" d="M515 404 l-16 -14 10 -6 -14 -16" stroke="#c9d6ff" stroke-width="2.5" fill="none"/>
 <!-- the great coil -->
 <g id="art-coil">
   <rect x="440" y="430" width="150 " height="180" rx="16" fill="#2a2436" stroke="#3a2d4a" stroke-width="5"/>

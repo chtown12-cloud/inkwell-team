@@ -25,6 +25,10 @@ ${Array.from({length:26},(_,i)=>`<circle class="tw" cx="${(i*67+20)%1600}" cy="$
 <!-- snowfield -->
 <path d="M0 560 q400 -40 800 -6 t800 -12 v360 h-1600z" fill="url(#eSnow)"/>
 <path d="M0 640 q300 22 600 4 t1000 8" stroke="#dce8f2" stroke-width="5" fill="none" opacity=".5"/>
+<!-- wind ripping loose snow across the field -->
+<line class="gust" x1="0" y1="620" x2="300" y2="612" stroke="#dce8f2" stroke-width="3" opacity=".5" stroke-linecap="round"/>
+<line class="gust g2" x1="0" y1="700" x2="240" y2="694" stroke="#dce8f2" stroke-width="2.5" opacity=".4" stroke-linecap="round"/>
+<line class="gust g3" x1="0" y1="770" x2="340" y2="764" stroke="#dce8f2" stroke-width="3.5" opacity=".45" stroke-linecap="round"/>
 <!-- the station, dark -->
 <g class="plx" data-depth="5">
   <rect x="1080" y="420" width="360" height="140" rx="16" fill="#1a2836"/>
@@ -187,6 +191,8 @@ ${[['B',180,330,9,4],['T',290,330,2,6],['U',400,330,7,2],['R',510,330,6,1],['O',
   <path d="M540 560 l40 -60 60 20 40 -30 40 70z" fill="#0a141e"/>
   <path d="M560 570 l30 -40 M640 566 l26 -36" stroke="#7fd4ff" stroke-width="3" opacity=".6"/>
   <text x="610" y="700" text-anchor="middle" font-family="Special Elite" font-size="15" fill="#7fa4c0">SAMPLE E-9</text>
+  <ellipse class="rippleA" cx="610" cy="720" rx="90" ry="12" fill="none" stroke="#7fd4ff" stroke-width="2" opacity=".5"/>
+  <ellipse class="rippleA r2" cx="610" cy="720" rx="90" ry="12" fill="none" stroke="#7fd4ff" stroke-width="2" opacity=".5"/>
   <ellipse cx="610" cy="720" rx="130" ry="16" fill="#0d2230" opacity=".8"/>
   <path d="M700 716 q120 10 260 -18 q120 -24 200 -8" stroke="#0d2230" stroke-width="18" fill="none" opacity=".6"/>
 </g>
@@ -230,6 +236,9 @@ SCENES.radiotower=()=>`
 </g>
 ${Array.from({length:30},(_,i)=>`<circle class="tw" cx="${(i*59+14)%1600}" cy="${(i*19)%180+8}" r="${.6+(i%3)*.6}" fill="#dfe8ff" style="animation-delay:${(i*.5)%4}s"/>`).join('')}
 <path d="M0 580 q400 -30 800 -8 t800 -10 v340 h-1600z" fill="url(#eSnow2)"/>
+<!-- ground blizzard streaking the runway -->
+<line class="gust" x1="0" y1="700" x2="320" y2="692" stroke="#dce8f2" stroke-width="3" opacity=".4" stroke-linecap="round"/>
+<line class="gust g2" x1="0" y1="800" x2="280" y2="794" stroke="#dce8f2" stroke-width="3" opacity=".35" stroke-linecap="round"/>
 <!-- the mast -->
 <g>
   <path d="M760 580 L800 60 L840 580z" fill="none" stroke="#2a3a48" stroke-width="9"/>

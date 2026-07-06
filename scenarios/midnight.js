@@ -316,7 +316,7 @@ const WRONG_SOUNDS=['clank','hiss','knock','clank','bell'];
 const ROOMS=[
 /* ============ ROOM 1 — THE BAGGAGE CAR ============ */
 {
-  id:'baggage', name:'Room 1 — The Baggage Car', scene:'baggage',
+  id:'baggage', name:'Room 1 — The Baggage Car', scene:'baggage', stageFx:'rocking',
   intro:"You woke between stations to an empty train. The baggage car is the way forward — and everyone's luggage is still here.",
   objective:"Work toward the front of the train — <b>glowing rings</b> mark what the passengers left behind.",
   entryBeat:"Six trunks, packed for six passengers you dined with at eight o'clock. The dust on the latches says the trunks have been here for years.",
@@ -383,7 +383,7 @@ const ROOMS=[
 },
 /* ============ ROOM 2 — THE SLEEPER CORRIDOR ============ */
 {
-  id:'sleeper', name:'Room 2 — The Sleeper Corridor', scene:'sleeper',
+  id:'sleeper', name:'Room 2 — The Sleeper Corridor', scene:'sleeper', stageFx:'rocking',
   intro:"Four cabins, all made up for the night. Cabin 3 stands ajar, and a gramophone is playing to nobody.",
   objective:"The passengers' things remember more than the passengers. Find the record's speed — then <b>listen to the groove.</b>",
   entryBeat:"Every cabin's berth is turned down, and on every pillow sits a ticket, neatly punched. You did not hear him pass. You never hear him pass.",
@@ -454,7 +454,7 @@ const ROOMS=[
 },
 /* ============ ROOM 3 — THE DINING CAR ============ */
 {
-  id:'dining', name:'Room 3 — The Dining Car', scene:'dining',
+  id:'dining', name:'Room 3 — The Dining Car', scene:'dining', stageFx:'rocking',
   relay:{el:'bell-lamp',seq:'.- --. .- .. -.',after:'till'},
   intro:"Every table is set for supper. The kitchen bell rings for orders no one is taking.",
   objective:"Cross the dining car and settle the house's accounts. <b>Mind the mirror.</b>",
@@ -523,7 +523,7 @@ const ROOMS=[
 },
 /* ============ ROOM 4 — THE LOCOMOTIVE ============ */
 {
-  id:'locomotive', name:'Room 4 — The Locomotive', scene:'locomotive',
+  id:'locomotive', name:'Room 4 — The Locomotive', scene:'locomotive', stageFx:'rocking',
   intro:"The cab is empty, the firebox is roaring, and the junction to the living line is coming up fast.",
   objective:"Feed the fire, prove the drill, and <b>whistle the switchman</b> — miss the junction and the Special keeps its schedule forever.",
   entryBeat:"The coal in the tender is full — forty years of night runs, and the coal never falls. On the throttle, a gloved handprint in the soot. The glove had six fingers.",

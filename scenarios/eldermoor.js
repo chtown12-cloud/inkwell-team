@@ -77,6 +77,13 @@ SCENES.beach=()=>`
   <path class="flag" d="M1290 344 l58 14 -58 18 z" fill="#3c2a20"/>
   <ellipse cx="1210" cy="702" rx="240" ry="16" fill="#000" opacity=".28"/>
 </g>
+<!-- a gull crossing the bay, and a crab working the tideline -->
+<g class="gullfly"><path d="M0 0 q10 -11 20 0 q10 -11 20 0" stroke="#0c2027" stroke-width="4" fill="none" stroke-linecap="round"/></g>
+<g class="crabby">
+  <g transform="translate(880 842)"><ellipse cx="0" cy="0" rx="16" ry="9" fill="#7a3a24"/>
+  ${[-1,1].map(s=>`<path d="M${s*10} -4 q${s*10} -8 ${s*14} -2 M${s*13} 2 q${s*9} 2 ${s*12} 8 M${s*8} 6 q${s*8} 6 ${s*9} 12" stroke="#5c2a18" stroke-width="2.5" fill="none"/>`).join('')}
+  <circle cx="-4" cy="-8" r="2" fill="#1c0f08"/><circle cx="4" cy="-8" r="2" fill="#1c0f08"/></g>
+</g>
 <!-- salvage scattered along the tideline -->
 <g>
   <ellipse cx="800" cy="668" rx="430" ry="14" fill="#e8dcc0" opacity=".08"/>
@@ -381,6 +388,9 @@ SCENES.jungle=()=>`
   <rect x="1138" y="676" width="28" height="24" rx="4" fill="#454f2e"/>
   <circle cx="1152" cy="688" r="4" fill="#8a8250"/>
 </g>
+<!-- leaves drifting down through the canopy light -->
+<g class="leaffall"><ellipse cx="480" cy="0" rx="9" ry="4" fill="#2f6a4a"/></g>
+<g class="leaffall l2"><ellipse cx="1050" cy="0" rx="8" ry="4" fill="#3f7a52"/></g>
 <!-- hanging vines -->
 <g class="plx" data-depth="12" stroke="#122718" fill="none">
   <path d="M430 0 q-14 90 22 150 q10 30 -8 62" stroke-width="7"/>
@@ -436,6 +446,8 @@ SCENES.cove=()=>`
 </defs>
 <rect width="1600" height="520" fill="url(#cSky)"/>
 ${Array.from({length:30},(_,i)=>`<circle class="tw" cx="${(i*127+40)%1560}" cy="${(i*53)%260+16}" r="${1+(i%3)*.7}" fill="#ffe9c0" style="animation-delay:${(i*.63)%4.5}s"/>`).join('')}
+<!-- a falling star over the cove -->
+<g class="shootstar"><line x1="1350" y1="80" x2="1394" y2="62" stroke="#ffe9c0" stroke-width="2.5" stroke-linecap="round"/></g>
 <!-- moon, horizon haze, bats -->
 <g class="plx" data-depth="3">
   <circle cx="262" cy="148" r="60" fill="#f4e9c8" opacity=".07"/>
