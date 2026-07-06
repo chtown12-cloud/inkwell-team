@@ -368,7 +368,7 @@ const ROOMS=[
   entryBeat:"Nine parkas on the hooks. Outside it is forty below. Wherever the crew went, they went without their coats — or they went as something that no longer felt the cold.",
   entrySound:'knock',
   completeText:"The generator panel accepts the code and the station's spine of lights marches on, building by building, out toward the core lab. The last building lights with something already standing at its window. By the time anyone can point, it isn't.",
-  chain:"Duty roster (last entry Station day 88) + radio log (two checks daily — “the point, then the checks”) → tune 88.2 → the reel-to-reel is morse = MELT NOTHING → foot locker Vigenère (keyword ICE) = FROST → generator calibration lamps (deduction, unique) = 842.",
+  chain:"Duty roster (last entry Station day 88) + radio log (two checks daily — “the point, then the checks”) → tune 88.2 → the reel-to-reel is morse = MELT NOTHING → foot locker Vigenère (keyword ICE) = FROST → generator halving-chain rule (8→4→2, sum 14) = 842.",
   objects:[
     { id:'roster', icon:'📋', name:'Duty Roster', pos:{x:3,y:46,w:10,h:20},
       desc:"The duty roster, filled in to a point and then not:\n\n“STATION DAY 86 — cores E-1 through E-8 catalogued. E-9 tomorrow.”\n“STATION DAY 87 — E-9 case will not stay shut. Weather radio at 0600 and 1800, as always. Two checks daily, never miss.”\n“STATION DAY 88 — ”\n\nDay 88 is blank. They stopped counting on 88. In the margin, tiny: “the band is the day we stopped, the point, then the checks.”" },
@@ -416,13 +416,13 @@ const ROOMS=[
       }
     },
     { id:'genpanel', icon:'🔌', name:'Generator Panel', pos:{x:43,y:69,w:12,h:20}, hiddenUntil:'footlocker',
-      desc:"The backup generator wants a 3-digit setting. The calibration card from the locker — five test codes, and what the panel lamps said to each:\n\n5 3 8 — one lamp lit, seated WRONG\n2 7 9 — one lamp lit, seated WRONG\n9 5 3 — all lamps dark\n4 3 7 — one lamp lit, seated WRONG\n1 8 4 — two lamps lit, both seated WRONG\n\n“A lit lamp: that digit is in the setting. Seated true: right digit, right position.”\n\nAnd beneath, double-underlined: “REMEMBER THE STATION'S BAND. THE PLANE WILL NEED IT.”",
+      desc:"The backup generator wants a 3-digit setting. The calibration card from the locker, in the engineer's block capitals:\n\n“COLD-START RULE —\nEACH DIGIT IS DOUBLE THE DIGIT THAT FOLLOWS IT.\nALL THREE TOGETHER MAKE FOURTEEN.”\n\nAnd beneath, double-underlined: “REMEMBER THE STATION'S BAND. THE PLANE WILL NEED IT.”",
       puzzle:{
-        prompt:"Enter the 3-digit setting.", placeholder:"000", answers:['842'],
+        prompt:"Find the three digits that fit the cold-start rule and enter them in order.", placeholder:"000", answers:['842'],
         hints:[
-          "The all-dark row kills three digits everywhere. Then re-read each 'one lamp' row with survivors only.",
-          "9, 5 and 3 are dead. So row one's lamp is the 8 — not third. Row five lights two lamps: they must be 8 and 4, both seated wrong there.",
-          "8 can't sit 2nd (row 5) or 3rd (row 1) → first. 4 can't sit 3rd (row 5) or 1st (row 4) → second. Row two leaves 2 for last: 842."
+          "The digits halve as you read: the second is half the first, the third is half the second. Try a starting digit and follow it down.",
+          "Only one chain of halves sums to 14 — start from 8: 8, 4, 2 makes 14.",
+          "8, 4, 2 — enter 842."
         ],
         solvedText:"8-4-2. The generator catches on the second crank and the station wakes around you, room by room, like something remembering how to breathe.",
         solveBeat:"Every light on the station comes up — and out on the ice, at the exact edge of the new light, something steps back one pace. Just enough. It knows exactly how far light reaches.",
@@ -440,7 +440,7 @@ const ROOMS=[
   entryBeat:"Sample E-9's case didn't fail — the bolts were backed out from the inside of the case. Whatever the drill brought up through three hundred thousand years of ice was awake when it arrived.",
   entrySound:'clank',
   completeText:"The tower door unbolts. Behind you, over the intercom from the empty drill shed, the word repeats once more — softer now, like a thing satisfied you finally understand where it went.",
-  chain:"E-9's chalked riddle = ICE → core racks: keep only EVEN drill depths; survivors spell BURIED → cold safe tag algebra (F=M+L, L=2M, sum 18) = 936 → the drill-shed intercom clicks morse = BELOW.",
+  chain:"E-9's chalked riddle = ICE → core racks: keep only EVEN drill depths; survivors spell BURIED → cold safe multiples-of-three riddle = 936 → the drill-shed intercom clicks morse = BELOW.",
   objects:[
     { id:'coreE9', icon:'🧊', name:'Sample E-9', pos:{x:30,y:60,w:15,h:18},
       desc:"The shattered case, and beside it, in the frost on the steel table, someone wrote with a fingertip — the station's last riddle:\n\n“I hold yesterday's air in bubbles.\nI remember every winter that ever was.\nI break like glass and bleed like water,\nand I kept your visitor patient for a very long time.”",
@@ -469,13 +469,13 @@ const ROOMS=[
       }
     },
     { id:'coldsafe', icon:'🔐', name:'The Cold Safe', pos:{x:8,y:68,w:12,h:20}, hiddenUntil:'cores',
-      desc:"The lab's cold safe, 3-digit dial. The tag from the core rack, in the lead scientist's careful print:\n\n“Three digits keep the samples honest.\nThe FIRST is the sum of the other two.\nThe LAST is the MIDDLE, twice over.\nTogether they make EIGHTEEN.”",
+      desc:"The lab's cold safe, 3-digit dial. The tag from the core rack, in the lead scientist's careful print:\n\n“Three DIFFERENT digits, every one a MULTIPLE OF THREE, none of them zero.\nThe FIRST is the sum of the other two.\nThe SMALLEST hides in the MIDDLE.”",
       puzzle:{
-        prompt:"Enter the 3-digit combination.", placeholder:"000", answers:['936'],
+        prompt:"Find the three digits that fit and enter them in order.", placeholder:"000", answers:['936'],
         hints:[
-          "Equations. Call them F, M, L — one writes, one checks.",
-          "L = 2×M and F = M+L = 3×M, so F+M+L = 6×M = 18.",
-          "M = 3, L = 6, F = 9. Enter 936."
+          "Your only materials are 3, 6 and 9 — the single-digit multiples of three.",
+          "Which of them is the sum of the other two? 9 = 3 + 6, so 9 leads.",
+          "9 first, then the smallest (3) in the middle, 6 last — enter 936."
         ],
         solvedText:"9-3-6. Inside the safe: the tower key, the crew's last photographs — and the drill logs, whose final page is just one depth figure circled so hard the pen went through.",
         solveBeat:null

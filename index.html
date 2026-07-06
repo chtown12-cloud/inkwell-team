@@ -85,10 +85,11 @@ button{font-family:'Inter',sans-serif;cursor:pointer}
 #objective b{color:var(--sand);font-family:'Special Elite',serif}
 
 /* ---------- room transition card ---------- */
-#room-card{position:fixed;inset:0;z-index:55;background:#000;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:20px;animation:cardfade 2.6s forwards}
+#room-card{position:fixed;inset:0;z-index:55;background:#000;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:20px;animation:cardin .9s ease-out}
 #room-card h2{font-size:clamp(2rem,5vw,3.4rem);color:var(--sand);letter-spacing:3px}
-#room-card p{color:var(--dim);font-style:italic;margin-top:12px;max-width:640px}
-@keyframes cardfade{0%{opacity:0}18%{opacity:1}78%{opacity:1}100%{opacity:0}}
+#room-card p{color:var(--dim);font-style:italic;margin-top:12px;max-width:640px;font-size:1.05rem}
+#room-card .card-note{margin-top:30px;font-size:.75rem;color:#5c6f6d;letter-spacing:2px}
+@keyframes cardin{from{opacity:0}to{opacity:1}}
 
 /* ---------- narrative beats ---------- */
 #beat{position:fixed;top:78px;left:50%;transform:translateX(-50%);z-index:56;max-width:560px;width:calc(100% - 32px);background:linear-gradient(170deg,rgba(22,17,30,.96),rgba(10,8,16,.96));color:#cfc4de;border:1px solid #3d3350;border-radius:10px;padding:16px 22px;font-style:italic;text-align:center;box-shadow:0 10px 40px rgba(0,0,0,.8);opacity:0;pointer-events:none;transition:opacity 1.6s;font-size:1.02rem}
@@ -121,6 +122,7 @@ button{font-family:'Inter',sans-serif;cursor:pointer}
 .hint-btn:disabled{opacity:.45;cursor:not-allowed}
 .hint-text{margin-top:8px;padding:10px 12px;background:rgba(216,195,154,.09);border-left:3px solid var(--wood-hi);border-radius:0 6px 6px 0;font-size:.92rem;color:var(--sand)}
 .hint-cost{color:var(--dim);font-size:.75rem;margin-left:8px}
+.how{margin-top:9px;font-size:.78rem;color:#7d8a84;font-style:italic;line-height:1.45}
 .symbols{font-size:1.7rem;letter-spacing:12px;color:var(--sand);text-align:center;margin:8px 0}
 .morse{font-family:'Special Elite',serif;font-size:1.4rem;letter-spacing:4px;color:var(--teal-hi);text-align:center;margin:8px 0;word-break:break-all}
 .morse .lit{color:#ffe9b8;text-shadow:0 0 10px #ffda8c}
@@ -849,7 +851,8 @@ function openModal(objId){
       html+=`<div class="morse" id="morse-view">${p.morse.replaceAll('.','·').replaceAll('-','−')}</div>
         <div style="text-align:center"><button class="morse-btn" onclick="playMorseUI('${o.id}')">▶ &nbsp;PLAY THE SIGNAL</button>
         <button class="morse-btn" onclick="$('morse-crib').classList.toggle('hidden')">📖 &nbsp;CODE CRIB</button></div>
-        <div id="morse-crib" class="morse-crib hidden">${MORSE_CRIB}</div>`;
+        <div id="morse-crib" class="morse-crib hidden">${MORSE_CRIB}</div>
+        <div class="how">▶ plays the signal out loud. 📖 opens the code chart — match each dot-dash group to a letter, in order. Type only the decoded word(s) below.</div>`;
     }
     if(solved){
       html+=`<div class="solved-note">✓ ${p.solvedText||'Solved.'}</div>`;
@@ -865,6 +868,7 @@ function openModal(objId){
                  onkeydown="if(event.key==='Enter')submitAnswer('${o.id}')">
           <button onclick="submitAnswer('${o.id}')">Try It</button>
         </div>
+        <div class="how">Type the answer and press TRY IT (or Enter). Capitals, spaces and punctuation don't matter — a wrong try only costs 5 seconds.</div>
         <div class="feedback" id="feedback"></div>
       </div>`+renderHints(o);
     }
@@ -968,6 +972,7 @@ function renderDial(o){
       </div>
       <div class="sig-meter"><i id="sig-bar"></i></div>
       <div class="sig-label">${d.meter||'SIGNAL STRENGTH'}</div>
+      <div class="how">Drag the slider to sweep, or tap − / + to move one step at a time. The meter fills as you close in on the right number — when the readout matches your answer exactly, lock it.</div>
       <button id="dial-lock" style="margin-top:14px" onclick="dialLock('${o.id}')">🔒 ${d.lock||'LOCK IT IN'}</button>
       <div class="feedback" id="feedback"></div>
     </div>
@@ -1029,6 +1034,7 @@ function renderSignalPad(o){
       <button class="signal-btn" onclick="signalAdd('.')">${L.short}</button>
       <button class="signal-btn long" onclick="signalAdd('-')">${L.long}</button>
       <button class="signal-btn clear" onclick="signalClear()">${L.reset}</button>
+      <div class="how">Each press adds one beat to the pattern above: the first button adds a SHORT (·), the second a LONG (−). Build the whole pattern in order, then press send. Reset wipes it and starts over.</div>
       <br>
       <button class="signal-btn" style="margin-top:12px;min-width:210px" onclick="signalSend('${o.id}')">${L.send}</button>
       <div class="feedback" id="feedback"></div>
@@ -1111,10 +1117,15 @@ function enterRoom(idx){
   const room=currentRoom();
   const card=document.createElement('div');
   card.id='room-card';
-  card.innerHTML=`<h2>${room.name.toUpperCase()}</h2><p>${room.intro}</p>`;
+  card.innerHTML=`<h2>${room.name.toUpperCase()}</h2><p>${room.intro}</p>
+    <button class="big-btn" id="enter-room-btn" style="margin-top:30px">ENTER ➤</button>
+    <div class="card-note">TAKE YOUR TIME — BUT THE CLOCK IS RUNNING</div>`;
   $('card-root').appendChild(card);
-  setTimeout(()=>card.remove(),2600);
-  setTimeout(()=>{ renderScene(); showBeat(room.entryBeat,room.entrySound); },1100);
+  renderScene();   // the room is ready and waiting behind the card
+  card.querySelector('#enter-room-btn').onclick=()=>{
+    card.remove();
+    showBeat(room.entryBeat,room.entrySound);
+  };
 }
 $('start-btn').onclick=()=>{
   initAudio();

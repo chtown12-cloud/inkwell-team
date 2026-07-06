@@ -390,7 +390,7 @@ const ROOMS=[
   entryBeat:"The captain's chair faces the viewport. The dust on the armrests is disturbed — four long furrows on each side, as if something sat here recently. And gripped.",
   entrySound:'clank',
   completeText:"The reactor accepts the code and channels power aft. A service map blinks: ESCAPE POD — VIA HYDROPONICS. The green deck. The one the crew sealed first.",
-  chain:"Captain's log (Day 47: aimed the dish) + star chart gouges (15 scratches) → tune the dish to 47.15 → beacon loop is morse = SEAL VENTS → nav console binary status line (5-bit A1Z26) = GAMMA → reactor calibration lamps (deduction, unique) = 651.",
+  chain:"Captain's log (Day 47: aimed the dish) + star chart gouges (15 scratches) → tune the dish to 47.15 → beacon loop is morse = SEAL VENTS → nav console binary status line (5-bit A1Z26) = GAMMA → reactor rod-seating logic (copper/iron/lead sockets) = 651.",
   objects:[
     { id:'log', icon:'📖', name:"Captain's Log", pos:{x:18,y:66,w:10,h:12},
       desc:"The last entries, voice-to-text, punctuation failing with the speaker's nerve:\n\n“Day 44. Something answered our hail. Not on any channel we transmit on.”\n\n“Day 46. Crew hear it in the vents now. I have ordered the shafts welded.”\n\n“Day 47. I aimed the dish where the beacon died and I will not move it again. If anyone follows us: the heading is the day, then the scratches under the chart. Listen. Then get off this ship.”" },
@@ -440,13 +440,13 @@ const ROOMS=[
       }
     },
     { id:'reactor', icon:'☢️', name:'Reactor Calibration', pos:{x:88,y:40,w:9,h:42}, hiddenUntil:'console',
-      desc:"The reactor pillar wants a 3-digit calibration code. Taped beside the keypad, the engineer's test card — five attempts, and what the panel lamps said to each:\n\n7 0 6 — one lamp lit, seated WRONG\n1 2 4 — one lamp lit, seated WRONG\n4 7 0 — all lamps dark\n5 0 2 — one lamp lit, seated WRONG\n3 6 5 — two lamps lit, both seated WRONG\n\n“A lit lamp: that digit is in the code. Seated true: right digit, right position.”\n\nAnd below, urgent: “REMEMBER THE DISH HEADING. YOU WILL NEED IT AGAIN.”",
+      desc:"Three numbered control rods — COPPER, IRON, and LEAD — must seat into the LEFT, CENTER and RIGHT sockets, and the readout takes their numbers left to right. The engineer's notes:\n\n• “The copper rod is stamped with the perfect number.” (Six — the engineer's little joke: 6 = 1+2+3.)\n• “The lead rod bears the loneliest number.”\n• “Iron carries the one that's left: five.”\n\n• “Copper shorts out in any socket but the LEFTMOST.”\n• “Iron holds only when seated somewhere LEFT of lead.”\n\nAnd below, urgent: “REMEMBER THE DISH HEADING. YOU WILL NEED IT AGAIN.”",
       puzzle:{
-        prompt:"Enter the 3-digit calibration code.", placeholder:"000", answers:['651'],
+        prompt:"Seat the rods, then type the readout — the three rod numbers, left socket to right.", placeholder:"000", answers:['651'],
         hints:[
-          "Start with the all-dark row: those three digits appear nowhere. Then re-read each 'one lamp' row.",
-          "4, 7 and 0 are dead. So row one's lamp is the 6 — and it can't sit first… check where 6 appears in each row. Row five's two lamps must be 6 and 5.",
-          "6 can't sit third (row 1) or second (row 5) → first. 5 can't sit third (row 5) or first (row 4) → second. Row two forces the 1 last. The code is 651."
+          "Two jobs: first match each metal to its number (copper 6, lead 1, iron 5), then place them using the socket rules.",
+          "Copper (6) can only sit leftmost. That leaves center and right for iron (5) and lead (1) — and iron must be left of lead.",
+          "Left socket 6, center 5, right 1 — type 651."
         ],
         solvedText:"6-5-1. The reactor spools from a whisper to a heartbeat. Power flows aft — through Hydroponics. The deck the crew welded shut from the OUTSIDE.",
         solveBeat:"Deep below, something answers the reactor's new heartbeat with three slow blows against a bulkhead. Not random. Rhythmic. Like a knock learned from watching you.",
@@ -464,7 +464,7 @@ const ROOMS=[
   entryBeat:"The weld on the entry hatch was cut from the inside of the deck — the metal is peeled outward in four long strips, evenly spaced. You all look at the spacing. Nobody says what it looks like.",
   entrySound:'growl',
   completeText:"The aft airlock cycles you through toward the pod bay. Behind you, in the green, the drip-lines swing gently where nothing has touched them.",
-  chain:"Overgrown row riddle = VENT → specimen trays: keep only PRIME seed counts; survivors spell STARVE → nutrient pump tag algebra (F=3L, M=F−L, sum 12) = 642 → the aft airlock panel blinks morse = PURGE.",
+  chain:"Overgrown row riddle = VENT → specimen trays: keep only PRIME seed counts; survivors spell STARVE → nutrient pump priming sequence (6, −2 each) = 642 → the aft airlock panel blinks morse = PURGE.",
   objects:[
     { id:'grate', icon:'🕳️', name:'Torn Vent', pos:{x:55,y:2,w:12,h:13},
       desc:"The vent cover above the planters hangs by one bolt, bent double. Torn OUTWARD.\n\nInside the shaft, the dust shows a track — smooth, continuous, wider than a person. It has been used often. It is being used still." },
@@ -495,13 +495,13 @@ const ROOMS=[
       }
     },
     { id:'pumps', icon:'⚙️', name:'Nutrient Pumps', pos:{x:4,y:68,w:13,h:20}, hiddenUntil:'trays',
-      desc:"The pump manifold is padlocked — a 3-digit dial. The botanist's tag again, in her maddening style:\n\n“Three digits feed the garden.\nThe FIRST is the LAST, three times over.\nThe MIDDLE is their difference.\nAll together: TWELVE.”",
+      desc:"The pump manifold is padlocked — a 3-digit dial, one digit per pump down the line. The priming instructions are stencilled on the intake:\n\n“PRIMING SEQUENCE —\nPUMP ONE draws HALF A DOZEN litres a stroke.\nEACH PUMP DOWN THE LINE draws TWO LITRES LESS than the one before it.\nDIAL THE THREE STROKE-COUNTS IN LINE ORDER.”",
       puzzle:{
-        prompt:"Enter the 3-digit code.", placeholder:"000", answers:['642'],
+        prompt:"Work out each pump's litres-per-stroke and type the three numbers in order.", placeholder:"000", answers:['642'],
         hints:[
-          "Write it as equations. Call the digits F, M, L — someone scribe, someone check.",
-          "F = 3×L, and M = F−L = 2×L. So F+M+L = 6×L = 12.",
-          "L = 2, F = 6, M = 4. Enter 642."
+          "Start with pump one: how many is half a dozen?",
+          "Pump one draws 6. Each pump after it draws two less: 6, then 4, then…",
+          "6, 4, 2 — enter 642."
         ],
         solvedText:"6-4-2. The pumps shudder to life, flooding the rows — and the aft airlock's control panel wakes at the far end, blinking a pattern into the mist. Not a fault code. A rhythm."
       }

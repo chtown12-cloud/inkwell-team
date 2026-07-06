@@ -397,7 +397,7 @@ const ROOMS=[
   entryBeat:"The fire in the hearth is burning. It was not burning when the household died, and no one has been here since. Something keeps this room warm. Something likes it here.",
   entrySound:'knock',
   completeText:"The orrery clicks into alignment and a bookcase rolls aside on iron rails, breathing out forty years of cold air and the smell of a hospital. The laboratory stair leads down.",
-  chain:"Hymn board (CXIX = 119) + psalter margin (third verse) → set the organ stop to 119.3 → the hidden panel's bell chimes are morse = STAY INSIDE → the Baron's folio Atbash mirror-script (GSV = THE) = SPARK → orrery calibration flames (deduction, unique) = 763.",
+  chain:"Hymn board (CXIX = 119) + psalter margin (third verse) → set the organ stop to 119.3 → the hidden panel's bell chimes are morse = STAY INSIDE → the Baron's folio Atbash mirror-script (GSV = THE) = SPARK → orrery planet-weights (Roman numerals, heaviest sunward) = 763.",
   objects:[
     { id:'hymnboard', icon:'🎼', name:'Hymn Board', pos:{x:66,y:26,w:9,h:20},
       desc:"The chapel hymn board, its brass letters furred with dust:\n\nHYMN: CXIX\nVERSE: (the tile is missing)\n\nTucked behind the board, a psalter falls open to a dog-eared page. In the margin, the Baron's hand: “Father sang only the THIRD verse when the storm came close. Only ever the third.”" },
@@ -445,13 +445,13 @@ const ROOMS=[
       }
     },
     { id:'orrery', icon:'🪐', name:'The Orrery Lock', pos:{x:38,y:70,w:12,h:20}, hiddenUntil:'folio',
-      desc:"A brass orrery guards the bookcase mechanism — three numbered rings, and the Baron's calibration card, five attempts with what the candle-lamps said to each:\n\n2 8 7 — one flame lit, seated WRONG\n3 9 1 — one flame lit, seated WRONG\n1 2 8 — all flames dark\n6 8 9 — one flame lit, seated WRONG\n4 7 6 — two flames lit, both seated WRONG\n\n“A lit flame: that digit belongs. Seated true: right digit, right ring.”",
+      desc:"A brass orrery guards the bookcase mechanism. Three planet-weights hang loose beside it, each stamped in the Baron's beloved Roman numerals:\n\n⬤ VII      ⬤ III      ⬤ VI\n\nThe rule plate on the pedestal reads:\n\n“HANG THE HEAVIEST NEAREST THE SUN,\nTHE LIGHTEST FARTHEST OUT.\nTHEN READ THE ARMS SUNWARD-OUT,\nAND GIVE THE ORRERY ITS NUMBER.”",
       puzzle:{
-        prompt:"Enter the 3-digit alignment.", placeholder:"000", answers:['763'],
+        prompt:"Convert the numerals, hang the weights heaviest-to-lightest, and type the three digits from the sun outward.", placeholder:"000", answers:['763'],
         hints:[
-          "Start with the all-dark row — those three digits appear nowhere in the code.",
-          "1, 2 and 8 are dead. So row one's flame is the 7, and row four's is the 6 or the 9 — test both against the two-flame row.",
-          "Row five's two flames must be 7 and 6, both seated wrong there — 7 can't sit 2nd or 3rd, so 7 leads; 6 can't sit 3rd or 1st, so 6 middles. Row two forces 3 last: 763."
+          "First convert the Roman numerals: VII, VI and III.",
+          "That's 7, 6 and 3. Heaviest hangs nearest the sun, lightest farthest — so read them largest to smallest.",
+          "7, 6, 3 — enter 763."
         ],
         solvedText:"7-6-3. The planets align over a house that never once looked up at the real ones, and the bookcase rolls aside. Cold air. Iron stairs. Down.",
         solveBeat:"As the passage opens, every candle in the library leans toward it — and somewhere below, something politely, deliberately, blows one out.",
@@ -469,7 +469,7 @@ const ROOMS=[
   entryBeat:"On the slab, the leather straps lie neatly unbuckled — not torn. It took its time. It folded them.",
   entrySound:'clank',
   completeText:"The dumbwaiter's word hangs in the air as you climb the tower stair. Below you, in the dark of the cellar, something begins — slowly, tunelessly, in a voice like wet gravel — to hum the Baron's hymn.",
-  chain:"The slab's chalked riddle = LIGHTNING → Leyden jar rack: keep only ODD charges; survivors spell RISEN → galvanic switchboard tag algebra (F=M+L, M=L/2, sum 12) = 624 → the dumbwaiter bell rings morse from the cellar = ALIVE.",
+  chain:"The slab's chalked riddle = LIGHTNING → Leyden jar rack: keep only ODD charges; survivors spell RISEN → galvanic switchboard fuse riddle (even digits, product 48) = 624 → the dumbwaiter bell rings morse from the cellar = ALIVE.",
   objects:[
     { id:'slab', icon:'⛓️', name:'The Empty Slab', pos:{x:33,y:47,w:34,h:22},
       desc:"The slab. THE slab — scorched, strapped, and empty. Chalked along its edge in the Baron's hand, a riddle he wrote for his own machinery:\n\n“I am the Baron's oldest servant.\nI climb the tower without legs.\nI speak exactly once,\nand the sky breaks when I do.\nWhat am I?”",
@@ -498,13 +498,13 @@ const ROOMS=[
       }
     },
     { id:'switchboard', icon:'🎛️', name:'Galvanic Switchboard', pos:{x:76,y:28,w:18,h:38}, hiddenUntil:'jars',
-      desc:"The master switchboard is locked at 3 digits. The Baron's tag swings from the lever:\n\n“Three figures wake the board.\nThe FIRST is the sum of the other two.\nThe MIDDLE is half the LAST.\nTogether they make TWELVE.”",
+      desc:"The master switchboard is locked behind three fuse dials, 0–9 each. The Baron's tag swings from the lever:\n\n“THREE EVEN FIGURES WAKE THE BOARD.\nMULTIPLIED TOGETHER THEY MAKE FORTY-EIGHT.\nSET THEM: LARGEST, THEN SMALLEST, THEN MIDDLE.”",
       puzzle:{
-        prompt:"Enter the 3-digit setting.", placeholder:"000", answers:['624'],
+        prompt:"Find the three even digits whose product is 48, then dial them largest, smallest, middle.", placeholder:"000", answers:['624'],
         hints:[
-          "Equations again. Call them F, M, L — one person writes, one checks.",
-          "M = L÷2 and F = M+L = 1.5×L, so F+M+L = 3×L = 12.",
-          "L = 4, M = 2, F = 6. Enter 624."
+          "You need three even digits (2, 4, 6 or 8) that multiply to exactly 48. Try factor pairs as a team.",
+          "48 = 2 × 4 × 6 — and no other trio of even digits works.",
+          "Largest, smallest, middle: 6, 2, 4 — enter 624."
         ],
         solvedText:"6-2-4. The board wakes with a rising whine, needles climbing — and at the back of the laboratory, the dumbwaiter's little brass bell begins to ring. Short rings and long ones. From the cellar. Where the rope is cut."
       }

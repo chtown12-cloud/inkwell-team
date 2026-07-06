@@ -389,7 +389,7 @@ const ROOMS=[
   entryBeat:"Every cabin's berth is turned down, and on every pillow sits a ticket, neatly punched. You did not hear him pass. You never hear him pass.",
   entrySound:'clack',
   completeText:"Berth 13's door swings open on an empty room and a cold draft moving toward the dining car. You follow it, because the alternative is staying.",
-  chain:"Passenger diary (“he played it at 78, only ever the fourth song”) → set the gramophone to 78.4 → the run-out groove clicks morse = WRONG STOP → the valise rail-fence cipher (two rails, BAERK) = BRAKE → berth 13's porter-lamp deduction (unique) = 276.",
+  chain:"Passenger diary (“he played it at 78, only ever the fourth song”) → set the gramophone to 78.4 → the run-out groove clicks morse = WRONG STOP → the valise rail-fence cipher (two rails, BAERK) = BRAKE → berth 13 boarding-order logic (seat 7 between, 2 before 6) = 276.",
   objects:[
     { id:'diary', icon:'📔', name:"A Passenger's Diary", pos:{x:36,y:82,w:11,h:12},
       desc:"A lady's travel diary, dropped open on the runner:\n\n“The man in Cabin 3 plays his gramophone at all hours. Always at 78, and only ever the FOURTH song on the record — he lifts the needle back, again and again.”\n\n“I asked the Conductor to speak to him. The Conductor said — and I am sure I misheard — that Cabin 3 has been empty since the accident.”" },
@@ -437,13 +437,13 @@ const ROOMS=[
       }
     },
     { id:'berthlock', icon:'🚪', name:'Berth 13', pos:{x:82,y:26,w:11,h:42}, hiddenUntil:'valise',
-      desc:"Berth 13 — the cabin that isn't on the car plan — locked at 3 digits. The brakeman's calibration card, five tries, and what the porter-lamps said to each:\n\n9 4 2 — one lamp lit, seated WRONG\n6 1 3 — one lamp lit, seated WRONG\n3 9 4 — all lamps dark\n7 4 1 — one lamp lit, seated WRONG\n5 2 7 — two lamps lit, both seated WRONG\n\n“A lit lamp: that digit belongs. Seated true: right digit, right position.”\n\nAnd scrawled under it: “REMEMBER THE RECORD. THE JUNCTION WILL ASK.”",
+      desc:"Berth 13 — the cabin that isn't on the car plan — locked at 3 digits. Pinned to the door, three punched ticket stubs — SEAT 2, SEAT 6, SEAT 7 — and the brakeman's memory-note:\n\n“The lock takes the three seats in BOARDING order.\nSeat 7 boarded BETWEEN the other two.\nSeat 2 boarded somewhere BEFORE seat 6.”\n\nAnd scrawled under it: “REMEMBER THE RECORD. THE JUNCTION WILL ASK.”",
       puzzle:{
-        prompt:"Enter the 3-digit code.", placeholder:"000", answers:['276'],
+        prompt:"Work out the boarding order of seats 2, 6 and 7, then enter the three digits.", placeholder:"000", answers:['276'],
         hints:[
-          "The all-dark row kills its three digits everywhere. Then re-read each 'one lamp' row.",
-          "3, 9 and 4 are dead. So row one's lamp is the 2 — not seated third. Row five lights two lamps: with 5 dead-ended, they must be 2 and 7.",
-          "2 can't sit 3rd (row 1) or 2nd (row 5) → first. 7 can't sit 3rd (row 5) or 1st (row 4) → second. Row two leaves the 6 for last: 276."
+          "Seat 7 boarded between the other two — so 7 is the MIDDLE digit, never first or last.",
+          "That leaves 2 and 6 for the ends, and seat 2 boarded before seat 6.",
+          "2, then 7, then 6 — enter 276."
         ],
         solvedText:"2-7-6. The lock gives — and berth 13 is empty except for a conductor's uniform laid out on the bunk like a shed skin, cap on the pillow, punch on the nightstand. The punch is still warm.",
         solveBeat:"From the corridor behind you — from a spot each of you would swear was empty a breath ago — comes one soft, courteous cough.",
@@ -461,7 +461,7 @@ const ROOMS=[
   entryBeat:"Three tables are set with plates still steaming. The train has been abandoned for hours. Somebody keeps cooking.",
   entrySound:'bell',
   completeText:"The service door to the tender swings wide. Behind you, in the dining car, a chair scrapes politely back into place — supper, apparently, is over.",
-  chain:"Chef's board riddle = MIRROR → table settings: clear only PERFECT-SQUARE covers; survivors spell HUNGRY → the till tag algebra (F=L−2, M=F+L, sum 16) = 385 → the kitchen service bell rings morse = AGAIN.",
+  chain:"Chef's board riddle = MIRROR → table settings: clear only PERFECT-SQUARE covers; survivors spell HUNGRY → the till chit addition ($3.85) = 385 → the kitchen service bell rings morse = AGAIN.",
   objects:[
     { id:'menu', icon:'🍽️', name:"The Chef's Board", pos:{x:64,y:33,w:8,h:18},
       desc:"Tonight's menu, chalked in a strong hand that failed at the dessert line. Under the entrées, a riddle — the chef's game with the waiters, every service:\n\n“I show you the whole car.\nI seat a second party opposite yours.\nNo guest of mine has ever paid,\nand no guest of mine has ever left.\nWhat am I?”",
@@ -492,13 +492,13 @@ const ROOMS=[
       }
     },
     { id:'till', icon:'🧾', name:'The Till', pos:{x:84,y:52,w:10,h:14}, hiddenUntil:'tables',
-      desc:"The bar till, locked at 3 digits. The head waiter's memory-tag hangs from the drawer:\n\n“Three figures balance the house.\nThe FIRST is the LAST, less two.\nThe MIDDLE is the other two together.\nThe whole account: SIXTEEN.”",
+      desc:"The bar till, locked at 3 digits. Three unpaid chits still hang on the spike beside it:\n\nTABLE 2 — 85¢\nTABLE 5 — $1.15\nTABLE 7 — $1.85\n\nThe head waiter's tag on the drawer: “THE TILL OPENS ON THE NIGHT'S TOTAL — DOLLARS, THEN CENTS.”",
       puzzle:{
-        prompt:"Enter the 3-digit code.", placeholder:"000", answers:['385'],
+        prompt:"Add up the three chits and enter the total as three digits (dollars, then cents).", placeholder:"000", answers:['385'],
         hints:[
-          "Equations. Call the digits F, M, L — one writes, one checks.",
-          "F = L−2 and M = F+L = 2L−2, so F+M+L = 4L−4 = 16.",
-          "L = 5, F = 3, M = 8. Enter 385."
+          "Straight addition — split the chits among the crew and check each other.",
+          "85¢ + $1.15 = $2.00 even. Now add the last chit.",
+          "$2.00 + $1.85 = $3.85 → enter 385."
         ],
         solvedText:"3-8-5. The till opens on stacks of fares — every note crisp, every coin bright, and every date on every coin the same year: this one. The house always balances. That's the horror of it.",
         solveBeat:null
