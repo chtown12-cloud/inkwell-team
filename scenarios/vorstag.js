@@ -22,6 +22,9 @@ SCENES.gatehouse=()=>`
 <ellipse class="cloud c1" cx="400" cy="110" rx="300" ry="40" fill="#080614" opacity=".8"/>
 <ellipse class="cloud c2" cx="1100" cy="70" rx="360" ry="46" fill="#0a0818" opacity=".8"/>
 <path class="flick" d="M980 90 l-30 70 26 -6 -38 90" stroke="#cfd6ff" stroke-width="4" fill="none" opacity=".5"/>
+<!-- bats crossing the storm -->
+<g class="batfly"><path d="M0 0 q8 -9 15 0 q8 -9 15 0" stroke="#080614" stroke-width="4" fill="none" stroke-linecap="round"/></g>
+<g class="batfly b2"><path d="M0 0 q6 -7 12 0 q6 -7 12 0" stroke="#080614" stroke-width="3.5" fill="none" stroke-linecap="round"/></g>
 <!-- castle keep behind -->
 <g class="plx" data-depth="4" fill="#120d1e">
   <rect x="1080" y="150" width="140" height="420"/>
@@ -125,6 +128,9 @@ ${[0,1].map(s=>`<g transform="translate(${40+s*270},0)">
   <path class="flame" d="M710 636 q-14 -40 10 -66 q6 26 22 34 q-4 -34 18 -52 q4 40 20 54 q10 12 4 30z" fill="#ff9a4a"/>
   <path class="flame" d="M726 636 q-6 -22 10 -38 q10 20 4 38z" fill="#ffd894" style="animation-delay:.2s"/>
   <rect x="600" y="410" width="280" height="20" fill="#3a3244"/>
+  <circle class="sparkup" cx="726" cy="600" r="2.6" fill="#ffb45e"/>
+  <circle class="sparkup s2" cx="748" cy="606" r="2.2" fill="#ffd894"/>
+  <circle class="sparkup s3" cx="762" cy="596" r="2" fill="#ff9a4a"/>
 </g>
 <!-- the pipe organ -->
 <g id="art-organ">
@@ -197,6 +203,9 @@ ${[0,1,2,3,4,5].map(i=>`<line x1="${i*300-120}" y1="620" x2="${i*340-220}" y2="9
 ${[380,520,1060,1200].map((x,i)=>`<g class="lampswing" style="animation-delay:${i*.8}s">
  <line x1="${x}" y1="0" x2="${x}" y2="${150+(i%2)*60}" stroke="#26313a" stroke-width="7" stroke-dasharray="12 6"/>
  <circle cx="${x}" cy="${158+(i%2)*60}" r="10" fill="none" stroke="#26313a" stroke-width="5"/></g>`).join('')}
+<!-- stray voltage arcing between the ceiling chains -->
+<path class="arcflick" d="M380 190 l24 10 -14 12 30 8 -16 14 28 10" stroke="#9fb8e8" stroke-width="2.5" fill="none"/>
+<path class="arcflick a2" d="M1060 210 l-22 12 16 10 -28 10 18 12 -24 10" stroke="#9fb8e8" stroke-width="2.5" fill="none"/>
 <!-- the empty slab -->
 <g id="art-slab">
   <ellipse cx="800" cy="600" rx="270" ry="26" fill="#070a09"/>
@@ -270,6 +279,9 @@ ${[0,1,2,3,4].map(i=>`<line x1="${i*380-60}" y1="660" x2="${i*400-120}" y2="900"
   ${[0,1,2].map(i=>`<line x1="779" y1="${220+i*110}" x2="${820+i*24}" y2="${250+i*110}" stroke="#26313a" stroke-width="7"/>`).join('')}
   <circle class="slowblink" cx="779" cy="600" r="12" fill="#c9d6ff"/>
 </g>
+<!-- the coil spitting early sparks -->
+<path class="arcflick" d="M515 400 l14 -16 -8 -6 16 -14" stroke="#c9d6ff" stroke-width="3" fill="none"/>
+<path class="arcflick a2" d="M515 404 l-16 -14 10 -6 -14 -16" stroke="#c9d6ff" stroke-width="2.5" fill="none"/>
 <!-- the great coil -->
 <g id="art-coil">
   <rect x="440" y="430" width="150 " height="180" rx="16" fill="#2a2436" stroke="#3a2d4a" stroke-width="5"/>
@@ -346,7 +358,7 @@ const ROOMS=[
       }
     },
     { id:'well', icon:'⛲', name:'The Courtyard Well', pos:{x:34,y:66,w:18,h:18},
-      desc:"The well crank is bound by a 4-digit lock. Chiselled around the rim, four symbols, each with a digit — in no particular order:\n\n☾ 7      ✠ 3      ⚘ 9      ♜ 5\n\nAnd on the crossbeam, one line of the household's motto:\n\n“WIND THE YEAR FROM SPRING.”",
+      desc:"The well crank is bound by a 4-digit lock. Four symbols are chiselled around the rim, each with a digit — in no particular order:\n\n☾ 7      ✠ 3      ⚘ 9      ♜ 5\n\nAnd on the crossbeam, one line of the household's motto:\n\n“WIND THE YEAR FROM SPRING.”",
       puzzle:{
         prompt:"Enter the 4-digit crank code.", placeholder:"0000", answers:['9357'],
         hints:[
@@ -370,11 +382,11 @@ const ROOMS=[
           "The riddle's answer is NIGHT. Now say it in the old tongue — the word stamped on the mirrored key.",
           "The key says it: NOCTIS. Latin for 'of the night'. Enter NOCTIS."
         ],
-        solvedText:"N-O-C-T-I-S. The lock's tumblers fall like a sigh, and the doors to the keep stand open. Inside, a great chandelier hangs over the hall — EIGHT candles, THREE of them long dead under fossilized wax. The living five are cold… but the wax is soft."
+        solvedText:"N-O-C-T-I-S. The lock's tumblers fall like a sigh, and the doors to the keep stand open. Inside, a great chandelier hangs over the hall — eight candles, three of them long dead under fossilized wax. The living five are cold… but the wax is soft."
       }
     },
     { id:'ledger', icon:'📒', name:"Gatekeeper's Ledger", pos:{x:53,y:64,w:10,h:14}, hiddenUntil:'doors',
-      desc:"Inside the doors, a lectern and the gatekeeper's ledger, open to the night of the last feast. A 2-digit wheel bars the inner hall, and the final entry reads:\n\n“INNER HALL — first figure: the guests at the Baron's table, LESS the wolves the hounds counted that night. Second figure: the chandelier's dead candles, DOUBLED.”\n\nHis marginalia: “eleven sat down to dine. the hounds counted six. they would not stop counting.”",
+      desc:"Inside the doors, a lectern and the gatekeeper's ledger, open to the night of the last feast. A 2-digit wheel bars the inner hall, and the final entry reads:\n\n“INNER HALL — first figure: the guests at the Baron's table, less the wolves the hounds counted that night. Second figure: the chandelier's dead candles, doubled.”\n\nHis marginalia: “eleven sat down to dine. the hounds counted six. they would not stop counting.”",
       puzzle:{
         prompt:"Enter the 2-digit code.", placeholder:"TWO DIGITS", answers:['56'],
         hints:[
@@ -400,7 +412,7 @@ const ROOMS=[
   chain:"Hymn board (CXIX = 119) + psalter margin (third verse) → set the organ stop to 119.3 → the hidden panel's bell chimes are morse = STAY INSIDE → the Baron's folio Atbash mirror-script (GSV = THE) = SPARK → orrery planet-weights (Roman numerals, heaviest sunward) = 763.",
   objects:[
     { id:'hymnboard', icon:'🎼', name:'Hymn Board', pos:{x:66,y:26,w:9,h:20},
-      desc:"The chapel hymn board, its brass letters furred with dust:\n\nHYMN: CXIX\nVERSE: (the tile is missing)\n\nTucked behind the board, a psalter falls open to a dog-eared page. In the margin, the Baron's hand: “Father sang only the THIRD verse when the storm came close. Only ever the third.”" },
+      desc:"The chapel hymn board, its brass letters furred with dust:\n\nHYMN: CXIX\nVERSE: (the tile is missing)\n\nTucked behind the board, a psalter falls open to a dog-eared page. In the margin, the Baron's hand: “Father sang only the third verse when the storm came close. Only ever the third.”" },
     { id:'organ', icon:'🎹', name:'The Pipe Organ', pos:{x:77,y:26,w:20,h:40},
       desc:"The great organ dominates the east wall. Its stop dial is a strange one — numbered like an instrument of science, not music — and a small plate reads: HYMN · VERSE.\n\nThe Baron's household hid its secrets behind music. Set the stop, and the room will answer.",
       puzzle:{
@@ -410,7 +422,7 @@ const ROOMS=[
         dial:{min:1000,max:1300,div:10,target:1193,pad:5,meter:'RESONANCE',lock:'PULL THE STOP',miss:'the pipes moan and fall silent.',nearMorse:'... - .- -.--  .. -. ... .. -.. .'},
         hints:[
           "The stop wants a hymn and a verse — one number, then a point, then another.",
-          "The hymn board says CXIX — Roman numerals for 119. The psalter margin says only the THIRD verse.",
+          "The hymn board says CXIX — Roman numerals for 119. The psalter margin says only the third verse.",
           "Set the stop to exactly 119.3 and pull it."
         ],
         solvedText:"At 119.3 a chord swells that has waited forty years — and behind the pipes, a hidden panel cracks open. From inside it, small bells begin to chime a pattern. Long chimes and short. Over and over."
@@ -433,7 +445,7 @@ const ROOMS=[
       }
     },
     { id:'folio', icon:'📜', name:"The Baron's Folio", pos:{x:22,y:56,w:14,h:16}, hiddenUntil:'chimes',
-      desc:"The Baron's working folio lies chained to its desk, the last page in his alchemist's mirror-script. Pinned above it, his own key:\n\n“THE MIRROR ALPHABET — A becomes Z, B becomes Y, C becomes X… and back again.”\n\nThe final line reads:\n\nGSV  WLLI  LKVMH  GL:  HKZIP",
+      desc:"The Baron's working folio lies chained to its desk, the last page in his alchemist's mirror-script. His own key to the script is pinned above the page:\n\n“THE MIRROR ALPHABET — A becomes Z, B becomes Y, C becomes X… and back again.”\n\nThe final line reads:\n\nGSV  WLLI  LKVMH  GL:  HKZIP",
       puzzle:{
         prompt:"Enter the deciphered word.", placeholder:"FIVE LETTERS", answers:['SPARK'],
         hints:[
@@ -472,7 +484,7 @@ const ROOMS=[
   chain:"The slab's chalked riddle = LIGHTNING → Leyden jar rack: keep only ODD charges; survivors spell RISEN → galvanic switchboard fuse riddle (even digits, product 48) = 624 → the dumbwaiter bell rings morse from the cellar = ALIVE.",
   objects:[
     { id:'slab', icon:'⛓️', name:'The Empty Slab', pos:{x:33,y:47,w:34,h:22},
-      desc:"The slab. THE slab — scorched, strapped, and empty. Chalked along its edge in the Baron's hand, a riddle he wrote for his own machinery:\n\n“I am the Baron's oldest servant.\nI climb the tower without legs.\nI speak exactly once,\nand the sky breaks when I do.\nWhat am I?”",
+      desc:"The slab itself — scorched, strapped, and empty. A riddle is chalked along its edge in the Baron's hand — one he wrote for his own machinery:\n\n“I am the Baron's oldest servant.\nI climb the tower without legs.\nI speak exactly once,\nand the sky breaks when I do.\nWhat am I?”",
       puzzle:{
         prompt:"Name the Baron's oldest servant.", placeholder:"ANSWER", answers:['LIGHTNING','THELIGHTNING','ABOLT','BOLT','LIGHTNINGBOLT'],
         hints:[
@@ -519,7 +531,7 @@ const ROOMS=[
           "·− is A. The single · at the end is E. It's a status report.",
           "·− ·−·· ·· ···− · spells ALIVE. It wants you to know."
         ],
-        solvedText:"A-L-I-V-E. The bell stops the instant you say it aloud — satisfied. The tower stair unlocks. Up. UP is away from the cellar. Go up.",
+        solvedText:"A-L-I-V-E. The bell stops the instant you say it aloud — satisfied. The tower stair unlocks. Up — away from the cellar. Go.",
         solveBeat:"From the bottom of the dumbwaiter shaft, very quietly, something tugs the bell-rope twice more. You already answered. It just wanted to hear you again.",
         beatSound:'bell'
       }
@@ -537,7 +549,7 @@ const ROOMS=[
   chain:"Five ignition tags with positional constraints → unique order E-A-D-C-B → chapel fuse box: “father sang it twice when the storm came close” = hymn 119.3 doubled = 2386 → storm-glass table: only the 11:30 front carries 9kV+ before the bell tolls one; minus 50 min = 10:40 → portcullis glyphs: the well code reversed = 7539 → signal the village with the tower lamp (SOS) → THROW THE SWITCH.",
   objects:[
     { id:'rig', icon:'🔩', name:'The Ignition Rig', pos:{x:45,y:12,w:12,h:56},
-      desc:"The Baron's launch ritual, five steps on five scattered vellum tags:\n\nTAG A — “Crank the capacitor SECOND. The chains must already hang.”\n\nTAG B — “Throw the master switch only once the coil is coupled.”\n\nTAG C — “Couple the coil — never right before or right after cranking the capacitor.”\n\nTAG D — “Raise the rod. Exactly one task passes between grounding the chains and raising the rod.”\n\nTAG E — “Ground the chains before the capacitor is cranked.”",
+      desc:"The Baron's launch ritual, five steps on five scattered vellum tags:\n\nTAG A — “Crank the capacitor second. The chains must already hang.”\n\nTAG B — “Throw the master switch only once the coil is coupled.”\n\nTAG C — “Couple the coil — never right before or right after cranking the capacitor.”\n\nTAG D — “Raise the rod. Exactly one task passes between grounding the chains and raising the rod.”\n\nTAG E — “Ground the chains before the capacitor is cranked.”",
       puzzle:{
         prompt:"Enter the five tag letters in ritual order.", placeholder:"FIVE LETTERS", answers:['EADCB'],
         hints:[

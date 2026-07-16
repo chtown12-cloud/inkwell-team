@@ -25,6 +25,10 @@ ${Array.from({length:26},(_,i)=>`<circle class="tw" cx="${(i*67+20)%1600}" cy="$
 <!-- snowfield -->
 <path d="M0 560 q400 -40 800 -6 t800 -12 v360 h-1600z" fill="url(#eSnow)"/>
 <path d="M0 640 q300 22 600 4 t1000 8" stroke="#dce8f2" stroke-width="5" fill="none" opacity=".5"/>
+<!-- wind ripping loose snow across the field -->
+<line class="gust" x1="0" y1="620" x2="300" y2="612" stroke="#dce8f2" stroke-width="3" opacity=".5" stroke-linecap="round"/>
+<line class="gust g2" x1="0" y1="700" x2="240" y2="694" stroke="#dce8f2" stroke-width="2.5" opacity=".4" stroke-linecap="round"/>
+<line class="gust g3" x1="0" y1="770" x2="340" y2="764" stroke="#dce8f2" stroke-width="3.5" opacity=".45" stroke-linecap="round"/>
 <!-- the station, dark -->
 <g class="plx" data-depth="5">
   <rect x="1080" y="420" width="360" height="140" rx="16" fill="#1a2836"/>
@@ -187,6 +191,8 @@ ${[['B',180,330,9,4],['T',290,330,2,6],['U',400,330,7,2],['R',510,330,6,1],['O',
   <path d="M540 560 l40 -60 60 20 40 -30 40 70z" fill="#0a141e"/>
   <path d="M560 570 l30 -40 M640 566 l26 -36" stroke="#7fd4ff" stroke-width="3" opacity=".6"/>
   <text x="610" y="700" text-anchor="middle" font-family="Special Elite" font-size="15" fill="#7fa4c0">SAMPLE E-9</text>
+  <ellipse class="rippleA" cx="610" cy="720" rx="90" ry="12" fill="none" stroke="#7fd4ff" stroke-width="2" opacity=".5"/>
+  <ellipse class="rippleA r2" cx="610" cy="720" rx="90" ry="12" fill="none" stroke="#7fd4ff" stroke-width="2" opacity=".5"/>
   <ellipse cx="610" cy="720" rx="130" ry="16" fill="#0d2230" opacity=".8"/>
   <path d="M700 716 q120 10 260 -18 q120 -24 200 -8" stroke="#0d2230" stroke-width="18" fill="none" opacity=".6"/>
 </g>
@@ -230,6 +236,9 @@ SCENES.radiotower=()=>`
 </g>
 ${Array.from({length:30},(_,i)=>`<circle class="tw" cx="${(i*59+14)%1600}" cy="${(i*19)%180+8}" r="${.6+(i%3)*.6}" fill="#dfe8ff" style="animation-delay:${(i*.5)%4}s"/>`).join('')}
 <path d="M0 580 q400 -30 800 -8 t800 -10 v340 h-1600z" fill="url(#eSnow2)"/>
+<!-- ground blizzard streaking the runway -->
+<line class="gust" x1="0" y1="700" x2="320" y2="692" stroke="#dce8f2" stroke-width="3" opacity=".4" stroke-linecap="round"/>
+<line class="gust g2" x1="0" y1="800" x2="280" y2="794" stroke="#dce8f2" stroke-width="3" opacity=".35" stroke-linecap="round"/>
 <!-- the mast -->
 <g>
   <path d="M760 580 L800 60 L840 580z" fill="none" stroke="#2a3a48" stroke-width="9"/>
@@ -306,7 +315,7 @@ const ROOMS=[
   chain:"Route flags: channel numbers as A1Z26 letters spell GARAGE → drum stencils pair supplies with digits; the resupply poster gives the order (food, fuel, medical, flares) → 6841 → main door riddle (NORTH — every direction from here is north) but the mirrored tag says the drill ran the other way = SOUTH → notice board cross-references the roster, the drums and the garage → 73.",
   objects:[
     { id:'flags', icon:'🚩', name:'Route Flags', pos:{x:6,y:62,w:62,h:16},
-      desc:"Six route flags on the depot line, each staked with a radio-channel board, in order:\n\nFLAG 1 — CH 7\nFLAG 2 — CH 1\nFLAG 3 — CH 18\nFLAG 4 — CH 1\nFLAG 5 — CH 7\nFLAG 6 — CH 5\n\nStencilled on the first stake: “CHANNELS ARE LETTERED THE OLD WAY — A IS ONE.”",
+      desc:"Six route flags on the depot line, each staked with a radio-channel board, in order:\n\nFLAG 1 — CH 7\nFLAG 2 — CH 1\nFLAG 3 — CH 18\nFLAG 4 — CH 1\nFLAG 5 — CH 7\nFLAG 6 — CH 5\n\nThe first stake carries a stencil: “CHANNELS ARE LETTERED THE OLD WAY — A IS ONE.”",
       puzzle:{
         prompt:"The flag line hides a word. Where should you look first?",
         placeholder:"SIX LETTERS", answers:['GARAGE'],
@@ -319,7 +328,7 @@ const ROOMS=[
       }
     },
     { id:'garage', icon:'🚜', name:'The Snowcat Garage', pos:{x:12,y:76,w:22,h:18},
-      desc:"The supply cage in the garage wears a 4-digit padlock. Stencilled on the fuel drums beside it, four supply glyphs, each with a digit — in no particular order:\n\n✚ MEDICAL 4      ● FUEL 8      ▲ FLARES 1      ■ FOOD 6\n\nAlong the back wall stand nine fuel drums; you knock down the line and six of them ring empty.\n\nDigits, but no sequence. Somewhere on this station is a standing order that puts supplies in order.",
+      desc:"The supply cage in the garage wears a 4-digit padlock. Four supply glyphs are stencilled on the fuel drums beside it, each with a digit — in no particular order:\n\n✚ MEDICAL 4      ● FUEL 8      ▲ FLARES 1      ■ FOOD 6\n\nAlong the back wall stand nine fuel drums; you rap each one down the line and six of them ring empty.\n\nDigits, but no sequence. Somewhere on this station is a standing order that puts supplies in order.",
       puzzle:{
         prompt:"Enter the 4-digit code.", placeholder:"0000", answers:['6841'],
         hints:[
@@ -333,7 +342,7 @@ const ROOMS=[
       }
     },
     { id:'maindoor', icon:'🚪', name:'The Main Door', pos:{x:72,y:60,w:10,h:20},
-      desc:"The station's outer door — letter-lock, five characters, and a riddle etched by some bored winter-over crew a decade ago:\n\n“Stand here, and every direction is me.\nEvery road home begins by walking me.\nWhat am I?”\n\nTaped beside the lock, the station's standing resupply notice:\n\n“UNLOAD IN THIS ORDER, ALWAYS:\n1. FOOD   2. FUEL   3. MEDICAL   4. FLARES”\n\nBelow it, scratched much more recently, much less steadily:\n\n“WE DRILLED THE OTHER WAY.”",
+      desc:"The station's outer door — letter-lock, five characters, and a riddle etched by some bored winter-over crew a decade ago:\n\n“Stand here, and every direction is me.\nEvery road home begins by walking me.\nWhat am I?”\n\nThe station's standing resupply notice is taped beside the lock:\n\n“UNLOAD IN THIS ORDER, ALWAYS:\n1. FOOD   2. FUEL   3. MEDICAL   4. FLARES”\n\nBelow it, scratched much more recently, much less steadily:\n\n“WE DRILLED THE OTHER WAY.”",
       puzzle:{
         prompt:"Set the five letter dials.", placeholder:"FIVE LETTERS", answers:['SOUTH'],
         hints:[
@@ -345,7 +354,7 @@ const ROOMS=[
       }
     },
     { id:'noticeboard', icon:'📌', name:'The Notice Board', pos:{x:82,y:62,w:10,h:16}, hiddenUntil:'maindoor',
-      desc:"Inside the cold porch, a notice board and the inner door's 2-digit keypad. The posted standing order reads:\n\n“INNER DOOR — first figure: the bunks this station sleeps, LESS the crew rotated home last month. Second figure: fuel drums standing full in the garage.”\n\nPinned beside it: “STATION EREBUS SLEEPS 14” … and the rotation log: “7 rotated home on the last flight.”",
+      desc:"Inside the cold porch, a notice board and the inner door's 2-digit keypad. The posted standing order reads:\n\n“INNER DOOR — first figure: the bunks this station sleeps, less the crew rotated home last month. Second figure: fuel drums standing full in the garage.”\n\nA crew sheet pinned beside it reads “STATION EREBUS SLEEPS 14,” and the rotation log below adds: “7 rotated home on the last flight.”",
       puzzle:{
         prompt:"Enter the 2-digit code.", placeholder:"TWO DIGITS", answers:['73'],
         hints:[
@@ -469,7 +478,7 @@ const ROOMS=[
       }
     },
     { id:'coldsafe', icon:'🔐', name:'The Cold Safe', pos:{x:8,y:68,w:12,h:20}, hiddenUntil:'cores',
-      desc:"The lab's cold safe, 3-digit dial. The tag from the core rack, in the lead scientist's careful print:\n\n“Three DIFFERENT digits, every one a MULTIPLE OF THREE, none of them zero.\nThe FIRST is the sum of the other two.\nThe SMALLEST hides in the MIDDLE.”",
+      desc:"The lab's cold safe, 3-digit dial. The tag from the core rack, in the lead scientist's careful print:\n\n“Three different digits, every one a multiple of three, none of them zero.\nThe first is the sum of the other two.\nThe smallest hides in the middle.”",
       puzzle:{
         prompt:"Find the three digits that fit and enter them in order.", placeholder:"000", answers:['936'],
         hints:[
@@ -509,7 +518,7 @@ const ROOMS=[
   chain:"Generator drill tags with positional constraints → unique order D-E-B-A-C → tower lockbox: “the plane listens at TWICE the station” = 88.2×2 = 176.4 → 1764 → weather fax: only the 6:10 window has legal visibility before fuel runs out; minus 40 min = 5:30 → flare cache: stocked in resupply order, unlocked in reverse = 1486 → light the drum line in the old pattern (SOS) → WHEELS UP.",
   objects:[
     { id:'genstart', icon:'⚙️', name:'The Generator Sled', pos:{x:11,y:66,w:18,h:18},
-      desc:"The tower generator's cold-start drill, five steps on five tags shuffled by nine days of wind:\n\nTAG A — “Close the choke — never right before or right after warming the plugs.”\n\nTAG B — “Crank the flywheel. Exactly one step passes between opening the fuel line and cranking.”\n\nTAG C — “Throw the breaker only once the choke is closed.”\n\nTAG D — “Open the fuel line before the glow plugs warm.”\n\nTAG E — “Warm the glow plugs SECOND.”",
+      desc:"The tower generator's cold-start drill, five steps on five tags shuffled by nine days of wind:\n\nTAG A — “Close the choke — never right before or right after warming the plugs.”\n\nTAG B — “Crank the flywheel. Exactly one step passes between opening the fuel line and cranking.”\n\nTAG C — “Throw the breaker only once the choke is closed.”\n\nTAG D — “Open the fuel line before the glow plugs warm.”\n\nTAG E — “Warm the glow plugs second.”",
       puzzle:{
         prompt:"Enter the five tag letters in start order.", placeholder:"FIVE LETTERS", answers:['DEBAC'],
         hints:[

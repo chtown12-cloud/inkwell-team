@@ -54,7 +54,8 @@ button{font-family:'Inter',sans-serif;cursor:pointer}
   padding:5px 16px;opacity:0;transition:opacity .18s;pointer-events:none;box-shadow:0 4px 14px rgba(0,0,0,.6);
 }
 .hotspot:hover .tag,.hotspot:focus .tag{opacity:1}
-.hotspot:hover .ring{border-color:#ffe9b8}
+.hotspot .ring{transition:transform .18s}
+.hotspot:hover .ring{border-color:#ffe9b8;transform:translate(-50%,-50%) scale(1.22) !important;animation-play-state:paused}
 .hotspot.new .ring{animation:ringpulse 1s ease-in-out infinite;border-color:#ffe9b8}
 
 /* ---------- cinematic overlays ---------- */
@@ -127,7 +128,6 @@ button{font-family:'Inter',sans-serif;cursor:pointer}
 .morse{font-family:'Special Elite',serif;font-size:1.4rem;letter-spacing:4px;color:var(--teal-hi);text-align:center;margin:8px 0;word-break:break-all}
 .morse .lit{color:#ffe9b8;text-shadow:0 0 10px #ffda8c}
 .morse-btn{display:inline-block;margin:6px 4px 2px;font-size:.9rem;padding:9px 20px}
-.morse-crib{display:grid;grid-template-columns:repeat(auto-fill,minmax(86px,1fr));gap:3px 10px;margin:10px auto 2px;max-width:560px;padding:12px 14px;background:rgba(216,195,154,.07);border:1px dashed #5c6f6d;border-radius:8px;font-family:'Special Elite',serif;font-size:.95rem;color:var(--sand);text-align:left}
 
 /* ---------- tuning dial ---------- */
 .dial-ui{margin-top:14px;text-align:center}
@@ -204,7 +204,7 @@ button{font-family:'Inter',sans-serif;cursor:pointer}
 .team-line{font-family:'Special Elite',serif;font-size:1.4rem;color:var(--sand);margin:2px 0 6px;letter-spacing:1px}
 
 /* ---------- end screens ---------- */
-.screen-center{position:fixed;inset:0;z-index:70;display:flex;align-items:center;justify-content:center;background:rgba(3,8,9,.9);padding:20px;overflow-y:auto}
+.screen-center{position:fixed;inset:0;z-index:70;display:flex;align-items:center;justify-content:center;background:rgba(3,8,9,.6);padding:20px;overflow-y:auto}
 .end-card{max-width:620px;width:100%;text-align:center;padding:38px 34px;background:linear-gradient(165deg,#1e3237,#0f1e22);border:1px solid #3d5a60;border-radius:16px;box-shadow:0 30px 80px rgba(0,0,0,.8);animation:modalin .4s ease-out}
 .end-card h2{font-size:2.2rem;color:var(--sand);margin-bottom:10px}
 .end-card .rating{font-family:'Special Elite',serif;font-size:1.5rem;color:var(--teal-hi);margin:14px 0}
@@ -272,6 +272,42 @@ pre.share{text-align:left;background:#0a1416;border:1px solid #2c4144;border-rad
 .sparkle{animation:sparkleA 2.8s ease-in-out infinite}
 @keyframes sparkleA{0%,100%{opacity:.2}50%{opacity:.9}}
 
+/* ---------- dynamic-visuals pass ---------- */
+#scene{transition:filter .14s}
+#scene.lightsdip{filter:brightness(.45)}
+#stage.rocking #scene,#stage.rocking #hotspots,#stage.rocking #fx{animation:trainrock 3.8s ease-in-out infinite}
+@keyframes trainrock{0%,100%{transform:rotate(-.28deg) translateY(-2px)}50%{transform:rotate(.3deg) translateY(2px)}}
+.gullfly{animation:gullpath 26s linear infinite}
+@keyframes gullpath{0%{transform:translate(-120px,270px)}45%{transform:translate(820px,130px)}100%{transform:translate(1760px,250px)}}
+.crabby{animation:crabwalk 12s ease-in-out infinite alternate}
+@keyframes crabwalk{from{transform:translateX(0)}to{transform:translateX(230px)}}
+.leaffall{animation:leafdrop 14s linear infinite}
+.leaffall.l2{animation-duration:19s;animation-delay:6s}
+@keyframes leafdrop{0%{transform:translate(0,-60px) rotate(0deg);opacity:0}8%{opacity:.9}90%{opacity:.8}100%{transform:translate(140px,940px) rotate(340deg);opacity:0}}
+.shootstar{animation:shoot 11s linear infinite}
+@keyframes shoot{0%,88%{transform:translate(0,0);opacity:0}90%{opacity:.9}96%{transform:translate(-420px,180px);opacity:0}100%{opacity:0}}
+.radarsweep{animation:sweepspin 4.2s linear infinite}
+@keyframes sweepspin{from{transform:rotate(0)}to{transform:rotate(360deg)}}
+.dripdrop{animation:dropfall 2.7s linear infinite}
+.dripdrop.d2{animation-duration:3.6s;animation-delay:1.3s}
+@keyframes dropfall{0%{transform:translateY(0);opacity:0}12%{opacity:.85}82%{opacity:.85}100%{transform:translateY(170px);opacity:0}}
+.batfly{animation:batpath 17s ease-in-out infinite}
+.batfly.b2{animation-duration:23s;animation-delay:5s}
+@keyframes batpath{0%{transform:translate(-80px,60px)}30%{transform:translate(500px,-40px)}55%{transform:translate(980px,90px)}80%{transform:translate(1400px,-20px)}100%{transform:translate(1720px,70px)}}
+.arcflick{animation:arcflk 5.2s linear infinite}
+.arcflick.a2{animation-delay:2.6s;animation-duration:7.1s}
+@keyframes arcflk{0%,100%{opacity:0}7%{opacity:.95}9%{opacity:0}11%{opacity:.7}13%{opacity:0}14%,96%{opacity:0}}
+.sparkup{animation:sparkrise 2.3s linear infinite}
+.sparkup.s2{animation-delay:.8s;animation-duration:2.9s}
+.sparkup.s3{animation-delay:1.5s;animation-duration:3.4s}
+@keyframes sparkrise{0%{transform:translateY(0);opacity:.9}100%{transform:translateY(-110px);opacity:0}}
+.gust{animation:gustx 7s linear infinite}
+.gust.g2{animation-duration:9.5s;animation-delay:3s}
+.gust.g3{animation-duration:5.5s;animation-delay:1.4s}
+@keyframes gustx{0%{transform:translateX(-360px);opacity:0}25%{opacity:.4}100%{transform:translateX(1960px);opacity:0}}
+.rippleA{transform-box:fill-box;transform-origin:center;animation:rippl 3.4s ease-out infinite}
+.rippleA.r2{animation-delay:1.7s}
+@keyframes rippl{0%{transform:scale(.4);opacity:.6}100%{transform:scale(1.6);opacity:0}}
 @media (max-width:640px){#hud .stats{display:none}.end-card .stat-grid{grid-template-columns:1fr}}
 </style>
 </head>
@@ -357,8 +393,6 @@ pre.share{text-align:left;background:#0a1416;border:1px solid #2c4144;border-rad
    full data contract.
    ============================================================ */
 const SCENARIOS=[];
-/* the international code crib, available inside every morse puzzle */
-const MORSE_CRIB=['A ·−','B −···','C −·−·','D −··','E ·','F ··−·','G −−·','H ····','I ··','J ·−−−','K −·−','L ·−··','M −−','N −·','O −−−','P ·−−·','Q −−·−','R ·−·','S ···','T −','U ··−','V ···−','W ·−−','X −··−','Y −·−−','Z −−··'].map(x=>`<span>${x}</span>`).join('');
 function registerScenario(s){ SCENARIOS.push(s); }
 let ACTIVE=null;
 const $ = id => document.getElementById(id);
@@ -566,7 +600,12 @@ function startRoomEvents(idx){
   clearInterval(roomEventTimer);
   const spec=(ACTIVE.events||[])[idx]||[];
   roomEventTimer=setInterval(()=>{
-    if(!AC||muted||S.finished) return;
+    if(S.finished) return;
+    if(Math.random()<0.11){ // the lights aren't entirely reliable in any of these places
+      $('scene').classList.add('lightsdip');
+      setTimeout(()=>$('scene').classList.remove('lightsdip'),200+Math.random()*180);
+    }
+    if(!AC||muted) return;
     spec.forEach(ev=>{ if(Math.random()<ev.p) (AMBIENT_SFX[ev.s]||(()=>{}))(); });
   },5200);
 }
@@ -589,6 +628,12 @@ function newParticle(mode){
   if(mode==='snow')      return {m:'snow',x:r()*1600,y:r()*900,vx:-.6-r()*1.2,vy:.8+r()*1.6,r1:1+r()*2.2,a:.25+r()*.5};
   if(mode==='embers')    return {m:'embers',x:r()*1600,y:600+r()*300,vx:(r()-.5)*.3,vy:-.3-r()*.6,r1:1+r()*1.8,ph:r()*6.28,a:.5};
   return {m:'none',x:0,y:0};
+}
+function spawnBurst(x,y,hue,n=18,speed=4){
+  for(let i=0;i<n;i++){
+    const a=Math.random()*6.283, v=speed*(0.4+Math.random());
+    particles.push({m:'spark',x,y,vx:Math.cos(a)*v,vy:Math.sin(a)*v-1.4,life:0,maxlife:38+Math.random()*26,hue});
+  }
 }
 function spawnFlare(big){
   const c=(ACTIVE&&ACTIVE.flare)||{x:852,y:470,hue:[255,120,90]};
@@ -631,6 +676,13 @@ function fxLoop(){
       const glow=0.4+0.6*Math.abs(Math.sin(t*3+p.ph));
       fxc.fillStyle=`rgba(255,${140+Math.floor(60*glow)},70,${p.a*glow})`;
       fxc.beginPath(); fxc.arc(p.x,p.y,p.r1,0,7); fxc.fill();
+    } else if(p.m==='spark'){
+      p.life++; p.x+=p.vx; p.y+=p.vy; p.vy+=0.11; p.vx*=0.985;
+      const k=1-p.life/p.maxlife;
+      const [r,g,bl]=p.hue;
+      fxc.fillStyle=`rgba(${r},${g},${bl},${Math.max(0,k)})`;
+      fxc.beginPath(); fxc.arc(p.x,p.y,1.6+k*1.8,0,7); fxc.fill();
+      if(p.life>=p.maxlife) particles.splice(i,1);
     } else if(p.m==='flare'){
       p.life++;
       const [r1c,g1c,b1c]=p.hue;
@@ -806,6 +858,7 @@ function objDesc(o){
 function renderScene(){
   const room=currentRoom();
   $('scene').innerHTML = ACTIVE.scenes[room.scene]();
+  $('stage').classList.toggle('rocking', !!room.stageFx);
   setFxMode(ACTIVE.fx[S.roomIndex]);
   setAmbience(ACTIVE.ambience[S.roomIndex]);
   startRoomEvents(S.roomIndex);
@@ -830,6 +883,11 @@ function renderHotspots(){
     layer.appendChild(b);
   });
   const done=room.objects.filter(o=>o.puzzle).every(o=>S.solved.has(o.id));
+  if(done && !S.celebrated) S.celebrated={};
+  if(done && !S.celebrated[S.roomIndex]){
+    S.celebrated[S.roomIndex]=true;
+    [[420,220],[800,150],[1180,240]].forEach(([x,y],i)=>setTimeout(()=>spawnBurst(x,y,[255,215,140],26,5),i*260));
+  }
   $('room-complete').classList.toggle('hidden',!done||S.finished);
   if(done){
     $('room-complete-text').textContent=room.completeText||'';
@@ -849,10 +907,8 @@ function openModal(objId){
     const morseReady=p.morse&&(!p.morseLocked||S.solved.has(p.morseLocked));
     if(morseReady&&!solved){
       html+=`<div class="morse" id="morse-view">${p.morse.replaceAll('.','·').replaceAll('-','−')}</div>
-        <div style="text-align:center"><button class="morse-btn" onclick="playMorseUI('${o.id}')">▶ &nbsp;PLAY THE SIGNAL</button>
-        <button class="morse-btn" onclick="$('morse-crib').classList.toggle('hidden')">📖 &nbsp;CODE CRIB</button></div>
-        <div id="morse-crib" class="morse-crib hidden">${MORSE_CRIB}</div>
-        <div class="how">▶ plays the signal out loud. 📖 opens the code chart — match each dot-dash group to a letter, in order. Type only the decoded word(s) below.</div>`;
+        <div style="text-align:center"><button class="morse-btn" onclick="playMorseUI('${o.id}')">▶ &nbsp;PLAY THE SIGNAL</button></div>
+        <div class="how">▶ plays the signal out loud. It's international morse code — look the alphabet up, match each dot-dash group to a letter in order, and type only the decoded word(s) below.</div>`;
     }
     if(solved){
       html+=`<div class="solved-note">✓ ${p.solvedText||'Solved.'}</div>`;
@@ -944,6 +1000,8 @@ function wrongAnswer(){
 function solvePuzzle(o){
   S.solved.add(o.id);
   sfxChime();
+  const hue=(ACTIVE.flare&&ACTIVE.flare.hue)||[255,200,120];
+  spawnBurst((o.pos.x+o.pos.w/2)/100*1600,(o.pos.y+o.pos.h/2)/100*900,hue,20,4.2);
   if(o.puzzle.solveBeat) showBeat(o.puzzle.solveBeat,o.puzzle.beatSound);
   const room=currentRoom();
   const allDone=room.objects.filter(x=>x.puzzle).every(x=>S.solved.has(x.id));
@@ -1180,6 +1238,10 @@ function victory(){
   $('room-complete').classList.add('hidden');
   const seq=[0,350,700, 1400,2200,3000, 3800,4150,4500];
   seq.forEach((t,i)=>setTimeout(()=>spawnFlare(i>=3&&i<6),t));
+  const palettes=[[255,120,90],[120,190,255],[255,215,140],[190,170,255],[140,230,160]];
+  setInterval(()=>{ // celebratory fireworks until the page resets
+    spawnBurst(200+Math.random()*1200,110+Math.random()*320,palettes[Math.floor(Math.random()*palettes.length)],26,5.2);
+  },620);
   setTimeout(showVictoryCard,5600);
 }
 function showVictoryCard(){

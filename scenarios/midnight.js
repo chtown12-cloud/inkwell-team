@@ -316,7 +316,7 @@ const WRONG_SOUNDS=['clank','hiss','knock','clank','bell'];
 const ROOMS=[
 /* ============ ROOM 1 — THE BAGGAGE CAR ============ */
 {
-  id:'baggage', name:'Room 1 — The Baggage Car', scene:'baggage',
+  id:'baggage', name:'Room 1 — The Baggage Car', scene:'baggage', stageFx:'rocking',
   intro:"You woke between stations to an empty train. The baggage car is the way forward — and everyone's luggage is still here.",
   objective:"Work toward the front of the train — <b>glowing rings</b> mark what the passengers left behind.",
   entryBeat:"Six trunks, packed for six passengers you dined with at eight o'clock. The dust on the latches says the trunks have been here for years.",
@@ -325,12 +325,12 @@ const ROOMS=[
   chain:"Trunk tags: book cipher (line·word into the Standing Orders) spells PORTER → the porter's desk pairs punch-marks with classes; the fare card gives the order (first class down to freight) → 8253 → mail cage riddle (TIME) — “on this train it runs backward” = EMIT → the waybill cross-references Halifax crates, crates remaining, and the mail sacks → 49.",
   objects:[
     { id:'trunks', icon:'🧳', name:'Steamer Trunks', pos:{x:26,y:66,w:66,h:18},
-      desc:"Six steamer trunks in a luggage row. Each shipping tag carries a pair of numbers — a LINE and a WORD — keyed to the company's Standing Orders bolted to the wall above them:\n\n1. All passengers present tickets promptly on request.\n2. Passengers of the overnight service remain seated.\n3. Refreshments are served rearward, then removed.\n4. The evening express tolerates no exceptions ever.\n\nTAGS (line·word):  1·2   ·   2·4   ·   3·1   ·   4·4   ·   4·2   ·   3·4\n\nStencilled on the rail: “EACH TAG NAMES A WORD. THE WORD'S FIRST LETTER IS YOURS.”",
+      desc:"Six steamer trunks in a luggage row. Each shipping tag carries a pair of numbers — a LINE and a WORD — keyed to the company's Standing Orders bolted to the wall above them:\n\n1. All passengers present tickets promptly on request.\n2. Passengers of the overnight service remain seated.\n3. Refreshments are served rearward, then removed.\n4. The evening express tolerates no exceptions ever.\n\nTAGS (line·word):  1·2   ·   2·4   ·   3·1   ·   4·4   ·   4·2   ·   3·4\n\nA stencil on the rack rail explains the tags: “EACH TAG NAMES A WORD. THE WORD'S FIRST LETTER IS YOURS.”",
       puzzle:{
         prompt:"The trunks hide a word. Whose desk should you search?",
         placeholder:"SIX LETTERS", answers:['PORTER'],
         hints:[
-          "It's a book cipher: each pair points at a word in the Standing Orders (line, then word number). Take that word's FIRST letter.",
+          "It's a book cipher: each pair points at a word in the Standing Orders (line, then word number). Take that word's first letter.",
           "1·2 = line 1, word 2 = “passengers” = P.  2·4 = “overnight” = O.  3·1 = “Refreshments” = R.",
           "1·2 P, 2·4 O, 3·1 R, 4·4 “tolerates” T, 4·2 “evening” E, 3·4 “rearward” R — the PORTER's desk."
         ],
@@ -340,11 +340,11 @@ const ROOMS=[
     { id:'farecard', icon:'🎫', name:'The Fare Card', pos:{x:38,y:20,w:10,h:22},
       desc:"The company fare card, framed on the wall above the porter's desk:\n\n“GREAT NORTHERN & COASTAL RAILWAY —\nFARES SHALL BE RECKONED, AND TAKINGS COUNTED,\nFROM FIRST CLASS DOWN TO FREIGHT.\nNO EXCEPTIONS. NO REFUNDS.\nNO PASSAGE WITHOUT A PUNCHED TICKET.”\n\nSomeone has underlined the last line. The ink is fresh." },
     { id:'desk', icon:'🗃️', name:"The Porter's Desk", pos:{x:28,y:44,w:15,h:18},
-      desc:"The porter's cash box wears a 4-digit lock. His punch-mark chart is pasted to the desk — four punch shapes, each with a takings figure, in no particular order:\n\n★ 8      ✚ 2      ● 5      ■ 3\n\nAnd the company chart beside it pairs punches with classes:\n\n★ FIRST CLASS   ✚ SECOND CLASS   ● THIRD CLASS   ■ FREIGHT\n\nDigits, but no sequence. The framed FARE CARD on the wall carries the company's counting rule.",
+      desc:"The porter's cash box wears a 4-digit lock. His punch-mark chart is pasted to the desk — four punch shapes, each with a takings figure, in no particular order:\n\n★ 8      ✚ 2      ● 5      ■ 3\n\nAnd the company chart beside it pairs punches with classes:\n\n★ FIRST CLASS   ✚ SECOND CLASS   ● THIRD CLASS   ■ FREIGHT\n\nDigits, but no sequence. The company counted its money in one fixed order — every porter knew it by heart, and the rule is posted somewhere in this car.",
       puzzle:{
         prompt:"Enter the 4-digit code.", placeholder:"0000", answers:['8253'],
         hints:[
-          "You need the classes in the official order — read the framed FARE CARD on the wall above the desk.",
+          "You need the classes in the official order — read the framed fare card on the wall above the desk.",
           "The fare card: “COUNT THE TAKINGS FROM FIRST CLASS DOWN TO FREIGHT.”",
           "★8 ✚2 ●5 ■3 → enter 8253."
         ],
@@ -366,7 +366,7 @@ const ROOMS=[
       }
     },
     { id:'waybill', icon:'📄', name:'The Waybill', pos:{x:54,y:31,w:10,h:19}, hiddenUntil:'mailcage',
-      desc:"Clipped inside the cage, the car's waybill and the forward door's 2-digit lock. The bill reads:\n\n“FORWARD DOOR — first figure: crates loaded at Halifax, LESS the crates still standing in this car. Second figure: the mail sacks, TRIPLED.”\n\nThe manifest line above it: “ELEVEN crates loaded at Halifax.” You count the car: SEVEN remain.",
+      desc:"The car's waybill hangs clipped inside the cage, next to the forward door and its 2-digit lock. The bill reads:\n\n“FORWARD DOOR — first figure: crates loaded at Halifax, less the crates still standing in this car. Second figure: the mail sacks, tripled.”\n\nThe manifest line above it: “Eleven crates loaded at Halifax.” You count the car: seven remain.",
       puzzle:{
         prompt:"Enter the 2-digit code.", placeholder:"TWO DIGITS", answers:['49'],
         hints:[
@@ -383,7 +383,7 @@ const ROOMS=[
 },
 /* ============ ROOM 2 — THE SLEEPER CORRIDOR ============ */
 {
-  id:'sleeper', name:'Room 2 — The Sleeper Corridor', scene:'sleeper',
+  id:'sleeper', name:'Room 2 — The Sleeper Corridor', scene:'sleeper', stageFx:'rocking',
   intro:"Four cabins, all made up for the night. Cabin 3 stands ajar, and a gramophone is playing to nobody.",
   objective:"The passengers' things remember more than the passengers. Find the record's speed — then <b>listen to the groove.</b>",
   entryBeat:"Every cabin's berth is turned down, and on every pillow sits a ticket, neatly punched. You did not hear him pass. You never hear him pass.",
@@ -392,7 +392,7 @@ const ROOMS=[
   chain:"Passenger diary (“he played it at 78, only ever the fourth song”) → set the gramophone to 78.4 → the run-out groove clicks morse = WRONG STOP → the valise rail-fence cipher (two rails, BAERK) = BRAKE → berth 13 boarding-order logic (seat 7 between, 2 before 6) = 276.",
   objects:[
     { id:'diary', icon:'📔', name:"A Passenger's Diary", pos:{x:36,y:82,w:11,h:12},
-      desc:"A lady's travel diary, dropped open on the runner:\n\n“The man in Cabin 3 plays his gramophone at all hours. Always at 78, and only ever the FOURTH song on the record — he lifts the needle back, again and again.”\n\n“I asked the Conductor to speak to him. The Conductor said — and I am sure I misheard — that Cabin 3 has been empty since the accident.”" },
+      desc:"A lady's travel diary, dropped open on the runner:\n\n“The man in Cabin 3 plays his gramophone at all hours. Always at 78, and only ever the fourth song on the record — he lifts the needle back, again and again.”\n\n“I asked the Conductor to speak to him. The Conductor said — and I am sure I misheard — that Cabin 3 has been empty since the accident.”" },
     { id:'gramophone', icon:'📻', name:'The Gramophone', pos:{x:48,y:48,w:12,h:16},
       desc:"Cabin 3's gramophone, brass horn dented, turntable waiting. The speed dial is a strange aftermarket thing — speed, then a point, then the track.\n\nThe diary said he only ever played one song.",
       puzzle:{
@@ -402,7 +402,7 @@ const ROOMS=[
         dial:{min:600,max:900,div:10,target:784,pad:4,meter:'GROOVE TRACKING',lock:'DROP THE NEEDLE',miss:'the needle skates across dead wax.',nearMorse:'.-- .-. --- -. --.  ... - --- .--.'},
         hints:[
           "The diary gives both parts: the speed, then the song he replayed.",
-          "He played it at 78 — and only ever the FOURTH song. Speed, point, track.",
+          "He played it at 78 — and only ever the fourth song. Speed, point, track.",
           "Set the dial to exactly 78.4 and drop the needle."
         ],
         solvedText:"At 78.4 the fourth song swells — a waltz, beautiful and wrong — and then the needle rides past the music into the RUN-OUT GROOVE, where someone has cut clicks into the wax by hand. Long clicks and short."
@@ -425,7 +425,7 @@ const ROOMS=[
       }
     },
     { id:'valise', icon:'💼', name:'The Locked Valise', pos:{x:21,y:73,w:12,h:15}, hiddenUntil:'runout',
-      desc:"A gentleman's valise, banded shut. Scratched on the lock plate, a zigzag and five letters:\n\nZIGZAG CIPHER · TWO RAILS\nBAERK\n\n“Written up and down two rails, then read straight off — top rail first. Put it back on the rails to read it true.”",
+      desc:"A gentleman's valise, banded shut. Someone has scratched a zigzag and five letters into the lock plate:\n\nZIGZAG CIPHER · TWO RAILS\nBAERK\n\n“Written up and down two rails, then read straight off — top rail first. Put it back on the rails to read it properly.”",
       puzzle:{
         prompt:"Enter the deciphered word.", placeholder:"FIVE LETTERS", answers:['BRAKE'],
         hints:[
@@ -437,7 +437,7 @@ const ROOMS=[
       }
     },
     { id:'berthlock', icon:'🚪', name:'Berth 13', pos:{x:82,y:26,w:11,h:42}, hiddenUntil:'valise',
-      desc:"Berth 13 — the cabin that isn't on the car plan — locked at 3 digits. Pinned to the door, three punched ticket stubs — SEAT 2, SEAT 6, SEAT 7 — and the brakeman's memory-note:\n\n“The lock takes the three seats in BOARDING order.\nSeat 7 boarded BETWEEN the other two.\nSeat 2 boarded somewhere BEFORE seat 6.”\n\nAnd scrawled under it: “REMEMBER THE RECORD. THE JUNCTION WILL ASK.”",
+      desc:"Berth 13 — the cabin that isn't on the car plan — locked at 3 digits. Three punched ticket stubs are pinned to the door — SEAT 2, SEAT 6, SEAT 7 — above the brakeman's memory-note:\n\n“The lock takes the three seats in boarding order.\nSeat 7 boarded between the other two.\nSeat 2 boarded somewhere before seat 6.”\n\nAnd scrawled under it: “REMEMBER THE RECORD. THE JUNCTION WILL ASK.”",
       puzzle:{
         prompt:"Work out the boarding order of seats 2, 6 and 7, then enter the three digits.", placeholder:"000", answers:['276'],
         hints:[
@@ -454,7 +454,7 @@ const ROOMS=[
 },
 /* ============ ROOM 3 — THE DINING CAR ============ */
 {
-  id:'dining', name:'Room 3 — The Dining Car', scene:'dining',
+  id:'dining', name:'Room 3 — The Dining Car', scene:'dining', stageFx:'rocking',
   relay:{el:'bell-lamp',seq:'.- --. .- .. -.',after:'till'},
   intro:"Every table is set for supper. The kitchen bell rings for orders no one is taking.",
   objective:"Cross the dining car and settle the house's accounts. <b>Mind the mirror.</b>",
@@ -478,7 +478,7 @@ const ROOMS=[
       }
     },
     { id:'tables', icon:'🍴', name:'The Table Settings', pos:{x:10,y:60,w:56,h:16}, hiddenUntil:'menu',
-      desc:"Eight settings across the dining car, each place card stamped with a cover number. Reading front of the car to back:\n\nH — 4\nS — 3\nU — 9\nN — 1\nO — 2\nG — 4\nR — 9\nY — 1\n\nThe etiquette card in the mirror's frame: “A HONEST HOUSE SEATS ONLY SQUARE COMPANY. CLEAR EVERY SETTING WHOSE NUMBER IS A PERFECT SQUARE (1, 4, 9, 16…).”",
+      desc:"Eight settings across the dining car, each place card stamped with a cover number. Reading front of the car to back:\n\nH — 4\nS — 3\nU — 9\nN — 1\nO — 2\nG — 4\nR — 9\nY — 1\n\nThe etiquette card in the mirror's frame: “AN HONEST HOUSE SEATS ONLY SQUARE COMPANY. CLEAR EVERY SETTING WHOSE NUMBER IS A PERFECT SQUARE (1, 4, 9, 16…).”",
       puzzle:{
         prompt:"Which settings get cleared? Enter their letters in order.", placeholder:"LETTERS", answers:['HUNGRY'],
         hints:[
@@ -514,7 +514,7 @@ const ROOMS=[
           "·− is A, and it opens AND closes the word. −−· is G.",
           "·− −−· ·− ·· −· spells AGAIN. It has done all this before. It will do it again."
         ],
-        solvedText:"A-G-A-I-N. The bell stops mid-ring, satisfied. The tender door unbolts — and you understand, finally, that the train doesn't want prisoners. It wants STAFF. Move.",
+        solvedText:"A-G-A-I-N. The bell stops mid-ring, satisfied. The tender door unbolts — and you understand, finally, that the train doesn't want prisoners. It wants staff. Move.",
         solveBeat:"As the door opens, every place setting in the car — in the room, not the mirror — is suddenly, silently, cleared.",
         beatSound:'bell'
       }
@@ -523,7 +523,7 @@ const ROOMS=[
 },
 /* ============ ROOM 4 — THE LOCOMOTIVE ============ */
 {
-  id:'locomotive', name:'Room 4 — The Locomotive', scene:'locomotive',
+  id:'locomotive', name:'Room 4 — The Locomotive', scene:'locomotive', stageFx:'rocking',
   intro:"The cab is empty, the firebox is roaring, and the junction to the living line is coming up fast.",
   objective:"Feed the fire, prove the drill, and <b>whistle the switchman</b> — miss the junction and the Special keeps its schedule forever.",
   entryBeat:"The coal in the tender is full — forty years of night runs, and the coal never falls. On the throttle, a gloved handprint in the soot. The glove had six fingers.",
@@ -532,7 +532,7 @@ const ROOMS=[
   chain:"Fire drill tags with positional constraints → unique order C-B-E-D-A → signal lantern case: “the junction listens at TWICE the record” = 78.4×2 = 156.8 → 1568 → timetable: only the 4:45 junction is manned before the line 'ends' at 6:00; minus 65 min = 3:40 → coupling pins: takings counted forward, pulled in reverse = 3528 → whistle the distress pattern (SOS) → THE JUNCTION.",
   objects:[
     { id:'firebox', icon:'🔥', name:'The Firebox Drill', pos:{x:26,y:52,w:11,h:22},
-      desc:"The company fire drill, five steps on five soot-stained tags, scattered across the footplate:\n\nTAG A — “Release the brake only after the injector is set.”\n\nTAG B — “Feed the firebox SECOND.”\n\nTAG C — “Break the coal before the firebox is fed.”\n\nTAG D — “Set the injector — never right before or right after feeding the firebox.”\n\nTAG E — “Open the dampers. Exactly one task passes between breaking coal and opening the dampers.”",
+      desc:"The company fire drill, five steps on five soot-stained tags, scattered across the footplate:\n\nTAG A — “Release the brake only after the injector is set.”\n\nTAG B — “Feed the firebox second.”\n\nTAG C — “Break the coal before the firebox is fed.”\n\nTAG D — “Set the injector — never right before or right after feeding the firebox.”\n\nTAG E — “Open the dampers. Exactly one task passes between breaking coal and opening the dampers.”",
       puzzle:{
         prompt:"Enter the five tag letters in drill order.", placeholder:"FIVE LETTERS", answers:['CBEDA'],
         hints:[
