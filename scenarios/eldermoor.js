@@ -569,10 +569,10 @@ const ROOMS = [
   entryBeat:"As you take your first steps up the beach, the treeline goes quiet all at once — the way a room goes quiet when something walks in.",
   entrySound:null,
   completeText:"Chart in hand, you leave the wreck behind. Five paces north, four east, and a trail opens in the vines like a mouth.",
-  chain:"Planks: tally-strokes index into each carved word, spelling SAIL → sail pairs each shape with a wind letter → hull keel plate rule: READ THE WIND CLOCKWISE FROM NORTH (N,E,S,W) → crate digits in that order = 8513 → crate holds mirror-stamped key TIDE → box riddle answers TIDE, engraving says speak it backward = EDIT → box holds chart → chart math cross-references hull muster (12−4), drift days (3) and crate manifest (2 unbroken, doubled) = 54.",
+  chain:"Planks: tally-strokes index into each carved word, spelling SAIL → sail pairs each shape with a wind letter → hull keel plate rule: READ THE WIND SUNWISE FROM NORTH (N,E,S,W) → crate digits in that order = 8513 → crate holds mirror-stamped key TIDE → box riddle answers TIDE, engraving says speak it backward = EDIT → box holds chart → chart math cross-references hull muster (12−4), drift days (3) and crate manifest (2 unbroken, doubled) = 54.",
   objects:[
     { id:'hull', icon:'🚢', name:"Shattered Hull", pos:{x:69,y:52,w:22,h:24},
-      desc:"What's left of the Eldermoor lies on its side, ribs open to the sky. Inside, the dark holds its breath. You call out. Your echo comes back a half-second too late, and slightly… wrong.\n\nBeneath the bow, the shipwright's compass rose is carved into the keel plate, its old rule still legible:\n\n“READ THE WIND CLOCKWISE FROM NORTH.”\n\nHigher on the beam, the muster: twelve names scratched by hand. Four have been struck through — recently, by the look of the cuts." },
+      desc:"What's left of the Eldermoor lies on its side, ribs open to the sky. Inside, the dark holds its breath. You call out. Your echo comes back a half-second too late, and slightly… wrong.\n\nBeneath the bow, the shipwright's compass rose is carved into the keel plate, its old rule still legible:\n\n“READ THE WIND SUNWISE FROM NORTH.”\n\nHigher on the beam, the muster: twelve names scratched by hand. Four have been struck through — recently, by the look of the cuts." },
     { id:'driftwood', icon:'🪵', name:'Driftwood Planks', pos:{x:4,y:78,w:12,h:14},
       desc:"Four planks from a lifeboat bench lie in a rough row. Into each, someone carved a word — and beside each word, a count of tally strokes:\n\nCASTAWAY — ⫼ (three strokes)\nGALE — ‖ (two strokes)\nADRIFT — ⫼‖ (four strokes)\nSALVAGE — ⫼ (three strokes)\n\nWords and counts. The carver meant them to be read together, somehow.",
       puzzle:{
@@ -596,7 +596,7 @@ const ROOMS = [
         prompt:"Enter the 4-digit combination.", placeholder:"0000", answers:['8513'],
         hints:[
           "Three pieces of wreckage must meet: the crate's numbers, the sail's pairings, and a rule carved on the wreck itself.",
-          "The keel plate says READ THE WIND CLOCKWISE FROM NORTH — that's N, E, S, W. The sail tells you which shape belongs to which wind.",
+          "The keel plate says READ THE WIND SUNWISE FROM NORTH — that's N, E, S, W. The sail tells you which shape belongs to which wind.",
           "N is ▲8, E is ■5, S is ◆1, W is ●3 → enter 8513."
         ],
         solvedText:"The lock falls open on 8-5-1-3. Inside, wrapped in oilcloth: a small brass key. A word is stamped into it — TIDE — but the stamp is mirrored, as if it were meant to be read from the other side of something.",
