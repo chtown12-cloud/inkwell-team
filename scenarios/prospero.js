@@ -400,7 +400,7 @@ const ROOMS=[
   entryBeat:"The captain's chair faces the viewport. The dust on the armrests is disturbed — four long furrows on each side, as if something sat here recently. And gripped.",
   entrySound:'clank',
   completeText:"The reactor accepts the code and channels power aft. A service map blinks: ESCAPE POD — VIA HYDROPONICS. The green deck. The one the crew sealed first.",
-  chain:"Captain's log (Day 47: aimed the dish) + star chart gouges (15 scratches) → tune the dish to 47.15 → beacon loop is morse = SEAL VENTS → nav console binary status line (5-bit A1Z26) = GAMMA → reactor rod-seating logic (copper/iron/lead sockets) = 651.",
+  chain:"Captain's log (Day 47: aimed the dish) + star chart gouges (15 scratches) → tune the dish to 47.15 → beacon loop is tap code (knock pairs, 5×5 grid) = SEAL VENTS → nav console binary status line (5-bit A1Z26) = GAMMA → reactor rod-seating logic (copper/iron/lead sockets) = 651.",
   objects:[
     { id:'log', icon:'📖', name:"Captain's Log", pos:{x:18,y:66,w:10,h:12},
       desc:"The last entries, voice-to-text, punctuation failing with the speaker's nerve:\n\n“Day 44. Something answered our hail. Not on any channel we transmit on.”\n\n“Day 46. Crew hear it in the vents now. I have ordered the shafts welded.”\n\n“Day 47. I aimed the dish where the beacon died and I will not move it again. If anyone follows us: the heading is the day, then the scratches under the chart. Listen. Then get off this ship.”" },
@@ -410,29 +410,30 @@ const ROOMS=[
       desc:"The dish control console. A great steel ear on the hull, and a dial to swing it across the sky. The readout waits for a heading.\n\nThe captain's log said the heading is a day and a count — a number in two parts.",
       puzzle:{
         type:'dial',
-        prompt:"Swing the dish. Find the heading, then LOCK IT IN.",
+        prompt:"Swing the dish to the heading, then coax the trim knobs until the carrier holds.",
         answers:['4715'],
-        dial:{min:4000,max:5000,div:100,target:4715,pad:5,meter:'CARRIER STRENGTH',lock:'LOCK HEADING',miss:'nothing out there but hiss.',nearMorse:'... . .- .-..  ...- . -. - ...'},
+        dial:{min:4000,max:5000,div:100,target:4715,pad:5,meter:'CARRIER STRENGTH',lock:'LOCK HEADING',miss:'nothing out there but hiss.',
+          knobs:[{label:'AZIMUTH TRIM',target:41},{label:'GAIN',target:73},{label:'POLARIZATION',target:18}]},
         hints:[
           "The captain's log gives the whole number; something near the star chart counts what comes after the point.",
           "Day 47 — the day he aimed the dish. The fifteen scratches under the chart: “after the point.”",
-          "Set the heading to exactly 47.15 and lock it."
+          "Set the heading to exactly 47.15, then work the three knobs one at a time until the panel reads LOCKED IN."
         ],
-        solvedText:"At 47.15 the hiss opens like a door. Something has been broadcasting on this heading for forty years — a repeating loop, keyed by hand. The COMMS SPEAKER is carrying it now. Split up the letters; it's a long one."
+        solvedText:"At 47.15 the hiss opens like a door — and underneath it, something is knocking. A repeating loop, forty years old, knocked out by hand. The COMMS SPEAKER is carrying it now. Split up the letters; it's a long one."
       }
     },
     { id:'beacon', icon:'🔊', name:'The Beacon Loop', pos:{x:25,y:44,w:10,h:14}, hiddenUntil:'antenna',
-      desc:"The loop repeats every few seconds. Two words — nine letters, keyed slowly, deliberately, by someone who wanted this understood:\n\n···  ·  ·−  ·−··\n\n···−  ·  −·  −  ···\n\nDivide the letters among the crew and call them out.",
+      desc:"The loop repeats every few seconds. Not dots and dashes — knocks, in pairs: a count, a small pause, a second count. Nine pairs, two words, knocked out slowly by someone who wanted this understood.\n\nDivide the pairs among the crew and count them out.",
       puzzle:{
         prompt:"Decode the loop (two words).",
         placeholder:"TWO WORDS", answers:['SEALVENTS'],
-        morse:'... . .- .-..  ...- . -. - ...',
+        taps:'43 15 11 31|51 15 33 44 43',
         hints:[
-          "Nine letters, two words. ··· is S. Split the groups among the crew.",
-          "First word: S, E, A… four letters. Second starts ···− = V.",
-          "··· · ·− ·−·· is SEAL. ···− · −· − ··· is VENTS. Enter SEALVENTS."
+          "Knocks in pairs — that's the old prisoners' tap code. Look it up: the alphabet in a 5×5 grid, first count gives the row, second the column.",
+          "Row 4, column 3 is S. Row 1, column 5 is E. Split the pairs among the crew — and remember the grid drops K (it shares a cell with C).",
+          "4·3 S, 1·5 E, 1·1 A, 3·1 L — then 5·1 V, 1·5 E, 3·3 N, 4·4 T, 4·3 S. Enter SEALVENTS."
         ],
-        solvedText:"SEAL VENTS. Broadcast for forty years by the dead, to whoever came next. You look at the welded shafts. The welds on this deck… are intact. The ones below decks, the map says, are not.",
+        solvedText:"SEAL VENTS. Knocked out for forty years by the dead, to whoever came next. You look at the welded shafts. The welds on this deck… are intact. The ones below decks, the map says, are not.",
         solveBeat:"The moment the last letter resolves, the speaker pops once and goes silent — as if something, somewhere, noticed you'd finally heard it.",
         beatSound:'hiss'
       }
@@ -468,13 +469,13 @@ const ROOMS=[
 /* ============ ROOM 3 — HYDROPONICS ============ */
 {
   id:'hydro', name:'Room 3 — Hydroponics', scene:'hydro',
-  relay:{el:'airlock-lamp',seq:'.--. ..- .-. --. .',after:'pumps'},
+  relay:{el:'airlock-lamp',seq:'... ..... .... ..... .... .. .. .. . .....',after:'pumps'},
   intro:"The grow lights still burn. The plants have not stopped growing in forty years. Neither has anything else down here.",
   objective:"Cross the green deck to the aft airlock. The vent covers down here are <b>off</b>.",
   entryBeat:"The weld on the entry hatch was cut from the inside of the deck — the metal is peeled outward in four long strips, evenly spaced. You all look at the spacing. Nobody says what it looks like.",
   entrySound:'growl',
   completeText:"The aft airlock cycles you through toward the pod bay. Behind you, in the green, the drip-lines swing gently where nothing has touched them.",
-  chain:"Overgrown row riddle = VENT → specimen trays: keep only PRIME seed counts; survivors spell STARVE → nutrient pump priming sequence (6, −2 each) = 642 → the aft airlock panel blinks morse = PURGE.",
+  chain:"Overgrown row riddle = VENT → specimen trays: keep only PRIME seed counts; survivors spell STARVE → nutrient pump priming sequence (6, −2 each) = 642 → the aft airlock knocks the same tap code = PURGE.",
   objects:[
     { id:'grate', icon:'🕳️', name:'Torn Vent', pos:{x:55,y:2,w:12,h:13},
       desc:"The vent cover above the planters hangs by one bolt, bent double. Torn outward.\n\nInside the shaft, the dust shows a track — smooth, continuous, wider than a person. It has been used often. It is being used still." },
@@ -513,18 +514,18 @@ const ROOMS=[
           "Pump one draws 6. Each pump after it draws two less: 6, then 4, then…",
           "6, 4, 2 — enter 642."
         ],
-        solvedText:"6-4-2. The pumps shudder to life, flooding the rows — and the aft airlock's control panel wakes at the far end, blinking a pattern into the mist. Not a fault code. A rhythm."
+        solvedText:"6-4-2. The pumps shudder to life, flooding the rows — and the aft airlock's speaker wakes at the far end, knocking a pattern into the mist. Not a fault alarm. A count."
       }
     },
     { id:'airlock', icon:'🚪', name:'Aft Airlock', pos:{x:82,y:20,w:15,h:48}, hiddenUntil:'pumps',
-      desc:"The aft airlock's panel blinks its pattern over and over, faster each cycle, urgent as a heartbeat. Five letters. The keypad below waits for them.\n\n·−−·   ··−   ·−·   −−·   ·",
+      desc:"From the aft airlock's speaker grille, the knocking again — five pairs this time, patient, repeating, urgent as a heartbeat. The same code as the beacon loop. The keypad below waits for five letters.",
       puzzle:{
         prompt:"Enter the 5-letter word the panel is flashing.", placeholder:"5 LETTERS", answers:['PURGE'],
-        morse:'.--. ..- .-. --. .', morseLocked:'pumps',
+        taps:'35 45 42 22 15', morseLocked:'pumps',
         hints:[
-          "Long and short flashes — five letters. You've decoded the ship's code twice already.",
-          "·−−· is P. The single · at the end is E. It's an instruction — something this deck can DO.",
-          "·−−· ··− ·−· −−· · spells PURGE. So purge it."
+          "Pairs of knocks — the same 5×5 tap code as the beacon loop. First count is the row, second the column.",
+          "3·5 is row 3, column 5: P. The last pair, 1·5, is E. It's an instruction — something this deck can do.",
+          "3·5 P, 4·5 U, 4·2 R, 2·2 G, 1·5 E — enter PURGE. So purge it."
         ],
         solvedText:"P-U-R-G-E. You slam the deck purge. Fans scream; the green mist rips backward into the recyclers — and something big and unseen crashes through the planter rows AWAY from the airlock as it cycles you through.",
         solveBeat:"Through the closing inner door you hear it hit the far bulkhead and go still. Not hurt. Waiting for the fans to stop.",

@@ -128,6 +128,10 @@ button{font-family:'Inter',sans-serif;cursor:pointer}
 .morse{font-family:'Special Elite',serif;font-size:1.4rem;letter-spacing:4px;color:var(--teal-hi);text-align:center;margin:8px 0;word-break:break-all}
 .morse .lit{color:#ffe9b8;text-shadow:0 0 10px #ffda8c}
 .morse-btn{display:inline-block;margin:6px 4px 2px;font-size:.9rem;padding:9px 20px}
+.knob-row{margin-top:7px;display:flex;align-items:center;gap:10px;justify-content:center}
+.knob-label{font-family:'Special Elite',serif;font-size:.72rem;color:var(--dim);min-width:118px;text-align:right;letter-spacing:1px}
+.knob-row .knob-slider{flex:1;max-width:300px}
+.knob-val{font-family:'Special Elite',serif;color:var(--sand);min-width:30px;text-align:left;font-size:.85rem}
 
 /* ---------- tuning dial ---------- */
 .dial-ui{margin-top:14px;text-align:center}
@@ -904,11 +908,17 @@ function openModal(objId){
     <div class="obj-desc">${objDesc(o)}${(o.revealSymbols&&(!o.revealedBy||S.solved.has(o.revealedBy)))?`<div class="symbols">${o.revealSymbols}</div>`:''}</div>`;
   if(o.puzzle){
     const p=o.puzzle;
-    const morseReady=p.morse&&(!p.morseLocked||S.solved.has(p.morseLocked));
-    if(morseReady&&!solved){
-      html+=`<div class="morse" id="morse-view">${p.morse.replaceAll('.','·').replaceAll('-','−')}</div>
-        <div style="text-align:center"><button class="morse-btn" onclick="playMorseUI('${o.id}')">▶ &nbsp;PLAY THE SIGNAL</button></div>
-        <div class="how">▶ plays the signal out loud. It's international morse code — look the alphabet up, match each dot-dash group to a letter in order, and type only the decoded word(s) below.</div>`;
+    const codeReady=(p.morse||p.taps)&&(!p.morseLocked||S.solved.has(p.morseLocked));
+    if(codeReady&&!solved){
+      if(p.morse){
+        html+=`<div class="morse" id="morse-view">${p.morse.replaceAll('.','·').replaceAll('-','−')}</div>
+          <div style="text-align:center"><button class="morse-btn" onclick="playMorseUI('${o.id}')">▶ &nbsp;PLAY THE SIGNAL</button></div>
+          <div class="how">▶ plays the signal out loud. It's international morse code — look the alphabet up, match each dot-dash group to a letter in order, and type only the decoded word(s) below.</div>`;
+      } else {
+        html+=`<div class="morse" id="taps-view">${tapsDisplay(p.taps)}</div>
+          <div style="text-align:center"><button class="morse-btn" onclick="playTapsUI('${o.id}')">▶ &nbsp;PLAY THE KNOCKS</button></div>
+          <div class="how">▶ plays the knocking out loud. Each letter is TWO counts — a count, a small pause, a count — with a longer pause between letters. It's a famous code with a 5×5 letter grid; look it up, turn each pair of counts into a letter, and type only the decoded word(s) below.</div>`;
+      }
     }
     if(solved){
       html+=`<div class="solved-note">✓ ${p.solvedText||'Solved.'}</div>`;
@@ -952,6 +962,31 @@ function playMorseUI(objId){
     } else t+=170;
   });
   setTimeout(()=>{ if($('morse-view')) $('morse-view').textContent=glyphs.join(''); },t+300);
+}
+
+/* ---------- tap code (pairs of knocks; puzzle.taps e.g. '43 15|51 44') ---------- */
+function tapsDisplay(t){
+  return t.split('|').map(w=>w.trim().split(/\s+/).map(pr=>
+    '●'.repeat(+pr[0])+'&hairsp;·&hairsp;'+'●'.repeat(+pr[1])
+  ).join('&nbsp;&nbsp;&nbsp;&nbsp;')).join('&nbsp;&nbsp;&nbsp;∕&nbsp;&nbsp;&nbsp;');
+}
+function playTaps(t){
+  if(!AC) return;
+  let at=AC.currentTime+0.05;
+  t.split('|').forEach((w,wi)=>{
+    if(wi>0) at+=0.7;
+    w.trim().split(/\s+/).forEach(pr=>{
+      [+pr[0],+pr[1]].forEach((n,gi)=>{
+        for(let i=0;i<n;i++){ tone(135,0.05,at,0.32,'sine'); noiseBurst(0.025,420,0.2,'lowpass',at); at+=0.21; }
+        if(gi===0) at+=0.32;
+      });
+      at+=0.72;
+    });
+  });
+}
+function playTapsUI(objId){
+  const o=currentRoom().objects.find(x=>x.id===objId);
+  playTaps(o.puzzle.taps);
 }
 
 /* ---------- hints (escalating cost) ---------- */
@@ -1019,6 +1054,13 @@ function dialFmt(o,v){
 }
 function renderDial(o){
   const d=o.puzzle.dial;
+  const starts=[16,54,88,32,70];
+  const knobs=(d.knobs||[]).map((k,i)=>`
+      <div class="dial-row knob-row">
+        <span class="knob-label">${k.label}</span>
+        <input type="range" class="knob-slider" id="knob-${i}" data-target="${k.target}" min="0" max="100" step="1" value="${starts[i%starts.length]}">
+        <span class="knob-val" id="knob-val-${i}">${starts[i%starts.length]}</span>
+      </div>`).join('');
   return `<div class="puzzle-box">
     <div class="prompt">${o.puzzle.prompt}</div>
     <div class="dial-ui">
@@ -1028,9 +1070,12 @@ function renderDial(o){
         <input type="range" id="dial-slider" min="${d.min}" max="${d.max}" step="1" value="${d.min}">
         <button class="dial-fine" onclick="dialNudge(1)">+</button>
       </div>
+      ${knobs}
       <div class="sig-meter"><i id="sig-bar"></i></div>
-      <div class="sig-label">${d.meter||'SIGNAL STRENGTH'}</div>
-      <div class="how">Drag the slider to sweep, or tap − / + to move one step at a time. The meter fills as you close in on the right number — when the readout matches your answer exactly, lock it.</div>
+      <div class="sig-label" id="sig-label">${d.meter||'SIGNAL STRENGTH'}</div>
+      <div class="how">${d.knobs&&d.knobs.length?
+        `Two stages. First set the main dial to the exact number your clues give — the meter barely breathes until it's right. Then work the ${d.knobs.length} knobs below <b>one at a time, slowly</b>: the meter climbs as each finds its sweet spot. When the panel reads <b>LOCKED IN — SIGNAL IS GO</b>, hit the lock.`:
+        `Drag the slider to sweep, or tap − / + to move one step at a time. The meter fills as you close in on the right number — when the readout matches your answer exactly, lock it.`}</div>
       <button id="dial-lock" style="margin-top:14px" onclick="dialLock('${o.id}')">🔒 ${d.lock||'LOCK IT IN'}</button>
       <div class="feedback" id="feedback"></div>
     </div>
@@ -1051,12 +1096,33 @@ function dialInit(o){
     },3400)};
   }
   slider.addEventListener('input',()=>dialUpdate(o));
+  document.querySelectorAll('.knob-slider').forEach(k=>k.addEventListener('input',()=>dialUpdate(o)));
   dialUpdate(o);
+}
+function dialKnobsLocked(d){
+  return !d.knobs||!d.knobs.length||d.knobs.every((k,i)=>Math.abs(+($('knob-'+i)?.value??-99)-k.target)<=3);
 }
 function dialUpdate(o){
   const d=o.puzzle.dial, v=+$('dial-slider').value;
   $('freq-readout').textContent=dialFmt(o,v);
-  const prox=Math.max(0,1-Math.abs(v-d.target)/((d.max-d.min)*0.26));
+  const mainProx=Math.max(0,1-Math.abs(v-d.target)/((d.max-d.min)*0.26));
+  let prox=mainProx;
+  if(d.knobs&&d.knobs.length){
+    let kp=0;
+    d.knobs.forEach((k,i)=>{
+      const kv=+$('knob-'+i).value;
+      $('knob-val-'+i).textContent=kv;
+      kp+=Math.max(0,1-Math.abs(kv-k.target)/16);
+    });
+    kp/=d.knobs.length;
+    const exact=(v===d.target);
+    prox = exact ? 0.3+0.7*kp : mainProx*0.28;
+    const locked = exact && dialKnobsLocked(d);
+    if(locked) prox=1;
+    $('sig-label').innerHTML = locked
+      ? '<b style="color:#8fe3a8;letter-spacing:2px">◉ LOCKED IN — SIGNAL IS GO</b>'
+      : (d.meter||'SIGNAL STRENGTH');
+  }
   $('sig-bar').style.width=(prox*100)+'%';
   if(dialNodes) dialNodes.gain.gain.value=0.11*(1-prox*0.82)+0.01;
 }
@@ -1075,11 +1141,13 @@ function dialTeardown(){
 function dialLock(objId){
   const o=currentRoom().objects.find(x=>x.id===objId);
   const d=o.puzzle.dial, v=+$('dial-slider').value;
-  if(v===d.target){ dialTeardown(); return solvePuzzle(o); }
+  if(v===d.target&&dialKnobsLocked(d)){ dialTeardown(); return solvePuzzle(o); }
   wrongAnswer(); sfxStatic(0.5,0.2);
   const fb=$('feedback');
   fb.className='feedback bad';
-  fb.textContent=`✗ ${dialFmt(o,v)} — ${d.miss||'nothing but static out there.'} (+0:05 penalty)`;
+  fb.textContent = (v===d.target)
+    ? `✗ ${dialFmt(o,v)} — the number is right, but the carrier won't hold. Keep working the knobs. (+0:05 penalty)`
+    : `✗ ${dialFmt(o,v)} — ${d.miss||'nothing but static out there.'} (+0:05 penalty)`;
 }
 
 /* ---------- signal pad (labels via puzzle.labels) ---------- */

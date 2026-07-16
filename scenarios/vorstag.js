@@ -7,6 +7,30 @@
 (function(){
 const SCENES={};
 
+/* pigpen cipher glyphs — standard key: A-I grid, J-R grid+dot, S-V X, W-Z X+dot */
+const PIG=(()=>{
+  const grid=(i,dot)=>{
+    const r=Math.floor(i/3),c=i%3;
+    let d='';
+    if(r>0) d+='M7 7 H29 ';
+    if(r<2) d+='M7 31 H29 ';
+    if(c>0) d+='M7 7 V31 ';
+    if(c<2) d+='M29 7 V31 ';
+    return `<path d="${d}"/>`+(dot?'<circle cx="18" cy="19" r="2.7" fill="currentColor" stroke="none"/>':'');
+  };
+  const vee=(i,dot)=>{
+    const d=['M7 7 L18 30 L29 7','M7 7 L30 19 L7 31','M29 7 L6 19 L29 31','M7 31 L18 8 L29 31'][i];
+    const dp=[[18,13],[13,19],[23,19],[18,25]][i];
+    return `<path d="${d}"/>`+(dot?`<circle cx="${dp[0]}" cy="${dp[1]}" r="2.7" fill="currentColor" stroke="none"/>`:'');
+  };
+  const glyph=ch=>{
+    const a='ABCDEFGHI'.indexOf(ch), j='JKLMNOPQR'.indexOf(ch), x='STUV'.indexOf(ch), w='WXYZ'.indexOf(ch);
+    const inner = a>=0?grid(a,false) : j>=0?grid(j,true) : x>=0?vee(x,false) : vee(w,true);
+    return `<svg width="31" height="34" viewBox="0 0 36 38" style="vertical-align:middle;margin:0 4px;overflow:visible"><g stroke="currentColor" stroke-width="2.8" fill="none" stroke-linecap="square">${inner}</g></svg>`;
+  };
+  return word=>'<span style="color:var(--sand)">'+word.split(' ').map(w=>w.split('').map(glyph).join('')).join('<span style="display:inline-block;width:36px"></span>')+'</span>';
+})();
+
 /* ---------- Room 1: The Gatehouse Court ---------- */
 SCENES.gatehouse=()=>`
 <svg viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice">
@@ -409,7 +433,7 @@ const ROOMS=[
   entryBeat:"The fire in the hearth is burning. It was not burning when the household died, and no one has been here since. Something keeps this room warm. Something likes it here.",
   entrySound:'knock',
   completeText:"The orrery clicks into alignment and a bookcase rolls aside on iron rails, breathing out forty years of cold air and the smell of a hospital. The laboratory stair leads down.",
-  chain:"Hymn board (CXIX = 119) + psalter margin (third verse) → set the organ stop to 119.3 → the hidden panel's bell chimes are morse = STAY INSIDE → the Baron's folio Atbash mirror-script (GSV = THE) = SPARK → orrery planet-weights (Roman numerals, heaviest sunward) = 763.",
+  chain:"Hymn board (CXIX = 119) + psalter margin (third verse) → set the organ stop to 119.3 → the hidden panel's vellum strip is pigpen cipher = STAY INSIDE → the Baron's folio Atbash mirror-script (GSV = THE) = SPARK → orrery planet-weights (Roman numerals, heaviest sunward) = 763.",
   objects:[
     { id:'hymnboard', icon:'🎼', name:'Hymn Board', pos:{x:66,y:26,w:9,h:20},
       desc:"The chapel hymn board, its brass letters furred with dust:\n\nHYMN: CXIX\nVERSE: (the tile is missing)\n\nTucked behind the board, a psalter falls open to a dog-eared page. In the margin, the Baron's hand: “Father sang only the third verse when the storm came close. Only ever the third.”" },
@@ -417,29 +441,29 @@ const ROOMS=[
       desc:"The great organ dominates the east wall. Its stop dial is a strange one — numbered like an instrument of science, not music — and a small plate reads: HYMN · VERSE.\n\nThe Baron's household hid its secrets behind music. Set the stop, and the room will answer.",
       puzzle:{
         type:'dial',
-        prompt:"Set the organ stop, then PULL THE STOP.",
+        prompt:"Set the stop to the hymn and verse, then work the voicing knobs until the pipes ring true.",
         answers:['1193'],
-        dial:{min:1000,max:1300,div:10,target:1193,pad:5,meter:'RESONANCE',lock:'PULL THE STOP',miss:'the pipes moan and fall silent.',nearMorse:'... - .- -.--  .. -. ... .. -.. .'},
+        dial:{min:1000,max:1300,div:10,target:1193,pad:5,meter:'RESONANCE',lock:'PULL THE STOP',miss:'the pipes moan and fall silent.',
+          knobs:[{label:'SWELL',target:66},{label:'TREMULANT',target:23},{label:'MIXTURE',target:88}]},
         hints:[
           "The stop wants a hymn and a verse — one number, then a point, then another.",
           "The hymn board says CXIX — Roman numerals for 119. The psalter margin says only the third verse.",
-          "Set the stop to exactly 119.3 and pull it."
+          "Set the stop to exactly 119.3, then work the three voicing knobs one at a time until the panel reads LOCKED IN."
         ],
-        solvedText:"At 119.3 a chord swells that has waited forty years — and behind the pipes, a hidden panel cracks open. From inside it, small bells begin to chime a pattern. Long chimes and short. Over and over."
+        solvedText:"At 119.3 a chord swells that has waited forty years — and behind the pipes, a hidden panel cracks open. Inside hangs a narrow strip of vellum, stitched edge to edge with small angular marks. Lodge-work. The Baron's people wrote the things they feared in the masons' cipher."
       }
     },
-    { id:'chimes', icon:'🔔', name:'The Hidden Chimes', pos:{x:69,y:50,w:8,h:16}, hiddenUntil:'organ',
-      desc:"Behind the panel, a rack of clockwork bells chimes the same message endlessly — two words, ten letters, rung in longs and shorts by a machine the Baron built to warn his own house:\n\n···  −  ·−  −·−−\n\n··  −·  ···  ··  −··  ·\n\nDivide the letters among the crew and ring them out.",
+    { id:'chimes', icon:'📜', name:'The Vellum Strip', pos:{x:69,y:50,w:8,h:16}, hiddenUntil:'organ',
+      desc:"Ten symbols are stitched into the vellum in black thread — two words. Angular boxes, corners and wedges, some carrying a single dot:\n\n"+PIG("STAY INSIDE")+"\n\nThe Baron's household wrote its warnings in the masons' cipher, sure that no servant could read them. Divide the symbols among the crew and work them out.",
       puzzle:{
-        prompt:"Decode the chimes (two words).",
+        prompt:"Decode the stitched symbols (two words).",
         placeholder:"TWO WORDS", answers:['STAYINSIDE'],
-        morse:'... - .- -.--  .. -. ... .. -.. .',
         hints:[
-          "Ten letters, two words, in the standard code — longs and shorts. Split the groups among the crew.",
-          "First word: ··· is S, − is T… four letters. Second begins ·· = I.",
-          "··· − ·− −·−− is STAY. ·· −· ··· ·· −·· · is INSIDE. Enter STAYINSIDE."
+          "Boxes, corners and dots — that's the pigpen cipher, the old Freemasons' code. Look up a pigpen key: each letter lives in a grid or an X, and the lines around its cell become its symbol.",
+          "Use the standard key: A–I fill a tic-tac-toe grid, J–R repeat it with a dot, S–V fill an X, W–Z repeat the X with a dot. The first symbol — a wedge — is S.",
+          "The two words are STAY and INSIDE. Enter STAYINSIDE."
         ],
-        solvedText:"STAY INSIDE. The Baron built his house a voice, and this is all it ever says. You think of the wolves. You think of what the hounds were really counting. You stay inside.",
+        solvedText:"STAY INSIDE. The Baron's lodge stitched one warning into the organ itself, and this is it. You think of the wolves. You think of what the hounds were really counting. You stay inside.",
         solveBeat:"Outside the tall windows, against the lightning, something crosses the courtyard below in four strides. The courtyard is sixty feet wide.",
         beatSound:'thunder'
       }
@@ -475,13 +499,12 @@ const ROOMS=[
 /* ============ ROOM 3 — THE LABORATORY ============ */
 {
   id:'laboratory', name:'Room 3 — The Laboratory', scene:'laboratory',
-  relay:{el:'dumb-lamp',seq:'.- .-.. .. ...- .',after:'switchboard'},
   intro:"The great work is gone from the slab. The straps were opened from the inside.",
   objective:"Wake the Baron's machinery. Whatever he made here, <b>you need what powered it.</b>",
   entryBeat:"On the slab, the leather straps lie neatly unbuckled — not torn. It took its time. It folded them.",
   entrySound:'clank',
   completeText:"The dumbwaiter's word hangs in the air as you climb the tower stair. Below you, in the dark of the cellar, something begins — slowly, tunelessly, in a voice like wet gravel — to hum the Baron's hymn.",
-  chain:"The slab's chalked riddle = LIGHTNING → Leyden jar rack: keep only ODD charges; survivors spell RISEN → galvanic switchboard fuse riddle (even digits, product 48) = 624 → the dumbwaiter bell rings morse from the cellar = ALIVE.",
+  chain:"The slab's chalked riddle = LIGHTNING → Leyden jar rack: keep only ODD charges; survivors spell RISEN → galvanic switchboard fuse riddle (even digits, product 48) = 624 → the dumbwaiter sends up a card in the same pigpen = ALIVE.",
   objects:[
     { id:'slab', icon:'⛓️', name:'The Empty Slab', pos:{x:33,y:47,w:34,h:22},
       desc:"The slab itself — scorched, strapped, and empty. A riddle is chalked along its edge in the Baron's hand — one he wrote for his own machinery:\n\n“I am the Baron's oldest servant.\nI climb the tower without legs.\nI speak exactly once,\nand the sky breaks when I do.\nWhat am I?”",
@@ -518,20 +541,19 @@ const ROOMS=[
           "48 = 2 × 4 × 6 — and no other trio of even digits works.",
           "Largest, smallest, middle: 6, 2, 4 — enter 624."
         ],
-        solvedText:"6-2-4. The board wakes with a rising whine, needles climbing — and at the back of the laboratory, the dumbwaiter's little brass bell begins to ring. Short rings and long ones. From the cellar. Where the rope is cut."
+        solvedText:"6-2-4. The board wakes with a rising whine, needles climbing — and at the back of the laboratory, the dumbwaiter begins to climb. Slowly. Unbidden. From the cellar. Where the rope is cut."
       }
     },
-    { id:'dumbwaiter', icon:'🛎️', name:'The Dumbwaiter Bell', pos:{x:54,y:70,w:12,h:24}, hiddenUntil:'switchboard',
-      desc:"The dumbwaiter shaft breathes cold cellar air. Its bell rings the same five letters, over and over, rung from below by a hand you will not think about:\n\n·−   ·−··   ··   ···−   ·\n\nThe tower stair's letter-lock waits for five letters.",
+    { id:'dumbwaiter', icon:'🛎️', name:'The Dumbwaiter Card', pos:{x:54,y:70,w:12,h:24}, hiddenUntil:'switchboard',
+      desc:"The dumbwaiter arrives from the cellar on its cut rope, breathing cold air — carrying one thing. A mourning card, and on it, five symbols in the same stitched cipher as the organ's vellum:\n\n"+PIG("ALIVE")+"\n\nThe tower stair's letter-lock waits for five letters.",
       puzzle:{
         prompt:"Enter the 5-letter word the bell is ringing.", placeholder:"5 LETTERS", answers:['ALIVE'],
-        morse:'.- .-.. .. ...- .', morseLocked:'switchboard',
         hints:[
-          "Long and short rings — five letters, standard code. Call them out as a team.",
-          "·− is A. The single · at the end is E. It's a status report.",
-          "·− ·−·· ·· ···− · spells ALIVE. It wants you to know."
+          "The same masons' pigpen cipher as the vellum — grid letters, X letters, a dot for the second round.",
+          "Five letters. The first is the grid's top-left corner: A. The last is the grid's boxed-in centre: E. It's a status report.",
+          "The card reads ALIVE. It wants you to know."
         ],
-        solvedText:"A-L-I-V-E. The bell stops the instant you say it aloud — satisfied. The tower stair unlocks. Up — away from the cellar. Go.",
+        solvedText:"A-L-I-V-E. Nobody asks who sent the card up. The tower stair unlocks. Up — away from the cellar. Go.",
         solveBeat:"From the bottom of the dumbwaiter shaft, very quietly, something tugs the bell-rope twice more. You already answered. It just wanted to hear you again.",
         beatSound:'bell'
       }

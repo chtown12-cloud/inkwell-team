@@ -385,41 +385,41 @@ const ROOMS=[
 {
   id:'sleeper', name:'Room 2 — The Sleeper Corridor', scene:'sleeper', stageFx:'rocking',
   intro:"Four cabins, all made up for the night. Cabin 3 stands ajar, and a gramophone is playing to nobody.",
-  objective:"The passengers' things remember more than the passengers. Find the record's speed — then <b>listen to the groove.</b>",
+  objective:"The passengers' things remember more than the passengers. Find the record's speed — then <b>mind what he left behind.</b>",
   entryBeat:"Every cabin's berth is turned down, and on every pillow sits a ticket, neatly punched. You did not hear him pass. You never hear him pass.",
   entrySound:'clack',
   completeText:"Berth 13's door swings open on an empty room and a cold draft moving toward the dining car. You follow it, because the alternative is staying.",
-  chain:"Passenger diary (“he played it at 78, only ever the fourth song”) → set the gramophone to 78.4 → the run-out groove clicks morse = WRONG STOP → the valise rail-fence cipher (two rails, BAERK) = BRAKE → berth 13 boarding-order logic (seat 7 between, 2 before 6) = 276.",
+  chain:"Passenger diary (“he played it at 78, only ever the fourth song”) → set the gramophone to 78.4 → the record sleeve is English written in Cyrillic = WRONG STOP → the valise rail-fence cipher (two rails, BAERK) = BRAKE → berth 13 boarding-order logic (seat 7 between, 2 before 6) = 276.",
   objects:[
     { id:'diary', icon:'📔', name:"A Passenger's Diary", pos:{x:36,y:82,w:11,h:12},
-      desc:"A lady's travel diary, dropped open on the runner:\n\n“The man in Cabin 3 plays his gramophone at all hours. Always at 78, and only ever the fourth song on the record — he lifts the needle back, again and again.”\n\n“I asked the Conductor to speak to him. The Conductor said — and I am sure I misheard — that Cabin 3 has been empty since the accident.”" },
+      desc:"A lady's travel diary, dropped open on the runner:\n\n“The man in Cabin 3 plays his gramophone at all hours. Always at 78, and only ever the fourth song on the record — he lifts the needle back, again and again. I could not place his accent — White Russian, Mrs. Pemberton insists. He came aboard with one record and no luggage.”\n\n“I asked the Conductor to speak to him. The Conductor said — and I am sure I misheard — that Cabin 3 has been empty since the accident.”" },
     { id:'gramophone', icon:'📻', name:'The Gramophone', pos:{x:48,y:48,w:12,h:16},
       desc:"Cabin 3's gramophone, brass horn dented, turntable waiting. The speed dial is a strange aftermarket thing — speed, then a point, then the track.\n\nThe diary said he only ever played one song.",
       puzzle:{
         type:'dial',
-        prompt:"Set the speed and track, then DROP THE NEEDLE.",
+        prompt:"Set the speed and track, then work the tone knobs until the groove tracks clean.",
         answers:['784'],
-        dial:{min:600,max:900,div:10,target:784,pad:4,meter:'GROOVE TRACKING',lock:'DROP THE NEEDLE',miss:'the needle skates across dead wax.',nearMorse:'.-- .-. --- -. --.  ... - --- .--.'},
+        dial:{min:600,max:900,div:10,target:784,pad:4,meter:'GROOVE TRACKING',lock:'DROP THE NEEDLE',miss:'the needle skates across dead wax.',
+          knobs:[{label:'NEEDLE WEIGHT',target:44},{label:'HORN GATE',target:69},{label:'GOVERNOR',target:26}]},
         hints:[
           "The diary gives both parts: the speed, then the song he replayed.",
           "He played it at 78 — and only ever the fourth song. Speed, point, track.",
-          "Set the dial to exactly 78.4 and drop the needle."
+          "Set the dial to exactly 78.4, then work the three knobs one at a time until the panel reads LOCKED IN."
         ],
-        solvedText:"At 78.4 the fourth song swells — a waltz, beautiful and wrong — and then the needle rides past the music into the RUN-OUT GROOVE, where someone has cut clicks into the wax by hand. Long clicks and short."
+        solvedText:"At 78.4 the fourth song swells — a Russian waltz, beautiful and wrong. And as it plays, the RECORD SLEEVE propped on the cabinet catches the lamplight: someone has written across it, hard enough to tear the paper."
       }
     },
-    { id:'runout', icon:'💿', name:'The Run-Out Groove', pos:{x:57,y:47,w:10,h:15}, hiddenUntil:'gramophone',
-      desc:"The run-out groove clicks the same message, around and around — two words, nine letters, carved into the record by hand:\n\n·−−  ·−·  −−−  −·  −−·\n\n···  −  −−−  ·−−·\n\nDivide the letters among the crew and call them out.",
+    { id:'runout', icon:'💿', name:'The Record Sleeve', pos:{x:57,y:47,w:10,h:15}, hiddenUntil:'gramophone',
+      desc:"The sleeve of the Russian pressing — and across it, in heavy pencil, two words in the writer's own alphabet:\n\n<span style='font-size:1.7rem;letter-spacing:6px'>ВРОНГ&nbsp;&nbsp;СТОП</span>\n\nNot Russian words. The hand was writing English sounds the only way it knew how. Sound the letters out.",
       puzzle:{
-        prompt:"Decode the groove (two words).",
-        placeholder:"TWO WORDS", answers:['WRONGSTOP'],
-        morse:'.-- .-. --- -. --.  ... - --- .--.',
+        prompt:"Sound out the two penciled words.",
+        placeholder:"TWO WORDS", answers:['WRONGSTOP','VRONGSTOP'],
         hints:[
-          "Nine letters, two words. ·−− is W. Split the groups among the crew.",
-          "First word: W, R, O… five letters. Second starts ··· = S.",
-          "·−− ·−· −−− −· −−· is WRONG. ··· − −−− ·−−· is STOP. Enter WRONGSTOP."
+          "That's the Cyrillic alphabet. Look it up and give each letter its sound: В is a V, Р is an R, С is an S…",
+          "Sound out the first word: V-R-O-N-G. Say it aloud — it's an English word in Russian dress. The second word even means the same thing in both languages.",
+          "ВРОНГ СТОП — WRONG STOP. Enter WRONGSTOP."
         ],
-        solvedText:"WRONG STOP. Cut into shellac by a man who wanted the next passenger to know: whatever station this train pulls into tonight, do not get off. Stay aboard. Reach the engine.",
+        solvedText:"WRONG STOP. Penciled by a man who wanted the next passenger to know: whatever station this train pulls into tonight, do not get off. Stay aboard. Reach the engine.",
         solveBeat:"Outside the windows, lights slide past — a platform, lamp posts, figures standing in rows. Every figure turns its head with the train, in unison, as you pass.",
         beatSound:'hiss'
       }
@@ -455,13 +455,12 @@ const ROOMS=[
 /* ============ ROOM 3 — THE DINING CAR ============ */
 {
   id:'dining', name:'Room 3 — The Dining Car', scene:'dining', stageFx:'rocking',
-  relay:{el:'bell-lamp',seq:'.- --. .- .. -.',after:'till'},
   intro:"Every table is set for supper. The kitchen bell rings for orders no one is taking.",
   objective:"Cross the dining car and settle the house's accounts. <b>Mind the mirror.</b>",
   entryBeat:"Three tables are set with plates still steaming. The train has been abandoned for hours. Somebody keeps cooking.",
   entrySound:'bell',
   completeText:"The service door to the tender swings wide. Behind you, in the dining car, a chair scrapes politely back into place — supper, apparently, is over.",
-  chain:"Chef's board riddle = MIRROR → table settings: clear only PERFECT-SQUARE covers; survivors spell HUNGRY → the till chit addition ($3.85) = 385 → the kitchen service bell rings morse = AGAIN.",
+  chain:"Chef's board riddle = MIRROR → table settings: clear only PERFECT-SQUARE covers; survivors spell HUNGRY → the till chit addition ($3.85) = 385 → the galley order ticket is Cyrillic = AGAIN.",
   objects:[
     { id:'menu', icon:'🍽️', name:"The Chef's Board", pos:{x:64,y:33,w:8,h:18},
       desc:"Tonight's menu, chalked in a strong hand that failed at the dessert line. Under the entrées, a riddle — the chef's game with the waiters, every service:\n\n“I show you the whole car.\nI seat a second party opposite yours.\nNo guest of mine has ever paid,\nand no guest of mine has ever left.\nWhat am I?”",
@@ -505,16 +504,15 @@ const ROOMS=[
       }
     },
     { id:'servicebell', icon:'🛎️', name:'The Service Bell', pos:{x:3,y:36,w:13,h:22}, hiddenUntil:'till',
-      desc:"The kitchen's service bell begins to ring from the empty galley — short rings and long, patient, repeating. The tender door's 5-letter lock waits.\n\n·−   −−·   ·−   ··   −·",
+      desc:"The kitchen's service bell rings once from the empty galley — and the order wheel spins. A ticket comes up from below, written in a hand you've seen once already tonight, on a record sleeve:\n\n<span style='font-size:1.7rem;letter-spacing:6px'>АГЕЙН</span>\n\nThe tender door's 5-letter lock waits. Sound it out.",
       puzzle:{
-        prompt:"Enter the 5-letter word the bell is ringing.", placeholder:"5 LETTERS", answers:['AGAIN'],
-        morse:'.- --. .- .. -.', morseLocked:'till',
+        prompt:"Enter the 5-letter word the bell is ringing.", placeholder:"5 LETTERS", answers:['AGAIN','AGEYN','AGEN'],
         hints:[
-          "Long and short rings — five letters, standard code. Call them out as a team.",
-          "·− is A, and it opens AND closes the word. −−· is G.",
-          "·− −−· ·− ·· −· spells AGAIN. It has done all this before. It will do it again."
+          "Cyrillic again — the passenger from Cabin 3 got here first. Look up each letter's sound: А is A, Г is G, Й is a Y-glide…",
+          "A-G-E-Y-N. Say it out loud — the tender lock wants the English spelling of what you hear.",
+          "АГЕЙН sounds out to AGAIN. Enter AGAIN. It has done all this before. It will do it again."
         ],
-        solvedText:"A-G-A-I-N. The bell stops mid-ring, satisfied. The tender door unbolts — and you understand, finally, that the train doesn't want prisoners. It wants staff. Move.",
+        solvedText:"A-G-A-I-N. The order wheel clatters to a stop, satisfied. The tender door unbolts — and you understand, finally, that the train doesn't want prisoners. It wants staff. Move.",
         solveBeat:"As the door opens, every place setting in the car — in the room, not the mirror — is suddenly, silently, cleared.",
         beatSound:'bell'
       }

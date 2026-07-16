@@ -36,10 +36,14 @@ feels fresh rather than repeating the first:
 | Room-2 deduction | mastermind lamps | **logic-grid** rod seating | **Roman-numeral** weighing | **halving-chain** riddle | **boarding-order** logic |
 | Room-3 filter | threshold (>) | **prime** counts | **odd** charges | **even** depths | **perfect-square** covers |
 | Room-3 number lock | linked relations | **countdown sequence** | **factor riddle** (×48) | **multiples-of-three** | **money addition** |
+| Signal code | **morse** (its home turf) | **tap code** (knock pairs) | **pigpen** (masons' cipher) | **braille** (embossed dots) | **Cyrillic** (émigré's hand) |
 
-The only mechanics deliberately shared by all five — because they're the
-game's signature co-op moments — are the audible **morse** decodes (teams
-look up the morse alphabet themselves), the tuning **dial**, the
+Each scenario's two mid-game signal decodes use its own real-world code —
+morse, prisoners' tap code, pigpen, braille, or phonetic Cyrillic — and teams
+look the alphabet up themselves. The mechanics deliberately shared by all five
+— because they're the game's signature co-op moments — are the two-stage
+tuning **console** (the exact frequency comes from clues, then three trim
+knobs are coaxed by watching the meter until the panel reads LOCKED IN), the
 **scheduling-constraint** drill, the doubled/reversed **callbacks**, and the
 SOS finale.
 
@@ -89,9 +93,9 @@ Answers per scenario, in solve order. (Full chains and all hint text: in-game GM
 
 | Room | Answers |
 |------|---------|
-| 1 · The Cryo Bay | LOCKER (acrostic of pod logs) → **6942** (shutdown order: reactor/power/water/cryo) → RATS (STAR inside-out) → **34** (9 souls − 6 pods; 2 cores × 2) |
-| 2 · The Bridge | tune **47.15** (Day 47 + 15 scratches) → SEAL VENTS (morse) → GAMMA (binary 5-bit) → **651** (rod-seating logic) |
-| 3 · Hydroponics | VENT → STARVE (prime seed counts) → **642** (priming: 6, −2 each pump) → PURGE (airlock morse) |
+| 1 · The Cryo Bay | LOCKER (acrostic of pod logs) → **6942** (shutdown order: reactor/power/water/cryo) → RATS (STAR backward) → **34** (9 souls − 6 pods; 2 cores × 2) |
+| 2 · The Bridge | tune **47.15** (Day 47 + 15 scratches) → SEAL VENTS (tap code) → GAMMA (binary 5-bit) → **651** (rod-seating logic) |
+| 3 · Hydroponics | VENT → STARVE (prime seed counts) → **642** (priming: 6, −2 each pump) → PURGE (airlock tap code) |
 | 4 · The Escape Pod Bay | EBDAC (scheduling, oxygen 3rd) → **9430** (47.15 × 2) → **435** (5:20 pass − 45 min) → **2496** (6942 reversed) → SOS thrusters |
 
 ## ⚡ Castle Vorstag
@@ -99,8 +103,8 @@ Answers per scenario, in solve order. (Full chains and all hint text: in-game GM
 | Room | Answers |
 |------|---------|
 | 1 · The Gatehouse Court | WELL (anagram of L,W,L,E) → **9357** (seasons from spring: ⚘✠♜☾) → NOCTIS (NIGHT in the old tongue) → **56** (11 guests − 6 wolves; 3 dead candles × 2) |
-| 2 · The Library | organ stop **119.3** (hymn CXIX + third verse) → STAY INSIDE (chime morse) → SPARK (Atbash mirror) → **763** (Roman weights VII·VI·III, heaviest first) |
-| 3 · The Laboratory | LIGHTNING → RISEN (odd charges) → **624** (even digits, product 48) → ALIVE (dumbwaiter bell morse) |
+| 2 · The Library | organ stop **119.3** (hymn CXIX + third verse) → STAY INSIDE (pigpen vellum) → SPARK (Atbash mirror) → **763** (Roman weights VII·VI·III, heaviest first) |
+| 3 · The Laboratory | LIGHTNING → RISEN (odd charges) → **624** (even digits, product 48) → ALIVE (pigpen card) |
 | 4 · The Tower | EADCB (scheduling, capacitor 2nd) → **2386** (119.3 × 2) → **1040** (11:30 strike − 50 min) → **7539** (9357 reversed) → SOS lamp |
 
 ## ❄️ Station Erebus
@@ -108,8 +112,8 @@ Answers per scenario, in solve order. (Full chains and all hint text: in-game GM
 | Room | Answers |
 |------|---------|
 | 1 · The Perimeter | GARAGE (A1Z26 channel №) → **6841** (resupply order: food/fuel/medical/flares) → SOUTH (riddle = NORTH, "we drilled the other way") → **73** (14 bunks − 7 rotated; 3 full drums) |
-| 2 · Crew Quarters | tune **88.2** (day 88 + 2 radio checks) → MELT NOTHING (tape morse) → FROST (Vigenère, key ICE) → **842** (halving chain, Σ14) |
-| 3 · The Ice Core Lab | ICE → BURIED (even depths) → **936** (multiples of 3: 9=3+6) → BELOW (intercom morse) |
+| 2 · Crew Quarters | tune **88.2** (day 88 + 2 radio checks) → MELT NOTHING (braille leader) → FROST (Vigenère, key ICE) → **842** (halving chain, Σ14) |
+| 3 · The Ice Core Lab | ICE → BURIED (even depths) → **936** (multiples of 3: 9=3+6) → BELOW (braille fob) |
 | 4 · The Radio Tower | DEBAC (scheduling, plugs 2nd) → **1764** (88.2 × 2) → **530** (6:10 window − 40 min) → **1486** (6841 reversed) → SOS drum line |
 
 ## 🚂 The Midnight Special
@@ -117,8 +121,8 @@ Answers per scenario, in solve order. (Full chains and all hint text: in-game GM
 | Room | Answers |
 |------|---------|
 | 1 · The Baggage Car | PORTER (book cipher, line·word) → **8253** (takings, first class → freight) → EMIT (TIME backward) → **49** (11 − 7 crates; 3 sacks × 3) |
-| 2 · The Sleeper Corridor | gramophone **78.4** (78 rpm + fourth song) → WRONG STOP (run-out groove morse) → BRAKE (rail fence) → **276** (boarding order: 7 between, 2 before 6) |
-| 3 · The Dining Car | MIRROR → HUNGRY (perfect-square covers) → **385** (chits total $3.85) → AGAIN (service bell morse) |
+| 2 · The Sleeper Corridor | gramophone **78.4** (78 rpm + fourth song) → WRONG STOP (Cyrillic sleeve) → BRAKE (rail fence) → **276** (boarding order: 7 between, 2 before 6) |
+| 3 · The Dining Car | MIRROR → HUNGRY (perfect-square covers) → **385** (chits total $3.85) → AGAIN (Cyrillic ticket) |
 | 4 · The Locomotive | CBEDA (scheduling, feed 2nd) → **1568** (78.4 × 2) → **340** (4:45 junction − 65 min) → **3528** (8253 reversed) → SOS whistle |
 
 Every deduction and number-lock puzzle above has a solver-verified unique

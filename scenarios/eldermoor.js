@@ -652,13 +652,14 @@ const ROOMS = [
       desc:"The heart of the station: a wall of dials and meters, still warm, its panel light flickering like a failing heartbeat. A brass plate reads: EMERGENCY MONITORING STATION 7 — TUNE WITH CARE.\n\nStatic washes from the speaker like surf. The main tuning dial waits. The operator's note said the band is a number in two parts — a day, a point, and a count.",
       puzzle:{
         type:'dial',
-        prompt:"Sweep the dial. Find the frequency, then LOCK IT IN.",
+        prompt:"Sweep the dial to the operator's frequency, then coax the trim knobs until the carrier locks.",
         answers:['1215'],
-        dial:{min:880,max:1350,div:10,target:1215,nearMorse:'.-.. --- --- -.-  ..- -. -.. . .-.'},
+        dial:{min:880,max:1350,div:10,target:1215,nearMorse:'.-.. --- --- -.-  ..- -. -.. . .-.',
+          knobs:[{label:'RF GAIN',target:62},{label:'BANDWIDTH',target:27},{label:'AERIAL TRIM',target:84}]},
         hints:[
           "The logbook gives you the whole number. Something else in this room counts what comes after the point.",
           "Day 121 was the last entry — the day he stopped counting. The five gouges beneath the window sill count the nightly knocks: that's your decimal.",
-          "Tune to exactly 121.5 and lock it in."
+          "Tune to exactly 121.5, then work the three knobs one at a time — slowly — until the panel reads LOCKED IN."
         ],
         solvedText:"At 121.5 the static parts like a curtain. A recorded voice, looped for years, keys the same message over and over. The SPEAKER is carrying a signal now — go listen to it, and split the work: it's a long one."
       }
