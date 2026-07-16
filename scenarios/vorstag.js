@@ -382,11 +382,11 @@ const ROOMS=[
           "The riddle's answer is NIGHT. Now say it in the old tongue — the word stamped on the mirrored key.",
           "The key says it: NOCTIS. Latin for 'of the night'. Enter NOCTIS."
         ],
-        solvedText:"N-O-C-T-I-S. The lock's tumblers fall like a sigh, and the doors to the keep stand open. Inside, a great chandelier hangs over the hall — EIGHT candles, THREE of them long dead under fossilized wax. The living five are cold… but the wax is soft."
+        solvedText:"N-O-C-T-I-S. The lock's tumblers fall like a sigh, and the doors to the keep stand open. Inside, a great chandelier hangs over the hall — eight candles, three of them long dead under fossilized wax. The living five are cold… but the wax is soft."
       }
     },
     { id:'ledger', icon:'📒', name:"Gatekeeper's Ledger", pos:{x:53,y:64,w:10,h:14}, hiddenUntil:'doors',
-      desc:"Inside the doors, a lectern and the gatekeeper's ledger, open to the night of the last feast. A 2-digit wheel bars the inner hall, and the final entry reads:\n\n“INNER HALL — first figure: the guests at the Baron's table, LESS the wolves the hounds counted that night. Second figure: the chandelier's dead candles, DOUBLED.”\n\nHis marginalia: “eleven sat down to dine. the hounds counted six. they would not stop counting.”",
+      desc:"Inside the doors, a lectern and the gatekeeper's ledger, open to the night of the last feast. A 2-digit wheel bars the inner hall, and the final entry reads:\n\n“INNER HALL — first figure: the guests at the Baron's table, less the wolves the hounds counted that night. Second figure: the chandelier's dead candles, doubled.”\n\nHis marginalia: “eleven sat down to dine. the hounds counted six. they would not stop counting.”",
       puzzle:{
         prompt:"Enter the 2-digit code.", placeholder:"TWO DIGITS", answers:['56'],
         hints:[
@@ -412,7 +412,7 @@ const ROOMS=[
   chain:"Hymn board (CXIX = 119) + psalter margin (third verse) → set the organ stop to 119.3 → the hidden panel's bell chimes are morse = STAY INSIDE → the Baron's folio Atbash mirror-script (GSV = THE) = SPARK → orrery planet-weights (Roman numerals, heaviest sunward) = 763.",
   objects:[
     { id:'hymnboard', icon:'🎼', name:'Hymn Board', pos:{x:66,y:26,w:9,h:20},
-      desc:"The chapel hymn board, its brass letters furred with dust:\n\nHYMN: CXIX\nVERSE: (the tile is missing)\n\nTucked behind the board, a psalter falls open to a dog-eared page. In the margin, the Baron's hand: “Father sang only the THIRD verse when the storm came close. Only ever the third.”" },
+      desc:"The chapel hymn board, its brass letters furred with dust:\n\nHYMN: CXIX\nVERSE: (the tile is missing)\n\nTucked behind the board, a psalter falls open to a dog-eared page. In the margin, the Baron's hand: “Father sang only the third verse when the storm came close. Only ever the third.”" },
     { id:'organ', icon:'🎹', name:'The Pipe Organ', pos:{x:77,y:26,w:20,h:40},
       desc:"The great organ dominates the east wall. Its stop dial is a strange one — numbered like an instrument of science, not music — and a small plate reads: HYMN · VERSE.\n\nThe Baron's household hid its secrets behind music. Set the stop, and the room will answer.",
       puzzle:{
@@ -422,7 +422,7 @@ const ROOMS=[
         dial:{min:1000,max:1300,div:10,target:1193,pad:5,meter:'RESONANCE',lock:'PULL THE STOP',miss:'the pipes moan and fall silent.',nearMorse:'... - .- -.--  .. -. ... .. -.. .'},
         hints:[
           "The stop wants a hymn and a verse — one number, then a point, then another.",
-          "The hymn board says CXIX — Roman numerals for 119. The psalter margin says only the THIRD verse.",
+          "The hymn board says CXIX — Roman numerals for 119. The psalter margin says only the third verse.",
           "Set the stop to exactly 119.3 and pull it."
         ],
         solvedText:"At 119.3 a chord swells that has waited forty years — and behind the pipes, a hidden panel cracks open. From inside it, small bells begin to chime a pattern. Long chimes and short. Over and over."
@@ -484,7 +484,7 @@ const ROOMS=[
   chain:"The slab's chalked riddle = LIGHTNING → Leyden jar rack: keep only ODD charges; survivors spell RISEN → galvanic switchboard fuse riddle (even digits, product 48) = 624 → the dumbwaiter bell rings morse from the cellar = ALIVE.",
   objects:[
     { id:'slab', icon:'⛓️', name:'The Empty Slab', pos:{x:33,y:47,w:34,h:22},
-      desc:"The slab. THE slab — scorched, strapped, and empty. A riddle is chalked along its edge in the Baron's hand — one he wrote for his own machinery:\n\n“I am the Baron's oldest servant.\nI climb the tower without legs.\nI speak exactly once,\nand the sky breaks when I do.\nWhat am I?”",
+      desc:"The slab itself — scorched, strapped, and empty. A riddle is chalked along its edge in the Baron's hand — one he wrote for his own machinery:\n\n“I am the Baron's oldest servant.\nI climb the tower without legs.\nI speak exactly once,\nand the sky breaks when I do.\nWhat am I?”",
       puzzle:{
         prompt:"Name the Baron's oldest servant.", placeholder:"ANSWER", answers:['LIGHTNING','THELIGHTNING','ABOLT','BOLT','LIGHTNINGBOLT'],
         hints:[
@@ -531,7 +531,7 @@ const ROOMS=[
           "·− is A. The single · at the end is E. It's a status report.",
           "·− ·−·· ·· ···− · spells ALIVE. It wants you to know."
         ],
-        solvedText:"A-L-I-V-E. The bell stops the instant you say it aloud — satisfied. The tower stair unlocks. Up. UP is away from the cellar. Go up.",
+        solvedText:"A-L-I-V-E. The bell stops the instant you say it aloud — satisfied. The tower stair unlocks. Up — away from the cellar. Go.",
         solveBeat:"From the bottom of the dumbwaiter shaft, very quietly, something tugs the bell-rope twice more. You already answered. It just wanted to hear you again.",
         beatSound:'bell'
       }
@@ -549,7 +549,7 @@ const ROOMS=[
   chain:"Five ignition tags with positional constraints → unique order E-A-D-C-B → chapel fuse box: “father sang it twice when the storm came close” = hymn 119.3 doubled = 2386 → storm-glass table: only the 11:30 front carries 9kV+ before the bell tolls one; minus 50 min = 10:40 → portcullis glyphs: the well code reversed = 7539 → signal the village with the tower lamp (SOS) → THROW THE SWITCH.",
   objects:[
     { id:'rig', icon:'🔩', name:'The Ignition Rig', pos:{x:45,y:12,w:12,h:56},
-      desc:"The Baron's launch ritual, five steps on five scattered vellum tags:\n\nTAG A — “Crank the capacitor SECOND. The chains must already hang.”\n\nTAG B — “Throw the master switch only once the coil is coupled.”\n\nTAG C — “Couple the coil — never right before or right after cranking the capacitor.”\n\nTAG D — “Raise the rod. Exactly one task passes between grounding the chains and raising the rod.”\n\nTAG E — “Ground the chains before the capacitor is cranked.”",
+      desc:"The Baron's launch ritual, five steps on five scattered vellum tags:\n\nTAG A — “Crank the capacitor second. The chains must already hang.”\n\nTAG B — “Throw the master switch only once the coil is coupled.”\n\nTAG C — “Couple the coil — never right before or right after cranking the capacitor.”\n\nTAG D — “Raise the rod. Exactly one task passes between grounding the chains and raising the rod.”\n\nTAG E — “Ground the chains before the capacitor is cranked.”",
       puzzle:{
         prompt:"Enter the five tag letters in ritual order.", placeholder:"FIVE LETTERS", answers:['EADCB'],
         hints:[

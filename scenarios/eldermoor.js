@@ -569,10 +569,10 @@ const ROOMS = [
   entryBeat:"As you take your first steps up the beach, the treeline goes quiet all at once — the way a room goes quiet when something walks in.",
   entrySound:null,
   completeText:"Chart in hand, you leave the wreck behind. Five paces north, four east, and a trail opens in the vines like a mouth.",
-  chain:"Planks: tally-strokes index into each carved word, spelling SAIL → sail pairs each shape with a wind letter → hull keel plate rule: READ THE WIND SUNWISE FROM NORTH (N,E,S,W) → crate digits in that order = 8513 → crate holds mirror-stamped key TIDE → box riddle answers TIDE, engraving says speak it backward = EDIT → box holds chart → chart math cross-references hull muster (12−4), drift days (3) and crate manifest (2 unbroken, doubled) = 54.",
+  chain:"Planks: tally-strokes index into each carved word, spelling SAIL → sail pairs each shape with a wind letter → hull keel plate rule: READ THE WIND CLOCKWISE FROM NORTH (N,E,S,W) → crate digits in that order = 8513 → crate holds mirror-stamped key TIDE → box riddle answers TIDE, engraving says speak it backward = EDIT → box holds chart → chart math cross-references hull muster (12−4), drift days (3) and crate manifest (2 unbroken, doubled) = 54.",
   objects:[
     { id:'hull', icon:'🚢', name:"Shattered Hull", pos:{x:69,y:52,w:22,h:24},
-      desc:"What's left of the Eldermoor lies on its side, ribs open to the sky. Inside, the dark holds its breath. You call out. Your echo comes back a half-second too late, and slightly… wrong.\n\nBeneath the bow, the shipwright's compass rose is carved into the keel plate, its old rule still legible:\n\n“READ THE WIND SUNWISE FROM NORTH.”\n\nHigher on the beam, the muster: twelve names scratched by hand. Four have been struck through — recently, by the look of the cuts." },
+      desc:"What's left of the Eldermoor lies on its side, ribs open to the sky. Inside, the dark holds its breath. You call out. Your echo comes back a half-second too late, and slightly… wrong.\n\nBeneath the bow, the shipwright's compass rose is carved into the keel plate, its old rule still legible:\n\n“READ THE WIND CLOCKWISE FROM NORTH.”\n\nHigher on the beam, the muster: twelve names scratched by hand. Four have been struck through — recently, by the look of the cuts." },
     { id:'driftwood', icon:'🪵', name:'Driftwood Planks', pos:{x:4,y:78,w:12,h:14},
       desc:"Four planks from a lifeboat bench lie in a rough row. Into each, someone carved a word — and beside each word, a count of tally strokes:\n\nCASTAWAY — ⫼ (three strokes)\nGALE — ‖ (two strokes)\nADRIFT — ⫼‖ (four strokes)\nSALVAGE — ⫼ (three strokes)\n\nWords and counts. The carver meant them to be read together, somehow.",
       puzzle:{
@@ -596,7 +596,7 @@ const ROOMS = [
         prompt:"Enter the 4-digit combination.", placeholder:"0000", answers:['8513'],
         hints:[
           "Three pieces of wreckage must meet: the crate's numbers, the sail's pairings, and a rule carved on the wreck itself.",
-          "The keel plate says READ THE WIND SUNWISE FROM NORTH — that's N, E, S, W. The sail tells you which shape belongs to which wind.",
+          "The keel plate says READ THE WIND CLOCKWISE FROM NORTH — that's N, E, S, W. The sail tells you which shape belongs to which wind.",
           "N is ▲8, E is ■5, S is ◆1, W is ●3 → enter 8513."
         ],
         solvedText:"The lock falls open on 8-5-1-3. Inside, wrapped in oilcloth: a small brass key. A word is stamped into it — TIDE — but the stamp is mirrored, as if it were meant to be read from the other side of something.",
@@ -617,7 +617,7 @@ const ROOMS = [
       }
     },
     { id:'chart', icon:'🗺️', name:'Chart Fragment', pos:{x:41,y:88,w:9,h:8}, hiddenUntil:'box',
-      desc:"The chart shows the island and a circled square: RADIO STN. A margin note, hurried: “Day three: land. God help us.”\n\nBelow it, sailing directions:\n\n“NORTH from the tallest palm: as many paces as the souls the sea spared us, LESS the days we drifted.\n\nEAST: twice the crates that reached the sand unbroken.”\n\nThe numbers aren't here. They're out there, in the wreckage you've already touched.",
+      desc:"The chart shows the island and a circled square: RADIO STN. A margin note, hurried: “Day three: land. God help us.”\n\nBelow it, sailing directions:\n\n“NORTH from the tallest palm: as many paces as the souls the sea spared us, less the days we drifted.\n\nEAST: twice the crates that reached the sand unbroken.”\n\nThe numbers aren't here. They're out there, in the wreckage you've already touched.",
       puzzle:{
         prompt:"Enter the paces: north digit, then east digit.", placeholder:"TWO DIGITS", answers:['54'],
         hints:[
@@ -692,7 +692,7 @@ const ROOMS = [
       }
     },
     { id:'transmitter', icon:'🔌', name:'Emergency Transmitter', pos:{x:69,y:79,w:13,h:14}, hiddenUntil:'hatch',
-      desc:"The emergency transmitter wants a 3-digit arming code. A calibration card in the operator's hand is taped beside the keypad — five test codes, and what the panel lamps said to each:\n\n1 2 3 — one lamp lit, seated WRONG\n4 5 6 — one lamp lit, seated WRONG\n6 1 2 — all lamps dark\n9 2 5 — one lamp lit, seated WRONG\n8 3 9 — two lamps lit, both seated WRONG\n\n“A lit lamp: that digit is in the code. Seated true: right digit, right position. Seated wrong: right digit, wrong position.”\n\nBelow, tiny and urgent: “REMEMBER THE BAND. YOU WILL NEED IT AGAIN.”",
+      desc:"The emergency transmitter wants a 3-digit arming code. A calibration card in the operator's hand is taped beside the keypad — five test codes, and what the panel lamps said to each:\n\n1 2 3 — one lamp lit, seated wrong\n4 5 6 — one lamp lit, seated wrong\n6 1 2 — all lamps dark\n9 2 5 — one lamp lit, seated wrong\n8 3 9 — two lamps lit, both seated wrong\n\n“A lit lamp: that digit is in the code. Seated true: right digit, right position. Seated wrong: right digit, wrong position.”\n\nBelow, tiny and urgent: “REMEMBER THE BAND. YOU WILL NEED IT AGAIN.”",
       puzzle:{
         prompt:"Enter the 3-digit arming code.", placeholder:"000", answers:['394'],
         hints:[
@@ -733,7 +733,7 @@ const ROOMS = [
       }
     },
     { id:'stones', icon:'🪨', name:'River Crossing Stones', pos:{x:22,y:71,w:52,h:12}, hiddenUntil:'tree',
-      desc:"Eight flat stones cross the black water. Each is chiseled with a letter and a shape, and each wears patches of moss. Reading left to right from your bank:\n\nB — square (4 sides), 5 moss patches\nD — pentagon (5 sides), 2 moss patches\nE — triangle (3 sides), 3 moss patches\nR — hexagon (6 sides), 1 moss patch\nO — square (4 sides), 2 moss patches\nA — triangle (3 sides), 4 moss patches\nW — pentagon (5 sides), 3 moss patches\nN — hexagon (6 sides), 4 moss patches\n\nA mossy carving on the bank warns:\n\n“Only a stone whose sides OUTNUMBER its moss will bear your weight. Name the stones that hold, in order, and the river lets you pass.”",
+      desc:"Eight flat stones cross the black water. Each is chiseled with a letter and a shape, and each wears patches of moss. Reading left to right from your bank:\n\nB — square (4 sides), 5 moss patches\nD — pentagon (5 sides), 2 moss patches\nE — triangle (3 sides), 3 moss patches\nR — hexagon (6 sides), 1 moss patch\nO — square (4 sides), 2 moss patches\nA — triangle (3 sides), 4 moss patches\nW — pentagon (5 sides), 3 moss patches\nN — hexagon (6 sides), 4 moss patches\n\nA mossy carving on the bank warns:\n\n“Only a stone whose sides outnumber its moss will bear your weight. Name the stones that hold, in order, and the river lets you pass.”",
       puzzle:{
         prompt:"Which stones hold? Enter their letters in crossing order.", placeholder:"LETTERS", answers:['DROWN'],
         hints:[
@@ -747,7 +747,7 @@ const ROOMS = [
       }
     },
     { id:'pack', icon:'🎒', name:"Ranger's Pack", pos:{x:67,y:69,w:9,h:13}, hiddenUntil:'stones',
-      desc:"A weathered ranger's pack, sealed with a 3-digit padlock. A waterproof tag hangs from the zip, the writing still legible:\n\n“Three digits guard my cache.\nThe FIRST is twice the LAST.\nThe MIDDLE is the sum of the other two.\nAll three together make EIGHTEEN.”",
+      desc:"A weathered ranger's pack, sealed with a 3-digit padlock. A waterproof tag hangs from the zip, the writing still legible:\n\n“Three digits guard my cache.\nThe first is twice the last.\nThe middle is the sum of the other two.\nAll three together make eighteen.”",
       puzzle:{
         prompt:"Enter the 3-digit code.", placeholder:"000", answers:['693'],
         hints:[
@@ -770,7 +770,7 @@ const ROOMS = [
           "·−·· is L. The single · appears twice — that letter is E. It's an instruction.",
           "·−·· · ·− ···− · spells LEAVE. So… leave. Quickly."
         ],
-        solvedText:"L-E-A-V-E. The gate swings open — and at that exact moment, behind you, the undergrowth erupts. You don't look. You RUN, boots hammering the planks, the whole bridge bucking under something that steps onto it behind you."
+        solvedText:"L-E-A-V-E. The gate swings open — and at that exact moment, behind you, the undergrowth erupts. You don't look. You run, boots hammering the planks, the whole bridge bucking under something that steps onto it behind you."
       }
     }
   ]
@@ -788,7 +788,7 @@ const ROOMS = [
     { id:'dragmarks', icon:'👣', name:'Drag-Marks in the Sand', pos:{x:24,y:87,w:16,h:9},
       desc:"Long furrows circle the cove, the same as the beach at dawn — but here they're layered dozens deep, old over older, like a patrol route walked for years.\n\nAt the center of the pattern, planted upright in the sand: the operator's other boot.\n\nBuild fast." },
     { id:'raftkit', icon:'🛶', name:'Raft Materials', pos:{x:39,y:75,w:18,h:16},
-      desc:"The operator staged everything and labeled each step with a tag — but the tags have scattered in the wind, and they read like a dead man's riddle:\n\nTAG A — “Raise the mast. Exactly one task must pass between lashing the logs and raising the mast, or the lashings slip.”\n\nTAG B — “Lash the logs before the deck is laid.”\n\nTAG C — “Rig the sail only once the rudder is true.”\n\nTAG D — “Lay the deck SECOND. The logs will have settled by then.”\n\nTAG E — “Never fix the rudder right before or right after laying the deck. The hull can't take the strain.”",
+      desc:"The operator staged everything and labeled each step with a tag — but the tags have scattered in the wind, and they read like a dead man's riddle:\n\nTAG A — “Raise the mast. Exactly one task must pass between lashing the logs and raising the mast, or the lashings slip.”\n\nTAG B — “Lash the logs before the deck is laid.”\n\nTAG C — “Rig the sail only once the rudder is true.”\n\nTAG D — “Lay the deck second. The logs will have settled by then.”\n\nTAG E — “Never fix the rudder right before or right after laying the deck. The hull can't take the strain.”",
       puzzle:{
         prompt:"Enter the five tag letters in build order.", placeholder:"FIVE LETTERS", answers:['BDAEC'],
         hints:[
@@ -815,7 +815,7 @@ const ROOMS = [
       }
     },
     { id:'tide', icon:'🌊', name:'Tide Table & Winch Notes', pos:{x:77,y:56,w:9,h:11}, hiddenUntil:'locker',
-      desc:"The laminated card, in the operator's neat hand:\n\n“COVE TIDES —\nLOW  1:05 … 2 FT\nHIGH 4:10 … 8 FT\nHIGH 6:40 … 11 FT\nHIGH 9:55 … 9 FT (after dark)\n\nThe reef needs NINE FEET or better to clear.\nWe must NOT be on the water in the dark. Not here.\nSet the winch timer to launch 90 minutes BEFORE the tide we can survive.”",
+      desc:"The laminated card, in the operator's neat hand:\n\n“COVE TIDES —\nLOW  1:05 … 2 FT\nHIGH 4:10 … 8 FT\nHIGH 6:40 … 11 FT\nHIGH 9:55 … 9 FT (after dark)\n\nThe reef needs nine feet or better to clear.\nWe must not be on the water in the dark. Not here.\nSet the winch timer to launch 90 minutes before the tide we can survive.”",
       puzzle:{
         prompt:"Set the launch time (hour then minutes, e.g. 730).", placeholder:"H:MM", answers:['510','0510'],
         hints:[

@@ -328,7 +328,7 @@ const ROOMS=[
       }
     },
     { id:'garage', icon:'🚜', name:'The Snowcat Garage', pos:{x:12,y:76,w:22,h:18},
-      desc:"The supply cage in the garage wears a 4-digit padlock. Four supply glyphs are stencilled on the fuel drums beside it, each with a digit — in no particular order:\n\n✚ MEDICAL 4      ● FUEL 8      ▲ FLARES 1      ■ FOOD 6\n\nAlong the back wall stand nine fuel drums; you knock down the line and six of them ring empty.\n\nDigits, but no sequence. Somewhere on this station is a standing order that puts supplies in order.",
+      desc:"The supply cage in the garage wears a 4-digit padlock. Four supply glyphs are stencilled on the fuel drums beside it, each with a digit — in no particular order:\n\n✚ MEDICAL 4      ● FUEL 8      ▲ FLARES 1      ■ FOOD 6\n\nAlong the back wall stand nine fuel drums; you rap each one down the line and six of them ring empty.\n\nDigits, but no sequence. Somewhere on this station is a standing order that puts supplies in order.",
       puzzle:{
         prompt:"Enter the 4-digit code.", placeholder:"0000", answers:['6841'],
         hints:[
@@ -354,7 +354,7 @@ const ROOMS=[
       }
     },
     { id:'noticeboard', icon:'📌', name:'The Notice Board', pos:{x:82,y:62,w:10,h:16}, hiddenUntil:'maindoor',
-      desc:"Inside the cold porch, a notice board and the inner door's 2-digit keypad. The posted standing order reads:\n\n“INNER DOOR — first figure: the bunks this station sleeps, LESS the crew rotated home last month. Second figure: fuel drums standing full in the garage.”\n\nA crew sheet pinned beside it reads “STATION EREBUS SLEEPS 14,” and the rotation log below adds: “7 rotated home on the last flight.”",
+      desc:"Inside the cold porch, a notice board and the inner door's 2-digit keypad. The posted standing order reads:\n\n“INNER DOOR — first figure: the bunks this station sleeps, less the crew rotated home last month. Second figure: fuel drums standing full in the garage.”\n\nA crew sheet pinned beside it reads “STATION EREBUS SLEEPS 14,” and the rotation log below adds: “7 rotated home on the last flight.”",
       puzzle:{
         prompt:"Enter the 2-digit code.", placeholder:"TWO DIGITS", answers:['73'],
         hints:[
@@ -478,7 +478,7 @@ const ROOMS=[
       }
     },
     { id:'coldsafe', icon:'🔐', name:'The Cold Safe', pos:{x:8,y:68,w:12,h:20}, hiddenUntil:'cores',
-      desc:"The lab's cold safe, 3-digit dial. The tag from the core rack, in the lead scientist's careful print:\n\n“Three DIFFERENT digits, every one a MULTIPLE OF THREE, none of them zero.\nThe FIRST is the sum of the other two.\nThe SMALLEST hides in the MIDDLE.”",
+      desc:"The lab's cold safe, 3-digit dial. The tag from the core rack, in the lead scientist's careful print:\n\n“Three different digits, every one a multiple of three, none of them zero.\nThe first is the sum of the other two.\nThe smallest hides in the middle.”",
       puzzle:{
         prompt:"Find the three digits that fit and enter them in order.", placeholder:"000", answers:['936'],
         hints:[
@@ -518,7 +518,7 @@ const ROOMS=[
   chain:"Generator drill tags with positional constraints → unique order D-E-B-A-C → tower lockbox: “the plane listens at TWICE the station” = 88.2×2 = 176.4 → 1764 → weather fax: only the 6:10 window has legal visibility before fuel runs out; minus 40 min = 5:30 → flare cache: stocked in resupply order, unlocked in reverse = 1486 → light the drum line in the old pattern (SOS) → WHEELS UP.",
   objects:[
     { id:'genstart', icon:'⚙️', name:'The Generator Sled', pos:{x:11,y:66,w:18,h:18},
-      desc:"The tower generator's cold-start drill, five steps on five tags shuffled by nine days of wind:\n\nTAG A — “Close the choke — never right before or right after warming the plugs.”\n\nTAG B — “Crank the flywheel. Exactly one step passes between opening the fuel line and cranking.”\n\nTAG C — “Throw the breaker only once the choke is closed.”\n\nTAG D — “Open the fuel line before the glow plugs warm.”\n\nTAG E — “Warm the glow plugs SECOND.”",
+      desc:"The tower generator's cold-start drill, five steps on five tags shuffled by nine days of wind:\n\nTAG A — “Close the choke — never right before or right after warming the plugs.”\n\nTAG B — “Crank the flywheel. Exactly one step passes between opening the fuel line and cranking.”\n\nTAG C — “Throw the breaker only once the choke is closed.”\n\nTAG D — “Open the fuel line before the glow plugs warm.”\n\nTAG E — “Warm the glow plugs second.”",
       puzzle:{
         prompt:"Enter the five tag letters in start order.", placeholder:"FIVE LETTERS", answers:['DEBAC'],
         hints:[
