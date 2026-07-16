@@ -38,9 +38,10 @@ feels fresh rather than repeating the first:
 | Room-3 number lock | linked relations | **countdown sequence** | **factor riddle** (×48) | **multiples-of-three** | **money addition** |
 
 The only mechanics deliberately shared by all five — because they're the
-game's signature co-op moments — are the audible **morse** decodes (with an
-in-panel CODE CRIB toggle), the tuning **dial**, the **scheduling-constraint**
-drill, the doubled/reversed **callbacks**, and the SOS finale.
+game's signature co-op moments — are the audible **morse** decodes (teams
+look up the morse alphabet themselves), the tuning **dial**, the
+**scheduling-constraint** drill, the doubled/reversed **callbacks**, and the
+SOS finale.
 
 ## How to run it
 

@@ -329,7 +329,7 @@ const ROOMS=[
   entryBeat:"The bay's ceiling panels creak, one after another, in a slow line from the vent to the door — the sound of weight moving where no crew could walk.",
   entrySound:'clank',
   completeText:"The lift accepts the deck code and grinds upward toward the bridge. Behind you, in the bay, a pod lid whines open. You do not go back to check.",
-  chain:"Pod status-log acrostic (first letters) spells LOCKER → locker stencils pair systems with digits; the evac placard gives the shutdown order (reactor, power, water, cryo) → 6942 → med terminal riddle (STAR) read inside-out = RATS → terminal log gives crew count; pods and placard give the rest → lift code 34.",
+  chain:"Pod status-log acrostic (first letters) spells LOCKER → locker stencils pair systems with digits; the evac placard gives the shutdown order (reactor, power, water, cryo) → 6942 → med terminal riddle (STAR) read inside-out = RATS → terminal log gives the crew count and the twin cores; the six pods and the placard give the rest → lift code 34.",
   objects:[
     { id:'vent', icon:'🌬️', name:'Vent Grille', pos:{x:66,y:2,w:12,h:14},
       desc:"The maintenance vent over the pods hangs open on one hinge. Two of its screws lie on the deck below — placed side by side, dead parallel, like surgical tools.\n\nThe shaft behind it is pitch dark and utterly silent, which is wrong: shafts hum. This one is holding still." },
@@ -371,7 +371,7 @@ const ROOMS=[
           "The riddle's answer is STAR. Now read it the way the vents do — inside out, backward.",
           "STAR reversed is RATS. Enter RATS."
         ],
-        solvedText:"STAR… backward. R-A-T-S. The terminal unlocks and vomits forty years of medical logs. The last entry, day director's log: “Crew of NINE aboard at launch. The scratching in the vents is not rats. Rats stop when you knock.”",
+        solvedText:"STAR… backward. R-A-T-S. The terminal unlocks and vomits forty years of medical logs. The last entry, day director's log: “Crew of NINE aboard at launch, and both reactor cores still burning. The scratching in the vents is not rats. Rats stop when you knock.”",
         solveBeat:"Somewhere in the shaft above you, something knocks back. Three times. Patient.",
         beatSound:'knock'
       }
@@ -382,7 +382,7 @@ const ROOMS=[
         prompt:"Enter the 2-digit lift code.", placeholder:"TWO DIGITS", answers:['34'],
         hints:[
           "Each number lives somewhere else on this deck: the terminal log, the pod bay, the placard.",
-          "The terminal log said a crew of NINE; there are SIX pods here: 9−6=3. The placard brags about TWIN cores: 2×2=4.",
+          "The terminal log said a crew of NINE; there are SIX pods here: 9−6=3. The log and the placard both count TWIN cores: 2×2=4.",
           "3 then 4 — enter 34."
         ],
         solvedText:"3-4. The lift doors part on a corridor of dead lights — and one live one, far down, above the bridge hatch.",

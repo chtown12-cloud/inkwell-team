@@ -646,8 +646,8 @@ const ROOMS = [
       desc:"Three final entries, in a deteriorating hand:\n\n“Day 119 — It watched the door all night. I did not open it.”\n\n“Day 120 — Found its marks beneath the window. I have stopped sleeping.”\n\n“Day 121 — It knocks each night now. Always the same count. If anyone finds this: the band is the day I stopped counting, then the point, then the count of the knocks. Listen. Then get—”\n\nThe entry stops there. The pen is still in the crease of the page." },
     { id:'window', icon:'🪟', name:'Salt-Crusted Window', pos:{x:6,y:19,w:19,h:27},
       desc:"The glass is fogged with years of salt. Through it, the clearing, the treeline, the ordinary green.\n\nIn the bottom corner of the pane, for just a moment, there is a shape. Tall. Patient. It's gone when you look directly at it.\n\nBeneath the sill, someone cut gouges into the wood — five of them, deep and evenly spaced. Under them, in pencil, barely legible:\n\n“every night. always five.”" },
-    { id:'poster', icon:'📜', name:'Morse Chart Poster', pos:{x:76,y:19,w:12,h:28},
-      desc:"A yellowed training poster is pinned above the desk: INTERNATIONAL MORSE CODE.\n\nA ·−    B −···    C −·−·    D −··    E ·\nF ··−·    G −−·    H ····    I ··    J ·−−−\nK −·−    L ·−··    M −−    N −·    O −−−\nP ·−−·    Q −−·−    R ·−·    S ···    T −\nU ··−    V ···−    W ·−−    X −··−    Y −·−−    Z −−··\n\nSomeone has underlined a handful of the letters so hard the paper tore." },
+    { id:'poster', icon:'📜', name:'Torn Code Poster', pos:{x:76,y:19,w:12,h:28},
+      desc:"A yellowed training poster is pinned above the desk: INTERNATIONAL MORSE CODE.\n\nThe alphabet itself has been torn away — a ragged rectangle of bare wall where the letters used to be, as though the operator ripped it down in a hurry and took it with him.\n\nEvery radio operator alive knows the code by heart. Your crew will have to find it the modern way." },
     { id:'radio', icon:'📻', name:'Radio Receiver', pos:{x:39,y:40,w:27,h:20},
       desc:"The heart of the station: a wall of dials and meters, still warm, its panel light flickering like a failing heartbeat. A brass plate reads: EMERGENCY MONITORING STATION 7 — TUNE WITH CARE.\n\nStatic washes from the speaker like surf. The main tuning dial waits. The operator's note said the band is a number in two parts — a day, a point, and a count.",
       puzzle:{
@@ -670,7 +670,7 @@ const ROOMS = [
         placeholder:"TWO WORDS", answers:['LOOKUNDER'],
         morse:'.-.. --- --- -.-  ..- -. -.. . .-.',
         hints:[
-          "Ten letters, two words. The poster on the wall pairs every pattern with a letter — split the groups among the crew.",
+          "Ten letters, two words, in international morse. Look up the code and split the groups among the crew.",
           "First word, four letters: ·−·· is L, −−− is O. Second word starts ··− = U.",
           "·−·· −−− −−− −·− is LOOK. ··− −· −·· · ·−· is UNDER. Enter LOOKUNDER."
         ],
@@ -716,7 +716,7 @@ const ROOMS = [
   entryBeat:"Ten steps in, you find one of the operator's boots. Just the one. It has been placed, neatly, in the exact center of the path — facing back the way you came.",
   entrySound:'growl',
   completeText:"You cross the rope bridge at a dead sprint and cut the lines behind you. Below the cliffs lies a hidden cove — and stacked on the sand, under a tarp, materials for a raft. The operator planned an escape. You're going to finish it.",
-  chain:"Tree riddle = RIVER → eight crossing stones: only stones whose SIDES outnumber their MOSS hold weight; the safe stones, in crossing order, spell DROWN → pack tag algebra (first = 2×last, middle = sum, total 18) = 693 → pack holds morse crib + lamp → relay lamp blinks 5 letters = LEAVE → gate opens to the rope bridge.",
+  chain:"Tree riddle = RIVER → eight crossing stones: only stones whose SIDES outnumber their MOSS hold weight; the safe stones, in crossing order, spell DROWN → pack tag algebra (first = 2×last, middle = sum, total 18) = 693 → pack holds the signal lamp → relay lamp blinks 5 letters = LEAVE → gate opens to the rope bridge.",
   objects:[
     { id:'branches', icon:'🌿', name:'Snapped Branches', pos:{x:6,y:47,w:12,h:22},
       desc:"The trail-side branches are broken inward, all along one side, at a height that makes your neck prickle. The breaks are fresh — sap still bleeding.\n\nWhatever walks here doesn't go around things. It goes through them. You keep your voices low from now on." },
@@ -755,18 +755,18 @@ const ROOMS = [
           "F = 2×L and M = F+L, so M = 3×L. Then F+M+L = 6×L = 18.",
           "L = 3, F = 6, M = 9. Enter 693."
         ],
-        solvedText:"6-9-3. Inside: a machete, a battery signal lamp, and a torn page from the station's operator manual — a pocket morse alphabet, creased from use. Why would a ranger need to flee with a morse crib?"
+        solvedText:"6-9-3. Inside: a machete and a battery signal lamp, its shutter trigger worn smooth from use. Why would a ranger carry a lamp built for sending code?"
       }
     },
     { id:'gate', icon:'🌉', name:'Gorge Gate', pos:{x:43,y:22,w:15,h:18}, revealedBy:'pack',
       desc:"The trail ends at a deep gorge spanned by an old rope bridge. Its gate is barred with a 5-letter tumbler lock. Far across the gorge, fixed to the far post, an old signal lamp sits dark.\n\nNothing else here moves. Maybe something you're carrying could wake that lamp.",
-      revealDesc:"You raise the ranger's lamp and flash it across the gorge. A heartbeat later the far lamp wakes and answers — an automated relay, blinking the same five letters, over and over, faster each time. As if it's urgent:\n\n·−··   ·   ·−   ···−   ·\n\nThe gate's tumbler lock waits for five letters. The crib page from the pack is in your hands.",
+      revealDesc:"You raise the ranger's lamp and flash it across the gorge. A heartbeat later the far lamp wakes and answers — an automated relay, blinking the same five letters, over and over, faster each time. As if it's urgent:\n\n·−··   ·   ·−   ···−   ·\n\nThe gate's tumbler lock waits for five letters.",
       puzzle:{
         prompt:"Enter the 5-letter word the far lamp is flashing.",
         placeholder:"5 LETTERS", answers:['LEAVE'],
         morse:'.-.. . .- ...- .', morseLocked:'pack',
         hints:[
-          "Long and short flashes — five letters. The manual page from the ranger's pack has the alphabet. Call them out as a team.",
+          "Long and short flashes — five letters, standard morse. Call them out as a team.",
           "·−·· is L. The single · appears twice — that letter is E. It's an instruction.",
           "·−·· · ·− ···− · spells LEAVE. So… leave. Quickly."
         ],
