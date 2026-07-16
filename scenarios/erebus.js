@@ -373,11 +373,11 @@ const ROOMS=[
 {
   id:'quarters', name:'Room 2 — Crew Quarters', scene:'quarters',
   intro:"Fourteen bunks, nine parkas on hooks, zero people. The kettle is still faintly warm.",
-  objective:"The crew's last hours are recorded in this room. Find the frequency — then <b>listen to what they left.</b>",
+  objective:"The crew's last hours are recorded in this room. Find the frequency — then <b>read what they left.</b>",
   entryBeat:"Nine parkas on the hooks. Outside it is forty below. Wherever the crew went, they went without their coats — or they went as something that no longer felt the cold.",
   entrySound:'knock',
   completeText:"The generator panel accepts the code and the station's spine of lights marches on, building by building, out toward the core lab. The last building lights with something already standing at its window. By the time anyone can point, it isn't.",
-  chain:"Duty roster (last entry Station day 88) + radio log (two checks daily — “the point, then the checks”) → tune 88.2 → the reel-to-reel is morse = MELT NOTHING → foot locker Vigenère (keyword ICE) = FROST → generator halving-chain rule (8→4→2, sum 14) = 842.",
+  chain:"Duty roster (last entry Station day 88) + radio log (two checks daily — “the point, then the checks”) → tune 88.2 → the reel-to-reel's tape leader is embossed braille = MELT NOTHING → foot locker Vigenère (keyword ICE) = FROST → generator halving-chain rule (8→4→2, sum 14) = 842.",
   objects:[
     { id:'roster', icon:'📋', name:'Duty Roster', pos:{x:3,y:46,w:10,h:20},
       desc:"The duty roster, filled in to a point and then not:\n\n“STATION DAY 86 — cores E-1 through E-8 catalogued. E-9 tomorrow.”\n“STATION DAY 87 — E-9 case will not stay shut. Weather radio at 0600 and 1800, as always. Two checks daily, never miss.”\n“STATION DAY 88 — ”\n\nDay 88 is blank. They stopped counting on 88. In the margin, tiny: “the band is the day we stopped, the point, then the checks.”" },
@@ -385,29 +385,29 @@ const ROOMS=[
       desc:"The station's shortwave, still warm on standby, its dial waiting. The roster margin said the band is a number in two parts — a day, a point, and a count.\n\nOutside, the blizzard eats every other frequency alive.",
       puzzle:{
         type:'dial',
-        prompt:"Sweep the band. Find the station's frequency, then LOCK IT IN.",
+        prompt:"Sweep the band to the station's frequency, then work the trim knobs until the signal holds through the storm.",
         answers:['882'],
-        dial:{min:760,max:1080,div:10,target:882,pad:4,meter:'SIGNAL THROUGH THE STORM',lock:'LOCK IT IN',miss:'the blizzard swallows it.',nearMorse:'-- . .-.. -  -. --- - .... .. -. --.'},
+        dial:{min:760,max:1080,div:10,target:882,pad:4,meter:'SIGNAL THROUGH THE STORM',lock:'LOCK IT IN',miss:'the blizzard swallows it.',
+          knobs:[{label:'RF GAIN',target:58},{label:'SQUELCH',target:31},{label:'ANTENNA TRIM',target:77}]},
         hints:[
           "The roster gives the whole number — the day they stopped counting. Its margin gives the decimal.",
           "They stopped on station day 88. Two radio checks daily: that's your point-two.",
-          "Tune to exactly 88.2 and lock it in."
+          "Tune to exactly 88.2, then work the three knobs one at a time until the panel reads LOCKED IN."
         ],
-        solvedText:"At 88.2 the blizzard parts — and the frequency isn't dead. It's LOOPED. Someone patched the reel-to-reel into the transmitter before the end, and it has been repeating them ever since. The RECORDER is live. Split up the letters; it's a long message."
+        solvedText:"At 88.2 the blizzard parts — dead air, keyed open from inside the station. Someone patched the reel-to-reel into the transmitter before the end… but the tape ran out years ago. The RECORDER is what's left. Go and look at what he did to it."
       }
     },
     { id:'recorder', icon:'🎞️', name:'The Reel-to-Reel', pos:{x:71,y:60,w:16,h:15}, hiddenUntil:'shortwave',
-      desc:"The tape loops every few seconds. Two words — eleven letters, keyed with a cold, deliberate hand:\n\n−−  ·  ·−··  −\n\n−·  −−−  −  ····  ··  −·  −−·\n\nDivide the letters among the crew and call them out.",
+      desc:"The reel's last stretch of tape is blank — no recording. Instead, pressed into the leader by hand with a stylus, neat rows of raised dots:\n\n<span style='font-size:2rem;letter-spacing:10px'>⠍⠑⠇⠞&nbsp;&nbsp;⠝⠕⠞⠓⠊⠝⠛</span>\n\nThe last logbook page explains: snow-blind since day 80, the radio operator wrote the only way he still could — by touch. Divide the cells among the crew and work them out.",
       puzzle:{
         prompt:"Decode the tape (two words).",
         placeholder:"TWO WORDS", answers:['MELTNOTHING'],
-        morse:'-- . .-.. -  -. --- - .... .. -. --.',
         hints:[
-          "Eleven letters, two words. −− is M. Split the groups among the crew.",
-          "First word: M, E, L… four letters. Second starts −· = N.",
-          "−− · ·−·· − is MELT. −· −−− − ···· ·· −· −−· is NOTHING. Enter MELTNOTHING."
+          "Raised dots in small cells — that's braille. Look up the braille alphabet: each cell of up to six dots is one letter.",
+          "Eleven letters, two words. The first word is four letters: M, E, L… The second starts with N.",
+          "⠍⠑⠇⠞ is MELT; ⠝⠕⠞⠓⠊⠝⠛ is NOTHING. Enter MELTNOTHING."
         ],
-        solvedText:"MELT NOTHING. Eleven letters the crew spent their last hours making sure someone would hear. You think of core E-9's case, and the standing water around it, and how warm they kept this room.",
+        solvedText:"MELT NOTHING. Eleven letters a dying man pressed into tape so someone would find them. You think of core E-9's case, and the standing water around it, and how warm they kept this room.",
         solveBeat:"The heater ticks — and something outside the window leans away from the glass, where it has been enjoying the warmth.",
         beatSound:'hiss'
       }
@@ -443,13 +443,12 @@ const ROOMS=[
 /* ============ ROOM 3 — THE ICE CORE LAB ============ */
 {
   id:'corelab', name:'Room 3 — The Ice Core Lab', scene:'corelab',
-  relay:{el:'intercom-lamp',seq:'-... . .-.. --- .--',after:'coldsafe'},
   intro:"Minus forty in here, by design. Sample case E-9 is open, and its meltwater has been walking around.",
   objective:"Learn what the crew drilled up. The cold room keeps its secrets <b>frozen — keep it that way.</b>",
   entryBeat:"Sample E-9's case didn't fail — the bolts were backed out from the inside of the case. Whatever the drill brought up through three hundred thousand years of ice was awake when it arrived.",
   entrySound:'clank',
-  completeText:"The tower door unbolts. Behind you, over the intercom from the empty drill shed, the word repeats once more — softer now, like a thing satisfied you finally understand where it went.",
-  chain:"E-9's chalked riddle = ICE → core racks: keep only EVEN drill depths; survivors spell BURIED → cold safe multiples-of-three riddle = 936 → the drill-shed intercom clicks morse = BELOW.",
+  completeText:"The tower door unbolts. Behind you, the intercom's open channel exhales once and goes dead — like a thing satisfied you finally understand where it went.",
+  chain:"E-9's chalked riddle = ICE → core racks: keep only EVEN drill depths; survivors spell BURIED → cold safe multiples-of-three riddle = 936 → the drill-shed key fob is embossed braille = BELOW.",
   objects:[
     { id:'coreE9', icon:'🧊', name:'Sample E-9', pos:{x:30,y:60,w:15,h:18},
       desc:"The shattered case, and beside it, in the frost on the steel table, someone wrote with a fingertip — the station's last riddle:\n\n“I hold yesterday's air in bubbles.\nI remember every winter that ever was.\nI break like glass and bleed like water,\nand I kept your visitor patient for a very long time.”",
@@ -491,16 +490,15 @@ const ROOMS=[
       }
     },
     { id:'intercom', icon:'📢', name:'The Drill-Shed Intercom', pos:{x:87,y:35,w:9,h:20}, hiddenUntil:'coldsafe',
-      desc:"The intercom to the drill shed crackles alive — and begins to click. Long clicks and short. The drill shed has been empty for nine days. The tower door's 5-letter lock waits.\n\n−···   ·   ·−··   −−−   ·−−",
+      desc:"The intercom to the drill shed crackles alive — an open channel, breathing, saying nothing. The drill shed has been empty for nine days.\n\nTaped beside the speaker hangs the shed key, on a metal fob embossed with the same raised dots as the tape leader:\n\n<span style='font-size:2rem;letter-spacing:10px'>⠃⠑⠇⠕⠺</span>\n\nThe tower door's 5-letter lock waits.",
       puzzle:{
         prompt:"Enter the 5-letter word the intercom is clicking.", placeholder:"5 LETTERS", answers:['BELOW'],
-        morse:'-... . .-.. --- .--', morseLocked:'coldsafe',
         hints:[
-          "Long and short clicks — five letters, standard code. Call them out together.",
-          "−··· is B. The −−− in the middle is O. It's telling you where it went.",
-          "−··· · ·−·· −−− ·−− spells BELOW. It went home. For now."
+          "The same braille as the tape leader — five cells, five letters.",
+          "It starts with B and ends with W. It's telling you where it went.",
+          "⠃⠑⠇⠕⠺ reads BELOW. It went home. For now."
         ],
-        solvedText:"B-E-L-O-W. The clicking stops the moment you speak it — message received. The tower door unbolts. You are done asking the station questions; the answers have started coming to find you.",
+        solvedText:"B-E-L-O-W. The open channel closes the moment you speak it — message received. The tower door unbolts. You are done asking the station questions; the answers have started coming to find you.",
         solveBeat:"From the drill shaft, far under your boots, comes a sound you feel more than hear — three hundred meters of ice being climbed, without hurry.",
         beatSound:'knock'
       }
