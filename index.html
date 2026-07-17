@@ -552,6 +552,30 @@ function startHeartbeat(){
   heartbeatTimer=setInterval(()=>{ if(muted||!AC) return; const t=AC.currentTime; tone(52,0.13,t,0.4); tone(48,0.15,t+0.22,0.3); },950);
 }
 function stopHeartbeat(){ clearInterval(heartbeatTimer); heartbeatTimer=null; }
+
+/* --- victory theme: the tension lifts, something warm plays you home --- */
+let victoryMusicTimer=null;
+function startVictoryMusic(){
+  if(!AC||victoryMusicTimer) return;
+  // I–V–vi–IV in C, low and warm, with a sparkle arpeggio on top
+  const CH=[
+    {bass:130.81,notes:[261.63,329.63,392.00]},
+    {bass: 98.00,notes:[246.94,293.66,392.00]},
+    {bass:110.00,notes:[261.63,329.63,440.00]},
+    {bass: 87.31,notes:[261.63,349.23,440.00]},
+  ];
+  let i=0;
+  const playChord=()=>{
+    if(muted) { i=(i+1)%CH.length; return; }
+    const ch=CH[i%CH.length]; i++;
+    const t=AC.currentTime+0.03;
+    tone(ch.bass,2.6,t,0.055,'sine');
+    ch.notes.forEach(n=>tone(n,2.5,t,0.032,'triangle'));
+    ch.notes.forEach((n,k)=>tone(n*2,0.5,t+0.55+k*0.42,0.02,'sine'));
+  };
+  playChord();
+  victoryMusicTimer=setInterval(playChord,2800);
+}
 function toggleMute(){ muted=!muted; if(master) master.gain.value=muted?0:0.9; $('mute-btn').textContent=muted?'🔇':'🔊'; }
 
 /* --- ambient one-shot library (scenarios reference by name) --- */
@@ -1303,6 +1327,10 @@ function continueOvertime(){ S.finished=false; S.overtime=true; $('end-root').in
 function victory(){
   S.finished=true; S.endElapsed=elapsedSec();
   stopHeartbeat(); closeModal();
+  // the danger is over: hush the room's soundscape and let something warm play instead
+  clearInterval(roomEventTimer);
+  if(AC) setAmbience({});
+  setTimeout(startVictoryMusic,1400);
   $('room-complete').classList.add('hidden');
   const seq=[0,350,700, 1400,2200,3000, 3800,4150,4500];
   seq.forEach((t,i)=>setTimeout(()=>spawnFlare(i>=3&&i<6),t));
@@ -1333,16 +1361,51 @@ function showVictoryCard(){
     </div>
     <pre class="share" id="share-text">${share}</pre>
     <div class="btn-row">
-      <button class="big-btn" onclick="copyShare(event)">📋 Copy Results</button>
+      <button class="big-btn" id="save-card-btn" onclick="saveScoreCard(event)">📸 Save Score Card</button>
       <button class="big-btn alt" onclick="location.reload()">Play Again</button>
     </div>
   </div></div>`;
 }
-function copyShare(ev){
-  const text=$('share-text').textContent;
-  (navigator.clipboard?navigator.clipboard.writeText(text):Promise.reject())
-    .catch(()=>{ const ta=document.createElement('textarea'); ta.value=text; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); ta.remove(); })
-    .finally(()=>{ const b=ev.target; b.textContent='✓ Copied!'; setTimeout(()=>b.textContent='📋 Copy Results',1500); });
+
+/* --- the score card: a shareable PNG snapshot of the result --- */
+function drawScoreCard(){
+  const total=S.endElapsed+S.penaltySec;
+  const rating=ratingFor(total,S.hintsUsed,S.overtime);
+  const c=document.createElement('canvas'); c.width=1200; c.height=630;
+  const x=c.getContext('2d');
+  const bg=x.createLinearGradient(0,0,0,630); bg.addColorStop(0,'#081414'); bg.addColorStop(1,'#0e2422');
+  x.fillStyle=bg; x.fillRect(0,0,1200,630);
+  for(let i=0;i<80;i++){
+    x.fillStyle=`rgba(223,232,255,${0.18+((i*37)%50)/100*0.45})`;
+    x.fillRect((i*173+40)%1180, (i*97)%210+20, 2, 2);
+  }
+  x.strokeStyle='rgba(216,195,154,.55)'; x.lineWidth=3; x.strokeRect(26,26,1148,578);
+  x.strokeStyle='rgba(216,195,154,.18)'; x.lineWidth=1; x.strokeRect(38,38,1124,554);
+  x.textAlign='center';
+  x.fillStyle='#d8c39a'; x.font='30px "Special Elite",serif';
+  x.fillText('🌙 ESCAPE THE NIGHT',600,88);
+  x.fillStyle='#8fb8b2'; x.font='24px "Special Elite",serif';
+  x.fillText((ACTIVE.title||'').toUpperCase(),600,126);
+  x.font='66px serif'; x.fillText(S.teamEmoji||'🌙',600,208);
+  x.fillStyle='#f0e2c4'; x.font='46px "Special Elite",serif';
+  x.fillText('TEAM '+(S.teamName||''),600,272);
+  x.fillStyle='#7fd4c4'; x.font='108px "Special Elite",serif';
+  x.fillText(fmt(total),600,386);
+  x.fillStyle='#ffd98c'; x.font='34px "Special Elite",serif';
+  x.fillText(rating,600,442);
+  x.fillStyle='#9ab0ac'; x.font='25px "Special Elite",serif';
+  x.fillText(`play ${fmt(S.endElapsed)}   ·   hints ${S.hintsUsed}   ·   wrong answers ${S.wrongCount}   ·   penalties +${fmt(S.penaltySec)}`,600,498);
+  x.fillStyle='#d8c39a'; x.font='27px "Special Elite",serif';
+  x.fillText(S.teamEmoji+' '+(ACTIVE.shareTitle||'ESCAPED!'),600,560);
+  return c;
+}
+function saveScoreCard(ev){
+  const a=document.createElement('a');
+  a.download=('escape-the-night-'+(S.teamName||'team')).toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')+'.png';
+  a.href=drawScoreCard().toDataURL('image/png');
+  document.body.appendChild(a); a.click(); a.remove();
+  const b=ev&&ev.target;
+  if(b){ b.textContent='✓ Saved!'; setTimeout(()=>{ b.textContent='📸 Save Score Card'; },1500); }
 }
 
 /* ---------- Game Master panel ---------- */
