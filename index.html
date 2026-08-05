@@ -1106,6 +1106,7 @@ function renderDial(o){
   </div>`;
 }
 function dialInit(o){
+  dialTeardown(); // re-renders (e.g. hint reveals) must not orphan a running static loop
   const slider=$('dial-slider'); if(!slider) return;
   const d=o.puzzle.dial;
   if(AC){
