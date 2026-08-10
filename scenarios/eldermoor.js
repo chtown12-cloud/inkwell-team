@@ -572,9 +572,9 @@ const ROOMS = [
   chain:"Planks: tally-strokes index into each carved word, spelling SAIL → sail pairs each shape with a wind letter → hull keel plate rule: READ THE WIND SUNWISE FROM NORTH (N,E,S,W) → crate digits in that order = 8513 → crate holds mirror-stamped key TIDE → box riddle answers TIDE, engraving says speak it backward = EDIT → box holds chart → chart math cross-references hull muster (12−4), drift days (3) and crate manifest (2 unbroken, doubled) = 54.",
   objects:[
     { id:'hull', icon:'🚢', name:"Shattered Hull", pos:{x:69,y:52,w:22,h:24},
-      desc:"What's left of the Eldermoor lies on its side, ribs open to the sky. Inside, the dark holds its breath. You call out. Your echo comes back a half-second too late, and slightly… wrong.\n\nBeneath the bow, the shipwright's compass rose is carved into the keel plate, its old rule still legible:\n\n“READ THE WIND SUNWISE FROM NORTH.”\n\nHigher on the beam, the muster: twelve names scratched by hand. Four have been struck through — recently, by the look of the cuts." },
+      desc:"What's left of the Eldermoor lies on its side, ribs open to the sky. Inside, the dark holds its breath. You call out. Your echo comes back a half-second too late, and slightly… wrong.\n\nBeneath the bow, the shipwright's compass rose is carved into the keel plate, its old rule still legible:\n\n“READ THE WIND SUNWISE — CLOCKWISE — FROM NORTH.”\n\nHigher on the beam, the muster: twelve names scratched by hand. Four have been struck through — recently, by the look of the cuts." },
     { id:'driftwood', icon:'🪵', name:'Driftwood Planks', pos:{x:4,y:78,w:12,h:14},
-      desc:"Four planks from a lifeboat bench lie in a rough row. Into each, someone carved a word — and beside each word, a count of tally strokes:\n\nCASTAWAY — ⫼ (three strokes)\nGALE — ‖ (two strokes)\nADRIFT — ⫼‖ (four strokes)\nSALVAGE — ⫼ (three strokes)\n\nWords and counts. The carver meant them to be read together, somehow.",
+      desc:"Four planks from a lifeboat bench lie in a rough row. Into each, someone carved a word — and beside each word, a count of tally strokes:\n\nCASTAWAY — 3 strokes\nGALE — 2 strokes\nADRIFT — 4 strokes\nSALVAGE — 3 strokes\n\nA word and a number on each plank. The carver meant them to be read together.",
       puzzle:{
         prompt:"The planks hide a word. Where should you look next?",
         placeholder:"FOUR LETTERS", answers:['SAIL'],
@@ -596,7 +596,7 @@ const ROOMS = [
         prompt:"Enter the 4-digit combination.", placeholder:"0000", answers:['8513'],
         hints:[
           "Three pieces of wreckage must meet: the crate's numbers, the sail's pairings, and a rule carved on the wreck itself.",
-          "The keel plate says READ THE WIND SUNWISE FROM NORTH — that's N, E, S, W. The sail tells you which shape belongs to which wind.",
+          "The keel plate says READ THE WIND SUNWISE (CLOCKWISE) FROM NORTH — that's N, E, S, W. The sail tells you which shape belongs to which wind.",
           "N is ▲8, E is ■5, S is ◆1, W is ●3 → enter 8513."
         ],
         solvedText:"The lock falls open on 8-5-1-3. Inside, wrapped in oilcloth: a small brass key. A word is stamped into it — TIDE — but the stamp is mirrored, as if it were meant to be read from the other side of something.",
@@ -617,11 +617,11 @@ const ROOMS = [
       }
     },
     { id:'chart', icon:'🗺️', name:'Chart Fragment', pos:{x:41,y:88,w:9,h:8}, hiddenUntil:'box',
-      desc:"The chart shows the island and a circled square: RADIO STN. A margin note, hurried: “Day three: land. God help us.”\n\nBelow it, sailing directions:\n\n“NORTH from the tallest palm: as many paces as the souls the sea spared us, less the days we drifted.\n\nEAST: twice the crates that reached the sand unbroken.”\n\nThe numbers aren't here. They're out there, in the wreckage you've already touched.",
+      desc:"The chart shows the island and a circled square: RADIO STN. A margin note, hurried: “Day three: land. God help us.”\n\nBelow it, sailing directions from the tallest palm — two numbers, each to be worked out from the wreck itself:\n\n“NORTH: how many of us the sea spared, minus the days we drifted.\n\nEAST: twice the number of crates that reached the sand unbroken.”\n\nThe muster is carved on the hull. The crates are here on the beach. The days are in the note above.",
       puzzle:{
         prompt:"Enter the paces: north digit, then east digit.", placeholder:"TWO DIGITS", answers:['54'],
         hints:[
-          "Each direction is a small sum — but every number lives in a different piece of wreckage. Send someone back to the hull and the crate.",
+          "Two small sums. Send one person to read the hull's muster and another to count the crates while you work out the days.",
           "NORTH: the hull's muster shows 12 names, 4 struck through — 8 spared — minus the 3 days adrift (this chart: “Day three: land”). EAST: the crate manifest says one of seven; five burst — 2 unbroken, doubled.",
           "North 8−3 = 5. East 2×2 = 4. Enter 54."
         ],
@@ -680,8 +680,8 @@ const ROOMS = [
         beatSound:'knock'
       }
     },
-    { id:'hatch', icon:'🕳️', name:'Floor Hatch', pos:{x:44,y:85,w:12,h:11}, hiddenUntil:'broadcast',
-      desc:"A steel hatch with a five-letter wheel lock. A brass plate riveted beside the wheel is stamped with what looks like nonsense:\n\nWKH  ZKHHO  RSHQV  WR:  VWRUP\n\nNo key. No alphabet. Just the nonsense — and the nagging feeling that it isn't nonsense at all.",
+    { id:'hatch', icon:'🕳️', name:'Floor Hatch', pos:{x:44,y:85,w:12,h:11},
+      desc:"You drag aside the woven rug under the operator's desk and find a steel hatch with a five-letter wheel lock. A brass plate riveted beside the wheel is stamped with what looks like nonsense:\n\nWKH  ZKHHO  RSHQV  WR:  VWRUP\n\nNo key. No alphabet. Just the nonsense — and the nagging feeling that it isn't nonsense at all.",
       puzzle:{
         prompt:"Set the wheel to the decoded word.", placeholder:"FIVE LETTERS", answers:['STORM'],
         hints:[
@@ -711,13 +711,13 @@ const ROOMS = [
 /* ================= ROOM 3 — THE JUNGLE PATH ================= */
 {
   id:'jungle', name:'Room 3 — The Jungle Path', scene:'jungle', fx:'fireflies',
-  relay:{el:'gorge-lamp',seq:'.-.. . .- ...- .',after:'pack'},
+  relay:{el:'gorge-lamp',seq:'.-.. . .- ...- .',after:'stones'},
   intro:"The canopy closes overhead. Something large keeps pace with you, always just out of sight.",
   objective:"Follow the antenna cable through the interior. Keep moving. <b>Keep quiet.</b>",
   entryBeat:"Ten steps in, you find one of the operator's boots. Just the one. It has been placed, neatly, in the exact center of the path — facing back the way you came.",
   entrySound:'growl',
   completeText:"You cross the rope bridge at a dead sprint and cut the lines behind you. Below the cliffs lies a hidden cove — and stacked on the sand, under a tarp, materials for a raft. The operator planned an escape. You're going to finish it.",
-  chain:"Tree riddle = RIVER → eight crossing stones: only stones whose SIDES outnumber their MOSS hold weight; the safe stones, in crossing order, spell DROWN → pack tag algebra (first = 2×last, middle = sum, total 18) = 693 → pack holds the signal lamp → relay lamp blinks 5 letters = LEAVE → gate opens to the rope bridge.",
+  chain:"Two threads run in parallel: the tree riddle = RIVER → eight crossing stones (sides must outnumber moss) spell DROWN; independently the ranger's pack tag algebra (first = 2×last, middle = sum, total 18) = 693. Crossing reveals the gorge gate — a SIMULTANEITY lock: the crew must man both winches at once (2 per station, scaled down for small teams) and haul together.",
   objects:[
     { id:'branches', icon:'🌿', name:'Snapped Branches', pos:{x:6,y:47,w:12,h:22},
       desc:"The trail-side branches are broken inward, all along one side, at a height that makes your neck prickle. The breaks are fresh — sap still bleeding.\n\nWhatever walks here doesn't go around things. It goes through them. You keep your voices low from now on." },
@@ -747,8 +747,8 @@ const ROOMS = [
         beatSound:'growl'
       }
     },
-    { id:'pack', icon:'🎒', name:"Ranger's Pack", pos:{x:67,y:69,w:9,h:13}, hiddenUntil:'stones',
-      desc:"A weathered ranger's pack, sealed with a 3-digit padlock. A waterproof tag hangs from the zip, the writing still legible:\n\n“Three digits guard my cache.\nThe first is twice the last.\nThe middle is the sum of the other two.\nAll three together make eighteen.”",
+    { id:'pack', icon:'🎒', name:"Ranger's Pack", pos:{x:67,y:69,w:9,h:13},
+      desc:"A weathered ranger's pack lies dropped beside the path, sealed with a 3-digit padlock. A waterproof tag hangs from the zip, the writing still legible:\n\n“Three digits guard my cache.\nThe first is twice the last.\nThe middle is the sum of the other two.\nAll three together make eighteen.”",
       puzzle:{
         prompt:"Enter the 3-digit code.", placeholder:"000", answers:['693'],
         hints:[
@@ -759,19 +759,20 @@ const ROOMS = [
         solvedText:"6-9-3. Inside: a machete and a battery signal lamp, its shutter trigger worn smooth from use. Why would a ranger carry a lamp built for sending code?"
       }
     },
-    { id:'gate', icon:'🌉', name:'Gorge Gate', pos:{x:43,y:22,w:15,h:18}, revealedBy:'pack',
-      desc:"The trail ends at a deep gorge spanned by an old rope bridge. Its gate is barred with a 5-letter tumbler lock. Far across the gorge, fixed to the far post, an old signal lamp sits dark.\n\nNothing else here moves. Maybe something you're carrying could wake that lamp.",
-      revealDesc:"You raise the ranger's lamp and flash it across the gorge. A heartbeat later the far lamp wakes and answers — an automated relay, blinking the same five letters, over and over, faster each time. As if it's urgent:\n\n·−··   ·   ·−   ···−   ·\n\nThe gate's tumbler lock waits for five letters.",
+    { id:'gate', icon:'🌉', name:'Gorge Gate', pos:{x:43,y:22,w:15,h:18}, hiddenUntil:'stones',
+      desc:"The trail ends at a deep gorge spanned by an old rope bridge. The gate is barred by a counterweight beam, and the two winches that lift it stand at opposite ends of the platform — far too far apart for one pair of hands.\n\nAcross the gorge an automated signal lamp blinks the same five letters over and over, faster each time: ·−·· · ·− ···− · . You do not need to decode it twice.",
       puzzle:{
-        prompt:"Enter the 5-letter word the far lamp is flashing.",
-        placeholder:"5 LETTERS", answers:['LEAVE'],
-        morse:'.-.. . .- ...- .', morseLocked:'pack',
+        type:'simul',
+        stations:[{id:'gate-port',label:'Port Winch',icon:'⚓'},{id:'gate-star',label:'Starboard Winch',icon:'⚓'}],
+        need:2,
+        pullLabel:'HAUL ON THREE',
+        prompt:"The beam only lifts if both winches turn together. Get the crew onto the winches, then haul.",
         hints:[
-          "Long and short flashes — five letters, standard morse. Call them out as a team.",
-          "·−·· is L. The single · appears twice — that letter is E. It's an instruction.",
-          "·−·· · ·− ···− · spells LEAVE. So… leave. Quickly."
+          "This one isn't a riddle — it needs people in two places at once. Anyone on a phone can take a station.",
+          "Split the crew between the port winch and the starboard winch.",
+          "Once both stations show they're manned, press HAUL ON THREE."
         ],
-        solvedText:"L-E-A-V-E. The gate swings open — and at that exact moment, behind you, the undergrowth erupts. You don't look. You run, boots hammering the planks, the whole bridge bucking under something that steps onto it behind you."
+        solvedText:"The beam lifts a foot, then two, then swings clear — and at that exact moment the undergrowth behind you erupts. You don't look. You run, boots hammering the planks, the whole bridge bucking under something that steps onto it behind you."
       }
     }
   ]
