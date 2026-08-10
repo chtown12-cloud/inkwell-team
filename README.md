@@ -146,8 +146,17 @@ an in-memory store, so you can try phone play with no accounts or setup at all.
 
 **A note on privacy:** the only things stored are a self-chosen nickname, an
 emoji, which puzzle each person is sitting at, and which puzzles are solved. No
-accounts, no cookies, no email, no analytics. Sessions expire on their own, and
-the game never stores puzzle answers or hint text in the database.
+accounts, no cookies, no email, no analytics. The game never writes puzzle
+answers or hint text to the database, and a finished game deletes itself when
+the host closes the tab or hits Play Again.
+
+**What it costs:** effectively nothing. A whole 45-minute game with five phones
+moves on the order of **1 MB** — the session is about 1.5 KB and gets pushed to
+each device whenever something changes. Firebase's free tier includes 10 GB of
+downloads a month, which is roughly **ten thousand games**; on a paid plan the
+rate is $1/GB, so a game costs about **a tenth of a cent**. Storage is
+negligible and self-cleaning. The only free-tier limit worth knowing is 100
+simultaneous connections — about 16 games running at the same moment.
 
 ### Difficulty
 
