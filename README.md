@@ -70,7 +70,13 @@ reading one screen over someone's shoulder, the crew can fan out exactly like a
 physical room.
 
 - Everyone can read every clue at their own pace.
-- Opening a puzzle "seats" you at it, so the team can see where everyone is.
+- Opening a puzzle "seats" you at it: a token with your name and emoji glides
+  across the shared screen to that clue, so the whole team can see who is
+  working on what and who has drifted off.
+- If the host's screen closes, phones notice within a second and offer to take
+  over — either on that phone or on a laptop via a printed URL. Progress and the
+  clock carry across untouched, and the warning clears itself if the host was
+  only reloading.
 - Nobody is ever locked out: any number of people can join the same puzzle, and
   one person **can** solve alone.
 - The **Gorge Gate** in the island scenario is a *simultaneity lock* — two
