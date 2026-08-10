@@ -77,15 +77,52 @@ physical room.
   winches that must be manned at the same time by different people. Its
   requirement scales to your crew size, so a team of two or three is never stuck.
 
-**Deployment:** the game is static, but live sync needs somewhere to keep the
-session. Create a **Vercel KV store** in the Vercel dashboard and connect it to
-the project — the credentials are injected automatically and nothing else needs
-configuring. Without it (or when you open `index.html` straight off disk) the
-game quietly falls back to classic single-screen play; nothing breaks.
-
 **Locally:** `node dev-server.js` serves the game plus the API on
 <http://localhost:8787> using an in-memory store, so you can try phone play with
 no accounts or setup at all.
+
+### Deploying to Vercel (one-time setup for phone play)
+
+The game itself is static and needs no setup. Live phone sync needs somewhere to
+keep the session for a few hours, which means connecting a Redis store. Without
+it the game still works — it just falls back to classic single-screen play.
+
+**1. Deploy the repo.** In the Vercel dashboard, *Add New… → Project*, import
+this GitHub repo, and deploy. There is no build step to configure; `vercel.json`
+already tells Vercel it is a static site with serverless functions in `api/`.
+
+**2. Check the API is alive.** Visit `https://YOUR-SITE.vercel.app/api/health`.
+You should see JSON with `"api": "up"` and `"persistent": false`. If you instead
+get a 404 or see JavaScript source code, the functions aren't being built — see
+troubleshooting below.
+
+**3. Add a Redis store.** Open your project → **Storage** tab → create/connect a
+**Redis** store (Vercel offers Upstash Redis through its Marketplace; the exact
+wording moves around, so look for Redis rather than a specific brand name).
+Choose the free tier and **connect it to this project** — that connection is what
+matters, because it injects the credentials as environment variables.
+
+**4. Confirm the variables exist.** Project → **Settings → Environment
+Variables**. You should now see a `..._REST_API_URL` and `..._REST_API_TOKEN`
+pair (named either `KV_REST_API_*` or `UPSTASH_REDIS_REST_*`). The code accepts
+either naming, so you don't need to rename anything.
+
+**5. Redeploy.** Environment variables only reach a deployment built *after* they
+exist. Go to **Deployments**, open the latest one, and choose **Redeploy**.
+
+**6. Verify.** Reload `/api/health`. It should now say `"persistent": true` and
+"Storage connected". Phone play is live: start a game, and the QR code will work.
+
+**Troubleshooting**
+
+- `/api/health` 404s, or shows source code instead of JSON → the `api/` folder
+  isn't being deployed as functions. Check Settings → General that the **Root
+  Directory** is the repository root (blank), not a subfolder.
+- QR code shows but phones can't join → you are probably opening the game from a
+  `file://` path or `localhost` rather than the deployed URL. Phones need a real
+  web address they can reach.
+- `"persistent": false` after adding storage → the store isn't *connected to this
+  project*, or you haven't redeployed since connecting it (step 5).
 
 ### Difficulty
 
