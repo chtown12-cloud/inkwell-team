@@ -313,6 +313,79 @@ pre.share{text-align:left;background:#0a1416;border:1px solid #2c4144;border-rad
 .rippleA.r2{animation-delay:1.7s}
 @keyframes rippl{0%{transform:scale(.4);opacity:.6}100%{transform:scale(1.6);opacity:0}}
 @media (max-width:640px){#hud .stats{display:none}.end-card .stat-grid{grid-template-columns:1fr}}
+
+/* ---------- difficulty picker ---------- */
+.diff-row{display:flex;gap:10px;justify-content:center;margin-top:14px}
+.diff-btn{padding:9px 22px;border-radius:8px;border:1px solid #3a565c;background:#0b1619;
+  color:var(--dim);font-family:'Special Elite',serif;font-size:.95rem;cursor:pointer}
+.diff-btn.on{border-color:var(--teal-hi);color:#eafaf7;background:linear-gradient(180deg,var(--teal-hi),var(--teal))}
+.diff-blurb{margin-top:8px;font-size:.8rem;color:var(--dim);text-align:center}
+
+/* ---------- seat presence on the shared screen ---------- */
+.seat-tag{position:absolute;left:50%;transform:translateX(-50%);bottom:-26px;white-space:nowrap;
+  font-size:1rem;background:rgba(4,12,14,.85);border:1px solid #3a565c;border-radius:20px;
+  padding:2px 10px;pointer-events:none}
+#crew-bar{position:fixed;left:12px;bottom:12px;z-index:40;display:flex;gap:6px;flex-wrap:wrap;max-width:44vw}
+#crew-bar .chip{background:rgba(4,12,14,.8);border:1px solid #3a565c;border-radius:20px;
+  padding:3px 11px;font-size:.8rem;color:var(--sand);font-family:'Special Elite',serif}
+
+/* ---------- QR / join panel ---------- */
+#qr-panel{position:fixed;inset:0;z-index:120;background:rgba(3,8,9,.94);display:flex;
+  align-items:center;justify-content:center;overflow:auto;padding:20px}
+.qr-inner{text-align:center;max-width:520px}
+.qr-inner h2{font-family:'Special Elite',serif;color:var(--sand);letter-spacing:3px;margin-bottom:8px}
+.qr-lead{color:var(--dim);font-size:.95rem;margin-bottom:16px;line-height:1.5}
+#qr-canvas{background:#fff;padding:10px;border-radius:10px;image-rendering:pixelated}
+.qr-code{font-family:'Special Elite',serif;font-size:2.4rem;letter-spacing:10px;color:var(--teal-hi);margin-top:14px}
+.qr-url{color:var(--dim);font-size:.82rem;word-break:break-all;margin:4px 0 14px}
+.qr-players{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-bottom:18px;min-height:26px}
+.qr-players .chip{background:rgba(216,195,154,.1);border:1px solid #5c6f6d;border-radius:20px;
+  padding:3px 12px;font-size:.9rem;color:var(--sand)}
+
+/* ---------- simultaneity lock ---------- */
+.simul-grid{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin:14px 0}
+.simul-station{flex:1;min-width:170px;padding:13px 11px;border:1px solid #3a565c;border-radius:10px;
+  background:rgba(8,20,22,.7);text-align:center}
+.simul-station.ready{border-color:#6fd39a;box-shadow:0 0 14px rgba(111,211,154,.25)}
+.simul-label{font-family:'Special Elite',serif;color:var(--sand);font-size:1rem}
+.simul-count{font-size:.8rem;color:var(--dim);margin:5px 0}
+.simul-station.ready .simul-count{color:#8fe3a8}
+.simul-who{font-size:.85rem;color:var(--teal-hi);min-height:1.2em;margin-bottom:8px}
+#simul-pull[disabled]{opacity:.45;cursor:not-allowed;filter:grayscale(.6)}
+
+/* ---------- phone player view ---------- */
+#join-screen{position:fixed;inset:0;z-index:130;background:#050f11;display:flex;
+  align-items:center;justify-content:center;padding:22px;overflow:auto}
+.join-inner{width:100%;max-width:420px;text-align:center}
+.join-inner h1{font-family:'Special Elite',serif;color:var(--sand);letter-spacing:4px;font-size:1.6rem}
+.join-sub{color:var(--dim);margin:6px 0 20px;font-size:.95rem}
+#join-name{width:100%;padding:13px;font-size:1.1rem;text-align:center;letter-spacing:2px;
+  text-transform:uppercase;background:#0b1619;color:var(--sand);border:1px solid #3a565c;
+  border-radius:8px;font-family:'Special Elite',serif}
+#join-emoji{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:16px 0}
+#join-emoji button{font-size:1.5rem;background:#0b1619;border:1px solid #3a565c;border-radius:10px;
+  padding:7px 11px;cursor:pointer}
+#join-emoji button.on{border-color:var(--teal-hi);background:rgba(79,163,155,.25)}
+.join-note{color:var(--dim);font-size:.8rem;margin-top:14px;line-height:1.5}
+#phone-root{position:fixed;inset:0;overflow:auto;padding:64px 12px 28px;z-index:20}
+.ph-objective{color:var(--dim);font-size:.9rem;line-height:1.5;margin:0 4px 14px;text-align:center}
+.ph-list{display:flex;flex-direction:column;gap:10px}
+.ph-card{display:flex;align-items:center;gap:11px;width:100%;text-align:left;padding:14px 13px;
+  background:rgba(10,24,26,.9);border:1px solid #2b4145;border-radius:12px;color:var(--sand);
+  font-family:'Special Elite',serif;font-size:1.05rem;cursor:pointer}
+.ph-card.done{opacity:.55;border-color:#2a4a3a}
+.ph-card.lore{border-style:dashed}
+.ph-icon{font-size:1.4rem}
+.ph-name{flex:1}
+.ph-who{font-size:.78rem;color:var(--teal-hi);font-family:Inter,sans-serif}
+.ph-tag{font-size:.7rem;color:var(--dim);font-family:Inter,sans-serif;letter-spacing:1px}
+body.phone #stage-wrap,body.phone #vignette,body.phone #grain,body.phone #objective,body.phone #hub-screen{display:none}
+body.phone #hud{font-size:.85rem}
+body.phone #modal{max-height:86vh}
+@media (max-width:640px){
+  .qr-code{font-size:1.9rem;letter-spacing:7px}
+  #crew-bar{display:none}
+}
 </style>
 </head>
 <body>
@@ -342,10 +415,16 @@ pre.share{text-align:left;background:#0a1416;border:1px solid #2c4144;border-rad
       <div class="crew-title">⚓ MUSTER YOUR CREW</div>
       <input id="team-name" maxlength="22" placeholder="TEAM NAME" autocomplete="off">
       <div id="emoji-row"></div>
+      <div class="diff-row">
+        <button class="diff-btn on" data-diff="standard">Standard</button>
+        <button class="diff-btn" data-diff="relaxed">Relaxed</button>
+      </div>
+      <div class="diff-blurb" id="diff-blurb">45:00 on the clock · hints cost +0:30, +1:00, +2:00</div>
     </div>
     <button class="big-btn" id="start-btn"></button>
-    <p class="start-note">🔊 Best with sound on. One player shares their screen and drives; everyone else shouts ideas.<br>
-    Glowing rings mark things worth examining. Hints cost +0:30 / +1:00 / +2:00. Wrong answers cost +0:05.</p>
+    <p class="start-note">🔊 Best with sound on. One player shares their screen — everyone else can scan a QR code
+    and join on their phones, so you can split up and work different puzzles at once.<br>
+    Glowing rings mark things worth examining. Wrong answers cost +0:05.</p>
     <div id="gm-panel" class="hidden"></div>
   </div>
   <button id="back-btn">◀ ALL SCENARIOS</button>
@@ -373,6 +452,7 @@ pre.share{text-align:left;background:#0a1416;border:1px solid #2c4144;border-rad
     <span>Elapsed <b id="stat-elapsed">0:00</b></span>
     <span>Hints <b id="stat-hints">0</b></span>
     <span>Penalties <b id="stat-pen">+0:00</b></span>
+    <button id="qr-btn" class="hidden" title="Show the join code">📱</button>
     <button id="mute-btn" title="Toggle sound">🔊</button>
   </div>
 </div>
@@ -388,6 +468,32 @@ pre.share{text-align:left;background:#0a1416;border:1px solid #2c4144;border-rad
 <div id="overlay" class="hidden"><div id="modal"></div></div>
 <div id="end-root"></div>
 <div id="card-root"></div>
+
+<!-- ==================== PHONE (second-screen player) ==================== -->
+<div id="join-screen" class="hidden">
+  <div class="join-inner">
+    <h1 id="join-title">JOIN THE CREW</h1>
+    <div class="join-sub" id="join-sub"></div>
+    <input id="join-name" maxlength="20" placeholder="YOUR NAME" autocomplete="off">
+    <div id="join-emoji"></div>
+    <button class="big-btn" id="join-btn">JOIN ➤</button>
+    <p class="join-note" id="join-note"></p>
+  </div>
+</div>
+<div id="phone-root" class="hidden"></div>
+
+<!-- ==================== QR / players panel ==================== -->
+<div id="qr-panel" class="hidden">
+  <div class="qr-inner">
+    <h2>PLAY ON YOUR PHONES</h2>
+    <p class="qr-lead">Scan to join the crew. Everyone can work a different puzzle — solve it on your phone and it lands for the whole team.</p>
+    <canvas id="qr-canvas"></canvas>
+    <div class="qr-code" id="qr-code"></div>
+    <div class="qr-url" id="qr-url"></div>
+    <div class="qr-players" id="qr-players"></div>
+    <button class="big-btn" onclick="closeQr()">DONE</button>
+  </div>
+</div>
 
 <script>
 /* ============================================================
@@ -790,20 +896,35 @@ setInterval(()=>{
   }
 },5200);
 </script>
+<script src="lib/qr.js"></script>
+<script src="lib/net.js"></script>
 <script>
 /* ============================================================
    ENGINE — state, timer, hub, title screen, rooms, puzzles
    ============================================================ */
-const START_SECONDS = 45*60;
-const HINT_COSTS = [30,60,120];         // escalating: 0:30 / 1:00 / 2:00
+const DIFFICULTIES = {
+  standard:{ label:'Standard', seconds:45*60, hints:[30,60,120],
+             blurb:'45:00 on the clock · hints cost +0:30, +1:00, +2:00' },
+  relaxed: { label:'Relaxed',  seconds:60*60, hints:[0,30,60],
+             blurb:'60:00 on the clock · first hint free, then +0:30, +1:00' },
+};
+let START_SECONDS = DIFFICULTIES.standard.seconds;
+let HINT_COSTS    = DIFFICULTIES.standard.hints;
 const WRONG_PENALTY = 5;
+function setDifficulty(mode){
+  const key = DIFFICULTIES[mode] ? mode : 'standard';
+  S.difficulty = key;
+  START_SECONDS = DIFFICULTIES[key].seconds;
+  HINT_COSTS    = DIFFICULTIES[key].hints;
+}
 
 const S = {
   started:false, finished:false, overtime:false,
   roomIndex:0, solved:new Set(),
   hintsShown:{}, hintsUsed:0, wrongCount:0, penaltySec:0,
   startTime:null, endElapsed:null,
-  signalPattern:'', teamName:'THE CASTAWAYS', teamEmoji:'⚓'
+  signalPattern:'', teamName:'THE CASTAWAYS', teamEmoji:'⚓',
+  difficulty:'standard', isPhone:false, code:null
 };
 
 /* ---------- stage scaling & parallax ---------- */
@@ -906,7 +1027,9 @@ function renderHotspots(){
     b.className='hotspot'+(S.solved.has(o.id)?' done':'')+(o.hiddenUntil&&!S.solved.has(o.id)?' new':'');
     b.dataset.obj=o.id;
     b.style.cssText=`left:${o.pos.x}%;top:${o.pos.y}%;width:${o.pos.w}%;height:${o.pos.h}%`;
-    b.innerHTML=`<span class="ring"></span><span class="tag">${o.icon} ${o.name}${S.solved.has(o.id)?' ✓':''}</span>`;
+    const seated = MP.active() ? NET.seatedAt(o.id) : [];
+    b.innerHTML=`<span class="ring"></span><span class="tag">${o.icon} ${o.name}${S.solved.has(o.id)?' ✓':''}</span>`
+      + (seated.length ? `<span class="seat-tag">${seated.map(id=>NET.playerEmoji(id)).join(' ')}</span>` : '');
     b.onclick=()=>openModal(o.id);
     layer.appendChild(b);
   });
@@ -946,6 +1069,8 @@ function openModal(objId){
     }
     if(solved){
       html+=`<div class="solved-note">✓ ${p.solvedText||'Solved.'}</div>`;
+    } else if(p.type==='simul'){
+      html+=renderSimul(o)+renderHints(o);
     } else if(p.type==='signal'){
       html+=renderSignalPad(o)+renderHints(o);
     } else if(p.type==='dial'){
@@ -965,10 +1090,19 @@ function openModal(objId){
   }
   $('modal').innerHTML=html;
   $('overlay').classList.remove('hidden');
+  // opening a puzzle seats you at it, so the crew can see where everyone is.
+  // simultaneity locks are the exception: there you sit at a station instead.
+  if(o.puzzle && o.puzzle.type!=='simul' && !solved && MP.openObj!==o.id){
+    MP.openObj=o.id; mpSend('sit',{objId:o.id});
+  }
   if(o.puzzle&&o.puzzle.type==='dial'&&!solved) dialInit(o);
   const inp=$('answer-input'); if(inp) inp.focus();
 }
-function closeModal(){ $('overlay').classList.add('hidden'); S.signalPattern=''; dialTeardown(); }
+function closeModal(){
+  $('overlay').classList.add('hidden'); S.signalPattern=''; dialTeardown();
+  if(MP.openObj){ mpSend('stand',{objId:MP.openObj}); MP.openObj=null; }
+  if(S.isPhone) renderPhone();
+}
 $('overlay').addEventListener('click',e=>{ if(e.target.id==='overlay') closeModal(); });
 
 function playMorseUI(objId){
@@ -1027,6 +1161,7 @@ function revealHint(objId){
   if(shown>=3) return;
   S.hintsShown[objId]=shown+1;
   S.hintsUsed++; S.penaltySec+=HINT_COSTS[shown];
+  if(!MP.suppress) mpSend('hint',{objId:objId,shown:shown+1,cost:HINT_COSTS[shown]});
   sfxStatic(0.25,0.08);
   openModal(objId); tick();
 }
@@ -1047,6 +1182,7 @@ function submitAnswer(objId){
 }
 function wrongAnswer(){
   S.wrongCount++; S.penaltySec+=WRONG_PENALTY;
+  if(!MP.suppress) mpSend('wrong',{cost:WRONG_PENALTY});
   sfxThud();
   const st=$('stage'); st.classList.remove('shake'); void st.offsetWidth; st.classList.add('shake');
   const rf=$('redflash'); rf.classList.add('on'); setTimeout(()=>rf.classList.remove('on'),160);
@@ -1058,6 +1194,7 @@ function wrongAnswer(){
 }
 function solvePuzzle(o){
   S.solved.add(o.id);
+  if(!MP.suppress) mpSend('solve',{objId:o.id});
   sfxChime();
   const hue=(ACTIVE.flare&&ACTIVE.flare.hue)||[255,200,120];
   spawnBurst((o.pos.x+o.pos.w/2)/100*1600,(o.pos.y+o.pos.h/2)/100*900,hue,20,4.2);
@@ -1175,6 +1312,67 @@ function dialLock(objId){
     : `✗ ${dialFmt(o,v)} — ${d.miss||'nothing but static out there.'} (+0:05 penalty)`;
 }
 
+/* ---------- simultaneity lock: several stations manned at once ---------- */
+/**
+ * How many people each station needs. Scales down to the crew you actually
+ * have so a small team is never locked out, and drops to zero when there are
+ * fewer players than stations (or nobody has joined on a phone at all).
+ */
+function simulReq(p){
+  if(!MP.active()) return 0;
+  const players=((NET.state&&NET.state.players)||[]).length;
+  const stations=(p.stations||[]).length||1;
+  if(players<stations) return 0;
+  return Math.max(1, Math.min(p.need||2, Math.floor(players/stations)));
+}
+function simulReady(p){
+  const req=simulReq(p);
+  if(req<=0) return true;
+  return (p.stations||[]).every(st=>NET.seatedAt(st.id).length>=req);
+}
+function renderSimul(o){
+  const p=o.puzzle, req=simulReq(p);
+  const rows=(p.stations||[]).map(st=>{
+    const at=MP.active()?NET.seatedAt(st.id):[];
+    const names=at.map(id=>`${NET.playerEmoji(id)} ${esc(NET.playerName(id))}`).join(', ');
+    const done=req<=0||at.length>=req;
+    return `<div class="simul-station${done?' ready':''}">
+      <div class="simul-label">${st.icon||'⚙️'} ${st.label}</div>
+      <div class="simul-count">${req>0?`${at.length} of ${req} in place`:'ready'}</div>
+      <div class="simul-who">${names||'&nbsp;'}</div>
+      <button class="signal-btn" onclick="simulSit('${o.id}','${st.id}')">TAKE THIS STATION</button>
+    </div>`;
+  }).join('');
+  const ready=simulReady(p);
+  const how = req>0
+    ? 'Every station must be manned <b>at the same time</b>. Take one on your phone — the release arms the moment the last station fills.'
+    : (MP.active()
+        ? 'Not enough of you to man every station, so the release is already armed — haul together.'
+        : 'On a single screen, one pair of hands will do. Scan the join code to split this across phones.');
+  return `<div class="puzzle-box">
+    <div class="prompt">${p.prompt}</div>
+    <div class="simul-grid">${rows}</div>
+    <div class="how">${how}</div>
+    <button class="big-btn" style="margin-top:14px" id="simul-pull" ${ready?'':'disabled'}
+      onclick="simulPull('${o.id}')">${ready?(p.pullLabel||'HAUL TOGETHER'):'WAITING FOR THE CREW…'}</button>
+    <div class="feedback" id="feedback"></div>
+  </div>`;
+}
+function simulSit(objId, stationId){
+  MP.openObj=stationId;
+  mpSend('sit',{objId:stationId});
+  openModal(objId);
+}
+function simulPull(objId){
+  const o=currentRoom().objects.find(x=>x.id===objId);
+  if(!simulReady(o.puzzle)){
+    const fb=$('feedback'); if(fb){ fb.className='feedback bad'; fb.textContent='✗ Not everyone is in place yet.'; }
+    return;
+  }
+  MP.openObj=null;
+  solvePuzzle(o);
+}
+
 /* ---------- signal pad (labels via puzzle.labels) ---------- */
 function renderSignalPad(o){
   const L=Object.assign({short:'🔥 SHORT BURST ·',long:'🔥 LONG BURN −',reset:'RESET',send:'📡 SEND SIGNAL'},o.puzzle.labels||{});
@@ -1278,7 +1476,7 @@ function enterRoom(idx){
     showBeat(room.entryBeat,room.entrySound);
   };
 }
-$('start-btn').onclick=()=>{
+$('start-btn').onclick=async ()=>{
   initAudio();
   if(AC&&AC.state==='suspended') AC.resume();
   S.teamName=($('team-name').value.trim()||'The Castaways').toUpperCase();
@@ -1294,12 +1492,32 @@ $('start-btn').onclick=()=>{
   fitStage();
   enterRoom(0);
   tick();
+  // open a shared session so phones can join; harmless if the API isn't there
+  const code = await NET.createSession(ACTIVE.id, S.difficulty);
+  if(code){
+    S.code = code;
+    NET.onState = applyRemote;
+    NET.send('join',{name:S.teamName,emoji:S.teamEmoji});
+    NET.startPolling();
+    $('qr-btn').classList.remove('hidden');
+    openQr();
+  }
 };
 $('continue-btn').onclick=()=>{
   $('room-complete').classList.add('hidden');
-  if(S.roomIndex<ACTIVE.rooms.length-1) enterRoom(S.roomIndex+1);
+  if(S.roomIndex<ACTIVE.rooms.length-1){
+    mpSend('advance',{roomIndex:S.roomIndex+1});
+    enterRoom(S.roomIndex+1);
+  }
 };
 $('mute-btn').onclick=toggleMute;
+$('qr-btn').onclick=openQr;
+document.querySelectorAll('.diff-btn').forEach(b=>b.onclick=()=>{
+  document.querySelectorAll('.diff-btn').forEach(x=>x.classList.toggle('on',x===b));
+  setDifficulty(b.dataset.diff);
+  $('diff-blurb').textContent = DIFFICULTIES[S.difficulty].blurb;
+  $('timer').textContent = fmt(START_SECONDS);
+});
 
 /* ---------- endings ---------- */
 function ratingFor(totalSec,hints,overtime){
@@ -1419,13 +1637,14 @@ $('gm-btn').onclick=()=>{
 function buildGmPanel(){
   let html=`<h2>🔑 Game Master Answer Key — ${ACTIVE.title}</h2>
   <p style="color:var(--dim)">Facilitator eyes only. Unreachable once the game starts.
-  Hints cost +0:30 / +1:00 / +2:00; wrong answers +0:05.</p>`;
+  ${DIFFICULTIES[S.difficulty].blurb}; wrong answers +0:05.</p>`;
   ACTIVE.rooms.forEach(room=>{
     html+=`<h3>${room.name}</h3><div class="chain">CHAIN: ${room.chain}</div>`;
     room.objects.filter(o=>o.puzzle).forEach(o=>{
       const disp=o.puzzle.type==='signal'?'··· −−− ··· (short×3, long×3, short×3)':
                  o.puzzle.type==='dial'?`tune to ${(o.puzzle.dial.target/o.puzzle.dial.div).toFixed(o.puzzle.dial.div>=100?2:1)}, then lock in`:
-                 o.puzzle.answers[0];
+                 o.puzzle.type==='simul'?`man all ${(o.puzzle.stations||[]).length} stations at once (${(o.puzzle.stations||[]).map(x=>x.label).join(' + ')}), then haul`:
+                 (o.puzzle.answers||['—'])[0];
       html+=`<div class="gm-puzzle"><b>${o.icon} ${o.name}</b> — answer: <span class="gm-answer">${disp}</span>
         <ul>${o.puzzle.hints.map((h,i)=>`<li>Hint ${i+1} (+${fmt(HINT_COSTS[i])}): ${h}</li>`).join('')}</ul></div>`;
     });
@@ -1433,10 +1652,189 @@ function buildGmPanel(){
   $('gm-panel').innerHTML=html;
 }
 
+/* ============================================================
+   MULTIPLAYER — shared session, seat presence, phone play
+   ============================================================ */
+const MP = { suppress:false, openObj:null,
+  active(){ return !!(window.NET && NET.enabled()); } };
+
+function mpSend(action, extra){ if(MP.active()) NET.send(action, extra); }
+
+/** Fold authoritative server state into this client. */
+function applyRemote(room){
+  if(!room || !S.started) return;
+  MP.suppress = true;
+  try{
+    if(room.startTime) S.startTime = room.startTime;
+    S.penaltySec = room.penaltySec||0;
+    S.hintsUsed  = room.hintsUsed||0;
+    S.wrongCount = room.wrongCount||0;
+    if(room.difficulty && room.difficulty!==S.difficulty) setDifficulty(room.difficulty);
+    Object.keys(room.hintsShown||{}).forEach(id=>{
+      S.hintsShown[id]=Math.max(S.hintsShown[id]||0, room.hintsShown[id]||0);
+    });
+
+    // a room the rest of the crew has already moved on from
+    if(typeof room.roomIndex==='number' && room.roomIndex>S.roomIndex){
+      S.roomIndex = room.roomIndex;
+      if(S.isPhone){ closeModal(); }
+      else { $('room-complete').classList.add('hidden'); enterRoom(room.roomIndex); }
+    }
+
+    // solves that happened on somebody else's device
+    (room.solved||[]).forEach(id=>{
+      if(S.solved.has(id)) return;
+      S.solved.add(id);
+      const o = currentRoom().objects.find(x=>x.id===id);
+      // if a team-mate solved the puzzle you have open, show them beating you to it
+      if(o && MP.openObj===id){ MP.openObj=null; openModal(id); }
+      if(o && !S.isPhone){
+        sfxChime();
+        if(o.pos) spawnBurst((o.pos.x+o.pos.w/2)/100*1600,(o.pos.y+o.pos.h/2)/100*900,
+                             (ACTIVE.flare&&ACTIVE.flare.hue)||[255,200,120],18,4);
+        if(currentRoom().relay && id===currentRoom().relay.after) startRelay(currentRoom().relay);
+      }
+    });
+  } finally { MP.suppress = false; }
+
+  if(S.isPhone) renderPhone(); else { renderHotspots(); refreshCrew(); }
+  // a simultaneity lock has to show crew arriving in real time
+  if(!$('overlay').classList.contains('hidden')){
+    const open=currentRoom().objects.find(x=>x.puzzle&&x.puzzle.type==='simul'
+      && $('modal').innerHTML.includes('simul-grid') && $('modal').textContent.includes(x.name));
+    if(open && !S.solved.has(open.id)) openModal(open.id);
+  }
+  refreshQrPlayers();
+  tick();
+  maybeVictory();
+}
+
+/** Victory can now be triggered by a team-mate's solve, so check on every sync. */
+function maybeVictory(){
+  if(!S.started || S.finished) return;
+  const room = currentRoom();
+  if(room.objects.filter(x=>x.puzzle).every(x=>S.solved.has(x.id))
+     && S.roomIndex===ACTIVE.rooms.length-1) victory();
+}
+
+function refreshCrew(){
+  let bar = $('crew-bar');
+  if(!MP.active()){ if(bar) bar.remove(); return; }
+  if(!bar){ bar=document.createElement('div'); bar.id='crew-bar'; document.body.appendChild(bar); }
+  const players = (NET.state&&NET.state.players)||[];
+  bar.innerHTML = players.map(p=>`<span class="chip">${p.emoji} ${esc(p.name)}</span>`).join('');
+}
+
+/* ---------- QR join panel ---------- */
+function joinUrl(){
+  return location.origin + location.pathname + '?join=' + (S.code||'');
+}
+function openQr(){
+  if(!S.code) return;
+  $('qr-code').textContent = S.code;
+  const local = location.protocol === 'file:';
+  $('qr-url').textContent = local
+    ? 'Open the game from a web address (not a local file) for phones to be able to join.'
+    : joinUrl();
+  const cv = $('qr-canvas');
+  if(local){ cv.style.display='none'; }
+  else { cv.style.display=''; try{ QR.render(cv, joinUrl(), {size:300}); }catch(e){ cv.style.display='none'; } }
+  refreshQrPlayers();
+  $('qr-panel').classList.remove('hidden');
+}
+function closeQr(){ $('qr-panel').classList.add('hidden'); }
+function refreshQrPlayers(){
+  const players = (NET.state&&NET.state.players)||[];
+  const el=$('qr-players'); if(!el) return;
+  el.innerHTML = players.length
+    ? players.map(p=>`<span class="chip">${p.emoji} ${esc(p.name)}</span>`).join('')
+    : '<span class="chip" style="opacity:.6">waiting for players…</span>';
+}
+
+/* ---------- phone player view ---------- */
+function renderPhone(){
+  const wrap=$('phone-root'); if(!wrap) return;
+  const room=currentRoom();
+  let html=`<div class="ph-objective">${room.objective}</div><div class="ph-list">`;
+  room.objects.forEach(o=>{
+    if(!objVisible(o)) return;
+    const solved=S.solved.has(o.id);
+    let seated=MP.active()?NET.seatedAt(o.id).filter(id=>id!==NET.playerId):[];
+    if(MP.active() && o.puzzle && o.puzzle.type==='simul'){
+      (o.puzzle.stations||[]).forEach(st=>{
+        seated=seated.concat(NET.seatedAt(st.id).filter(id=>id!==NET.playerId));
+      });
+    }
+    const who=seated.map(id=>`${NET.playerEmoji(id)} ${esc(NET.playerName(id))}`).join(', ');
+    html+=`<button class="ph-card${solved?' done':''}${o.puzzle?'':' lore'}" data-obj="${o.id}" onclick="phoneOpen('${o.id}')">
+      <span class="ph-icon">${o.icon}</span>
+      <span class="ph-name">${esc(o.name)}${solved?' ✓':''}
+        ${who?`<br><span class="ph-who">${who} here</span>`:''}</span>
+      <span class="ph-tag">${solved?'DONE':(o.puzzle?'':'CLUE')}</span>
+    </button>`;
+  });
+  html+='</div>';
+  wrap.innerHTML=html;
+}
+function phoneOpen(id){
+  MP.openObj=id;
+  mpSend('sit',{objId:id});
+  openModal(id);
+}
+
 /* ---------- boot ---------- */
+async function bootPhone(code){
+  $('hub-screen').classList.add('hidden');   // phones never see the scenario picker
+  const room = await NET.attach(code);
+  const sub = $('join-sub'), note = $('join-note');
+  if(!room){
+    $('join-screen').classList.remove('hidden');
+    $('join-title').textContent='GAME NOT FOUND';
+    sub.textContent='That code has expired or was mistyped.';
+    $('join-name').classList.add('hidden'); $('join-btn').classList.add('hidden');
+    return;
+  }
+  ACTIVE = SCENARIOS.find(x=>x.id===room.scenario) || SCENARIOS[0];
+  setDifficulty(room.difficulty);
+  sub.textContent = ACTIVE.title;
+  note.textContent = 'Pick a puzzle, work it with whoever joins you, and anything you solve lands for the whole team.';
+  // emoji picker
+  const row=$('join-emoji');
+  row.innerHTML = (ACTIVE.emojis||['🙂']).map((e,i)=>
+    `<button data-e="${e}" class="${i===0?'on':''}">${e}</button>`).join('');
+  let chosen=(ACTIVE.emojis||['🙂'])[0];
+  row.querySelectorAll('button').forEach(b=>b.onclick=()=>{
+    chosen=b.dataset.e;
+    row.querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b));
+  });
+  $('join-screen').classList.remove('hidden');
+  $('join-btn').onclick = async ()=>{
+    const name=$('join-name').value.trim()||'Crew';
+    NET.onState = applyRemote;
+    await NET.send('join',{name,emoji:chosen});
+    S.isPhone=true; S.started=true; S.code=code;
+    S.teamName=name.toUpperCase(); S.teamEmoji=chosen;
+    S.roomIndex = (NET.state&&NET.state.roomIndex)||0;
+    S.startTime = (NET.state&&NET.state.startTime)||Date.now();
+    (NET.state&&NET.state.solved||[]).forEach(id=>S.solved.add(id));
+    document.body.classList.add('phone');
+    $('join-screen').classList.add('hidden');
+    $('phone-root').classList.remove('hidden');
+    $('hud').classList.remove('hidden');
+    $('team-badge').textContent=chosen+' '+name.toUpperCase();
+    $('hud-room').textContent='';
+    initAudio(); if(AC&&AC.state==='suspended') AC.resume();
+    NET.startPolling();
+    renderPhone(); tick();
+  };
+}
+
 addEventListener('DOMContentLoaded',()=>{
   buildHub();
-  const want=new URLSearchParams(location.search).get('s');
+  const params=new URLSearchParams(location.search);
+  const join=params.get('join');
+  if(join && /^[A-Z0-9]{6}$/i.test(join)){ bootPhone(join.toUpperCase()); return; }
+  const want=params.get('s');
   if(want && SCENARIOS.some(s=>s.id===want)) openTitle(want);
 });
 </script>

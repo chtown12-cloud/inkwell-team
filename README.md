@@ -2,8 +2,9 @@
 
 Five browser-based virtual escape rooms for remote teams, built as point-and-click
 adventures on one shared engine. One person shares their screen and drives;
-everyone else collaborates over a video call. Pick a scenario on the first
-screen, muster your crew (team name + emoji), and race the 45-minute clock.
+everyone else joins on their phones by scanning a QR code, so the crew can
+split up and work different puzzles at once. Pick a scenario, muster your crew,
+and race the clock.
 
 | Scenario | Setting | The thing you never see |
 |----------|---------|--------------------------|
@@ -36,6 +37,7 @@ feels fresh rather than repeating the first:
 | Room-2 deduction | mastermind lamps | **logic-grid** rod seating | **Roman-numeral** weighing | **halving-chain** riddle | **boarding-order** logic |
 | Room-3 filter | threshold (>) | **prime** counts | **odd** charges | **even** depths | **perfect-square** covers |
 | Room-3 number lock | linked relations | **countdown sequence** | **factor riddle** (×48) | **multiples-of-three** | **money addition** |
+| Co-op set piece | **simultaneity lock** (two winches) | — | — | — | — |
 | Signal code | **morse** (its home turf) | **tap code** (knock pairs) | **pigpen** (masons' cipher) | **braille** (embossed dots) | **Cyrillic** (émigré's hand) |
 
 Each scenario's two mid-game signal decodes use its own real-world code —
@@ -50,21 +52,57 @@ SOS finale.
 ## How to run it
 
 Open `index.html` in any modern browser — **sound on, fullscreen recommended**.
-No server, no build step; Google Fonts is the only CDN dependency, and a
-`vercel.json` is included for static deployment. Deep-link a team straight to a
-scenario with `?s=eldermoor`, `?s=prospero`, `?s=vorstag`, `?s=erebus`, or
-`?s=midnight` — handy when multiple teams race different (or the same)
-scenarios in separate tabs and compare the shareable score text afterward.
+No build step; Google Fonts is the only CDN dependency. Deep-link a team
+straight to a scenario with `?s=eldermoor`, `?s=prospero`, `?s=vorstag`,
+`?s=erebus`, or `?s=midnight`.
+
+### Playing together on phones (recommended for groups)
+
+One person shares their screen as usual. When the game starts it shows a **QR
+code**: everyone else scans it and gets a condensed, playable view of the same
+room on their own phone. Anyone can open a puzzle and solve it, and **the solve
+lands for the whole team instantly**. The shared screen becomes the room — the
+scene, the timer, the sound — and doubles as a dispatch board showing who is
+working on what.
+
+This fixes the biggest problem with virtual escape rooms: instead of five people
+reading one screen over someone's shoulder, the crew can fan out exactly like a
+physical room.
+
+- Everyone can read every clue at their own pace.
+- Opening a puzzle "seats" you at it, so the team can see where everyone is.
+- Nobody is ever locked out: any number of people can join the same puzzle, and
+  one person **can** solve alone.
+- The **Gorge Gate** in the island scenario is a *simultaneity lock* — two
+  winches that must be manned at the same time by different people. Its
+  requirement scales to your crew size, so a team of two or three is never stuck.
+
+**Deployment:** the game is static, but live sync needs somewhere to keep the
+session. Create a **Vercel KV store** in the Vercel dashboard and connect it to
+the project — the credentials are injected automatically and nothing else needs
+configuring. Without it (or when you open `index.html` straight off disk) the
+game quietly falls back to classic single-screen play; nothing breaks.
+
+**Locally:** `node dev-server.js` serves the game plus the API on
+<http://localhost:8787> using an in-memory store, so you can try phone play with
+no accounts or setup at all.
+
+### Difficulty
+
+The title screen offers **Standard** (45:00, hints +0:30 / +1:00 / +2:00) and
+**Relaxed** (60:00, first hint on each puzzle free, then +0:30 / +1:00). The
+mode is recorded on the score card so runs stay comparable.
 
 ## Rules at a glance
 
-- Countdown starts at **45:00**; the timer pulses red under 5 minutes.
-- Up to 3 hints per puzzle, escalating: **+0:30, then +1:00, then +2:00**
-  (the cost is shown on the button before you commit).
+- Countdown starts at **45:00** (Standard) or **60:00** (Relaxed); the timer
+  pulses red under 5 minutes.
+- Up to 3 hints per puzzle, escalating, with the cost shown on the button
+  before you commit.
 - Wrong answers cost **+0:05**.
 - Time out → continue in overtime (rating capped) or restart.
 - Victory screen: team emoji + name + finishing time, full stats, themed
-  rating, and a copy-to-clipboard results block.
+  rating, and a downloadable PNG score card.
 
 ## Facilitator setup
 
@@ -86,7 +124,7 @@ Answers per scenario, in solve order. (Full chains and all hint text: in-game GM
 |------|---------|
 | 1 · The Beach | SAIL → **8513** (winds N,E,S,W: hull rule + sail pairs) → EDIT (TIDE backward) → **54** |
 | 2 · The Radio Station | tune **121.5** (day 121 + 5 sill gouges) → LOOK UNDER (morse) → STORM (Caesar 3) → **394** (lamp deduction) |
-| 3 · The Jungle Path | RIVER → DROWN (sides > moss) → **693** (algebra) → LEAVE (lamp morse) |
+| 3 · The Jungle Path | two parallel threads: RIVER → DROWN (sides > moss), and **693** (algebra) → Gorge Gate = **simultaneity lock** (man both winches, then haul) |
 | 4 · The Escape Raft | BDAEC (scheduling) → **2430** (121.5 × 2) → **510** (6:40 tide − 90 min) → **3158** (8513 reversed) → SOS flares |
 
 ## 🚀 Derelict: The Prospero
@@ -152,6 +190,18 @@ Line):
   flares, film grain, title backdrops: rain/stars/snow/rails), and the game
   logic (hub, hotspots, modal, puzzle types `text`/`dial`/`signal`, timer,
   beats, relay lamps, endings, GM panel).
+- **`lib/qr.js`** — a self-contained QR encoder (byte mode, ECC level M,
+  versions 1-10) used for the join code. No CDN, and no QR *image API* either,
+  which would have meant sending your game URL to a third party.
+- **`lib/net.js`** — the multiplayer transport: create/attach to a session,
+  poll, and send actions. Every call fails soft, so the game still runs when
+  there is no API.
+- **`lib/session.js` / `lib/store.js` / `api/*.js`** — the sync backend. The
+  server never sees an answer or a hint; it only records that an object was
+  solved, plus who is sitting where. Every input is shape-validated, nothing it
+  returns is ever treated as markup, and sessions expire after 6 hours. No
+  accounts, no cookies, no personal data.
+- **`dev-server.js`** — local static + API server for development and tests.
 - **`scenarios/*.js`** — one file per scenario, self-registering via
   `registerScenario({...})`: metadata, title art, story, emojis, ratings,
   victory/game-over prose, ambience presets, ambient sound events, wrong-answer
