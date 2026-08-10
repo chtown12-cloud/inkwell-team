@@ -321,10 +321,24 @@ pre.share{text-align:left;background:#0a1416;border:1px solid #2c4144;border-rad
 .diff-btn.on{border-color:var(--teal-hi);color:#eafaf7;background:linear-gradient(180deg,var(--teal-hi),var(--teal))}
 .diff-blurb{margin-top:8px;font-size:.8rem;color:var(--dim);text-align:center}
 
-/* ---------- seat presence on the shared screen ---------- */
-.seat-tag{position:absolute;left:50%;transform:translateX(-50%);bottom:-26px;white-space:nowrap;
-  font-size:1rem;background:rgba(4,12,14,.85);border:1px solid #3a565c;border-radius:20px;
-  padding:2px 10px;pointer-events:none}
+/* ---------- live player tokens on the shared screen ----------
+   Tokens live in their own layer and are never rebuilt, only moved, so the
+   browser can tween them between clues. */
+#players{position:absolute;inset:0;pointer-events:none;z-index:7}
+.ptoken{position:absolute;left:0;top:0;display:flex;align-items:center;gap:6px;
+  white-space:nowrap;padding:3px 11px 3px 5px;border-radius:20px;
+  background:rgba(4,12,14,.88);border:1px solid #4a6a70;
+  box-shadow:0 2px 10px rgba(0,0,0,.5);
+  font-family:'Special Elite',serif;font-size:.85rem;color:var(--sand);
+  transform:translate3d(0,0,0);
+  transition:transform .65s cubic-bezier(.34,.9,.3,1), opacity .35s ease;
+  opacity:0}
+.ptoken.shown{opacity:1}
+.ptoken .pe{font-size:1.15rem;line-height:1}
+.ptoken.idle{opacity:.5;filter:saturate(.5)}
+@media (prefers-reduced-motion: reduce){
+  .ptoken{transition:opacity .2s ease}
+}
 #crew-bar{position:fixed;left:12px;bottom:12px;z-index:40;display:flex;gap:6px;flex-wrap:wrap;max-width:44vw}
 #crew-bar .chip{background:rgba(4,12,14,.8);border:1px solid #3a565c;border-radius:20px;
   padding:3px 11px;font-size:.8rem;color:var(--sand);font-family:'Special Elite',serif}
@@ -355,6 +369,17 @@ pre.share{text-align:left;background:#0a1416;border:1px solid #2c4144;border-rad
 .simul-station.ready .simul-count{color:#8fe3a8}
 .simul-who{font-size:.85rem;color:var(--teal-hi);min-height:1.2em;margin-bottom:8px}
 #simul-pull[disabled]{opacity:.45;cursor:not-allowed;filter:grayscale(.6)}
+
+/* ---------- host went away ---------- */
+#host-gone{position:fixed;inset:0;z-index:140;background:rgba(3,8,9,.95);
+  display:flex;align-items:center;justify-content:center;padding:24px;overflow:auto}
+.hg-inner{max-width:420px;text-align:center}
+.hg-icon{font-size:2.6rem;margin-bottom:6px}
+.hg-inner h2{font-family:'Special Elite',serif;color:var(--sand);letter-spacing:2px;font-size:1.2rem}
+.hg-inner p{color:var(--dim);font-size:.92rem;line-height:1.5;margin:10px 0 18px}
+.hg-or{margin:18px 0 6px !important;font-size:.82rem !important}
+.hg-url{color:var(--teal-hi);font-size:.9rem;word-break:break-all;
+  border:1px dashed #4a6a70;border-radius:8px;padding:10px}
 
 /* ---------- phone player view ---------- */
 #join-screen{position:fixed;inset:0;z-index:130;background:#050f11;display:flex;
@@ -440,6 +465,7 @@ body.phone #modal{max-height:86vh}
     <div id="scene"></div>
     <canvas id="fx" width="1600" height="900"></canvas>
     <div id="hotspots"></div>
+    <div id="players"></div>
   </div>
 </div>
 
@@ -484,6 +510,17 @@ body.phone #modal{max-height:86vh}
   </div>
 </div>
 <div id="phone-root" class="hidden"></div>
+
+<div id="host-gone" class="hidden">
+  <div class="hg-inner">
+    <div class="hg-icon">📺</div>
+    <h2>YOUR HOST'S SCREEN CLOSED</h2>
+    <p>The big screen has gone. Your progress is safe — someone just needs to pick it up.</p>
+    <button class="big-btn" id="hg-take">TAKE OVER ON THIS DEVICE</button>
+    <p class="hg-or">or open this on a laptop:</p>
+    <div class="hg-url" id="hg-url"></div>
+  </div>
+</div>
 
 <!-- ==================== QR / players panel ==================== -->
 <div id="qr-panel" class="hidden">
@@ -1052,9 +1089,7 @@ function renderHotspots(){
     b.className='hotspot'+(S.solved.has(o.id)?' done':'')+(o.hiddenUntil&&!S.solved.has(o.id)?' new':'');
     b.dataset.obj=o.id;
     b.style.cssText=`left:${o.pos.x}%;top:${o.pos.y}%;width:${o.pos.w}%;height:${o.pos.h}%`;
-    const seated = MP.active() ? NET.seatedAt(o.id) : [];
-    b.innerHTML=`<span class="ring"></span><span class="tag">${o.icon} ${o.name}${S.solved.has(o.id)?' ✓':''}</span>`
-      + (seated.length ? `<span class="seat-tag">${seated.map(id=>NET.playerEmoji(id)).join(' ')}</span>` : '');
+    b.innerHTML=`<span class="ring"></span><span class="tag">${o.icon} ${o.name}${S.solved.has(o.id)?' ✓':''}</span>`;
     b.onclick=()=>openModal(o.id);
     layer.appendChild(b);
   });
@@ -1522,7 +1557,8 @@ $('start-btn').onclick=async ()=>{
   if(code){
     S.code = code;
     NET.onState = applyRemote;
-    NET.send('join',{name:S.teamName,emoji:S.teamEmoji});
+    await NET.send('join',{name:S.teamName,emoji:S.teamEmoji});
+    await NET.becomeHost();
     NET.startPolling();
     $('qr-btn').classList.remove('hidden');
     openQr();
@@ -1537,6 +1573,7 @@ $('continue-btn').onclick=()=>{
 };
 $('mute-btn').onclick=toggleMute;
 $('qr-btn').onclick=openQr;
+$('hg-take').onclick=()=>{ location.href=takeoverUrl(); };
 document.querySelectorAll('.diff-btn').forEach(b=>b.onclick=()=>{
   document.querySelectorAll('.diff-btn').forEach(x=>x.classList.toggle('on',x===b));
   setDifficulty(b.dataset.diff);
@@ -1728,7 +1765,8 @@ function applyRemote(room){
     });
   } finally { MP.suppress = false; }
 
-  if(S.isPhone) renderPhone(); else { renderHotspots(); refreshCrew(); }
+  if(S.isPhone){ renderPhone(); refreshHostBanner(); }
+  else { renderHotspots(); renderPlayerTokens(); }
   // a simultaneity lock has to show crew arriving in real time
   if(!$('overlay').classList.contains('hidden')){
     const open=currentRoom().objects.find(x=>x.puzzle&&x.puzzle.type==='simul'
@@ -1747,6 +1785,115 @@ function maybeVictory(){
   const room = currentRoom();
   if(room.objects.filter(x=>x.puzzle).every(x=>S.solved.has(x.id))
      && S.roomIndex===ACTIVE.rooms.length-1) victory();
+}
+
+/* ---------- where each player is standing ---------- */
+const TOKEN_W = 8.5;   // approximate token width, in % of stage width
+
+/** Simultaneity stations have no hotspot of their own; find their parent. */
+function stationOwner(seatId){
+  const room=currentRoom();
+  for(const o of room.objects){
+    if(!o.puzzle || o.puzzle.type!=='simul') continue;
+    const idx=(o.puzzle.stations||[]).findIndex(st=>st.id===seatId);
+    if(idx>=0) return {obj:o, stationIndex:idx, stationCount:(o.puzzle.stations||[]).length};
+  }
+  return null;
+}
+
+/**
+ * Work out a stage position (in %) for every player: at the clue they have
+ * open, split across the stations of a simultaneity lock, or parked in a
+ * lobby row along the bottom when they are between things.
+ */
+function playerPositions(){
+  const room=currentRoom();
+  const players=(NET.state&&NET.state.players)||[];
+  const seats=(NET.state&&NET.state.seats)||{};
+  const whereOf={};
+  players.forEach(p=>{ whereOf[p.id]=null; });
+
+  Object.keys(seats).forEach(seatId=>{
+    let target=null;
+    const direct=room.objects.find(o=>o.id===seatId);
+    if(direct){
+      // never reveal a clue the shared screen has not uncovered yet
+      if(objVisible(direct)) target={obj:direct, bias:0};
+    } else {
+      const owner=stationOwner(seatId);
+      if(owner && objVisible(owner.obj)){
+        // push each station's crew to its own side of the object
+        const spread=owner.stationCount>1 ? (owner.stationIndex/(owner.stationCount-1)-0.5) : 0;
+        target={obj:owner.obj, bias:spread*Math.max(owner.obj.pos.w,14)};
+      }
+    }
+    if(!target) return;
+    (seats[seatId]||[]).forEach(pid=>{ if(pid in whereOf) whereOf[pid]=target; });
+  });
+
+  // group players by destination so several on one clue can fan out
+  const groups=new Map();
+  players.forEach(p=>{
+    const t=whereOf[p.id];
+    const key=t?(t.obj.id+'|'+t.bias):'@lobby';
+    if(!groups.has(key)) groups.set(key,{target:t,ids:[]});
+    groups.get(key).ids.push(p.id);
+  });
+
+  const out={};
+  groups.forEach(g=>{
+    const n=g.ids.length;
+    g.ids.forEach((pid,i)=>{
+      const offset=(i-(n-1)/2)*TOKEN_W;
+      if(g.target){
+        const o=g.target.obj;
+        out[pid]={ x:o.pos.x+o.pos.w/2+g.target.bias+offset, y:o.pos.y+o.pos.h+1.5, idle:false };
+      } else {
+        out[pid]={ x:12+offset+ (i*0), y:95, idle:true };
+      }
+    });
+  });
+  // lobby players get spread along the bottom rather than stacked
+  const lobby=Object.keys(out).filter(pid=>out[pid].idle);
+  lobby.forEach((pid,i)=>{ out[pid].x = 10 + i*TOKEN_W*1.15; });
+  return out;
+}
+
+function renderPlayerTokens(){
+  const layer=$('players');
+  if(!layer) return;
+  if(!MP.active() || S.isPhone){ layer.innerHTML=''; return; }
+  const players=(NET.state&&NET.state.players)||[];
+  const pos=playerPositions();
+
+  // remove tokens for players who have gone
+  const live=new Set(players.filter(p=>p.id!==((NET.state&&NET.state.host&&NET.state.host.id)||null)).map(p=>p.id));
+  Array.from(layer.children).forEach(el=>{ if(!live.has(el.dataset.pid)) el.remove(); });
+
+  const hostId=(NET.state&&NET.state.host&&NET.state.host.id)||null;
+  players.forEach(p=>{
+    if(p.id===hostId) return;          // the host IS the screen
+    let el=layer.querySelector(`[data-pid="${CSS.escape(p.id)}"]`);
+    if(!el){
+      el=document.createElement('div');
+      el.className='ptoken';
+      el.dataset.pid=p.id;
+      el.innerHTML=`<span class="pe"></span><span class="pn"></span>`;
+      layer.appendChild(el);
+      // let the browser paint it at its first position before fading in,
+      // so a joining player does not streak across the stage
+      requestAnimationFrame(()=>el.classList.add('shown'));
+    }
+    const emojiEl=el.querySelector('.pe'), nameEl=el.querySelector('.pn');
+    if(emojiEl.textContent!==p.emoji) emojiEl.textContent=p.emoji;
+    if(nameEl.textContent!==p.name) nameEl.textContent=p.name;
+    const at=pos[p.id]||{x:10,y:95,idle:true};
+    el.classList.toggle('idle',!!at.idle);
+    // Percentages inside translate() resolve against the ELEMENT's own box, not
+    // the stage — so convert against the stage's fixed 1600x900 logical size and
+    // keep the -50% purely for self-centring, which is what it is good for.
+    el.style.transform=`translate3d(${(at.x/100*1600).toFixed(1)}px, ${(at.y/100*900).toFixed(1)}px, 0) translateX(-50%)`;
+  });
 }
 
 function refreshCrew(){
@@ -1791,6 +1938,18 @@ function refreshQrPlayers(){
   el.innerHTML = players.length
     ? players.map(p=>`<span class="chip">${p.emoji} ${esc(p.name)}</span>`).join('')
     : '<span class="chip" style="opacity:.6">waiting for players…</span>';
+}
+
+/* ---------- the shared screen going away ---------- */
+function takeoverUrl(){
+  return location.origin + location.pathname + '?host=' + (S.code||'');
+}
+function refreshHostBanner(){
+  const el=$('host-gone'); if(!el) return;
+  const gone = MP.active() && !NET.hostLive() && !S.finished;
+  // clears itself if the host was only reloading
+  el.classList.toggle('hidden', !gone);
+  if(gone) $('hg-url').textContent = takeoverUrl();
 }
 
 /* ---------- phone player view ---------- */
@@ -1871,9 +2030,43 @@ async function bootPhone(code){
   };
 }
 
+/**
+ * Pick up a game whose shared screen went away: same session, same progress,
+ * same clock — this device just becomes the screen.
+ */
+async function bootHost(code){
+  $('hub-screen').classList.add('hidden');
+  const room = await NET.attach(code);
+  if(!room){ $('hub-screen').classList.remove('hidden'); return; }
+  ACTIVE = SCENARIOS.find(x=>x.id===room.scenario) || SCENARIOS[0];
+  setDifficulty(room.difficulty);
+  S.code=code; S.started=true; S.isPhone=false;
+  S.roomIndex=room.roomIndex||0;
+  S.startTime=room.startTime||Date.now();
+  (room.solved||[]).forEach(id=>S.solved.add(id));
+  S.penaltySec=room.penaltySec||0; S.hintsUsed=room.hintsUsed||0; S.wrongCount=room.wrongCount||0;
+  S.teamName='THE CREW'; S.teamEmoji=(ACTIVE.emojis||['⚓'])[0];
+  $('team-badge').textContent=S.teamEmoji+' '+S.teamName;
+  $('stage-wrap').classList.remove('hidden');
+  $('hud').classList.remove('hidden');
+  $('objective').classList.remove('hidden');
+  $('vignette').classList.remove('hidden');
+  $('qr-btn').classList.remove('hidden');
+  initAudio(); if(AC&&AC.state==='suspended') AC.resume();
+  NET.onState = applyRemote;
+  await NET.send('join',{name:'Screen',emoji:S.teamEmoji});
+  await NET.becomeHost();
+  NET.startPolling();
+  fitStage();
+  enterRoom(S.roomIndex);
+  tick();
+}
+
 addEventListener('DOMContentLoaded',()=>{
   buildHub();
   const params=new URLSearchParams(location.search);
+  const takeover=params.get('host');
+  if(takeover && /^[A-Z0-9]{6}$/i.test(takeover)){ bootHost(takeover.toUpperCase()); return; }
   const join=params.get('join');
   if(join && /^[A-Z0-9]{6}$/i.test(join)){ bootPhone(join.toUpperCase()); return; }
   const want=params.get('s');
