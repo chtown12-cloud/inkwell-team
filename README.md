@@ -77,52 +77,77 @@ physical room.
   winches that must be manned at the same time by different people. Its
   requirement scales to your crew size, so a team of two or three is never stuck.
 
-**Locally:** `node dev-server.js` serves the game plus the API on
-<http://localhost:8787> using an in-memory store, so you can try phone play with
-no accounts or setup at all.
+### Setting up live phone sync (one-time, ~2 minutes)
 
-### Deploying to Vercel (one-time setup for phone play)
+Sync runs on **Firebase Realtime Database** — the same database QuizDash uses
+(project `quizdash-eba72`), under a separate `escape/` key so the two games can
+never collide. Nothing else is needed: no server, no Vercel storage, no
+serverless functions. Games are pushed over a websocket, so a solve appears on
+every device immediately.
 
-The game itself is static and needs no setup. Live phone sync needs somewhere to
-keep the session for a few hours, which means connecting a Redis store. Without
-it the game still works — it just falls back to classic single-screen play.
+Because the game writes to a new key, the database rules need one addition:
 
-**1. Deploy the repo.** In the Vercel dashboard, *Add New… → Project*, import
-this GitHub repo, and deploy. There is no build step to configure; `vercel.json`
-already tells Vercel it is a static site with serverless functions in `api/`.
+**1.** Firebase console → your project → **Realtime Database → Rules**.
 
-**2. Check the API is alive.** Visit `https://YOUR-SITE.vercel.app/api/health`.
-You should see JSON with `"api": "up"` and `"persistent": false`. If you instead
-get a 404 or see JavaScript source code, the functions aren't being built — see
-troubleshooting below.
+**2.** Add the `escape` block alongside the existing `rooms` block, so the rules
+read:
 
-**3. Add a Redis store.** Open your project → **Storage** tab → create/connect a
-**Redis** store (Vercel offers Upstash Redis through its Marketplace; the exact
-wording moves around, so look for Redis rather than a specific brand name).
-Choose the free tier and **connect it to this project** — that connection is what
-matters, because it injects the credentials as environment variables.
+```json
+{
+  "rules": {
+    ".read": false,
+    ".write": false,
+    "rooms": {
+      "$room": {
+        ".read": true,
+        ".write": true,
+        "players": {
+          "$pid": {
+            "name": { ".validate": "newData.isString() && newData.val().length <= 24" }
+          }
+        }
+      }
+    },
+    "escape": {
+      "$game": {
+        ".read": true,
+        ".write": true,
+        ".validate": "newData.hasChildren(['code'])",
+        "code":       { ".validate": "newData.isString() && newData.val().length == 6" },
+        "scenario":   { ".validate": "newData.isString() && newData.val().length <= 32" },
+        "difficulty": { ".validate": "newData.isString() && newData.val().length <= 16" },
+        "roomIndex":  { ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 7" },
+        "players": {
+          "$i": {
+            "name":  { ".validate": "newData.isString() && newData.val().length <= 20" },
+            "emoji": { ".validate": "newData.isString() && newData.val().length <= 8" }
+          }
+        }
+      }
+    }
+  }
+}
+```
 
-**4. Confirm the variables exist.** Project → **Settings → Environment
-Variables**. You should now see a `..._REST_API_URL` and `..._REST_API_TOKEN`
-pair (named either `KV_REST_API_*` or `UPSTASH_REDIS_REST_*`). The code accepts
-either naming, so you don't need to rename anything.
+**3.** Click **Publish**. That's it — start a game and the QR code works.
 
-**5. Redeploy.** Environment variables only reach a deployment built *after* they
-exist. Go to **Deployments**, open the latest one, and choose **Redeploy**.
+The panel that shows the QR code also shows the connection state, so you can
+confirm it at a glance: **● live — solves sync instantly** means Firebase is
+connected.
 
-**6. Verify.** Reload `/api/health`. It should now say `"persistent": true` and
-"Storage connected". Phone play is live: start a game, and the QR code will work.
+**If sync is ever unavailable** — rules not published yet, no network, or the
+game opened straight off disk — it silently falls back: first to the bundled
+REST API (only present if you deploy the `api/` folder somewhere that runs
+serverless functions, e.g. Vercel), and finally to classic single-screen play.
+Nothing ever hard-fails.
 
-**Troubleshooting**
+**Locally:** `node dev-server.js` runs the game on <http://localhost:8787> with
+an in-memory store, so you can try phone play with no accounts or setup at all.
 
-- `/api/health` 404s, or shows source code instead of JSON → the `api/` folder
-  isn't being deployed as functions. Check Settings → General that the **Root
-  Directory** is the repository root (blank), not a subfolder.
-- QR code shows but phones can't join → you are probably opening the game from a
-  `file://` path or `localhost` rather than the deployed URL. Phones need a real
-  web address they can reach.
-- `"persistent": false` after adding storage → the store isn't *connected to this
-  project*, or you haven't redeployed since connecting it (step 5).
+**A note on privacy:** the only things stored are a self-chosen nickname, an
+emoji, which puzzle each person is sitting at, and which puzzles are solved. No
+accounts, no cookies, no email, no analytics. Sessions expire on their own, and
+the game never stores puzzle answers or hint text in the database.
 
 ### Difficulty
 
@@ -230,14 +255,18 @@ Line):
 - **`lib/qr.js`** — a self-contained QR encoder (byte mode, ECC level M,
   versions 1-10) used for the join code. No CDN, and no QR *image API* either,
   which would have meant sending your game URL to a third party.
-- **`lib/net.js`** — the multiplayer transport: create/attach to a session,
-  poll, and send actions. Every call fails soft, so the game still runs when
-  there is no API.
-- **`lib/session.js` / `lib/store.js` / `api/*.js`** — the sync backend. The
-  server never sees an answer or a hint; it only records that an object was
-  solved, plus who is sitting where. Every input is shape-validated, nothing it
-  returns is ever treated as markup, and sessions expire after 6 hours. No
-  accounts, no cookies, no personal data.
+- **`lib/net.js`** — the multiplayer transport, with three tiers tried in
+  order: **Firebase Realtime Database** (websocket push), then the bundled REST
+  API, then single-screen play. Every call fails soft.
+- **`lib/session.js`** — the session rules (join, sit, solve, hint, advance) as
+  one pure module. It runs *inside a Firebase transaction* on the client and
+  *inside the request handler* on the server, so both transports enforce
+  identical rules. `normalizeRoom()` absorbs Realtime Database's habit of
+  dropping empty objects and arrays.
+- **`lib/store.js` / `api/*.js`** — the optional REST fallback. It never sees an
+  answer or a hint; it only records that an object was solved and who is sitting
+  where. Every input is shape-validated, nothing it returns is treated as
+  markup, and sessions expire after 6 hours.
 - **`dev-server.js`** — local static + API server for development and tests.
 - **`scenarios/*.js`** — one file per scenario, self-registering via
   `registerScenario({...})`: metadata, title art, story, emojis, ratings,
