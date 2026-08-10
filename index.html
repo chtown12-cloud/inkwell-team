@@ -1578,6 +1578,8 @@ function victory(){
   $('room-complete').classList.add('hidden');
   const seq=[0,350,700, 1400,2200,3000, 3800,4150,4500];
   seq.forEach((t,i)=>setTimeout(()=>spawnFlare(i>=3&&i<6),t));
+  // the game is over: let the database drop this session when the host leaves
+  if(window.NET && !S.isPhone) NET.armCleanup();
   const palettes=[[255,120,90],[120,190,255],[255,215,140],[190,170,255],[140,230,160]];
   setInterval(()=>{ // celebratory fireworks until the page resets
     spawnBurst(200+Math.random()*1200,110+Math.random()*320,palettes[Math.floor(Math.random()*palettes.length)],26,5.2);
@@ -1606,7 +1608,7 @@ function showVictoryCard(){
     <pre class="share" id="share-text">${share}</pre>
     <div class="btn-row">
       <button class="big-btn" id="save-card-btn" onclick="saveScoreCard(event)">📸 Save Score Card</button>
-      <button class="big-btn alt" onclick="location.reload()">Play Again</button>
+      <button class="big-btn alt" onclick="playAgain()">Play Again</button>
     </div>
   </div></div>`;
 }
@@ -1642,6 +1644,10 @@ function drawScoreCard(){
   x.fillStyle='#d8c39a'; x.font='27px "Special Elite",serif';
   x.fillText(S.teamEmoji+' '+(ACTIVE.shareTitle||'ESCAPED!'),600,560);
   return c;
+}
+async function playAgain(){
+  if(window.NET && !S.isPhone) await NET.endSession();   // don't leave it behind
+  location.reload();
 }
 function saveScoreCard(ev){
   const a=document.createElement('a');
