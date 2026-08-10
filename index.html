@@ -4,10 +4,17 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Escape the Night — Five Virtual Escape Rooms</title>
-<!-- Google Fonts: the only external dependency. -->
+<!-- Google Fonts. Loaded NON-BLOCKING: a pending stylesheet holds up every
+     script that follows it, so if fonts.googleapis.com is slow or unreachable
+     the whole game would sit there unable to start. The media swap lets the
+     page render and run immediately; the typefaces arrive when they arrive,
+     and the font stacks below name real fallbacks. -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Special+Elite&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" media="print" onload="this.media='all'"
+      href="https://fonts.googleapis.com/css2?family=Special+Elite&family=Inter:wght@400;600;700&display=swap">
+<noscript><link rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Special+Elite&family=Inter:wght@400;600;700&display=swap"></noscript>
 <style>
 /* ============================================================
    ESCAPE THE NIGHT — shared engine styles
@@ -321,6 +328,20 @@ pre.share{text-align:left;background:#0a1416;border:1px solid #2c4144;border-rad
 .diff-btn.on{border-color:var(--teal-hi);color:#eafaf7;background:linear-gradient(180deg,var(--teal-hi),var(--teal))}
 .diff-blurb{margin-top:8px;font-size:.8rem;color:var(--dim);text-align:center}
 
+/* ---------- joining by code, for when scanning isn't an option ---------- */
+#joinbox{margin:22px auto 6px;max-width:430px;text-align:center}
+.hub-or{color:var(--dim);font-size:.8rem;letter-spacing:2px;margin:6px 0 18px;text-align:center}
+#joinbox label{display:block;color:var(--dim);font-size:.85rem;margin-bottom:9px}
+.joinrow{display:flex;gap:8px;justify-content:center}
+#joincode{flex:1;max-width:190px;padding:11px 14px;font-size:1.3rem;letter-spacing:6px;
+  text-align:center;text-transform:uppercase;background:#0b1619;color:var(--sand);
+  border:1px solid #3a565c;border-radius:8px;font-family:'Special Elite',serif}
+#joincode:focus{outline:none;border-color:var(--teal-hi)}
+#joingo{padding:11px 20px;border-radius:8px;border:1px solid #6dc0b8;
+  background:linear-gradient(180deg,var(--teal-hi),var(--teal));color:#eafaf7;
+  font-weight:600;cursor:pointer}
+.joinerr{color:#e0806a;font-size:.85rem;min-height:1.2em;margin-top:8px}
+
 /* ---------- live player tokens on the shared screen ----------
    Tokens live in their own layer and are never rebuilt, only moved, so the
    browser can tween them between clues. */
@@ -352,6 +373,7 @@ pre.share{text-align:left;background:#0a1416;border:1px solid #2c4144;border-rad
 #qr-canvas{background:#fff;padding:10px;border-radius:10px;image-rendering:pixelated}
 .qr-code{font-family:'Special Elite',serif;font-size:2.4rem;letter-spacing:10px;color:var(--teal-hi);margin-top:14px}
 .qr-url{color:var(--dim);font-size:.82rem;word-break:break-all;margin:4px 0 14px}
+.qr-alt{color:var(--dim);font-size:.8rem;margin:-6px 0 12px}
 .qr-link{font-size:.85rem;margin-bottom:10px;letter-spacing:1px}
 .qr-link.good{color:#8fe3a8}
 .qr-link.warn{color:#e0b96a}
@@ -378,7 +400,9 @@ pre.share{text-align:left;background:#0a1416;border:1px solid #2c4144;border-rad
 .hg-inner h2{font-family:'Special Elite',serif;color:var(--sand);letter-spacing:2px;font-size:1.2rem}
 .hg-inner p{color:var(--dim);font-size:.92rem;line-height:1.5;margin:10px 0 18px}
 .hg-or{margin:18px 0 6px !important;font-size:.82rem !important}
-.hg-url{color:var(--teal-hi);font-size:.9rem;word-break:break-all;
+.hg-code{font-family:'Special Elite',serif;font-size:2rem;letter-spacing:9px;
+  color:var(--teal-hi);margin-bottom:8px}
+.hg-url{color:var(--dim);font-size:.85rem;word-break:break-all;
   border:1px dashed #4a6a70;border-radius:8px;padding:10px}
 
 /* ---------- phone player view ---------- */
@@ -423,7 +447,20 @@ body.phone #modal{max-height:86vh}
   <div id="hub-inner">
     <h1>ESCAPE THE NIGHT</h1>
     <div class="sub">five virtual escape rooms · one crew, one screen · 45 minutes each</div>
+
+    <div id="joinbox">
+      <label for="joincode">Already got a game running? Enter the code from the screen:</label>
+      <div class="joinrow">
+        <input id="joincode" maxlength="6" placeholder="CODE" autocomplete="off"
+               autocapitalize="characters" spellcheck="false" inputmode="text">
+        <button id="joingo">JOIN ➤</button>
+      </div>
+      <div class="joinerr" id="joinerr"></div>
+    </div>
+
+    <div class="hub-or">— or start a new game —</div>
     <div id="hub-cards"></div>
+
     <p class="hub-note">Pick your nightmare. Each scenario is a full 4-room, ~17-puzzle escape built for a crew of about five —
     solve out loud together. Hints cost +0:30, then +1:00, then +2:00. Wrong answers cost +0:05.<br>
     Facilitators: the 🔑 Game Master answer key lives on each scenario's title screen.</p>
@@ -517,7 +554,8 @@ body.phone #modal{max-height:86vh}
     <h2>YOUR HOST'S SCREEN CLOSED</h2>
     <p>The big screen has gone. Your progress is safe — someone just needs to pick it up.</p>
     <button class="big-btn" id="hg-take">TAKE OVER ON THIS DEVICE</button>
-    <p class="hg-or">or open this on a laptop:</p>
+    <p class="hg-or">or pick it up on a laptop — open the game and enter this code:</p>
+    <div class="hg-code" id="hg-code"></div>
     <div class="hg-url" id="hg-url"></div>
   </div>
 </div>
@@ -530,6 +568,7 @@ body.phone #modal{max-height:86vh}
     <canvas id="qr-canvas"></canvas>
     <div class="qr-code" id="qr-code"></div>
     <div class="qr-url" id="qr-url"></div>
+    <div class="qr-alt">Can't scan? Open the same address and enter the code above.</div>
     <div class="qr-link" id="qr-link"></div>
     <div class="qr-players" id="qr-players"></div>
     <button class="big-btn" onclick="closeQr()">DONE</button>
@@ -937,10 +976,15 @@ setInterval(()=>{
   }
 },5200);
 </script>
-<!-- Firebase (compat build). Optional: with no config, or if it fails to load,
-     the game falls back to the REST API and then to single-screen play. -->
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+<!-- Firebase (compat build). Loaded ASYNC on purpose: these are the only
+     blocking third-party scripts on the page, and if gstatic is slow or
+     unreachable (offline, corporate firewall, blocker) a synchronous tag would
+     stall the parser and the game would never start. Async means the game
+     always boots; sync simply falls back if the SDK never arrives. -->
+<script async src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"
+        onerror="window.__firebaseUnavailable=true"></script>
+<script async src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"
+        onerror="window.__firebaseUnavailable=true"></script>
 <script>
 /* ════════════════════════════════════════════════════════════════════════
    FIREBASE_CONFIG — where live phone sync is stored.
@@ -1574,6 +1618,20 @@ $('continue-btn').onclick=()=>{
 $('mute-btn').onclick=toggleMute;
 $('qr-btn').onclick=openQr;
 $('hg-take').onclick=()=>{ location.href=takeoverUrl(); };
+
+/* Join an existing game by typing its code — the fallback for when a QR can't
+   be scanned (glare on the shared screen, a late arrival, a locked-down phone).
+   Landing as a player is right even for someone taking over: if the host has
+   gone, the takeover banner greets them the moment they are in. */
+function submitJoinCode(){
+  const raw=($('joincode').value||'').toUpperCase().replace(/[^A-Z0-9]/g,'');
+  const err=$('joinerr');
+  if(raw.length!==6){ err.textContent='That code is six characters, like K7QM4P.'; return; }
+  err.textContent='';
+  location.href = location.origin + location.pathname + '?join=' + raw;
+}
+$('joingo').onclick=submitJoinCode;
+$('joincode').addEventListener('keydown',e=>{ if(e.key==='Enter') submitJoinCode(); });
 document.querySelectorAll('.diff-btn').forEach(b=>b.onclick=()=>{
   document.querySelectorAll('.diff-btn').forEach(x=>x.classList.toggle('on',x===b));
   setDifficulty(b.dataset.diff);
@@ -1949,7 +2007,10 @@ function refreshHostBanner(){
   const gone = MP.active() && !NET.hostLive() && !S.finished;
   // clears itself if the host was only reloading
   el.classList.toggle('hidden', !gone);
-  if(gone) $('hg-url').textContent = takeoverUrl();
+  if(gone){
+    $('hg-code').textContent = S.code || '';
+    $('hg-url').textContent = location.origin + location.pathname;
+  }
 }
 
 /* ---------- phone player view ---------- */
