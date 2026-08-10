@@ -13,6 +13,7 @@ const path = require('path');
 
 const roomHandler = require('./api/room.js');
 const actionHandler = require('./api/action.js');
+const healthHandler = require('./api/health.js');
 
 const ROOT = __dirname;
 const PORT = parseInt(process.argv[2], 10) || 8787;
@@ -31,6 +32,7 @@ const server = http.createServer(async (req, res) => {
 
   if (url.pathname === '/api/room') return roomHandler(req, res);
   if (url.pathname === '/api/action') return actionHandler(req, res);
+  if (url.pathname === '/api/health') return healthHandler(req, res);
 
   // static files, confined to the repo root
   const rel = url.pathname === '/' ? '/index.html' : url.pathname;
