@@ -338,6 +338,9 @@ pre.share{text-align:left;background:#0a1416;border:1px solid #2c4144;border-rad
 #qr-canvas{background:#fff;padding:10px;border-radius:10px;image-rendering:pixelated}
 .qr-code{font-family:'Special Elite',serif;font-size:2.4rem;letter-spacing:10px;color:var(--teal-hi);margin-top:14px}
 .qr-url{color:var(--dim);font-size:.82rem;word-break:break-all;margin:4px 0 14px}
+.qr-link{font-size:.85rem;margin-bottom:10px;letter-spacing:1px}
+.qr-link.good{color:#8fe3a8}
+.qr-link.warn{color:#e0b96a}
 .qr-players{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-bottom:18px;min-height:26px}
 .qr-players .chip{background:rgba(216,195,154,.1);border:1px solid #5c6f6d;border-radius:20px;
   padding:3px 12px;font-size:.9rem;color:var(--sand)}
@@ -490,6 +493,7 @@ body.phone #modal{max-height:86vh}
     <canvas id="qr-canvas"></canvas>
     <div class="qr-code" id="qr-code"></div>
     <div class="qr-url" id="qr-url"></div>
+    <div class="qr-link" id="qr-link"></div>
     <div class="qr-players" id="qr-players"></div>
     <button class="big-btn" onclick="closeQr()">DONE</button>
   </div>
@@ -896,7 +900,28 @@ setInterval(()=>{
   }
 },5200);
 </script>
+<!-- Firebase (compat build). Optional: with no config, or if it fails to load,
+     the game falls back to the REST API and then to single-screen play. -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+<script>
+/* ════════════════════════════════════════════════════════════════════════
+   FIREBASE_CONFIG — where live phone sync is stored.
+
+   This points at the same Realtime Database as QuizDash, under a separate
+   `escape/` key so the two games can never collide. Only databaseURL is
+   actually used; the rest is here for reference if Auth/Analytics are ever
+   added. Set databaseURL to "" to disable Firebase entirely.
+   ════════════════════════════════════════════════════════════════════════ */
+// assigned onto window deliberately: a top-level `const` is script-scoped and
+// would not be visible to lib/net.js as a global.
+window.FIREBASE_CONFIG = {
+  databaseURL: "https://quizdash-eba72-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId:   "quizdash-eba72",
+};
+</script>
 <script src="lib/qr.js"></script>
+<script src="lib/session.js"></script>
 <script src="lib/net.js"></script>
 <script>
 /* ============================================================
@@ -1705,6 +1730,7 @@ function applyRemote(room){
     if(open && !S.solved.has(open.id)) openModal(open.id);
   }
   refreshQrPlayers();
+  refreshLinkStatus();
   tick();
   maybeVictory();
 }
@@ -1740,9 +1766,19 @@ function openQr(){
   if(local){ cv.style.display='none'; }
   else { cv.style.display=''; try{ QR.render(cv, joinUrl(), {size:300}); }catch(e){ cv.style.display='none'; } }
   refreshQrPlayers();
+  refreshLinkStatus();
   $('qr-panel').classList.remove('hidden');
 }
 function closeQr(){ $('qr-panel').classList.add('hidden'); }
+function refreshLinkStatus(){
+  const el=$('qr-link'); if(!el) return;
+  const live = window.NET && NET.live();
+  const mode = window.NET && NET.mode;
+  el.className = 'qr-link ' + (live?'good':'warn');
+  el.textContent = live
+    ? (mode==='firebase' ? '\u25cf live — solves sync instantly' : '\u25cf connected')
+    : '\u25cb connecting…';
+}
 function refreshQrPlayers(){
   const players = (NET.state&&NET.state.players)||[];
   const el=$('qr-players'); if(!el) return;
