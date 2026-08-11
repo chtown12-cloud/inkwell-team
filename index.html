@@ -1236,9 +1236,12 @@ function openModal(objId){
   }
   $('modal').innerHTML=html;
   $('overlay').classList.remove('hidden');
-  // opening a puzzle seats you at it, so the crew can see where everyone is.
-  // simultaneity locks are the exception: there you sit at a station instead.
-  if(o.puzzle && o.puzzle.type!=='simul' && !solved && MP.openObj!==o.id){
+  // Opening anything puts you there, so the crew can see where everyone is —
+  // a clue with no puzzle and a puzzle already solved both count, because this
+  // is presence, not a claim on the work. Simultaneity locks are the one
+  // exception: there you sit at a station, and re-seating here would tip you
+  // straight back off it.
+  if((!o.puzzle || o.puzzle.type!=='simul') && MP.openObj!==o.id){
     MP.openObj=o.id; mpSend('sit',{objId:o.id});
   }
   if(o.puzzle&&o.puzzle.type==='dial'&&!solved) dialInit(o);
@@ -2172,6 +2175,10 @@ async function bootPhone(code){
     $('hud-room').textContent='';
     initAudio(); if(AC&&AC.state==='suspended') AC.resume();
     NET.startPolling();
+    // The takeover offer used to be checked only when a message arrived — but a
+    // screen that has gone quiet sends nothing, so the one case that needed
+    // noticing was the one case that never was. Look on a timer too.
+    setInterval(refreshHostBanner, 8000);
     renderPhone(); tick();
   };
 }
@@ -2207,6 +2214,14 @@ async function bootHost(code){
   enterRoom(S.roomIndex);
   tick();
 }
+
+/* A screen that is closing should say so on the way out. Firebase would work it
+   out on its own once its servers notice the socket has gone, but that can take
+   a while, and the crew are staring at their phones waiting to be told. */
+addEventListener('pagehide',()=>{
+  if(S.isPhone || S.finished || !S.code || !window.NET) return;
+  NET.releaseHost();
+});
 
 addEventListener('DOMContentLoaded',()=>{
   buildHub();
