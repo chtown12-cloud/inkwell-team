@@ -138,6 +138,25 @@ SCENES.beach=()=>`
   <rect x="672" y="788" width="96" height="40" rx="14" fill="#d9cba6" transform="rotate(-8 720 808)"/>
   <path d="M680 802 q40 -8 78 2" stroke="#7a5c34" stroke-width="2" fill="none"/>
 </g>
+<g class="atmo"><!-- more life on the wing and the water -->
+<g class="gullfly" style="animation-delay:6s"><path d="M300 150 q16 -13 32 0 q-16 -7 -32 0" fill="#e8e4d8" opacity=".55"/></g>
+<g class="gullfly" style="animation-delay:13s"><path d="M300 96 q11 -9 22 0 q-11 -5 -22 0" fill="#e8e4d8" opacity=".4"/></g>
+<g class="drift" style="animation-delay:2s"><ellipse cx="1180" cy="120" rx="150" ry="20" fill="#f0d9b8" opacity=".10"/></g>
+<g class="drift" style="animation-delay:9s"><ellipse cx="480" cy="182" rx="200" ry="17" fill="#f0d9b8" opacity=".08"/></g>
+<!-- a sail on the far horizon, too distant to matter -->
+<g class="shipdrift"><path d="M1418 392 l0 -30 l16 30z" fill="#e8e4d8" opacity=".3"/></g>
+<!-- something breaks the shallows and is gone -->
+<g class="finflick" style="animation-delay:5s"><path d="M960 428 l12 -16 l5 17z" fill="#0e2a30" opacity=".7"/></g>
+<g class="finflick" style="animation-delay:21s"><path d="M700 418 l9 -12 l4 13z" fill="#0e2a30" opacity=".55"/></g>
+<g class="crabby" style="animation-delay:14s"><ellipse cx="430" cy="806" rx="8" ry="6" fill="#8a4a34"/>
+  <path d="M423 803 l-6 -5 M437 803 l6 -5" stroke="#8a4a34" stroke-width="2"/></g>
+
+<g class="gullfly" style="animation-delay:19s"><path d="M300 200 q10 -8 20 0 q-10 -4 -20 0" fill="#e8e4d8" opacity=".35"/></g>
+<g class="drift" style="animation-delay:16s"><ellipse cx="900" cy="60" rx="180" ry="14" fill="#f0d9b8" opacity=".07"/></g>
+<g class="crabby" style="animation-delay:3s"><ellipse cx="1010" cy="862" rx="7" ry="5" fill="#7a4230"/>
+  <path d="M1004 859 l-5 -4 M1016 859 l5 -4" stroke="#7a4230" stroke-width="2"/></g>
+<g class="gust g2"><ellipse cx="0" cy="856" rx="120" ry="5" fill="#e8d8b8" opacity=".18"/></g>
+<g class="gust g3"><ellipse cx="0" cy="880" rx="90" ry="4" fill="#e8d8b8" opacity=".14"/></g></g>
 </svg>`;
 
 SCENES.radio=()=>`
@@ -272,6 +291,20 @@ ${[0,1,2,3,4,5].map(i=>`<line x1="0" y1="${90+i*95}" x2="1600" y2="${90+i*95}" s
   ${[0,1,2].map(r=>[0,1,2].map(c=>`<rect class="flick" x="${1152+c*38}" y="${744+r*26}" width="26" height="16" rx="3" fill="#0f1a14" stroke="#4fda7c" stroke-width="1.5"/>`).join('')).join('')}
   <circle class="flick glowdial" cx="1284" cy="752" r="9" fill="#8fe0a0"/>
 </g>
+<g class="atmo"><!-- a moth worrying the one working lamp -->
+<ellipse class="batfly" cx="1140" cy="96" rx="7" ry="4" fill="#d8c8a0" opacity=".5"/>
+<g class="batfly" style="animation-delay:7s"><ellipse cx="1140" cy="118" rx="5" ry="3" fill="#d8c8a0" opacity=".35"/></g>
+<!-- cobwebs stirring in the corners -->
+<g opacity=".18" class="sway" style="transform-origin:0 0"><path d="M0 40 q60 26 92 78 M0 96 q52 4 92 22" stroke="#cfd8d2" stroke-width="2" fill="none"/></g>
+<g opacity=".14" class="sway" style="animation-delay:3s;transform-origin:1600px 0"><path d="M1600 30 q-70 30 -104 86" stroke="#cfd8d2" stroke-width="2" fill="none"/></g>
+<!-- dust turning slowly in the instrument glow -->
+<circle class="sparkle" cx="240" cy="60" r="2" fill="#cfe6df" style="animation-delay:0.0s"/><circle class="sparkle" cx="390" cy="94" r="2" fill="#cfe6df" style="animation-delay:0.9s"/><circle class="sparkle" cx="540" cy="128" r="2" fill="#cfe6df" style="animation-delay:1.8s"/><circle class="sparkle" cx="690" cy="60" r="2" fill="#cfe6df" style="animation-delay:2.7s"/><circle class="sparkle" cx="840" cy="94" r="2" fill="#cfe6df" style="animation-delay:3.6s"/><circle class="sparkle" cx="990" cy="128" r="2" fill="#cfe6df" style="animation-delay:4.5s"/><circle class="sparkle" cx="1140" cy="60" r="2" fill="#cfe6df" style="animation-delay:0.40000000000000036s"/><circle class="sparkle" cx="1290" cy="94" r="2" fill="#cfe6df" style="animation-delay:1.2999999999999998s"/>
+<circle class="dripdrop" cx="520" cy="40" r="3.4" fill="#bfe8ff" opacity=".45" style="animation-delay:4s"/>
+<circle class="dripdrop" cx="900" cy="30" r="3" fill="#bfe8ff" opacity=".35" style="animation-delay:11s"/>
+<g class="lampswing" style="transform-origin:1000px 0"><line x1="1000" y1="0" x2="1000" y2="86" stroke="#2a3a34" stroke-width="3"/>
+  <circle class="flick" cx="1000" cy="98" r="10" fill="#ffd98c" opacity=".55"/>
+  <circle cx="1000" cy="98" r="48" fill="#ffd98c" opacity=".05"/></g>
+<ellipse class="fogdrift" cx="800" cy="884" rx="380" ry="16" fill="#9fd6c4" opacity=".05"/></g>
 </svg>`;
 
 SCENES.jungle=()=>`
@@ -427,6 +460,18 @@ SCENES.jungle=()=>`
   <path d="M0 0 h240 q-40 60 -140 80 L0 130 Z"/>
   <path d="M1600 0 h-260 q50 70 160 90 l100 50 Z"/>
 </g>
+<g class="atmo"><!-- canopy birds crossing, high and unbothered -->
+<g class="gullfly" style="animation-delay:4s"><path d="M300 78 q12 -10 24 0 q-12 -5 -24 0" fill="#0d2418" opacity=".55"/></g>
+<g class="gullfly" style="animation-delay:17s"><path d="M300 44 q9 -7 18 0 q-9 -4 -18 0" fill="#0d2418" opacity=".4"/></g>
+<!-- more leaves letting go -->
+<ellipse class="leaffall" cx="1180" cy="60" rx="9" ry="4" fill="#2f6a3a" opacity=".6" style="animation-delay:3s"/>
+<ellipse class="leaffall" cx="380" cy="40" rx="7" ry="3.4" fill="#356f3f" opacity=".5" style="animation-delay:11s"/>
+<ellipse class="leaffall" cx="880" cy="30" rx="8" ry="3.8" fill="#2a5f34" opacity=".55" style="animation-delay:19s"/>
+<!-- ground mist creeping between the trunks -->
+<ellipse class="fogdrift" cx="300" cy="866" rx="260" ry="24" fill="#9fd6c4" opacity=".07"/>
+<ellipse class="fogdrift" cx="1240" cy="880" rx="300" ry="22" fill="#9fd6c4" opacity=".06" style="animation-delay:8s"/>
+<!-- more fireflies deeper in -->
+<circle class="sparkle" cx="1300" cy="300" r="2.6" fill="#bff08a" style="animation-delay:0.0s"/><circle class="sparkle" cx="1397" cy="361" r="2.6" fill="#bff08a" style="animation-delay:0.7s"/><circle class="sparkle" cx="1494" cy="422" r="2.6" fill="#bff08a" style="animation-delay:1.4s"/><circle class="sparkle" cx="1331" cy="483" r="2.6" fill="#bff08a" style="animation-delay:2.0999999999999996s"/><circle class="sparkle" cx="1428" cy="304" r="2.6" fill="#bff08a" style="animation-delay:2.8s"/><circle class="sparkle" cx="1525" cy="365" r="2.6" fill="#bff08a" style="animation-delay:3.5s"/><circle class="sparkle" cx="1362" cy="426" r="2.6" fill="#bff08a" style="animation-delay:0.1999999999999993s"/></g>
 </svg>`;
 
 SCENES.cove=()=>`
@@ -549,6 +594,14 @@ ${Array.from({length:30},(_,i)=>`<circle class="tw" cx="${(i*127+40)%1560}" cy="
   <path d="M820 470 l64 0 12 60 -88 0 z" fill="#241a10"/>
   ${[0,1,2].map(i=>`<g transform="rotate(${(i-1)*10} ${838+i*14} 470)"><rect x="${832+i*14}" y="418" width="12" height="54" rx="4" fill="#a83a28"/><rect x="${832+i*14}" y="412" width="12" height="10" rx="3" fill="#e0cfa2"/></g>`).join('')}
 </g>
+<g class="atmo"><!-- the sky does most of the work here -->
+<g class="shoot" style="animation-delay:9s"><path d="M1080 120 l-100 62" stroke="#ffeccf" stroke-width="2.4" opacity=".85"/></g>
+<g class="shoot" style="animation-delay:26s"><path d="M420 70 l-78 48" stroke="#ffeccf" stroke-width="2" opacity=".7"/></g>
+<g class="drift" style="animation-delay:4s"><ellipse cx="500" cy="150" rx="230" ry="22" fill="#22384e" opacity=".3"/></g>
+<g class="batfly" style="animation-delay:2s"><ellipse cx="1220" cy="200" rx="9" ry="4" fill="#0a0f14" opacity=".65"/></g>
+<g class="batfly" style="animation-delay:11s"><ellipse cx="1300" cy="250" rx="7" ry="3" fill="#0a0f14" opacity=".5"/></g>
+<!-- phosphorescence turning over out in the water (the sea runs y470-700) -->
+<circle class="sparkle" cx="120" cy="560" r="3" fill="#7fe8d2" style="animation-delay:0.0s"/><circle class="sparkle" cx="300" cy="577" r="3" fill="#7fe8d2" style="animation-delay:0.8s"/><circle class="sparkle" cx="480" cy="594" r="3" fill="#7fe8d2" style="animation-delay:1.6s"/><circle class="sparkle" cx="660" cy="575" r="3" fill="#7fe8d2" style="animation-delay:2.4000000000000004s"/><circle class="sparkle" cx="980" cy="592" r="3" fill="#7fe8d2" style="animation-delay:3.2s"/><circle class="sparkle" cx="1150" cy="573" r="3" fill="#7fe8d2" style="animation-delay:4.0s"/></g>
 </svg>`;
 
 const WRONG_BEATS = [
