@@ -357,8 +357,38 @@ pre.share{text-align:left;background:#0a1416;border:1px solid #2c4144;border-rad
 .ptoken.shown{opacity:1}
 .ptoken .pe{font-size:1.15rem;line-height:1}
 .ptoken.idle{opacity:.5;filter:saturate(.5)}
+/* ---------- atmosphere layer ----------
+   Purely decorative scenery. Never interactive, never over a hotspot, and
+   calmed right down for anyone who asks for less motion. */
+.atmo,.atmo *{pointer-events:none}
+/* Motions used only by the scenery. The ones without transform-box keep the
+   SVG default, so an inline transform-origin is read in the scene's own
+   1600x900 coordinates — which is how the hanging chains and curtains below
+   pick their pivot. */
+.rushpast{animation:rushpast 4s linear infinite}
+.riseslow{animation:riseslow 60s linear infinite}
+.emberfly{animation:emberfly 7.5s linear infinite}
+.rainrun{animation:rainrun 1.8s linear infinite}
+.shadowpass{animation:shadowpass 23s linear infinite}
+.spindrift{animation:spindrift 6s linear infinite}
+.finflick{animation:finflick 24s linear infinite}
+.shipdrift{animation:shipdrift 40s ease-in-out infinite alternate}
+.fogdrift{animation:fogdrift 26s ease-in-out infinite alternate}
+.shoot{animation:shoot 11s linear infinite}
+.sparkrise{animation:sparkrise 2.6s linear infinite}
+.sway{animation:sway 5.6s ease-in-out infinite alternate}
+.swing{animation:swing 6.5s ease-in-out infinite alternate}
+.flamewob{animation:flamewob .35s ease-in-out infinite alternate}
+@keyframes rushpast{from{transform:translateX(1750px)}to{transform:translateX(-500px)}}
+@keyframes riseslow{0%{transform:translateY(50px);opacity:0}25%{opacity:.55}100%{transform:translateY(-70px);opacity:0}}
+@keyframes emberfly{0%{transform:translate(0,0) scale(1);opacity:0}15%{opacity:.9}100%{transform:translate(-140px,-340px) scale(.4);opacity:0}}
+@keyframes rainrun{0%{transform:translateY(-50px);opacity:0}12%{opacity:.5}100%{transform:translateY(430px);opacity:0}}
+@keyframes shadowpass{0%,78%{opacity:0}84%{opacity:.5}100%{opacity:0}}
+@keyframes spindrift{0%{transform:translate(0,0);opacity:0}20%{opacity:.5}100%{transform:translate(-420px,26px);opacity:0}}
+@keyframes finflick{0%,70%{transform:translate(0,0);opacity:0}78%{opacity:.8}86%{transform:translate(26px,-26px)}100%{transform:translate(52px,10px);opacity:0}}
 @media (prefers-reduced-motion: reduce){
   .ptoken{transition:opacity .2s ease}
+  .atmo *{animation:none !important}
 }
 #crew-bar{position:fixed;left:12px;bottom:12px;z-index:40;display:flex;gap:6px;flex-wrap:wrap;max-width:44vw}
 #crew-bar .chip{background:rgba(4,12,14,.8);border:1px solid #3a565c;border-radius:20px;
@@ -374,6 +404,17 @@ pre.share{text-align:left;background:#0a1416;border:1px solid #2c4144;border-rad
 .qr-code{font-family:'Special Elite',serif;font-size:2.4rem;letter-spacing:10px;color:var(--teal-hi);margin-top:14px}
 .qr-url{color:var(--dim);font-size:.82rem;word-break:break-all;margin:4px 0 14px}
 .qr-alt{color:var(--dim);font-size:.8rem;margin:-6px 0 12px}
+#crew-count{font-family:'Special Elite',serif;font-size:.9rem;color:var(--sand);
+  background:rgba(6,14,14,.8);border:1px solid #37504e;border-radius:8px;padding:4px 10px}
+#crew-count.none{color:#e0b96a;border-color:#6a5a37}
+/* A notice, not a control — it must never sit in front of a button the host
+   is trying to press. */
+#trouble{pointer-events:none;position:fixed;left:50%;transform:translateX(-50%);bottom:14px;z-index:130;
+  max-width:min(680px,94vw);background:rgba(40,12,10,.96);border:1px solid #a05a4a;
+  border-radius:10px;padding:12px 16px;color:#ffd9cf;font-size:.9rem;line-height:1.5;
+  box-shadow:0 6px 24px rgba(0,0,0,.55)}
+#trouble b{color:#ffb9a6}
+#trouble code{background:rgba(0,0,0,.35);padding:1px 6px;border-radius:4px;color:#ffe9c9}
 .qr-link{font-size:.85rem;margin-bottom:10px;letter-spacing:1px}
 .qr-link.good{color:#8fe3a8}
 .qr-link.warn{color:#e0b96a}
@@ -518,6 +559,7 @@ body.phone #modal{max-height:86vh}
     <span>Elapsed <b id="stat-elapsed">0:00</b></span>
     <span>Hints <b id="stat-hints">0</b></span>
     <span>Penalties <b id="stat-pen">+0:00</b></span>
+    <span id="crew-count" class="hidden" title="Players joined on their phones"></span>
     <button id="qr-btn" class="hidden" title="Show the join code">📱</button>
     <button id="mute-btn" title="Toggle sound">🔊</button>
   </div>
@@ -1598,6 +1640,9 @@ $('start-btn').onclick=async ()=>{
   tick();
   // open a shared session so phones can join; harmless if the API isn't there
   const code = await NET.createSession(ACTIVE.id, S.difficulty);
+  // no code but a refusal from the database is a setup problem worth shouting
+  // about, not a silent drop to single-screen play
+  if(!code && window.NET && NET.denied) refreshLinkStatus();
   if(code){
     S.code = code;
     NET.onState = applyRemote;
@@ -1605,6 +1650,10 @@ $('start-btn').onclick=async ()=>{
     await NET.becomeHost();
     NET.startPolling();
     $('qr-btn').classList.remove('hidden');
+    NET.onTrouble = ()=>refreshLinkStatus();
+    await NET.checkPersistence();
+    refreshCrewCount();
+    refreshLinkStatus();
     openQr();
   }
 };
@@ -1833,6 +1882,7 @@ function applyRemote(room){
   }
   refreshQrPlayers();
   refreshLinkStatus();
+  refreshCrewCount();
   tick();
   maybeVictory();
 }
@@ -1981,14 +2031,42 @@ function openQr(){
   $('qr-panel').classList.remove('hidden');
 }
 function closeQr(){ $('qr-panel').classList.add('hidden'); }
+const TROUBLE = {
+  denied:{ short:'\u25cf database refused the connection',
+    long:'The game database refused this game. The <b>escape</b> rules block has not been published in the Firebase console (Realtime Database → Rules → Publish). Phones cannot join until it is.' },
+  vanished:{ short:'\u25cf this game disappeared',
+    long:'The shared game was deleted while it was running. Start a new game — anyone still on a phone will need the new code.' },
+  nostore:{ short:'\u25cb connected, but nothing is being saved',
+    long:'Running on the backup connection with no storage attached, so joins and solves will <b>not</b> reach the other devices. Publish the Firebase <b>escape</b> rules to fix it.' },
+  connecting:{ short:'\u25cb connecting…', long:'' },
+  none:{ short:'\u25cb not connected', long:'' },
+};
 function refreshLinkStatus(){
-  const el=$('qr-link'); if(!el) return;
-  const live = window.NET && NET.live();
-  const mode = window.NET && NET.mode;
-  el.className = 'qr-link ' + (live?'good':'warn');
-  el.textContent = live
-    ? (mode==='firebase' ? '\u25cf live — solves sync instantly' : '\u25cf connected')
-    : '\u25cb connecting…';
+  const el=$('qr-link');
+  const st = (window.NET && NET.status && NET.status()) || {state:'down',why:'none'};
+  if(el){
+    el.className = 'qr-link ' + (st.state==='ok' ? 'good' : 'warn');
+    el.textContent = st.state==='ok'
+      ? (st.why==='firebase' ? '\u25cf live — solves sync instantly' : '\u25cf connected')
+      : (TROUBLE[st.why] ? TROUBLE[st.why].short : '\u25cb not connected');
+  }
+  showTrouble(st);
+}
+/** A broken connection must be impossible to miss, and must say how to fix it. */
+function showTrouble(st){
+  const info = st.state==='ok' || S.finished ? null : TROUBLE[st.why];
+  let el=$('trouble');
+  if(!info || !info.long){ if(el) el.remove(); return; }
+  if(!el){ el=document.createElement('div'); el.id='trouble'; document.body.appendChild(el); }
+  el.innerHTML='<b>Phones can\u2019t sync.</b> '+info.long;
+}
+function refreshCrewCount(){
+  const el=$('crew-count'); if(!el) return;
+  if(!MP.active() || S.isPhone){ el.classList.add('hidden'); return; }
+  const n=((NET.state&&NET.state.players)||[]).filter(p=>p.id!==((NET.state&&NET.state.host&&NET.state.host.id)||null)).length;
+  el.classList.remove('hidden');
+  el.classList.toggle('none', n===0);
+  el.textContent = n===0 ? '👥 nobody joined yet' : ('👥 ' + n + (n===1?' player':' players'));
 }
 function refreshQrPlayers(){
   const players = (NET.state&&NET.state.players)||[];
@@ -2073,7 +2151,14 @@ async function bootPhone(code){
   $('join-btn').onclick = async ()=>{
     const name=$('join-name').value.trim()||'Crew';
     NET.onState = applyRemote;
-    await NET.send('join',{name,emoji:chosen});
+    const joined = await NET.send('join',{name,emoji:chosen});
+    if(!joined){
+      note.innerHTML = '<b style="color:#ffb9a6">Couldn\u2019t join that game.</b><br>'
+        + (NET.denied
+            ? 'The game database refused the connection — the host needs to publish the Firebase <b>escape</b> rules.'
+            : 'The game may have ended, or the connection dropped. Check the code and try again.');
+      return;
+    }
     S.isPhone=true; S.started=true; S.code=code;
     S.teamName=name.toUpperCase(); S.teamEmoji=chosen;
     S.roomIndex = (NET.state&&NET.state.roomIndex)||0;

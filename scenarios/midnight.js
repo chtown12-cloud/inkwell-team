@@ -82,6 +82,16 @@ ${[['PEMBERTON',480,700,-3],['ROSSITER',650,730,2],['CARMODY',820,700,-2],['WHIT
 </g>
 <!-- a top hat, left on a crate -->
 <g><ellipse cx="710" cy="600" rx="34" ry="8" fill="#0d0805"/><rect x="688" y="560" width="44" height="40" rx="4" fill="#100a06"/></g>
+<g class="atmo"><!-- embers off the stack, blown back past the open door -->
+<circle class="emberfly" cx="330" cy="520" r="2.6" fill="#ffb45e" opacity=".8" style="animation-delay:1s"/>
+<circle class="emberfly" cx="300" cy="560" r="2" fill="#ff9b4e" opacity=".7" style="animation-delay:5s"/>
+<circle class="emberfly" cx="352" cy="500" r="2.2" fill="#ffd08a" opacity=".6" style="animation-delay:9s"/>
+<circle class="emberfly" cx="316" cy="540" r="2.4" fill="#ffd08a" opacity=".65" style="animation-delay:13s"/>
+<circle class="emberfly" cx="344" cy="574" r="1.8" fill="#ff8a3e" opacity=".55" style="animation-delay:17s"/>
+<!-- cobwebs in the corners of a van nobody has opened in years -->
+<g opacity=".14" class="sway" style="transform-origin:1600px 0"><path d="M1600 24 q-74 32 -110 92 M1600 88 q-64 6 -110 26" stroke="#d9cba6" stroke-width="2" fill="none"/></g>
+<g opacity=".1" class="sway" style="animation-delay:2.4s;transform-origin:0 0"><path d="M0 20 q56 24 84 74" stroke="#d9cba6" stroke-width="2" fill="none"/></g>
+<circle class="sparkle" cx="560" cy="60" r="2" fill="#d9cba6" style="animation-delay:0.0s"/><circle class="sparkle" cx="690" cy="103" r="2" fill="#d9cba6" style="animation-delay:0.9s"/><circle class="sparkle" cx="820" cy="86" r="2" fill="#d9cba6" style="animation-delay:1.8s"/><circle class="sparkle" cx="950" cy="69" r="2" fill="#d9cba6" style="animation-delay:2.7s"/><circle class="sparkle" cx="1080" cy="112" r="2" fill="#d9cba6" style="animation-delay:3.6s"/><circle class="sparkle" cx="1210" cy="95" r="2" fill="#d9cba6" style="animation-delay:4.5s"/><circle class="sparkle" cx="1340" cy="78" r="2" fill="#d9cba6" style="animation-delay:0.40000000000000036s"/></g>
 </svg>`;
 
 /* ---------- Room 2: The Sleeper Corridor ---------- */
@@ -151,6 +161,12 @@ ${[0,1,2,3].map(i=>`<g>
 </g>
 <!-- punched tickets scattered -->
 ${[[980,700,-10],[1060,740,14],[1150,700,-4]].map(([x,y,r])=>`<g transform="rotate(${r} ${x} ${y})"><rect x="${x-26}" y="${y-14}" width="52" height="28" rx="4" fill="#d9cba6"/><circle cx="${x+12}" cy="${y}" r="4" fill="#2c1f14"/></g>`).join('')}
+<g class="atmo"><!-- telegraph poles and treeline going past the windows -->
+<rect class="rushpast" x="100" y="70" width="6" height="104" fill="#39435a" opacity=".5" style="animation-delay:0.0s;animation-duration:3.4s"/><rect class="rushpast" x="280" y="70" width="6" height="104" fill="#39435a" opacity=".5" style="animation-delay:0.8s;animation-duration:4.3s"/><rect class="rushpast" x="460" y="70" width="6" height="104" fill="#39435a" opacity=".5" style="animation-delay:1.6s;animation-duration:5.2s"/><rect class="rushpast" x="640" y="70" width="6" height="104" fill="#39435a" opacity=".5" style="animation-delay:2.4000000000000004s;animation-duration:3.4s"/><rect class="rushpast" x="820" y="70" width="6" height="104" fill="#39435a" opacity=".5" style="animation-delay:3.2s;animation-duration:4.3s"/><rect class="rushpast" x="1000" y="70" width="6" height="104" fill="#39435a" opacity=".5" style="animation-delay:4.0s;animation-duration:5.2s"/><rect class="rushpast" x="1180" y="70" width="6" height="104" fill="#39435a" opacity=".5" style="animation-delay:4.800000000000001s;animation-duration:3.4s"/>
+<path class="rushpast" d="M140 172 l16 -36 l16 36z" fill="#263a34" opacity=".5" style="animation-delay:0.0s;animation-duration:4s"/><path class="rushpast" d="M370 172 l16 -36 l16 36z" fill="#263a34" opacity=".5" style="animation-delay:1.2s;animation-duration:5s"/><path class="rushpast" d="M600 172 l16 -36 l16 36z" fill="#263a34" opacity=".5" style="animation-delay:2.4s;animation-duration:4s"/><path class="rushpast" d="M830 172 l16 -36 l16 36z" fill="#263a34" opacity=".5" style="animation-delay:3.5999999999999996s;animation-duration:5s"/><path class="rushpast" d="M1060 172 l16 -36 l16 36z" fill="#263a34" opacity=".5" style="animation-delay:4.8s;animation-duration:4s"/><path class="rushpast" d="M1290 172 l16 -36 l16 36z" fill="#263a34" opacity=".5" style="animation-delay:0.0s;animation-duration:5s"/>
+<circle cx="1300" cy="104" r="22" fill="#f0e6c8" opacity=".2"/>
+<!-- the corridor curtains never quite settle -->
+<g class="sway" style="transform-origin:60px 300px"><path d="M40 300 q22 90 6 190 l-30 0 q16 -100 -4 -190z" fill="#3a1620" opacity=".5"/></g></g>
 </svg>`;
 
 /* ---------- Room 3: The Dining Car ---------- */
@@ -200,6 +216,9 @@ ${[[300,640],[640,640],[980,660]].map(([x,y],t)=>`<g>
   ${[-70,0,70].map((dx,i)=>`<g><circle cx="${x+dx}" cy="${y-34}" r="17" fill="#d9cba6"/>
    <line x1="${x+dx-26}" y1="${y-48}" x2="${x+dx-26}" y2="${y-20}" stroke="#8a8a8a" stroke-width="3"/>
    <line x1="${x+dx+26}" y1="${y-48}" x2="${x+dx+26}" y2="${y-20}" stroke="#8a8a8a" stroke-width="3"/></g>`).join('')}
+  <ellipse class="steam" cx="${x}" cy="${y-52}" rx="22" ry="8" fill="#ffe9c9" opacity=".2" style="animation-delay:${t*1.7}s"/>
+  <ellipse class="steam" cx="${x-70}" cy="${y-52}" rx="15" ry="6" fill="#ffe9c9" opacity=".15" style="animation-delay:${t*1.7+2.4}s"/>
+  <ellipse class="steam" cx="${x+70}" cy="${y-52}" rx="15" ry="6" fill="#ffe9c9" opacity=".14" style="animation-delay:${t*1.7+4.1}s"/>
 </g>`).join('')}
 </g>
 <!-- the till -->
@@ -223,6 +242,12 @@ ${[[300,640],[640,640],[980,660]].map(([x,y],t)=>`<g>
   <path d="M545 700 q-10 -34 14 -44 q-16 -8 -8 -26 q22 -10 30 8 q8 -6 14 2 q-22 44 -50 60z" fill="#8a4a24"/>
   <line x1="551" y1="630" x2="583" y2="666" stroke="#170f08" stroke-width="2.5"/>
 </g>
+<g class="atmo"><!-- dust turning over in the chandelier light -->
+<circle class="sparkle" cx="386" cy="74" r="2.4" fill="#ffe9c9" style="animation-delay:0.0s"/><circle class="sparkle" cx="450" cy="97" r="2.4" fill="#ffe9c9" style="animation-delay:0.8s"/><circle class="sparkle" cx="840" cy="120" r="2.4" fill="#ffe9c9" style="animation-delay:1.6s"/><circle class="sparkle" cx="906" cy="89" r="2.4" fill="#ffe9c9" style="animation-delay:2.4000000000000004s"/><circle class="sparkle" cx="1310" cy="112" r="2.4" fill="#ffe9c9" style="animation-delay:3.2s"/><circle class="sparkle" cx="1374" cy="81" r="2.4" fill="#ffe9c9" style="animation-delay:4.0s"/><circle class="sparkle" cx="424" cy="104" r="2.4" fill="#ffe9c9" style="animation-delay:4.800000000000001s"/><circle class="sparkle" cx="940" cy="127" r="2.4" fill="#ffe9c9" style="animation-delay:0.6000000000000005s"/>
+<!-- a moth that has found the only warm thing on this train -->
+<ellipse class="batfly" cx="300" cy="112" rx="6" ry="3.4" fill="#d9cba6" opacity=".45"/>
+<ellipse class="batfly" cx="300" cy="132" rx="4.6" ry="2.6" fill="#d9cba6" opacity=".32" style="animation-delay:6s"/>
+<g class="sway" style="transform-origin:1560px 200px"><path d="M1544 200 q20 80 6 168 l-26 0 q14 -88 -4 -168z" fill="#3a1620" opacity=".45"/></g></g>
 </svg>`;
 
 /* ---------- Room 4: The Locomotive ---------- */
@@ -302,6 +327,22 @@ SCENES.locomotive=()=>`
 <!-- the conductor's punch, hanging by the door -->
 <g><line x1="1080" y1="440" x2="1080" y2="470" stroke="#170f08" stroke-width="3"/>
 <path d="M1068 470 q12 -10 24 0 l-4 26 q-8 6 -16 0z" fill="#8a8a92"/></g>
+<g class="atmo"><!-- the firebox throwing its own weather -->
+<circle class="emberfly" cx="820" cy="660" r="3" fill="#ffb45e" opacity=".85" style="animation-delay:.5s"/>
+<circle class="emberfly" cx="880" cy="680" r="2.4" fill="#ff9b4e" opacity=".75" style="animation-delay:3s"/>
+<circle class="emberfly" cx="760" cy="640" r="2.6" fill="#ffd08a" opacity=".7" style="animation-delay:6.5s"/>
+<circle class="emberfly" cx="920" cy="700" r="2" fill="#ff8a3e" opacity=".65" style="animation-delay:9.5s"/>
+<circle class="emberfly" cx="860" cy="620" r="2.2" fill="#ffd08a" opacity=".6" style="animation-delay:12.5s"/>
+<!-- steam blowing back across the front window -->
+<ellipse class="steam" cx="620" cy="300" rx="46" ry="14" fill="#cfd8e8" opacity=".08"/>
+<ellipse class="steam" cx="980" cy="320" rx="38" ry="12" fill="#cfd8e8" opacity=".07" style="animation-delay:3.5s"/>
+
+<g class="lampswing" style="transform-origin:200px 0"><line x1="200" y1="0" x2="200" y2="74" stroke="#170f08" stroke-width="4"/>
+  <circle class="flick" cx="200" cy="88" r="11" fill="#ffd98c" opacity=".6"/>
+  <circle cx="200" cy="88" r="54" fill="#ffd98c" opacity=".06"/></g>
+<circle class="emberfly" cx="700" cy="640" r="2.2" fill="#ffb45e" opacity=".7" style="animation-delay:15s"/>
+<ellipse class="steam" cx="400" cy="150" rx="46" ry="14" fill="#cfd8e8" opacity=".07"/>
+<circle class="sparkle" cx="560" cy="40" r="2.2" fill="#c9a878" style="animation-delay:0.0s"/><circle class="sparkle" cx="700" cy="71" r="2.2" fill="#c9a878" style="animation-delay:0.9s"/><circle class="sparkle" cx="840" cy="102" r="2.2" fill="#c9a878" style="animation-delay:1.8s"/><circle class="sparkle" cx="980" cy="63" r="2.2" fill="#c9a878" style="animation-delay:2.7s"/><circle class="sparkle" cx="1120" cy="94" r="2.2" fill="#c9a878" style="animation-delay:3.6s"/><circle class="sparkle" cx="1260" cy="55" r="2.2" fill="#c9a878" style="animation-delay:4.5s"/><circle class="sparkle" cx="1400" cy="86" r="2.2" fill="#c9a878" style="animation-delay:0.40000000000000036s"/></g>
 </svg>`;
 
 const WRONG_BEATS=[

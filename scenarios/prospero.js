@@ -90,6 +90,18 @@ ${[0,1,2,3,4,5].map(i=>{
 <path d="M700 760 q160 20 340 -8" stroke="#0a0e14" stroke-width="26" fill="none" opacity=".5"/>
 <circle class="slowblink" cx="60" cy="200" r="8" fill="#c94a3d"/>
 <text x="84" y="206" font-family="Special Elite" font-size="15" fill="#7f5a5a">LIFE SUPPORT: RESERVE</text>
+<g class="atmo"><!-- dust hanging in nil gravity -->
+<circle class="sparkle" cx="120" cy="170" r="2.2" fill="#9fc4dd" style="animation-delay:0.0s"/><circle class="sparkle" cx="238" cy="217" r="2.2" fill="#9fc4dd" style="animation-delay:0.6s"/><circle class="sparkle" cx="356" cy="264" r="2.2" fill="#9fc4dd" style="animation-delay:1.2s"/><circle class="sparkle" cx="474" cy="191" r="2.2" fill="#9fc4dd" style="animation-delay:1.7999999999999998s"/><circle class="sparkle" cx="592" cy="238" r="2.2" fill="#9fc4dd" style="animation-delay:2.4s"/><circle class="sparkle" cx="710" cy="285" r="2.2" fill="#9fc4dd" style="animation-delay:3.0s"/><circle class="sparkle" cx="828" cy="212" r="2.2" fill="#9fc4dd" style="animation-delay:3.5999999999999996s"/><circle class="sparkle" cx="946" cy="259" r="2.2" fill="#9fc4dd" style="animation-delay:4.2s"/><circle class="sparkle" cx="1064" cy="186" r="2.2" fill="#9fc4dd" style="animation-delay:4.8s"/><circle class="sparkle" cx="1182" cy="233" r="2.2" fill="#9fc4dd" style="animation-delay:0.39999999999999947s"/><circle class="sparkle" cx="1300" cy="280" r="2.2" fill="#9fc4dd" style="animation-delay:1.0s"/>
+<!-- a conduit that has been failing for forty years -->
+<g class="arcflick" style="animation-delay:5s"><path d="M60 250 l26 16 l-14 6 l22 12" stroke="#8fd8ff" stroke-width="2.4" fill="none"/></g>
+<g class="flick" style="animation-delay:2s"><rect x="300" y="164" width="150" height="5" rx="2" fill="#7fd4ff" opacity=".22"/></g>
+<g class="flick" style="animation-delay:6s"><rect x="1080" y="176" width="120" height="4" rx="2" fill="#7fd4ff" opacity=".16"/></g>
+
+<g class="arcflick" style="animation-delay:9s"><path d="M1540 200 l-24 18 l13 7 l-20 14" stroke="#8fd8ff" stroke-width="2" fill="none"/></g>
+<circle class="slowblink" cx="820" cy="210" r="4" fill="#7fd4ff" opacity=".6" style="animation-delay:1.2s"/>
+<circle class="slowblink" cx="240" cy="286" r="3" fill="#e0b24a" opacity=".5" style="animation-delay:2.6s"/>
+<g opacity=".2"><path d="M40 160 q34 24 24 62 M96 176 q-18 32 8 58" stroke="#bfe8ff" stroke-width="2" fill="none"/></g>
+<ellipse class="steam" cx="1400" cy="250" rx="34" ry="10" fill="#cfe8ff" opacity=".08"/></g>
 </svg>`;
 
 /* ---------- Room 2: The Bridge ---------- */
@@ -169,6 +181,18 @@ SCENES.bridge=()=>`
   ${[0,1,2,3,4].map(i=>`<rect class="flick" x="1458" y="${408+i*62}" width="84" height="30" rx="4" fill="#0a141c" stroke="#2a4258" stroke-width="2"/>`).join('')}
   <circle class="slowblink" cx="1500" cy="360" r="9" fill="#c94a3d"/>
 </g>
+<g class="atmo"><!-- wreckage tumbling past the viewport, and something enormous rising -->
+<g class="drift" style="animation-delay:3s"><path d="M300 250 l34 -8 l10 16 l-38 10z" fill="#12202c" opacity=".8"/></g>
+<g class="drift" style="animation-delay:14s"><path d="M700 150 l22 6 l-6 16 l-24 -6z" fill="#101c26" opacity=".7"/></g>
+<circle class="riseslow" cx="320" cy="290" r="80" fill="#1b2f45" opacity=".5" style="animation-duration:70s"/>
+<circle class="riseslow" cx="320" cy="290" r="80" fill="none" stroke="#33597e" stroke-width="2" opacity=".4" style="animation-duration:70s"/>
+<circle class="tw" cx="300" cy="110" r="1.6" fill="#dfe8ff" style="animation-delay:0.0s"/><circle class="tw" cx="460" cy="157" r="1.6" fill="#dfe8ff" style="animation-delay:0.5s"/><circle class="tw" cx="620" cy="114" r="1.6" fill="#dfe8ff" style="animation-delay:1.0s"/><circle class="tw" cx="780" cy="161" r="1.6" fill="#dfe8ff" style="animation-delay:1.5s"/><circle class="tw" cx="940" cy="118" r="1.6" fill="#dfe8ff" style="animation-delay:2.0s"/><circle class="tw" cx="1100" cy="165" r="1.6" fill="#dfe8ff" style="animation-delay:2.5s"/>
+<g class="flick" style="animation-delay:4s"><rect x="200" y="470" width="200" height="4" fill="#7fd4ff" opacity=".13"/></g>
+
+<g class="flick" style="animation-delay:7s"><rect x="1000" y="500" width="160" height="4" fill="#7fd4ff" opacity=".11"/></g>
+<circle class="slowblink" cx="1240" cy="502" r="4" fill="#e0b24a" opacity=".5" style="animation-delay:1.8s"/>
+<g class="drift" style="animation-delay:22s"><path d="M1180 190 l18 -5 l6 12 l-20 6z" fill="#0e1723" opacity=".65"/></g>
+<g class="drift" style="animation-delay:9s"><circle cx="560" cy="340" r="3" fill="#1a2c3e" opacity=".8"/></g></g>
 </svg>`;
 
 /* ---------- Room 3: Hydroponics ---------- */
@@ -238,6 +262,13 @@ ${[0,1].map(row=>`
 <!-- floor -->
 <rect y="800" width="1600" height="100" fill="#0a0f0c"/>
 <path d="M320 840 q200 18 420 0 t 420 6" stroke="#050805" stroke-width="16" fill="none" opacity=".6"/>
+<g class="atmo"><!-- spores and seed fluff drifting through the grow lights -->
+<circle class="sparkle" cx="430" cy="60" r="3" fill="#cdf3b4" style="animation-delay:0.0s"/><circle class="sparkle" cx="543" cy="131" r="3" fill="#cdf3b4" style="animation-delay:0.9s"/><circle class="sparkle" cx="656" cy="202" r="3" fill="#cdf3b4" style="animation-delay:1.8s"/><circle class="sparkle" cx="769" cy="73" r="3" fill="#cdf3b4" style="animation-delay:2.7s"/><circle class="sparkle" cx="882" cy="144" r="3" fill="#cdf3b4" style="animation-delay:3.6s"/><circle class="sparkle" cx="995" cy="215" r="3" fill="#cdf3b4" style="animation-delay:4.5s"/><circle class="sparkle" cx="1108" cy="86" r="3" fill="#cdf3b4" style="animation-delay:5.4s"/><circle class="sparkle" cx="521" cy="157" r="3" fill="#cdf3b4" style="animation-delay:0.2999999999999998s"/><circle class="sparkle" cx="634" cy="228" r="3" fill="#cdf3b4" style="animation-delay:1.2000000000000002s"/><circle class="sparkle" cx="747" cy="99" r="3" fill="#cdf3b4" style="animation-delay:2.0999999999999996s"/>
+<ellipse class="leaffall" cx="640" cy="40" rx="7" ry="3.4" fill="#4f8f3c" opacity=".55" style="animation-delay:6s"/>
+<ellipse class="leaffall" cx="1180" cy="30" rx="6" ry="3" fill="#5f9f4c" opacity=".45" style="animation-delay:17s"/>
+<circle class="dripdrop" cx="500" cy="150" r="3.6" fill="#bfe8ff" opacity=".55" style="animation-delay:3s"/>
+<circle class="dripdrop" cx="980" cy="140" r="3" fill="#bfe8ff" opacity=".45" style="animation-delay:9s"/>
+<ellipse class="steam" cx="300" cy="200" rx="60" ry="14" fill="#9fe0b0" opacity=".07"/></g>
 </svg>`;
 
 /* ---------- Room 4: The Escape Pod Bay ---------- */
@@ -309,6 +340,13 @@ ${[0,1,2,3,4,5].map(i=>`<rect x="${560+i*96}" y="754" width="12" height="30" fil
 </g>
 <circle class="slowblink" cx="60" cy="60" r="8" fill="#c94a3d"/>
 <text x="84" y="66" font-family="Special Elite" font-size="15" fill="#7f5a5a">BAY PRESSURE: FALLING</text>
+<g class="atmo"><!-- pressure bleeding off somewhere it shouldn't -->
+<ellipse class="steam" cx="980" cy="70" rx="46" ry="12" fill="#cfe8ff" opacity=".16"/>
+<ellipse class="steam" cx="1020" cy="50" rx="30" ry="9" fill="#cfe8ff" opacity=".12" style="animation-delay:2.4s"/>
+<circle class="slowblink" cx="1520" cy="120" r="9" fill="#e0b24a" opacity=".8"/>
+<circle class="slowblink" cx="1520" cy="120" r="20" fill="#e0b24a" opacity=".18" style="animation-delay:.2s"/>
+<circle class="sparkle" cx="150" cy="40" r="2" fill="#9fc4dd" style="animation-delay:0.0s"/><circle class="sparkle" cx="278" cy="77" r="2" fill="#9fc4dd" style="animation-delay:0.7s"/><circle class="sparkle" cx="406" cy="54" r="2" fill="#9fc4dd" style="animation-delay:1.4s"/><circle class="sparkle" cx="534" cy="91" r="2" fill="#9fc4dd" style="animation-delay:2.0999999999999996s"/><circle class="sparkle" cx="662" cy="68" r="2" fill="#9fc4dd" style="animation-delay:2.8s"/><circle class="sparkle" cx="790" cy="45" r="2" fill="#9fc4dd" style="animation-delay:3.5s"/><circle class="sparkle" cx="918" cy="82" r="2" fill="#9fc4dd" style="animation-delay:0.1999999999999993s"/><circle class="sparkle" cx="1046" cy="59" r="2" fill="#9fc4dd" style="animation-delay:0.8999999999999995s"/><circle class="sparkle" cx="1174" cy="96" r="2" fill="#9fc4dd" style="animation-delay:1.5999999999999996s"/>
+<g class="drift" style="animation-delay:7s"><rect x="600" y="70" width="16" height="5" rx="2" fill="#26313e"/></g></g>
 </svg>`;
 
 const WRONG_BEATS=[

@@ -77,6 +77,14 @@ ${[['CH 7',150,700],['CH 1',330,676],['CH 18',510,700],['CH 1',690,678],['CH 7',
 <!-- something's track, circling -->
 <path d="M60 880 q300 -50 700 -18 q400 30 780 -18" stroke="#5c7488" stroke-width="22" fill="none" opacity=".4"/>
 <path d="M120 858 q60 -8 120 0 M840 852 q60 -8 120 0" stroke="#46607a" stroke-width="8" opacity=".5"/>
+<g class="atmo"><!-- a second, slower aurora band deeper in the sky -->
+<g class="aurora" style="animation-delay:7s;animation-duration:26s" opacity=".5">
+  <path d="M-60 180 q380 -90 760 -14 q380 76 960 -30 l0 96 q-580 104 -960 28 q-380 -76 -760 12z" fill="#5fd8b0" opacity=".13"/>
+  <path d="M-60 236 q420 -70 820 6 q400 76 900 -20 l0 62 q-500 96 -900 20 q-400 -76 -820 -4z" fill="#7f8fe8" opacity=".09"/>
+</g>
+<circle class="tw" cx="80" cy="30" r="1.5" fill="#e8f0ff" style="animation-delay:0.0s"/><circle class="tw" cx="253" cy="89" r="1.5" fill="#e8f0ff" style="animation-delay:0.6s"/><circle class="tw" cx="426" cy="148" r="1.5" fill="#e8f0ff" style="animation-delay:1.2s"/><circle class="tw" cx="599" cy="207" r="1.5" fill="#e8f0ff" style="animation-delay:1.7999999999999998s"/><circle class="tw" cx="772" cy="86" r="1.5" fill="#e8f0ff" style="animation-delay:2.4s"/><circle class="tw" cx="945" cy="145" r="1.5" fill="#e8f0ff" style="animation-delay:3.0s"/><circle class="tw" cx="1118" cy="204" r="1.5" fill="#e8f0ff" style="animation-delay:3.5999999999999996s"/><circle class="tw" cx="1291" cy="83" r="1.5" fill="#e8f0ff" style="animation-delay:4.2s"/><circle class="tw" cx="1464" cy="142" r="1.5" fill="#e8f0ff" style="animation-delay:4.8s"/><circle class="tw" cx="187" cy="201" r="1.5" fill="#e8f0ff" style="animation-delay:0.39999999999999947s"/><circle class="tw" cx="360" cy="80" r="1.5" fill="#e8f0ff" style="animation-delay:1.0s"/><circle class="tw" cx="533" cy="139" r="1.5" fill="#e8f0ff" style="animation-delay:1.5999999999999996s"/><circle class="tw" cx="706" cy="198" r="1.5" fill="#e8f0ff" style="animation-delay:2.1999999999999993s"/><circle class="tw" cx="879" cy="77" r="1.5" fill="#e8f0ff" style="animation-delay:2.8s"/><circle class="tw" cx="1052" cy="136" r="1.5" fill="#e8f0ff" style="animation-delay:3.4000000000000004s"/><circle class="tw" cx="1225" cy="195" r="1.5" fill="#e8f0ff" style="animation-delay:4.0s"/>
+<!-- spindrift coming off the surface (the snowfield starts around y560) -->
+<ellipse class="spindrift" cx="1560" cy="744" rx="30" ry="2.6" fill="#eaf6ff" opacity=".3" style="animation-delay:0.0s;animation-duration:5s"/><ellipse class="spindrift" cx="1560" cy="778" rx="52" ry="2.6" fill="#eaf6ff" opacity=".3" style="animation-delay:0.9s;animation-duration:6s"/><ellipse class="spindrift" cx="1560" cy="812" rx="74" ry="2.6" fill="#eaf6ff" opacity=".3" style="animation-delay:1.8s;animation-duration:7s"/><ellipse class="spindrift" cx="1560" cy="846" rx="30" ry="2.6" fill="#eaf6ff" opacity=".3" style="animation-delay:2.7s;animation-duration:5s"/><ellipse class="spindrift" cx="1560" cy="744" rx="52" ry="2.6" fill="#eaf6ff" opacity=".3" style="animation-delay:3.6s;animation-duration:6s"/><ellipse class="spindrift" cx="1560" cy="778" rx="74" ry="2.6" fill="#eaf6ff" opacity=".3" style="animation-delay:4.5s;animation-duration:7s"/><ellipse class="spindrift" cx="1560" cy="812" rx="30" ry="2.6" fill="#eaf6ff" opacity=".3" style="animation-delay:5.4s;animation-duration:5s"/><ellipse class="spindrift" cx="1560" cy="846" rx="52" ry="2.6" fill="#eaf6ff" opacity=".3" style="animation-delay:6.3s;animation-duration:6s"/></g>
 </svg>`;
 
 /* ---------- Room 2: Crew Quarters ---------- */
@@ -154,6 +162,16 @@ ${[0,1].map(i=>`<g transform="translate(${420+i*250},0)">
 ${[0,1,2,3,4].map(i=>`<g><circle cx="${640+i*56}" cy="180" r="4" fill="#3a2d1a"/>
  <path d="M${640+i*56} 184 q-20 14 -18 70 l36 0 q2 -56 -18 -70z" fill="${i%2?'#b03a2a':'#46607a'}"/></g>`).join('')}
 </g>
+<g class="atmo"><!-- frost taking the window back -->
+<g opacity=".3"><path d="M60 60 q40 26 30 70 M120 50 q-20 40 8 76 M180 66 q34 30 18 66" stroke="#cfe8ff" stroke-width="2.4" fill="none"/></g>
+<!-- breath, because it is far too cold in here -->
+<ellipse class="steam" cx="820" cy="200" rx="34" ry="10" fill="#dff2ff" opacity=".10"/>
+<ellipse class="steam" cx="860" cy="176" rx="24" ry="8" fill="#dff2ff" opacity=".08" style="animation-delay:3.2s"/>
+<!-- a lamp the generator can only just manage -->
+<g class="swing" style="transform-origin:960px 0"><line x1="960" y1="0" x2="960" y2="70" stroke="#2a3138" stroke-width="4"/>
+  <circle class="flick" cx="960" cy="84" r="12" fill="#ffd98c" opacity=".75"/>
+  <circle cx="960" cy="84" r="60" fill="#ffd98c" opacity=".06"/></g>
+<circle class="sparkle" cx="200" cy="40" r="2" fill="#cfe8ff" style="animation-delay:0.0s"/><circle class="sparkle" cx="350" cy="81" r="2" fill="#cfe8ff" style="animation-delay:0.8s"/><circle class="sparkle" cx="500" cy="62" r="2" fill="#cfe8ff" style="animation-delay:1.6s"/><circle class="sparkle" cx="650" cy="43" r="2" fill="#cfe8ff" style="animation-delay:2.4000000000000004s"/><circle class="sparkle" cx="800" cy="84" r="2" fill="#cfe8ff" style="animation-delay:3.2s"/><circle class="sparkle" cx="950" cy="65" r="2" fill="#cfe8ff" style="animation-delay:0.0s"/><circle class="sparkle" cx="1100" cy="46" r="2" fill="#cfe8ff" style="animation-delay:0.8000000000000007s"/></g>
 </svg>`;
 
 /* ---------- Room 3: The Ice Core Lab ---------- */
@@ -219,6 +237,12 @@ ${[['B',180,330,9,4],['T',290,330,2,6],['U',400,330,7,2],['R',510,330,6,1],['O',
 </g>
 <circle class="slowblink" cx="60" cy="60" r="8" fill="#c94a3d"/>
 <text x="84" y="66" font-family="Special Elite" font-size="15" fill="#7f5a5a">COLD ROOM: −40°</text>
+<g class="atmo"><!-- ice crystals turning over in air kept at minus forty -->
+<circle class="sparkle" cx="120" cy="40" r="2.4" fill="#dff2ff" style="animation-delay:0.0s"/><circle class="sparkle" cx="257" cy="93" r="2.4" fill="#dff2ff" style="animation-delay:0.7s"/><circle class="sparkle" cx="394" cy="146" r="2.4" fill="#dff2ff" style="animation-delay:1.4s"/><circle class="sparkle" cx="531" cy="199" r="2.4" fill="#dff2ff" style="animation-delay:2.0999999999999996s"/><circle class="sparkle" cx="668" cy="82" r="2.4" fill="#dff2ff" style="animation-delay:2.8s"/><circle class="sparkle" cx="805" cy="135" r="2.4" fill="#dff2ff" style="animation-delay:3.5s"/><circle class="sparkle" cx="942" cy="188" r="2.4" fill="#dff2ff" style="animation-delay:4.199999999999999s"/><circle class="sparkle" cx="1079" cy="71" r="2.4" fill="#dff2ff" style="animation-delay:4.8999999999999995s"/><circle class="sparkle" cx="1216" cy="124" r="2.4" fill="#dff2ff" style="animation-delay:0.5999999999999996s"/><circle class="sparkle" cx="1353" cy="177" r="2.4" fill="#dff2ff" style="animation-delay:1.2999999999999998s"/><circle class="sparkle" cx="130" cy="60" r="2.4" fill="#dff2ff" style="animation-delay:2.0s"/><circle class="sparkle" cx="267" cy="113" r="2.4" fill="#dff2ff" style="animation-delay:2.6999999999999993s"/><circle class="sparkle" cx="404" cy="166" r="2.4" fill="#dff2ff" style="animation-delay:3.3999999999999986s"/>
+<ellipse class="steam" cx="1240" cy="700" rx="70" ry="18" fill="#dff2ff" opacity=".08"/>
+<ellipse class="steam" cx="1300" cy="660" rx="50" ry="13" fill="#dff2ff" opacity=".06" style="animation-delay:4s"/>
+<g opacity=".22"><path d="M1440 470 q30 26 22 62 M1500 500 q-18 34 6 62" stroke="#cfe8ff" stroke-width="2" fill="none"/></g>
+<circle class="rippleA" cx="1180" cy="820" r="26" fill="none" stroke="#8fd8ff" stroke-width="2" opacity=".2"/></g>
 </svg>`;
 
 /* ---------- Room 4: The Radio Tower ---------- */
@@ -292,6 +316,13 @@ ${Array.from({length:30},(_,i)=>`<circle class="tw" cx="${(i*59+14)%1600}" cy="$
 <g opacity=".7">
   ${[0,1,2,3,4].map(i=>`<ellipse cx="${420+i*54}" cy="${800+(i%2)*8}" rx="10" ry="4.5" fill="#46607a"/>`).join('')}
 </g>
+<g class="atmo"><g class="aurora" style="animation-delay:4s;animation-duration:30s" opacity=".55">
+  <path d="M-60 140 q400 -80 800 -10 q400 70 920 -26 l0 90 q-520 100 -920 26 q-400 -74 -800 6z" fill="#5fd8b0" opacity=".12"/>
+  <path d="M-60 200 q440 -60 860 10 q420 70 860 -18 l0 58 q-440 92 -860 18 q-420 -70 -860 -2z" fill="#8f7fe8" opacity=".08"/>
+</g>
+<circle class="tw" cx="60" cy="30" r="1.6" fill="#e8f0ff" style="animation-delay:0.0s"/><circle class="tw" cx="251" cy="77" r="1.6" fill="#e8f0ff" style="animation-delay:0.55s"/><circle class="tw" cx="442" cy="124" r="1.6" fill="#e8f0ff" style="animation-delay:1.1s"/><circle class="tw" cx="633" cy="171" r="1.6" fill="#e8f0ff" style="animation-delay:1.6500000000000001s"/><circle class="tw" cx="824" cy="218" r="1.6" fill="#e8f0ff" style="animation-delay:2.2s"/><circle class="tw" cx="1015" cy="35" r="1.6" fill="#e8f0ff" style="animation-delay:2.75s"/><circle class="tw" cx="1206" cy="82" r="1.6" fill="#e8f0ff" style="animation-delay:3.3000000000000003s"/><circle class="tw" cx="1397" cy="129" r="1.6" fill="#e8f0ff" style="animation-delay:3.8500000000000005s"/><circle class="tw" cx="108" cy="176" r="1.6" fill="#e8f0ff" style="animation-delay:4.4s"/><circle class="tw" cx="299" cy="223" r="1.6" fill="#e8f0ff" style="animation-delay:4.95s"/><circle class="tw" cx="490" cy="40" r="1.6" fill="#e8f0ff" style="animation-delay:0.5s"/><circle class="tw" cx="681" cy="87" r="1.6" fill="#e8f0ff" style="animation-delay:1.0500000000000007s"/><circle class="tw" cx="872" cy="134" r="1.6" fill="#e8f0ff" style="animation-delay:1.6000000000000005s"/><circle class="tw" cx="1063" cy="181" r="1.6" fill="#e8f0ff" style="animation-delay:2.1500000000000004s"/><circle class="tw" cx="1254" cy="228" r="1.6" fill="#e8f0ff" style="animation-delay:2.700000000000001s"/><circle class="tw" cx="1445" cy="45" r="1.6" fill="#e8f0ff" style="animation-delay:3.25s"/><circle class="tw" cx="156" cy="92" r="1.6" fill="#e8f0ff" style="animation-delay:3.8000000000000007s"/><circle class="tw" cx="347" cy="139" r="1.6" fill="#e8f0ff" style="animation-delay:4.350000000000001s"/>
+<ellipse class="spindrift" cx="1560" cy="800" rx="34" ry="2.4" fill="#eaf6ff" opacity=".28" style="animation-delay:0.0s;animation-duration:5s"/><ellipse class="spindrift" cx="1560" cy="824" rx="54" ry="2.4" fill="#eaf6ff" opacity=".28" style="animation-delay:1.1s;animation-duration:6s"/><ellipse class="spindrift" cx="1560" cy="848" rx="74" ry="2.4" fill="#eaf6ff" opacity=".28" style="animation-delay:2.2s;animation-duration:7s"/><ellipse class="spindrift" cx="1560" cy="872" rx="34" ry="2.4" fill="#eaf6ff" opacity=".28" style="animation-delay:3.3000000000000003s;animation-duration:5s"/><ellipse class="spindrift" cx="1560" cy="800" rx="54" ry="2.4" fill="#eaf6ff" opacity=".28" style="animation-delay:4.4s;animation-duration:6s"/><ellipse class="spindrift" cx="1560" cy="824" rx="74" ry="2.4" fill="#eaf6ff" opacity=".28" style="animation-delay:5.5s;animation-duration:7s"/><ellipse class="spindrift" cx="1560" cy="848" rx="34" ry="2.4" fill="#eaf6ff" opacity=".28" style="animation-delay:6.6000000000000005s;animation-duration:5s"/>
+<circle class="slowblink" cx="1360" cy="150" r="4" fill="#ff9b6a" opacity=".8" style="animation-delay:1.5s"/></g>
 </svg>`;
 
 const WRONG_BEATS=[

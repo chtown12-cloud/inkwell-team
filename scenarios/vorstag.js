@@ -124,6 +124,11 @@ ${[0,1,2,3,4,5,6].map(i=>`<line x1="${i*260-80}" y1="660" x2="${i*300-200}" y2="
 </g>
 <!-- wolf eyes at treeline -->
 <g class="eyes"><circle cx="70" cy="760" r="4" fill="#e0d0a0"/><circle cx="90" cy="760" r="4" fill="#e0d0a0"/></g>
+<g class="atmo"><!-- the storm the Baron waited for, still arriving -->
+<line class="rainrun" x1="620" y1="0" x2="612" y2="46" stroke="#b8d4ea" stroke-width="1.8" opacity=".55" style="animation-delay:0.0s;animation-duration:1.5s"/><line class="rainrun" x1="676" y1="0" x2="668" y2="46" stroke="#b8d4ea" stroke-width="1.8" opacity=".55" style="animation-delay:0.37s;animation-duration:1.9s"/><line class="rainrun" x1="732" y1="0" x2="724" y2="46" stroke="#b8d4ea" stroke-width="1.8" opacity=".55" style="animation-delay:0.74s;animation-duration:2.3s"/><line class="rainrun" x1="788" y1="0" x2="780" y2="46" stroke="#b8d4ea" stroke-width="1.8" opacity=".55" style="animation-delay:1.1099999999999999s;animation-duration:1.5s"/><line class="rainrun" x1="844" y1="0" x2="836" y2="46" stroke="#b8d4ea" stroke-width="1.8" opacity=".55" style="animation-delay:1.48s;animation-duration:1.9s"/><line class="rainrun" x1="900" y1="0" x2="892" y2="46" stroke="#b8d4ea" stroke-width="1.8" opacity=".55" style="animation-delay:1.85s;animation-duration:2.3s"/><line class="rainrun" x1="956" y1="0" x2="948" y2="46" stroke="#b8d4ea" stroke-width="1.8" opacity=".55" style="animation-delay:2.2199999999999998s;animation-duration:1.5s"/><line class="rainrun" x1="1000" y1="0" x2="992" y2="46" stroke="#b8d4ea" stroke-width="1.8" opacity=".55" style="animation-delay:2.59s;animation-duration:1.9s"/><line class="rainrun" x1="1240" y1="0" x2="1232" y2="46" stroke="#b8d4ea" stroke-width="1.8" opacity=".55" style="animation-delay:2.96s;animation-duration:2.3s"/><line class="rainrun" x1="1320" y1="0" x2="1312" y2="46" stroke="#b8d4ea" stroke-width="1.8" opacity=".55" style="animation-delay:0.1299999999999999s;animation-duration:1.5s"/><line class="rainrun" x1="1400" y1="0" x2="1392" y2="46" stroke="#b8d4ea" stroke-width="1.8" opacity=".55" style="animation-delay:0.5s;animation-duration:1.9s"/><line class="rainrun" x1="1480" y1="0" x2="1472" y2="46" stroke="#b8d4ea" stroke-width="1.8" opacity=".55" style="animation-delay:0.8700000000000001s;animation-duration:2.3s"/><line class="rainrun" x1="1560" y1="0" x2="1552" y2="46" stroke="#b8d4ea" stroke-width="1.8" opacity=".55" style="animation-delay:1.2399999999999993s;animation-duration:1.5s"/>
+<g class="batfly" style="animation-delay:1s"><path d="M420 120 q10 -8 20 0 q-10 -4 -20 0" fill="#0b0d12" opacity=".8"/></g>
+<g class="batfly" style="animation-delay:8s"><path d="M420 76 q8 -6 16 0 q-8 -3 -16 0" fill="#0b0d12" opacity=".6"/></g>
+<ellipse class="drift" cx="1240" cy="110" rx="200" ry="26" fill="#0d1018" opacity=".55"/></g>
 </svg>`;
 
 /* ---------- Room 2: The Library ---------- */
@@ -210,6 +215,16 @@ ${[0,1].map(s=>`<g transform="translate(${40+s*270},0)">
   ${[-24,0,24].map((dx,i)=>`<g><rect x="${201+dx}" y="${690-Math.abs(dx)*.3}" width="8" height="20" fill="#d9cba6"/>
   <path class="flame" d="M${205+dx} ${684-Math.abs(dx)*.3} q-4 -9 0 -14 q4 7 0 14z" fill="#ffd894" style="animation-delay:${i*.3}s"/></g>`).join('')}
 </g>
+<g class="atmo"><!-- candles that have been guttering for decades -->
+<g class="flamewob" style="transform-origin:150px 150px"><ellipse cx="150" cy="150" rx="7" ry="14" fill="#ffb45e" opacity=".7"/></g>
+<g class="flamewob" style="animation-delay:1.1s;transform-origin:1500px 214px"><ellipse cx="1500" cy="214" rx="6" ry="12" fill="#ffb45e" opacity=".6"/></g>
+<ellipse cx="150" cy="150" rx="70" ry="60" fill="#ffb45e" opacity=".07"/>
+<ellipse cx="1500" cy="216" rx="54" ry="46" fill="#ffb45e" opacity=".06"/>
+<!-- cobwebs breathing in a room with no draught -->
+<g opacity=".16" class="sway" style="transform-origin:0 0"><path d="M0 30 q70 30 104 86 M0 90 q60 6 104 24" stroke="#d8ccae" stroke-width="2" fill="none"/></g>
+<!-- something crosses the floor beside the hearth and is not there when you look -->
+<ellipse class="shadowpass" cx="900" cy="770" rx="46" ry="112" fill="#04060a" opacity="0" style="animation-duration:23s;filter:blur(7px)"/>
+<circle class="sparkle" cx="300" cy="40" r="2" fill="#e6d6ae" style="animation-delay:0.0s"/><circle class="sparkle" cx="460" cy="69" r="2" fill="#e6d6ae" style="animation-delay:1.1s"/><circle class="sparkle" cx="620" cy="98" r="2" fill="#e6d6ae" style="animation-delay:2.2s"/><circle class="sparkle" cx="780" cy="67" r="2" fill="#e6d6ae" style="animation-delay:3.3000000000000003s"/><circle class="sparkle" cx="940" cy="96" r="2" fill="#e6d6ae" style="animation-delay:4.4s"/><circle class="sparkle" cx="1100" cy="65" r="2" fill="#e6d6ae" style="animation-delay:0.5s"/><circle class="sparkle" cx="1260" cy="94" r="2" fill="#e6d6ae" style="animation-delay:1.6000000000000005s"/></g>
 </svg>`;
 
 /* ---------- Room 3: The Laboratory ---------- */
@@ -275,6 +290,24 @@ ${[380,520,1060,1200].map((x,i)=>`<g class="lampswing" style="animation-delay:${
   ${[0,1,2].map(i=>`<g><rect x="${726+i*72}" y="140" width="46" height="60" rx="8" fill="#16211f" stroke="#2a4a42" stroke-width="3"/>
    <ellipse class="bob" cx="${749+i*72}" cy="172" rx="12" ry="${14+i*3}" fill="#2a4a42" style="animation-delay:${i*.9}s"/></g>`).join('')}
 </g>
+<g class="atmo"><!-- condensation finding its way down the glassware -->
+<circle class="dripdrop" cx="760" cy="120" r="4" fill="#bfe8ff" opacity=".5" style="animation-delay:2s"/>
+<circle class="dripdrop" cx="1120" cy="100" r="3.4" fill="#bfe8ff" opacity=".4" style="animation-delay:8s"/>
+<!-- more current finding its way across the rig -->
+<g class="arcflick" style="animation-delay:3.5s"><path d="M840 90 l24 18 l-13 7 l20 14" stroke="#bfe9ff" stroke-width="2.2" fill="none"/></g>
+<g class="arcflick" style="animation-delay:9s"><path d="M1180 60 l-20 16 l12 6 l-18 12" stroke="#bfe9ff" stroke-width="2" fill="none"/></g>
+<!-- a chain still swinging from something that passed -->
+<g class="swing" style="transform-origin:1010px 0"><line x1="1010" y1="0" x2="1010" y2="150" stroke="#2a3a34" stroke-width="4"/>
+  <circle cx="1010" cy="156" r="7" fill="#2a3a34"/></g>
+<ellipse class="fogdrift" cx="800" cy="860" rx="420" ry="26" fill="#8fb8a8" opacity=".06"/>
+
+<g class="arcflick" style="animation-delay:1.2s"><path d="M300 120 l22 16 l-12 6 l18 12" stroke="#bfe9ff" stroke-width="2" fill="none"/></g>
+<g class="arcflick" style="animation-delay:6.4s"><path d="M1320 90 l-18 14 l11 6 l-16 11" stroke="#bfe9ff" stroke-width="1.8" fill="none"/></g>
+<circle class="slowblink" cx="1150" cy="170" r="5" fill="#8fd8ff" opacity=".55" style="animation-delay:.9s"/>
+<circle class="dripdrop" cx="250" cy="40" r="3.2" fill="#bfe8ff" opacity=".4" style="animation-delay:5.5s"/>
+<ellipse class="fogdrift" cx="400" cy="884" rx="300" ry="18" fill="#8fb8a8" opacity=".05" style="animation-delay:6s"/>
+<ellipse class="fogdrift" cx="1300" cy="866" rx="260" ry="16" fill="#8fb8a8" opacity=".05" style="animation-delay:13s"/>
+<circle class="sparkle" cx="220" cy="60" r="2.2" fill="#cfe6df" style="animation-delay:0.0s"/><circle class="sparkle" cx="400" cy="97" r="2.2" fill="#cfe6df" style="animation-delay:0.9s"/><circle class="sparkle" cx="580" cy="134" r="2.2" fill="#cfe6df" style="animation-delay:1.8s"/><circle class="sparkle" cx="760" cy="61" r="2.2" fill="#cfe6df" style="animation-delay:2.7s"/><circle class="sparkle" cx="940" cy="98" r="2.2" fill="#cfe6df" style="animation-delay:3.6s"/><circle class="sparkle" cx="1120" cy="135" r="2.2" fill="#cfe6df" style="animation-delay:4.5s"/><circle class="sparkle" cx="1300" cy="62" r="2.2" fill="#cfe6df" style="animation-delay:0.40000000000000036s"/></g>
 </svg>`;
 
 /* ---------- Room 4: The Tower ---------- */
@@ -346,6 +379,19 @@ ${[0,1,2,3,4].map(i=>`<line x1="${i*380-60}" y1="660" x2="${i*400-120}" y2="900"
 <g class="plx" data-depth="5">
   ${[0,1,2,3,4].map(i=>`<circle class="tw" cx="${140+i*90}" cy="${856+((i*13)%18)}" r="2.5" fill="#ffd98c" style="animation-delay:${i*.8}s"/>`).join('')}
 </g>
+<g class="atmo"><!-- the front arriving, hard -->
+<line class="rainrun" x1="980" y1="0" x2="968" y2="52" stroke="#b8d4ea" stroke-width="2" opacity=".55" style="animation-delay:0.0s;animation-duration:1.3s"/><line class="rainrun" x1="1050" y1="0" x2="1038" y2="52" stroke="#b8d4ea" stroke-width="2" opacity=".55" style="animation-delay:0.29s;animation-duration:1.6s"/><line class="rainrun" x1="1120" y1="0" x2="1108" y2="52" stroke="#b8d4ea" stroke-width="2" opacity=".55" style="animation-delay:0.58s;animation-duration:1.9s"/><line class="rainrun" x1="1190" y1="0" x2="1178" y2="52" stroke="#b8d4ea" stroke-width="2" opacity=".55" style="animation-delay:0.8699999999999999s;animation-duration:1.3s"/><line class="rainrun" x1="1260" y1="0" x2="1248" y2="52" stroke="#b8d4ea" stroke-width="2" opacity=".55" style="animation-delay:1.16s;animation-duration:1.6s"/><line class="rainrun" x1="1330" y1="0" x2="1318" y2="52" stroke="#b8d4ea" stroke-width="2" opacity=".55" style="animation-delay:1.45s;animation-duration:1.9s"/><line class="rainrun" x1="1400" y1="0" x2="1388" y2="52" stroke="#b8d4ea" stroke-width="2" opacity=".55" style="animation-delay:1.7399999999999998s;animation-duration:1.3s"/><line class="rainrun" x1="1470" y1="0" x2="1458" y2="52" stroke="#b8d4ea" stroke-width="2" opacity=".55" style="animation-delay:2.03s;animation-duration:1.6s"/><line class="rainrun" x1="1540" y1="0" x2="1528" y2="52" stroke="#b8d4ea" stroke-width="2" opacity=".55" style="animation-delay:2.32s;animation-duration:1.9s"/>
+<g class="batfly" style="animation-delay:2s"><path d="M1000 70 q11 -9 22 0 q-11 -4 -22 0" fill="#090c11" opacity=".75"/></g>
+<g class="batfly" style="animation-delay:12s"><path d="M1000 40 q8 -7 16 0 q-8 -3 -16 0" fill="#090c11" opacity=".55"/></g>
+<ellipse class="drift" cx="1180" cy="80" rx="230" ry="24" fill="#0b0e15" opacity=".5"/>
+<g class="sparkrise" style="animation-delay:1.4s"><circle cx="1120" cy="520" r="2.6" fill="#cfe9ff"/></g>
+
+<g class="sparkrise" style="animation-delay:.4s"><circle cx="1000" cy="560" r="2.4" fill="#cfe9ff"/></g>
+<g class="sparkrise s2" style="animation-delay:2.2s"><circle cx="1240" cy="600" r="2" fill="#bfe0ff"/></g>
+<g class="sparkrise s3" style="animation-delay:3.6s"><circle cx="1120" cy="580" r="2.2" fill="#dff0ff"/></g>
+<g class="batfly" style="animation-delay:19s"><path d="M1000 20 q7 -6 14 0 q-7 -3 -14 0" fill="#090c11" opacity=".45"/></g>
+<ellipse class="fogdrift" cx="800" cy="878" rx="420" ry="18" fill="#8fa8c0" opacity=".06"/>
+<circle class="sparkle" cx="100" cy="30" r="2" fill="#c8d8ea" style="animation-delay:0.0s"/><circle class="sparkle" cx="270" cy="59" r="2" fill="#c8d8ea" style="animation-delay:0.8s"/><circle class="sparkle" cx="440" cy="88" r="2" fill="#c8d8ea" style="animation-delay:1.6s"/><circle class="sparkle" cx="610" cy="57" r="2" fill="#c8d8ea" style="animation-delay:2.4000000000000004s"/><circle class="sparkle" cx="780" cy="86" r="2" fill="#c8d8ea" style="animation-delay:3.2s"/><circle class="sparkle" cx="950" cy="55" r="2" fill="#c8d8ea" style="animation-delay:4.0s"/><circle class="sparkle" cx="1120" cy="84" r="2" fill="#c8d8ea" style="animation-delay:4.800000000000001s"/><circle class="sparkle" cx="1290" cy="53" r="2" fill="#c8d8ea" style="animation-delay:0.6000000000000005s"/></g>
 </svg>`;
 
 const WRONG_BEATS=[
