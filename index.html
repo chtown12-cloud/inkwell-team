@@ -2128,7 +2128,7 @@ function phoneOpen(id){
 /* ---------- boot ---------- */
 async function bootPhone(code){
   $('hub-screen').classList.add('hidden');   // phones never see the scenario picker
-  const room = await NET.attach(code);
+  const room = await NET.attach(code, 'phone');
   const sub = $('join-sub'), note = $('join-note');
   if(!room){
     $('join-screen').classList.remove('hidden');
@@ -2189,7 +2189,7 @@ async function bootPhone(code){
  */
 async function bootHost(code){
   $('hub-screen').classList.add('hidden');
-  const room = await NET.attach(code);
+  const room = await NET.attach(code, 'host');
   if(!room){ $('hub-screen').classList.remove('hidden'); return; }
   ACTIVE = SCENARIOS.find(x=>x.id===room.scenario) || SCENARIOS[0];
   setDifficulty(room.difficulty);
@@ -2215,12 +2215,21 @@ async function bootHost(code){
   tick();
 }
 
-/* A screen that is closing should say so on the way out. Firebase would work it
-   out on its own once its servers notice the socket has gone, but that can take
-   a while, and the crew are staring at their phones waiting to be told. */
+/* Anyone closing the game should say so on the way out. The database works it
+   out eventually on its own, but "eventually" is a crew staring at a phone
+   waiting to be told, or a shared screen still showing someone who has gone.
+   If the page is only being backgrounded the heartbeat puts them straight back,
+   which is why this can afford to be eager. */
 addEventListener('pagehide',()=>{
-  if(S.isPhone || S.finished || !S.code || !window.NET) return;
-  NET.releaseHost();
+  if(!S.code || !window.NET) return;
+  if(S.isPhone) NET.leaveSession();
+  else if(!S.finished) NET.releaseHost();
+});
+/* ...and restored from the back-forward cache, take your seat again. */
+addEventListener('pageshow',(e)=>{
+  if(!e.persisted || !S.code || !window.NET) return;
+  NET.startPolling();
+  if(!S.isPhone) NET.becomeHost();
 });
 
 addEventListener('DOMContentLoaded',()=>{
