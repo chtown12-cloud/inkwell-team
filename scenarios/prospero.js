@@ -90,7 +90,13 @@ ${[0,1,2,3,4,5].map(i=>{
 <path d="M700 760 q160 20 340 -8" stroke="#0a0e14" stroke-width="26" fill="none" opacity=".5"/>
 <circle class="slowblink" cx="60" cy="200" r="8" fill="#c94a3d"/>
 <text x="84" y="206" font-family="Special Elite" font-size="15" fill="#7f5a5a">LIFE SUPPORT: RESERVE</text>
-<g class="atmo"><!-- dust hanging in nil gravity -->
+<g class="atmo">
+<!-- something in here is still running -->
+<circle id="rl-cryobay" cx="190" cy="170" r="6" fill="#7fd4ff" opacity=".12"/>
+<circle cx="190" cy="170" r="20" fill="#7fd4ff" opacity=".05"/>
+<!-- and something here answers back when the room gives way -->
+<ellipse id="rx-cryobay" class="surge" cx="1110" cy="710" rx="96" ry="70" fill="#8fd8ff" opacity="0"/>
+<!-- dust hanging in nil gravity -->
 <circle class="sparkle" cx="120" cy="170" r="2.2" fill="#9fc4dd" style="animation-delay:0.0s"/><circle class="sparkle" cx="238" cy="217" r="2.2" fill="#9fc4dd" style="animation-delay:0.6s"/><circle class="sparkle" cx="356" cy="264" r="2.2" fill="#9fc4dd" style="animation-delay:1.2s"/><circle class="sparkle" cx="474" cy="191" r="2.2" fill="#9fc4dd" style="animation-delay:1.7999999999999998s"/><circle class="sparkle" cx="592" cy="238" r="2.2" fill="#9fc4dd" style="animation-delay:2.4s"/><circle class="sparkle" cx="710" cy="285" r="2.2" fill="#9fc4dd" style="animation-delay:3.0s"/><circle class="sparkle" cx="828" cy="212" r="2.2" fill="#9fc4dd" style="animation-delay:3.5999999999999996s"/><circle class="sparkle" cx="946" cy="259" r="2.2" fill="#9fc4dd" style="animation-delay:4.2s"/><circle class="sparkle" cx="1064" cy="186" r="2.2" fill="#9fc4dd" style="animation-delay:4.8s"/><circle class="sparkle" cx="1182" cy="233" r="2.2" fill="#9fc4dd" style="animation-delay:0.39999999999999947s"/><circle class="sparkle" cx="1300" cy="280" r="2.2" fill="#9fc4dd" style="animation-delay:1.0s"/>
 <!-- a conduit that has been failing for forty years -->
 <g class="arcflick" style="animation-delay:5s"><path d="M60 250 l26 16 l-14 6 l22 12" stroke="#8fd8ff" stroke-width="2.4" fill="none"/></g>
@@ -181,7 +187,13 @@ SCENES.bridge=()=>`
   ${[0,1,2,3,4].map(i=>`<rect class="flick" x="1458" y="${408+i*62}" width="84" height="30" rx="4" fill="#0a141c" stroke="#2a4258" stroke-width="2"/>`).join('')}
   <circle class="slowblink" cx="1500" cy="360" r="9" fill="#c94a3d"/>
 </g>
-<g class="atmo"><!-- wreckage tumbling past the viewport, and something enormous rising -->
+<g class="atmo">
+<!-- something in here is still running -->
+<circle id="rl-bridge" cx="230" cy="210" r="6" fill="#7fd4ff" opacity=".12"/>
+<circle cx="230" cy="210" r="20" fill="#7fd4ff" opacity=".05"/>
+<!-- and something here answers back when the room gives way -->
+<ellipse id="rx-bridge" class="surge" cx="210" cy="430" rx="96" ry="70" fill="#8fd8ff" opacity="0"/>
+<!-- wreckage tumbling past the viewport, and something enormous rising -->
 <g class="drift" style="animation-delay:3s"><path d="M300 250 l34 -8 l10 16 l-38 10z" fill="#12202c" opacity=".8"/></g>
 <g class="drift" style="animation-delay:14s"><path d="M700 150 l22 6 l-6 16 l-24 -6z" fill="#101c26" opacity=".7"/></g>
 <circle class="riseslow" cx="320" cy="290" r="80" fill="#1b2f45" opacity=".5" style="animation-duration:70s"/>
@@ -262,7 +274,13 @@ ${[0,1].map(row=>`
 <!-- floor -->
 <rect y="800" width="1600" height="100" fill="#0a0f0c"/>
 <path d="M320 840 q200 18 420 0 t 420 6" stroke="#050805" stroke-width="16" fill="none" opacity=".6"/>
-<g class="atmo"><!-- spores and seed fluff drifting through the grow lights -->
+<g class="atmo">
+<!-- something in here is still running -->
+<circle id="rl-hydro" cx="550" cy="210" r="6" fill="#7fd4ff" opacity=".12"/>
+<circle cx="550" cy="210" r="20" fill="#7fd4ff" opacity=".05"/>
+<!-- and something here answers back when the room gives way -->
+<ellipse id="rx-hydro" class="surge" cx="570" cy="430" rx="96" ry="70" fill="#8fd8ff" opacity="0"/>
+<!-- spores and seed fluff drifting through the grow lights -->
 <circle class="sparkle" cx="430" cy="60" r="3" fill="#cdf3b4" style="animation-delay:0.0s"/><circle class="sparkle" cx="543" cy="131" r="3" fill="#cdf3b4" style="animation-delay:0.9s"/><circle class="sparkle" cx="656" cy="202" r="3" fill="#cdf3b4" style="animation-delay:1.8s"/><circle class="sparkle" cx="769" cy="73" r="3" fill="#cdf3b4" style="animation-delay:2.7s"/><circle class="sparkle" cx="882" cy="144" r="3" fill="#cdf3b4" style="animation-delay:3.6s"/><circle class="sparkle" cx="995" cy="215" r="3" fill="#cdf3b4" style="animation-delay:4.5s"/><circle class="sparkle" cx="1108" cy="86" r="3" fill="#cdf3b4" style="animation-delay:5.4s"/><circle class="sparkle" cx="521" cy="157" r="3" fill="#cdf3b4" style="animation-delay:0.2999999999999998s"/><circle class="sparkle" cx="634" cy="228" r="3" fill="#cdf3b4" style="animation-delay:1.2000000000000002s"/><circle class="sparkle" cx="747" cy="99" r="3" fill="#cdf3b4" style="animation-delay:2.0999999999999996s"/>
 <ellipse class="leaffall" cx="640" cy="40" rx="7" ry="3.4" fill="#4f8f3c" opacity=".55" style="animation-delay:6s"/>
 <ellipse class="leaffall" cx="1180" cy="30" rx="6" ry="3" fill="#5f9f4c" opacity=".45" style="animation-delay:17s"/>
@@ -340,7 +358,13 @@ ${[0,1,2,3,4,5].map(i=>`<rect x="${560+i*96}" y="754" width="12" height="30" fil
 </g>
 <circle class="slowblink" cx="60" cy="60" r="8" fill="#c94a3d"/>
 <text x="84" y="66" font-family="Special Elite" font-size="15" fill="#7f5a5a">BAY PRESSURE: FALLING</text>
-<g class="atmo"><!-- pressure bleeding off somewhere it shouldn't -->
+<g class="atmo">
+<!-- something in here is still running -->
+<circle id="rl-podbay" cx="710" cy="210" r="6" fill="#7fd4ff" opacity=".12"/>
+<circle cx="710" cy="210" r="20" fill="#7fd4ff" opacity=".05"/>
+<!-- and something here answers back when the room gives way -->
+<ellipse id="rx-podbay" class="surge" cx="870" cy="440" rx="96" ry="70" fill="#8fd8ff" opacity="0"/>
+<!-- pressure bleeding off somewhere it shouldn't -->
 <ellipse class="steam" cx="980" cy="70" rx="46" ry="12" fill="#cfe8ff" opacity=".16"/>
 <ellipse class="steam" cx="1020" cy="50" rx="30" ry="9" fill="#cfe8ff" opacity=".12" style="animation-delay:2.4s"/>
 <circle class="slowblink" cx="1520" cy="120" r="9" fill="#e0b24a" opacity=".8"/>
@@ -362,6 +386,9 @@ const ROOMS=[
 /* ============ ROOM 1 — THE CRYO BAY ============ */
 {
   id:'cryobay', name:'Room 1 — The Cryo Bay', scene:'cryobay',
+  stageFx:'drift',
+  relays:[{el:'rl-cryobay',mode:'pulse',period:3.8}],
+  wrongSound:'clank',
   intro:"You wake choking on cryo-fluid, forty years past your wake date. The other pods are dark.",
   objective:"Find out what happened — <b>glowing rings</b> mark what you can examine. Nothing on this deck explains itself.",
   entryBeat:"The bay's ceiling panels creak, one after another, in a slow line from the vent to the door — the sound of weight moving where no crew could walk.",
@@ -384,7 +411,7 @@ const ROOMS=[
         solvedText:"L-O-C-K-E-R. The maintenance locker by the bulkhead — tall, sealed, and stencilled with four system glyphs."
       }
     },
-    { id:'locker', icon:'🗄️', name:'Maintenance Locker', pos:{x:79,y:40,w:10,h:30},
+    { id:'locker', onSolve:{el:'rx-cryobay',op:.2,fx:'surge'}, icon:'🗄️', name:'Maintenance Locker', pos:{x:79,y:40,w:10,h:30},
       desc:"A tall maintenance locker sealed with a 4-digit mag-lock. Four system glyphs are stencilled above it, each with a digit — in no particular order:\n\n⚡ POWER 9      ❄ CRYO 2      ☢ REACTOR 6      💧 WATER 4\n\nDigits, but no sequence. Somewhere on this deck there's a procedure that puts these systems in order.",
       puzzle:{
         prompt:"Enter the 4-digit code.", placeholder:"0000", answers:['6942'],
@@ -433,6 +460,10 @@ const ROOMS=[
 /* ============ ROOM 2 — THE BRIDGE ============ */
 {
   id:'bridge', name:'Room 2 — The Bridge', scene:'bridge',
+  stageFx:'drift',
+  relays:[{el:'rl-bridge',mode:'pulse',period:2.4}],
+  wrongSound:'ping',
+  wrongVfx:'sparks',
   intro:"The bridge is forty years of dust and one turned chair. The viewport is full of the wrong stars.",
   objective:"The ship has been listening to something for decades. Find the dish heading — then <b>listen</b> yourself.",
   entryBeat:"The captain's chair faces the viewport. The dust on the armrests is disturbed — four long furrows on each side, as if something sat here recently. And gripped.",
@@ -460,7 +491,7 @@ const ROOMS=[
         solvedText:"At 47.15 the hiss opens like a door — and underneath it, something is knocking. A repeating loop, forty years old, knocked out by hand. The COMMS SPEAKER is carrying it now. Split up the letters; it's a long one."
       }
     },
-    { id:'beacon', icon:'🔊', name:'The Beacon Loop', pos:{x:25,y:44,w:10,h:14}, hiddenUntil:'antenna',
+    { id:'beacon', onSolve:{el:'rx-bridge',op:.2,fx:'surge'}, icon:'🔊', name:'The Beacon Loop', pos:{x:25,y:44,w:10,h:14}, hiddenUntil:'antenna',
       desc:"The loop repeats every few seconds. Not dots and dashes — knocks, in pairs: a count, a small pause, a second count. Nine pairs, two words, knocked out slowly by someone who wanted this understood.\n\nDivide the pairs among the crew and count them out.",
       puzzle:{
         prompt:"Decode the loop (two words).",
@@ -507,6 +538,9 @@ const ROOMS=[
 /* ============ ROOM 3 — HYDROPONICS ============ */
 {
   id:'hydro', name:'Room 3 — Hydroponics', scene:'hydro',
+  stageFx:'drift',
+  relays:[{el:'rl-hydro',mode:'pulse',period:4.4}],
+  wrongSound:'hiss',
   relay:{el:'airlock-lamp',seq:'... ..... .... ..... .... .. .. .. . .....',after:'pumps'},
   intro:"The grow lights still burn. The plants have not stopped growing in forty years. Neither has anything else down here.",
   objective:"Cross the green deck to the aft airlock. The vent covers down here are <b>off</b>.",
@@ -529,7 +563,7 @@ const ROOMS=[
         solvedText:"VENT. Wedged inside the torn vent's mouth, where nothing sane would reach: the botanist's specimen keys, and a scrawl — “it won't touch the trays. Count what grew.”"
       }
     },
-    { id:'trays', icon:'🧪', name:'Specimen Trays', pos:{x:32,y:68,w:56,h:12}, hiddenUntil:'vines',
+    { id:'trays', onSolve:{el:'rx-hydro',op:.2,fx:'surge'}, icon:'🧪', name:'Specimen Trays', pos:{x:32,y:68,w:56,h:12}, hiddenUntil:'vines',
       desc:"Nine specimen trays under the grow lights, each stamped with a letter and a live seed count. Left to right:\n\nS — 7 seeds\nB — 4 seeds\nT — 5 seeds\nA — 3 seeds\nI — 8 seeds\nR — 2 seeds\nV — 11 seeds\nO — 9 seeds\nE — 13 seeds\n\nThe botanist's rule, stamped on the rack: “HARVEST ONLY THE TRAYS WHOSE COUNT IS A PRIME NUMBER — the rest cross-pollinated. Trust nothing divisible.”",
       puzzle:{
         prompt:"Which trays get harvested? Enter their letters in order.", placeholder:"LETTERS", answers:['STARVE'],
@@ -575,6 +609,10 @@ const ROOMS=[
 /* ============ ROOM 4 — THE ESCAPE POD BAY ============ */
 {
   id:'podbay', name:'Room 4 — The Escape Pod Bay', scene:'podbay',
+  stageFx:'drift',
+  relays:[{el:'rl-podbay',mode:'pulse',period:2.2}],
+  wrongSound:'clank',
+  wrongVfx:'shake',
   intro:"One pod left. The crew never reached it. You will.",
   objective:"Prep, fuel, and launch — the beacon window won't wait. <b>Neither will the thing in the vents.</b>",
   entryBeat:"The pod bay's dust is untouched except for one path — a wide, smooth track circling the pod itself. Around and around. Years of it. Something has been guarding your way out, or coveting it.",
@@ -598,7 +636,7 @@ const ROOMS=[
         beatSound:'clank'
       }
     },
-    { id:'fuelpanel', icon:'⛽', name:'Fuel Lock', pos:{x:25,y:40,w:11,h:14},
+    { id:'fuelpanel', onSolve:{el:'rx-podbay',op:.2,fx:'surge'}, icon:'⛽', name:'Fuel Lock', pos:{x:25,y:40,w:11,h:14},
       desc:"The fuel line is locked behind a 4-digit panel. The engineer's plate reads:\n\n“PROSPERO FUELING PROTOCOL.\nAN OFFICER NEVER FORGETS THE DISH HEADING —\nAND THE EMERGENCY CHANNEL SITS AT TWICE IT.”",
       puzzle:{
         prompt:"Enter the 4-digit code.", placeholder:"0000", answers:['9430'],
@@ -700,12 +738,12 @@ registerScenario({
     {hum:.028, drone:.05, rustle:.07, wind:.03},
     {hum:.05, drone:.07, wind:.04}
   ],
-  fx:['mist','motes','fireflies','motes'],
+  fx:['mist','ash','spores','ash'],
   events:[
-    [{s:'hiss',p:.5},{s:'clank',p:.22}],
-    [{s:'ping',p:.5},{s:'crackle',p:.3}],
+    [{s:'hiss',p:.5},{s:'clank',p:.22,v:'shake'}],
+    [{s:'ping',p:.5,v:'sparks'},{s:'crackle',p:.3,v:'sparks'}],
     [{s:'drip',p:.55},{s:'hiss',p:.25}],
-    [{s:'clank',p:.4},{s:'hiss',p:.3}]
+    [{s:'clank',p:.4,v:'shake'},{s:'hiss',p:.3}]
   ],
   wrongBeats:WRONG_BEATS, wrongSounds:WRONG_SOUNDS,
   scenes:SCENES, rooms:ROOMS
