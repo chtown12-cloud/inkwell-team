@@ -124,7 +124,13 @@ ${[0,1,2,3,4,5,6].map(i=>`<line x1="${i*260-80}" y1="660" x2="${i*300-200}" y2="
 </g>
 <!-- wolf eyes at treeline -->
 <g class="eyes"><circle cx="70" cy="760" r="4" fill="#e0d0a0"/><circle cx="90" cy="760" r="4" fill="#e0d0a0"/></g>
-<g class="atmo"><!-- the storm the Baron waited for, still arriving -->
+<g class="atmo">
+<!-- something in here is still running -->
+<circle id="rl-gatehouse" cx="790" cy="210" r="6" fill="#ffb45e" opacity=".12"/>
+<circle cx="790" cy="210" r="20" fill="#ffb45e" opacity=".05"/>
+<!-- and something here answers back when the room gives way -->
+<ellipse id="rx-gatehouse" class="surge" cx="1390" cy="680" rx="96" ry="70" fill="#ff9a4a" opacity="0"/>
+<!-- the storm the Baron waited for, still arriving -->
 <line class="rainrun" x1="620" y1="0" x2="612" y2="46" stroke="#b8d4ea" stroke-width="1.8" opacity=".55" style="animation-delay:0.0s;animation-duration:1.5s"/><line class="rainrun" x1="676" y1="0" x2="668" y2="46" stroke="#b8d4ea" stroke-width="1.8" opacity=".55" style="animation-delay:0.37s;animation-duration:1.9s"/><line class="rainrun" x1="732" y1="0" x2="724" y2="46" stroke="#b8d4ea" stroke-width="1.8" opacity=".55" style="animation-delay:0.74s;animation-duration:2.3s"/><line class="rainrun" x1="788" y1="0" x2="780" y2="46" stroke="#b8d4ea" stroke-width="1.8" opacity=".55" style="animation-delay:1.1099999999999999s;animation-duration:1.5s"/><line class="rainrun" x1="844" y1="0" x2="836" y2="46" stroke="#b8d4ea" stroke-width="1.8" opacity=".55" style="animation-delay:1.48s;animation-duration:1.9s"/><line class="rainrun" x1="900" y1="0" x2="892" y2="46" stroke="#b8d4ea" stroke-width="1.8" opacity=".55" style="animation-delay:1.85s;animation-duration:2.3s"/><line class="rainrun" x1="956" y1="0" x2="948" y2="46" stroke="#b8d4ea" stroke-width="1.8" opacity=".55" style="animation-delay:2.2199999999999998s;animation-duration:1.5s"/><line class="rainrun" x1="1000" y1="0" x2="992" y2="46" stroke="#b8d4ea" stroke-width="1.8" opacity=".55" style="animation-delay:2.59s;animation-duration:1.9s"/><line class="rainrun" x1="1240" y1="0" x2="1232" y2="46" stroke="#b8d4ea" stroke-width="1.8" opacity=".55" style="animation-delay:2.96s;animation-duration:2.3s"/><line class="rainrun" x1="1320" y1="0" x2="1312" y2="46" stroke="#b8d4ea" stroke-width="1.8" opacity=".55" style="animation-delay:0.1299999999999999s;animation-duration:1.5s"/><line class="rainrun" x1="1400" y1="0" x2="1392" y2="46" stroke="#b8d4ea" stroke-width="1.8" opacity=".55" style="animation-delay:0.5s;animation-duration:1.9s"/><line class="rainrun" x1="1480" y1="0" x2="1472" y2="46" stroke="#b8d4ea" stroke-width="1.8" opacity=".55" style="animation-delay:0.8700000000000001s;animation-duration:2.3s"/><line class="rainrun" x1="1560" y1="0" x2="1552" y2="46" stroke="#b8d4ea" stroke-width="1.8" opacity=".55" style="animation-delay:1.2399999999999993s;animation-duration:1.5s"/>
 <g class="batfly" style="animation-delay:1s"><path d="M420 120 q10 -8 20 0 q-10 -4 -20 0" fill="#0b0d12" opacity=".8"/></g>
 <g class="batfly" style="animation-delay:8s"><path d="M420 76 q8 -6 16 0 q-8 -3 -16 0" fill="#0b0d12" opacity=".6"/></g>
@@ -215,7 +221,13 @@ ${[0,1].map(s=>`<g transform="translate(${40+s*270},0)">
   ${[-24,0,24].map((dx,i)=>`<g><rect x="${201+dx}" y="${690-Math.abs(dx)*.3}" width="8" height="20" fill="#d9cba6"/>
   <path class="flame" d="M${205+dx} ${684-Math.abs(dx)*.3} q-4 -9 0 -14 q4 7 0 14z" fill="#ffd894" style="animation-delay:${i*.3}s"/></g>`).join('')}
 </g>
-<g class="atmo"><!-- candles that have been guttering for decades -->
+<g class="atmo">
+<!-- something in here is still running -->
+<circle id="rl-library" cx="230" cy="210" r="6" fill="#ffb45e" opacity=".12"/>
+<circle cx="230" cy="210" r="20" fill="#ffb45e" opacity=".05"/>
+<!-- and something here answers back when the room gives way -->
+<ellipse id="rx-library" class="surge" cx="850" cy="430" rx="96" ry="70" fill="#ff9a4a" opacity="0"/>
+<!-- candles that have been guttering for decades -->
 <g class="flamewob" style="transform-origin:150px 150px"><ellipse cx="150" cy="150" rx="7" ry="14" fill="#ffb45e" opacity=".7"/></g>
 <g class="flamewob" style="animation-delay:1.1s;transform-origin:1500px 214px"><ellipse cx="1500" cy="214" rx="6" ry="12" fill="#ffb45e" opacity=".6"/></g>
 <ellipse cx="150" cy="150" rx="70" ry="60" fill="#ffb45e" opacity=".07"/>
@@ -290,7 +302,13 @@ ${[380,520,1060,1200].map((x,i)=>`<g class="lampswing" style="animation-delay:${
   ${[0,1,2].map(i=>`<g><rect x="${726+i*72}" y="140" width="46" height="60" rx="8" fill="#16211f" stroke="#2a4a42" stroke-width="3"/>
    <ellipse class="bob" cx="${749+i*72}" cy="172" rx="12" ry="${14+i*3}" fill="#2a4a42" style="animation-delay:${i*.9}s"/></g>`).join('')}
 </g>
-<g class="atmo"><!-- condensation finding its way down the glassware -->
+<g class="atmo">
+<!-- something in here is still running -->
+<circle id="rl-laboratory" cx="900" cy="210" r="6" fill="#ffb45e" opacity=".12"/>
+<circle cx="900" cy="210" r="20" fill="#ffb45e" opacity=".05"/>
+<!-- and something here answers back when the room gives way -->
+<ellipse id="rx-laboratory" class="surge" cx="280" cy="630" rx="96" ry="70" fill="#ff9a4a" opacity="0"/>
+<!-- condensation finding its way down the glassware -->
 <circle class="dripdrop" cx="760" cy="120" r="4" fill="#bfe8ff" opacity=".5" style="animation-delay:2s"/>
 <circle class="dripdrop" cx="1120" cy="100" r="3.4" fill="#bfe8ff" opacity=".4" style="animation-delay:8s"/>
 <!-- more current finding its way across the rig -->
@@ -379,7 +397,13 @@ ${[0,1,2,3,4].map(i=>`<line x1="${i*380-60}" y1="660" x2="${i*400-120}" y2="900"
 <g class="plx" data-depth="5">
   ${[0,1,2,3,4].map(i=>`<circle class="tw" cx="${140+i*90}" cy="${856+((i*13)%18)}" r="2.5" fill="#ffd98c" style="animation-delay:${i*.8}s"/>`).join('')}
 </g>
-<g class="atmo"><!-- the front arriving, hard -->
+<g class="atmo">
+<!-- something in here is still running -->
+<circle id="rl-tower" cx="230" cy="210" r="6" fill="#ffb45e" opacity=".12"/>
+<circle cx="230" cy="210" r="20" fill="#ffb45e" opacity=".05"/>
+<!-- and something here answers back when the room gives way -->
+<ellipse id="rx-tower" class="surge" cx="1180" cy="430" rx="96" ry="70" fill="#ff9a4a" opacity="0"/>
+<!-- the front arriving, hard -->
 <line class="rainrun" x1="980" y1="0" x2="968" y2="52" stroke="#b8d4ea" stroke-width="2" opacity=".55" style="animation-delay:0.0s;animation-duration:1.3s"/><line class="rainrun" x1="1050" y1="0" x2="1038" y2="52" stroke="#b8d4ea" stroke-width="2" opacity=".55" style="animation-delay:0.29s;animation-duration:1.6s"/><line class="rainrun" x1="1120" y1="0" x2="1108" y2="52" stroke="#b8d4ea" stroke-width="2" opacity=".55" style="animation-delay:0.58s;animation-duration:1.9s"/><line class="rainrun" x1="1190" y1="0" x2="1178" y2="52" stroke="#b8d4ea" stroke-width="2" opacity=".55" style="animation-delay:0.8699999999999999s;animation-duration:1.3s"/><line class="rainrun" x1="1260" y1="0" x2="1248" y2="52" stroke="#b8d4ea" stroke-width="2" opacity=".55" style="animation-delay:1.16s;animation-duration:1.6s"/><line class="rainrun" x1="1330" y1="0" x2="1318" y2="52" stroke="#b8d4ea" stroke-width="2" opacity=".55" style="animation-delay:1.45s;animation-duration:1.9s"/><line class="rainrun" x1="1400" y1="0" x2="1388" y2="52" stroke="#b8d4ea" stroke-width="2" opacity=".55" style="animation-delay:1.7399999999999998s;animation-duration:1.3s"/><line class="rainrun" x1="1470" y1="0" x2="1458" y2="52" stroke="#b8d4ea" stroke-width="2" opacity=".55" style="animation-delay:2.03s;animation-duration:1.6s"/><line class="rainrun" x1="1540" y1="0" x2="1528" y2="52" stroke="#b8d4ea" stroke-width="2" opacity=".55" style="animation-delay:2.32s;animation-duration:1.9s"/>
 <g class="batfly" style="animation-delay:2s"><path d="M1000 70 q11 -9 22 0 q-11 -4 -22 0" fill="#090c11" opacity=".75"/></g>
 <g class="batfly" style="animation-delay:12s"><path d="M1000 40 q8 -7 16 0 q-8 -3 -16 0" fill="#090c11" opacity=".55"/></g>
@@ -407,6 +431,10 @@ const ROOMS=[
 /* ============ ROOM 1 — THE GATEHOUSE COURT ============ */
 {
   id:'gatehouse', name:'Room 1 — The Gatehouse Court', scene:'gatehouse',
+  stageFx:'shudder',
+  relays:[{el:'rl-gatehouse',mode:'pulse',period:3.6}],
+  wrongSound:'thunder',
+  wrongVfx:'flash',
   intro:"The castle took you in from the storm. Then the portcullis came down behind you.",
   objective:"Find your way into the keep — <b>glowing rings</b> mark what will speak to you. The Baron's household loved its riddles.",
   entryBeat:"As the portcullis seats itself into the stone, every window in the keep goes dark at once — except one, high in the tower, which comes on.",
@@ -427,7 +455,7 @@ const ROOMS=[
         solvedText:"W-E-L-L. The courtyard well — its crank is locked with a 4-digit mechanism, and its rim is carved with symbols."
       }
     },
-    { id:'well', icon:'⛲', name:'The Courtyard Well', pos:{x:34,y:66,w:18,h:18},
+    { id:'well', onSolve:{el:'rx-gatehouse',op:.2,fx:'surge'}, icon:'⛲', name:'The Courtyard Well', pos:{x:34,y:66,w:18,h:18},
       desc:"The well crank is bound by a 4-digit lock. Four symbols are chiselled around the rim, each with a digit — in no particular order:\n\n☾ 7      ✠ 3      ⚘ 9      ♜ 5\n\nAnd on the crossbeam, one line of the household's motto:\n\n“WIND THE YEAR FROM SPRING.”",
       puzzle:{
         prompt:"Enter the 4-digit crank code.", placeholder:"0000", answers:['9357'],
@@ -474,6 +502,9 @@ const ROOMS=[
 /* ============ ROOM 2 — THE LIBRARY ============ */
 {
   id:'library', name:'Room 2 — The Library', scene:'library',
+  relays:[{el:'rl-library',mode:'pulse',period:4.0}],
+  wrongSound:'creak',
+  wrongVfx:'shadow',
   intro:"Ten thousand books, one cold hearth relit by nobody, and the Baron's organ waiting mid-hymn.",
   objective:"The Baron hid his laboratory behind music and mathematics. <b>Play the room.</b>",
   entryBeat:"The fire in the hearth is burning. It was not burning when the household died, and no one has been here since. Something keeps this room warm. Something likes it here.",
@@ -499,7 +530,7 @@ const ROOMS=[
         solvedText:"At 119.3 a chord swells that has waited forty years — and behind the pipes, a hidden panel cracks open. Inside hangs a narrow strip of vellum, stitched edge to edge with small angular marks. Lodge-work. The Baron's people wrote the things they feared in the masons' cipher."
       }
     },
-    { id:'chimes', icon:'📜', name:'The Vellum Strip', pos:{x:69,y:50,w:8,h:16}, hiddenUntil:'organ',
+    { id:'chimes', onSolve:{el:'rx-library',op:.2,fx:'surge'}, icon:'📜', name:'The Vellum Strip', pos:{x:69,y:50,w:8,h:16}, hiddenUntil:'organ',
       desc:"Ten symbols are stitched into the vellum in black thread — two words. Angular boxes, corners and wedges, some carrying a single dot:\n\n"+PIG("STAY INSIDE")+"\n\nThe Baron's household wrote its warnings in the masons' cipher, sure that no servant could read them. Divide the symbols among the crew and work them out.",
       puzzle:{
         prompt:"Decode the stitched symbols (two words).",
@@ -545,6 +576,9 @@ const ROOMS=[
 /* ============ ROOM 3 — THE LABORATORY ============ */
 {
   id:'laboratory', name:'Room 3 — The Laboratory', scene:'laboratory',
+  relays:[{el:'rl-laboratory',mode:'pulse',period:2.8}],
+  wrongSound:'clank',
+  wrongVfx:'sparks',
   intro:"The great work is gone from the slab. The straps were opened from the inside.",
   objective:"Wake the Baron's machinery. Whatever he made here, <b>you need what powered it.</b>",
   entryBeat:"On the slab, the leather straps lie neatly unbuckled — not torn. It took its time. It folded them.",
@@ -564,7 +598,7 @@ const ROOMS=[
         solvedText:"LIGHTNING. The chalk answer unlocks nothing mechanical — but it tells you how to read the room: everything here is a vessel for the storm. Starting with the rack of jars along the wall."
       }
     },
-    { id:'jars', icon:'⚡', name:'Leyden Jar Rack', pos:{x:6,y:24,w:38,h:16}, hiddenUntil:'slab',
+    { id:'jars', onSolve:{el:'rx-laboratory',op:.2,fx:'surge'}, icon:'⚡', name:'Leyden Jar Rack', pos:{x:6,y:24,w:38,h:16}, hiddenUntil:'slab',
       desc:"Eight Leyden jars on the rack, each chalked with a letter and a charge reading. Left to right:\n\nR — 5\nM — 2\nI — 3\nU — 4\nS — 7\nE — 1\nD — 6\nN — 9\n\nThe Baron's rule, burned into the shelf: “AN EVEN CHARGE HAS ALREADY EARTHED ITSELF AND IS DEAD. TRUST ONLY THE ODD.”",
       puzzle:{
         prompt:"Which jars can be trusted? Enter their letters in rack order.", placeholder:"LETTERS", answers:['RISEN'],
@@ -609,6 +643,10 @@ const ROOMS=[
 /* ============ ROOM 4 — THE TOWER ============ */
 {
   id:'tower', name:'Room 4 — The Tower', scene:'tower',
+  stageFx:'shudder',
+  relays:[{el:'rl-tower',mode:'pulse',period:2.6}],
+  wrongSound:'thunder',
+  wrongVfx:'flash',
   intro:"The storm the Baron waited his whole life for is here. Catch it, and the gate lifts.",
   objective:"Rig the conductor, charge the coil, and <b>ride the lightning</b> — the portcullis runs on the storm.",
   entryBeat:"The tower door was barred from this side — and the bar now leans against the battlement, set aside as gently as a sleeping child. It wanted you to reach the top. It's the gate it never learned to open.",
@@ -630,7 +668,7 @@ const ROOMS=[
         beatSound:'thunder'
       }
     },
-    { id:'fusebox', icon:'🕯️', name:'Chapel Fuse Box', pos:{x:13,y:50,w:9,h:20},
+    { id:'fusebox', onSolve:{el:'rx-tower',op:.2,fx:'surge'}, icon:'🕯️', name:'Chapel Fuse Box', pos:{x:13,y:50,w:9,h:20},
       desc:"The chapel mains feed the tower through a 4-digit fuse box. On its door, in the Baron's hand:\n\n“FATHER SANG IT TWICE\nWHEN THE STORM CAME CLOSE.”",
       puzzle:{
         prompt:"Enter the 4-digit code.", placeholder:"0000", answers:['2386'],
@@ -739,12 +777,12 @@ registerScenario({
     {hum:.045, drone:.05, wind:.015},
     {wind:.2, drone:.07}
   ],
-  fx:['mist','motes','motes','embers'],
+  fx:['mist','pollen','drips','embers'],
   events:[
-    [{s:'thunder',p:.4},{s:'wolf',p:.25}],
-    [{s:'creak',p:.4},{s:'bell',p:.12}],
-    [{s:'drip',p:.4},{s:'clank',p:.3}],
-    [{s:'thunder',p:.55},{s:'clank',p:.2}]
+    [{s:'thunder',p:.4,v:'flash'},{s:'wolf',p:.25,v:'shadow'}],
+    [{s:'creak',p:.4,v:'shadow'},{s:'bell',p:.12}],
+    [{s:'drip',p:.4},{s:'clank',p:.3,v:'shake'}],
+    [{s:'thunder',p:.55,v:'flash'},{s:'clank',p:.2,v:'shake'}]
   ],
   wrongBeats:WRONG_BEATS, wrongSounds:WRONG_SOUNDS,
   scenes:SCENES, rooms:ROOMS

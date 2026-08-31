@@ -138,7 +138,13 @@ SCENES.beach=()=>`
   <rect x="672" y="788" width="96" height="40" rx="14" fill="#d9cba6" transform="rotate(-8 720 808)"/>
   <path d="M680 802 q40 -8 78 2" stroke="#7a5c34" stroke-width="2" fill="none"/>
 </g>
-<g class="atmo"><!-- more life on the wing and the water -->
+<g class="atmo">
+<!-- something in here is still running -->
+<circle id="rl-beach" cx="230" cy="210" r="6" fill="#ffdf9c" opacity=".12"/>
+<circle cx="230" cy="210" r="20" fill="#ffdf9c" opacity=".05"/>
+<!-- and something here answers back when the room gives way -->
+<ellipse id="rx-beach" class="surge" cx="780" cy="430" rx="96" ry="70" fill="#ffb45e" opacity="0"/>
+<!-- more life on the wing and the water -->
 <g class="gullfly" style="animation-delay:6s"><path d="M300 150 q16 -13 32 0 q-16 -7 -32 0" fill="#e8e4d8" opacity=".55"/></g>
 <g class="gullfly" style="animation-delay:13s"><path d="M300 96 q11 -9 22 0 q-11 -5 -22 0" fill="#e8e4d8" opacity=".4"/></g>
 <g class="drift" style="animation-delay:2s"><ellipse cx="1180" cy="120" rx="150" ry="20" fill="#f0d9b8" opacity=".10"/></g>
@@ -291,7 +297,13 @@ ${[0,1,2,3,4,5].map(i=>`<line x1="0" y1="${90+i*95}" x2="1600" y2="${90+i*95}" s
   ${[0,1,2].map(r=>[0,1,2].map(c=>`<rect class="flick" x="${1152+c*38}" y="${744+r*26}" width="26" height="16" rx="3" fill="#0f1a14" stroke="#4fda7c" stroke-width="1.5"/>`).join('')).join('')}
   <circle class="flick glowdial" cx="1284" cy="752" r="9" fill="#8fe0a0"/>
 </g>
-<g class="atmo"><!-- a moth worrying the one working lamp -->
+<g class="atmo">
+<!-- something in here is still running -->
+<circle id="rl-radio" cx="580" cy="190" r="6" fill="#ffdf9c" opacity=".12"/>
+<circle cx="580" cy="190" r="20" fill="#ffdf9c" opacity=".05"/>
+<!-- and something here answers back when the room gives way -->
+<ellipse id="rx-radio" class="surge" cx="250" cy="670" rx="96" ry="70" fill="#ffb45e" opacity="0"/>
+<!-- a moth worrying the one working lamp -->
 <ellipse class="batfly" cx="1140" cy="96" rx="7" ry="4" fill="#d8c8a0" opacity=".5"/>
 <g class="batfly" style="animation-delay:7s"><ellipse cx="1140" cy="118" rx="5" ry="3" fill="#d8c8a0" opacity=".35"/></g>
 <!-- cobwebs stirring in the corners -->
@@ -460,7 +472,13 @@ SCENES.jungle=()=>`
   <path d="M0 0 h240 q-40 60 -140 80 L0 130 Z"/>
   <path d="M1600 0 h-260 q50 70 160 90 l100 50 Z"/>
 </g>
-<g class="atmo"><!-- canopy birds crossing, high and unbothered -->
+<g class="atmo">
+<!-- something in here is still running -->
+<circle id="rl-jungle" cx="230" cy="210" r="6" fill="#ffdf9c" opacity=".12"/>
+<circle cx="230" cy="210" r="20" fill="#ffdf9c" opacity=".05"/>
+<!-- and something here answers back when the room gives way -->
+<ellipse id="rx-jungle" class="surge" cx="1340" cy="430" rx="96" ry="70" fill="#ffb45e" opacity="0"/>
+<!-- canopy birds crossing, high and unbothered -->
 <g class="gullfly" style="animation-delay:4s"><path d="M300 78 q12 -10 24 0 q-12 -5 -24 0" fill="#0d2418" opacity=".55"/></g>
 <g class="gullfly" style="animation-delay:17s"><path d="M300 44 q9 -7 18 0 q-9 -4 -18 0" fill="#0d2418" opacity=".4"/></g>
 <!-- more leaves letting go -->
@@ -594,7 +612,13 @@ ${Array.from({length:30},(_,i)=>`<circle class="tw" cx="${(i*127+40)%1560}" cy="
   <path d="M820 470 l64 0 12 60 -88 0 z" fill="#241a10"/>
   ${[0,1,2].map(i=>`<g transform="rotate(${(i-1)*10} ${838+i*14} 470)"><rect x="${832+i*14}" y="418" width="12" height="54" rx="4" fill="#a83a28"/><rect x="${832+i*14}" y="412" width="12" height="10" rx="3" fill="#e0cfa2"/></g>`).join('')}
 </g>
-<g class="atmo"><!-- the sky does most of the work here -->
+<g class="atmo">
+<!-- something in here is still running -->
+<circle id="rl-cove" cx="230" cy="210" r="6" fill="#ffdf9c" opacity=".12"/>
+<circle cx="230" cy="210" r="20" fill="#ffdf9c" opacity=".05"/>
+<!-- and something here answers back when the room gives way -->
+<ellipse id="rx-cove" class="surge" cx="380" cy="430" rx="96" ry="70" fill="#ffb45e" opacity="0"/>
+<!-- the sky does most of the work here -->
 <g class="shoot" style="animation-delay:9s"><path d="M1080 120 l-100 62" stroke="#ffeccf" stroke-width="2.4" opacity=".85"/></g>
 <g class="shoot" style="animation-delay:26s"><path d="M420 70 l-78 48" stroke="#ffeccf" stroke-width="2" opacity=".7"/></g>
 <g class="drift" style="animation-delay:4s"><ellipse cx="500" cy="150" rx="230" ry="22" fill="#22384e" opacity=".3"/></g>
@@ -617,6 +641,9 @@ const ROOMS = [
 /* ================= ROOM 1 — THE BEACH ================= */
 {
   id:'beach', name:'Room 1 — The Beach', scene:'beach', fx:'mist',
+  stageFx:'swell',
+  relays:[{el:'rl-beach',mode:'pulse',period:3.4}],
+  wrongSound:'wave',
   intro:"Dawn. A graveyard of cargo and canvas. Find a way off this beach.",
   objective:"Explore the wreckage — <b>glowing rings</b> mark what you can examine. Nothing here explains itself: the clues live in different pieces of wreckage.",
   entryBeat:"As you take your first steps up the beach, the treeline goes quiet all at once — the way a room goes quiet when something walks in.",
@@ -643,7 +670,7 @@ const ROOMS = [
       desc:"A great sheet of salt-stiff canvas, snagged on the rocks. It's crusted and folded on itself — you can't make anything of it yet. Maybe something else on the beach will tell you why it matters.",
       revealDesc:"You haul the canvas flat. Tar-painted loading marks pair each shape with a single letter — winds, by the look of them — but the pairs are scattered in no useful order:",
       revealSymbols:"● W &nbsp;&nbsp;▲ N &nbsp;&nbsp;◆ S &nbsp;&nbsp;■ E" },
-    { id:'crate', icon:'📦', name:'Cargo Crate', pos:{x:46,y:72,w:11,h:14},
+    { id:'crate', onSolve:{el:'rx-beach',op:.2,fx:'surge'}, icon:'📦', name:'Cargo Crate', pos:{x:46,y:72,w:11,h:14},
       desc:"A heavy cargo crate sits banded in iron, sealed with a 4-digit dial lock. Its lid is stencilled MANIFEST — ONE OF SEVEN, and around it in the sand five sister crates lie burst open on the rocks.\n\nOn its side, four shapes, each with a number — printed in no particular order:\n\n■ 5      ◆ 1      ▲ 8      ● 3\n\nNumbers, but no sequence. Something on this beach pairs these shapes with something else — and something else again gives the order.",
       puzzle:{
         prompt:"Enter the 4-digit combination.", placeholder:"0000", answers:['8513'],
@@ -688,6 +715,9 @@ const ROOMS = [
 /* ================= ROOM 2 — THE RADIO STATION ================= */
 {
   id:'radio', name:'Room 2 — The Radio Station', scene:'radio', fx:'motes',
+  relays:[{el:'rl-radio',mode:'pulse',period:2.6}],
+  wrongSound:'static',
+  wrongVfx:'sparks',
   intro:"Dust hangs in the green glow of instruments that should not still have power.",
   objective:"The operator left everything you need — scattered. Read the whole room before you touch the dial. Then <b>listen</b>.",
   entryBeat:"The door swings shut behind you on its own. Rusted hinges don't do that quietly. This one did.",
@@ -717,7 +747,7 @@ const ROOMS = [
         solvedText:"At 121.5 the static parts like a curtain. A recorded voice, looped for years, keys the same message over and over. The SPEAKER is carrying a signal now — go listen to it, and split the work: it's a long one."
       }
     },
-    { id:'broadcast', icon:'📡', name:'The Broadcast', pos:{x:28,y:44,w:10,h:15}, hiddenUntil:'radio',
+    { id:'broadcast', onSolve:{el:'rx-radio',op:.2,fx:'surge'}, icon:'📡', name:'The Broadcast', pos:{x:28,y:44,w:10,h:15}, hiddenUntil:'radio',
       desc:"The loop repeats every few seconds. Two words — ten letters, keyed slow and deliberate:\n\n·−··  −−−  −−−  −·−\n\n··−  −·  −··  ·  ·−·\n\nThe operator wanted this understood by whoever came after. Divide the letters among the crew and call them out.",
       puzzle:{
         prompt:"Decode the broadcast (two words).",
@@ -764,6 +794,9 @@ const ROOMS = [
 /* ================= ROOM 3 — THE JUNGLE PATH ================= */
 {
   id:'jungle', name:'Room 3 — The Jungle Path', scene:'jungle', fx:'fireflies',
+  relays:[{el:'rl-jungle',mode:'pulse',period:4.2}],
+  wrongSound:'growl',
+  wrongVfx:'shadow',
   relay:{el:'gorge-lamp',seq:'.-.. . .- ...- .',after:'stones'},
   intro:"The canopy closes overhead. Something large keeps pace with you, always just out of sight.",
   objective:"Follow the antenna cable through the interior. Keep moving. <b>Keep quiet.</b>",
@@ -786,7 +819,7 @@ const ROOMS = [
         solvedText:"A river. You push through the ferns toward the sound and find it: fast, dark water — crossed by a line of flat marker stones. Eight of them. That seems like too many."
       }
     },
-    { id:'stones', icon:'🪨', name:'River Crossing Stones', pos:{x:22,y:71,w:52,h:12}, hiddenUntil:'tree',
+    { id:'stones', onSolve:{el:'rx-jungle',op:.2,fx:'surge'}, icon:'🪨', name:'River Crossing Stones', pos:{x:22,y:71,w:52,h:12}, hiddenUntil:'tree',
       desc:"Eight flat stones cross the black water. Each is chiseled with a letter and a shape, and each wears patches of moss. Reading left to right from your bank:\n\nB — square (4 sides), 5 moss patches\nD — pentagon (5 sides), 2 moss patches\nE — triangle (3 sides), 3 moss patches\nR — hexagon (6 sides), 1 moss patch\nO — square (4 sides), 2 moss patches\nA — triangle (3 sides), 4 moss patches\nW — pentagon (5 sides), 3 moss patches\nN — hexagon (6 sides), 4 moss patches\n\nA mossy carving on the bank warns:\n\n“Only a stone whose sides outnumber its moss will bear your weight. Name the stones that hold, in order, and the river lets you pass.”",
       puzzle:{
         prompt:"Which stones hold? Enter their letters in crossing order.", placeholder:"LETTERS", answers:['DROWN'],
@@ -833,6 +866,9 @@ const ROOMS = [
 /* ================= ROOM 4 — THE ESCAPE RAFT ================= */
 {
   id:'raft', name:'Room 4 — The Escape Raft', scene:'cove', fx:'mist',
+  stageFx:'swell',
+  relays:[{el:'rl-cove',mode:'pulse',period:3.0}],
+  wrongSound:'wave',
   intro:"Dusk. One chance to build, signal, and launch.",
   objective:"The operator staged an escape and never used it. <b>Finish it.</b> The ship's lights are already on the horizon.",
   entryBeat:"Fresh prints circle the raft materials — the same long, dragging prints from the beach where you started. It has been here. It has been waiting to see if you'd make it this far.",
@@ -856,7 +892,7 @@ const ROOMS = [
         beatSound:'knock'
       }
     },
-    { id:'locker', icon:'🧨', name:'Flare Locker', pos:{x:66,y:73,w:12,h:14},
+    { id:'locker', onSolve:{el:'rx-cove',op:.2,fx:'surge'}, icon:'🧨', name:'Flare Locker', pos:{x:66,y:73,w:12,h:14},
       desc:"A steel flare locker, painted with fading emergency stripes, sealed with a 4-digit lock. The plaque riveted to the lid reads:\n\n“PROPERTY OF STATION 7.\nAN OPERATOR NEVER FORGETS THE EMERGENCY BAND —\nAND THE MILITARY LISTENS AT TWICE IT.”",
       puzzle:{
         prompt:"Enter the 4-digit code.", placeholder:"0000", answers:['2430'],
@@ -968,11 +1004,11 @@ registerScenario({
     {wind:.05, drone:.05, rustle:.15},
     {surf:.16, wind:.10, drone:.065, rustle:.05}
   ],
-  fx:['mist','motes','fireflies','mist'],
+  fx:['mist','drips','fireflies','mist'],
   events:[
     [{s:'gull',p:.45}],
-    [{s:'crackle',p:.6}],
-    [{s:'crickets',p:.55},{s:'creak',p:.2}],
+    [{s:'crackle',p:.6,v:'sparks'}],
+    [{s:'crickets',p:.55},{s:'creak',p:.2,v:'shadow'}],
     [{s:'wave',p:.5}]
   ],
   wrongBeats:WRONG_BEATS, wrongSounds:WRONG_SOUNDS,

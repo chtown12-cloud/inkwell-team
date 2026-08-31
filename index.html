@@ -286,8 +286,24 @@ pre.share{text-align:left;background:#0a1416;border:1px solid #2c4144;border-rad
 /* ---------- dynamic-visuals pass ---------- */
 #scene{transition:filter .14s}
 #scene.lightsdip{filter:brightness(.45)}
-#stage.rocking #scene,#stage.rocking #hotspots,#stage.rocking #fx{animation:trainrock 3.8s ease-in-out infinite}
+/* ---------- how a place carries itself ----------
+   Each scenario moves in its own way. Every one of these is deliberately
+   tiny: the hotspots ride along with the scene, so anything bigger would
+   make them harder to hit and turn a long game queasy. */
+#stage.motion-rocking #scene,#stage.motion-rocking #hotspots,#stage.motion-rocking #fx{animation:trainrock 3.8s ease-in-out infinite}
 @keyframes trainrock{0%,100%{transform:rotate(-.28deg) translateY(-2px)}50%{transform:rotate(.3deg) translateY(2px)}}
+/* a raft on a long ocean swell: slow, and mostly vertical */
+#stage.motion-swell #scene,#stage.motion-swell #hotspots,#stage.motion-swell #fx{animation:seaswell 9s ease-in-out infinite}
+@keyframes seaswell{0%,100%{transform:rotate(-.16deg) translateY(-4px)}50%{transform:rotate(.18deg) translateY(4px)}}
+/* old stone taking a storm: still for a long while, then a shove */
+#stage.motion-shudder #scene,#stage.motion-shudder #hotspots,#stage.motion-shudder #fx{animation:stoneshudder 13s ease-in-out infinite}
+@keyframes stoneshudder{0%,86%{transform:translate(0,0)}88%{transform:translate(-2px,1px)}90%{transform:translate(2px,-1px)}92%{transform:translate(-1px,0)}94%,100%{transform:translate(0,0)}}
+/* a station in a katabatic wind: buffeted, never rhythmic */
+#stage.motion-gust #scene,#stage.motion-gust #hotspots,#stage.motion-gust #fx{animation:windgust 7.5s ease-in-out infinite}
+@keyframes windgust{0%,100%{transform:translateX(0)}20%{transform:translateX(-2px)}34%{transform:translateX(1px)}52%{transform:translateX(-3px)}68%{transform:translateX(1px)}84%{transform:translateX(-1px)}}
+/* a derelict with nothing to hold its attitude: a slow, endless yaw */
+#stage.motion-drift #scene,#stage.motion-drift #hotspots,#stage.motion-drift #fx{animation:hullyaw 22s ease-in-out infinite}
+@keyframes hullyaw{0%,100%{transform:rotate(-.22deg) translateX(-3px)}50%{transform:rotate(.22deg) translateX(3px)}}
 .gullfly{animation:gullpath 26s linear infinite}
 @keyframes gullpath{0%{transform:translate(-120px,270px)}45%{transform:translate(820px,130px)}100%{transform:translate(1760px,250px)}}
 .crabby{animation:crabwalk 12s ease-in-out infinite alternate}
@@ -357,6 +373,26 @@ pre.share{text-align:left;background:#0a1416;border:1px solid #2c4144;border-rad
 .ptoken.shown{opacity:1}
 .ptoken .pe{font-size:1.15rem;line-height:1}
 .ptoken.idle{opacity:.5;filter:saturate(.5)}
+/* Something crossing between you and the room. Sits above the scene and the
+   particles but below the hotspots, and never takes a click. */
+#passing{position:absolute;inset:0;pointer-events:none;z-index:5;opacity:0}
+#passing.go{animation:passby 2.6s ease-in-out}
+#passing::before{content:"";position:absolute;top:-6%;left:0;width:16%;height:112%;
+  background:linear-gradient(90deg,rgba(0,0,0,0),rgba(0,0,0,.62),rgba(0,0,0,0));
+  filter:blur(9px)}
+@keyframes passby{0%{opacity:0;transform:translateX(-22%)}18%{opacity:1}82%{opacity:1}100%{opacity:0;transform:translateX(118%)}}
+/* A single knock, distinct from the wrong-answer shake. Offsets rather than
+   transforms, because #stage's transform is holding the scale that fits the
+   1600x900 board to the window — animating it would snap the board to full
+   size mid-jolt. */
+#stage.jolt{animation:joltx .5s ease-out}
+@keyframes joltx{0%,100%{margin-left:0;margin-top:0}25%{margin-left:-5px;margin-top:3px}55%{margin-left:4px;margin-top:-2px}80%{margin-left:-2px;margin-top:1px}}
+/* Elements a room can brighten when something goes its way. Heavily blurred so
+   they read as light falling on the room rather than a shape stuck onto it —
+   a flat-edged ellipse at any opacity just looks like a sticker. */
+#scene .surge{filter:blur(40px);transition:opacity .9s ease}
+#scene .surge.lit{opacity:.5 !important}
+
 /* ---------- atmosphere layer ----------
    Purely decorative scenery. Never interactive, never over a hotspot, and
    calmed right down for anyone who asks for less motion. */
@@ -379,6 +415,7 @@ pre.share{text-align:left;background:#0a1416;border:1px solid #2c4144;border-rad
 .sway{animation:sway 5.6s ease-in-out infinite alternate}
 .swing{animation:swing 6.5s ease-in-out infinite alternate}
 .flamewob{animation:flamewob .35s ease-in-out infinite alternate}
+@keyframes relaybreathe{0%,100%{opacity:.12}50%{opacity:.85}}
 @keyframes rushpast{from{transform:translateX(1750px)}to{transform:translateX(-500px)}}
 @keyframes riseslow{0%{transform:translateY(50px);opacity:0}25%{opacity:.55}100%{transform:translateY(-70px);opacity:0}}
 @keyframes emberfly{0%{transform:translate(0,0) scale(1);opacity:0}15%{opacity:.9}100%{transform:translate(-140px,-340px) scale(.4);opacity:0}}
@@ -389,6 +426,9 @@ pre.share{text-align:left;background:#0a1416;border:1px solid #2c4144;border-rad
 @media (prefers-reduced-motion: reduce){
   .ptoken{transition:opacity .2s ease}
   .atmo *{animation:none !important}
+  /* the whole stage holds still too — this is the motion most likely to
+     actually make somebody feel unwell over a 45-minute game */
+  [class*="motion-"] #scene,[class*="motion-"] #hotspots,[class*="motion-"] #fx{animation:none !important}
 }
 #crew-bar{position:fixed;left:12px;bottom:12px;z-index:40;display:flex;gap:6px;flex-wrap:wrap;max-width:44vw}
 #crew-bar .chip{background:rgba(4,12,14,.8);border:1px solid #3a565c;border-radius:20px;
@@ -542,6 +582,7 @@ body.phone #modal{max-height:86vh}
   <div id="stage">
     <div id="scene"></div>
     <canvas id="fx" width="1600" height="900"></canvas>
+    <div id="passing"></div>
     <div id="hotspots"></div>
     <div id="players"></div>
   </div>
@@ -847,22 +888,60 @@ const AMBIENT_SFX={
   geiger(){ if(!AC)return; const t=AC.currentTime,n=3+Math.floor(Math.random()*5);
     for(let i=0;i<n;i++) noiseBurst(0.012,4000,0.05,'highpass',t+Math.random()*1.4); }
 };
-const BEAT_SFX={ knock:()=>sfxKnock(), growl:()=>sfxGrowl(), clank:()=>AMBIENT_SFX.clank(),
-  hiss:()=>AMBIENT_SFX.hiss(), thunder:()=>AMBIENT_SFX.thunder(), bell:()=>AMBIENT_SFX.bell(),
-  whistle:()=>AMBIENT_SFX.whistlefar() };
+/* Anything a room can hear, a beat can use. This used to be a hand-picked
+   handful, so naming any other sound in a scenario silently played nothing —
+   an easy mistake to make and an impossible one to notice. */
+const BEAT_SFX=Object.assign(
+  { knock:()=>sfxKnock(), growl:()=>sfxGrowl(), static:()=>sfxStatic(0.5,0.12),
+    whistle:()=>AMBIENT_SFX.whistlefar() },
+  Object.fromEntries(Object.keys(AMBIENT_SFX).map(k=>[k,()=>AMBIENT_SFX[k]()])));
 
 let roomEventTimer=null;
+/* ---------- things the room does to itself ----------
+   Until now a room event could only ever be a sound, so a wolf could howl
+   while the picture sat perfectly still. Each of these is something the
+   screen can do, cheap enough to fire every few seconds, and every one is
+   skipped on phones — they show a list of clues, not the scene. */
+const ROOM_VFX = {
+  flash(){ const L=$('lightning'); L.classList.remove('flash'); void L.offsetWidth; L.classList.add('flash'); },
+  dim(){ $('scene').classList.add('lightsdip'); setTimeout(()=>$('scene').classList.remove('lightsdip'),200+Math.random()*180); },
+  shake(){ const st=$('stage'); st.classList.remove('jolt'); void st.offsetWidth; st.classList.add('jolt'); },
+  shadow(){
+    const sh=$('passing'); if(!sh) return;
+    sh.classList.remove('go'); void sh.offsetWidth; sh.classList.add('go');
+  },
+  sparks(){ spawnBurst(200+Math.random()*1200, 120+Math.random()*260,
+                       (ACTIVE.flare&&ACTIVE.flare.hue)||[255,200,120], 10, 2.6); },
+  surge(){   // whatever this room's reactive elements are, push them brighter
+    document.querySelectorAll('#scene .surge').forEach(el=>{
+      el.classList.remove('lit'); void el.getBBox; el.classList.add('lit');
+      setTimeout(()=>el.classList.remove('lit'), 900);
+    });
+  },
+};
+/* Lightning every ten seconds for forty-five minutes is a genuine hazard for
+   some people, not just a taste question, so the strongly flashing effects sit
+   out entirely for anyone who has asked for less motion. */
+const CALM = (()=>{ try{ return matchMedia('(prefers-reduced-motion: reduce)').matches; }catch(e){ return false; } })();
+const HARSH = {flash:1, shake:1};
+function playRoomVfx(name){
+  if(S.isPhone) return;
+  if(CALM && HARSH[name]) return;
+  (ROOM_VFX[name]||(()=>{}))();
+}
+
 function startRoomEvents(idx){
   clearInterval(roomEventTimer);
   const spec=(ACTIVE.events||[])[idx]||[];
   roomEventTimer=setInterval(()=>{
     if(S.finished) return;
-    if(Math.random()<0.11){ // the lights aren't entirely reliable in any of these places
-      $('scene').classList.add('lightsdip');
-      setTimeout(()=>$('scene').classList.remove('lightsdip'),200+Math.random()*180);
-    }
-    if(!AC||muted) return;
-    spec.forEach(ev=>{ if(Math.random()<ev.p) (AMBIENT_SFX[ev.s]||(()=>{}))(); });
+    // the lights aren't entirely reliable in any of these places
+    if(!S.isPhone && Math.random()<0.11) ROOM_VFX.dim();
+    spec.forEach(ev=>{
+      if(Math.random()>=ev.p) return;
+      if(AC && !muted) (AMBIENT_SFX[ev.s]||(()=>{}))();
+      if(ev.v) playRoomVfx(ev.v);      // ...and let it be seen, not just heard
+    });
   },5200);
 }
 
@@ -873,7 +952,8 @@ const fxCanvas=$('fx'), fxc=fxCanvas.getContext('2d');
 let particles=[], fxMode=null;
 function setFxMode(mode){
   fxMode=mode; particles=[];
-  const N={mist:26, motes:60, fireflies:22, snow:110, embers:26, none:0}[mode]||0;
+  const N={mist:26, motes:60, fireflies:22, snow:84, embers:26,
+           ash:44, pollen:34, soot:38, spores:30, drips:26, none:0}[mode]||0;
   for(let i=0;i<N;i++) particles.push(newParticle(mode));
 }
 function newParticle(mode){
@@ -883,6 +963,13 @@ function newParticle(mode){
   if(mode==='fireflies') return {m:'fireflies',x:r()*1600,y:250+r()*550,vx:(r()-.5)*.5,vy:(r()-.5)*.35,r1:2+r()*1.6,ph:r()*6.28,a:.5};
   if(mode==='snow')      return {m:'snow',x:r()*1600,y:r()*900,vx:-.6-r()*1.2,vy:.8+r()*1.6,r1:1+r()*2.2,a:.25+r()*.5};
   if(mode==='embers')    return {m:'embers',x:r()*1600,y:600+r()*300,vx:(r()-.5)*.3,vy:-.3-r()*.6,r1:1+r()*1.8,ph:r()*6.28,a:.5};
+  // Half the rooms used to share one generic "motes". These are the same cheap
+  // shapes, tuned so each place has its own air.
+  if(mode==='ash')       return {m:'fall',x:r()*1600,y:r()*900,vx:(r()-.5)*.5,vy:.25+r()*.5,r1:1+r()*2.2,ph:r()*6.28,a:.18+r()*.28,c:'214,208,198'};
+  if(mode==='pollen')    return {m:'fall',x:r()*1600,y:r()*900,vx:(r()-.5)*.35,vy:.05+r()*.16,r1:1.2+r()*1.8,ph:r()*6.28,a:.22+r()*.3,c:'246,226,158'};
+  if(mode==='soot')      return {m:'rise',x:r()*1600,y:r()*900,vx:(r()-.5)*.4,vy:-.12-r()*.34,r1:.9+r()*1.7,ph:r()*6.28,a:.2+r()*.3,c:'70,64,58'};
+  if(mode==='spores')    return {m:'fall',x:r()*1600,y:r()*900,vx:(r()-.5)*.3,vy:.04+r()*.14,r1:1.4+r()*1.9,ph:r()*6.28,a:.2+r()*.32,c:'176,236,150'};
+  if(mode==='drips')     return {m:'fall',x:r()*1600,y:r()*900,vx:(r()-.5)*.1,vy:.7+r()*1.5,r1:.9+r()*1.2,ph:r()*6.28,a:.16+r()*.26,c:'186,222,238'};
   return {m:'none',x:0,y:0};
 }
 function spawnBurst(x,y,hue,n=18,speed=4){
@@ -897,6 +984,10 @@ function spawnFlare(big){
   sfxWhoosh();
 }
 function fxLoop(){
+  // A phone never shows the stage, so painting it is pure battery. Keep the
+  // loop alive (a phone can be promoted to the shared screen mid-game) but
+  // do no work while it is one.
+  if(typeof S!=='undefined' && S.isPhone){ requestAnimationFrame(fxLoop); return; }
   fxc.clearRect(0,0,1600,900);
   const t=performance.now()/1000;
   for(let i=particles.length-1;i>=0;i--){
@@ -931,6 +1022,13 @@ function fxLoop(){
       if(p.y<80){p.y=880; p.x=Math.random()*1600;}
       const glow=0.4+0.6*Math.abs(Math.sin(t*3+p.ph));
       fxc.fillStyle=`rgba(255,${140+Math.floor(60*glow)},70,${p.a*glow})`;
+      fxc.beginPath(); fxc.arc(p.x,p.y,p.r1,0,7); fxc.fill();
+    } else if(p.m==='fall'||p.m==='rise'){
+      p.x+=p.vx+Math.sin(t*.8+p.ph)*.22; p.y+=p.vy;
+      if(p.m==='fall'&&p.y>904){ p.y=-6; p.x=Math.random()*1600; }
+      if(p.m==='rise'&&p.y<-6){ p.y=904; p.x=Math.random()*1600; }
+      if(p.x<-20)p.x=1620; if(p.x>1620)p.x=-20;
+      fxc.fillStyle=`rgba(${p.c},${p.a*(0.65+0.35*Math.sin(t*1.6+p.ph))})`;
       fxc.beginPath(); fxc.arc(p.x,p.y,p.r1,0,7); fxc.fill();
     } else if(p.m==='spark'){
       p.life++; p.x+=p.vx; p.y+=p.vy; p.vy+=0.11; p.vx*=0.985;
@@ -1133,17 +1231,78 @@ function nextBeat(){
 
 /* ---------- relay lamp (a scene element blinking morse) ---------- */
 let lampTimer=null;
-function startRelay(cfg){
-  stopRelay();
-  let i=0,on=false;
-  lampTimer=setInterval(()=>{
+/**
+ * Things in the room that keep working whether anyone is watching or not.
+ *
+ * Two grammars, and the difference matters. A `code` relay blinks crisply on
+ * and off and is carrying something worth reading. A `pulse` relay breathes
+ * smoothly — a pilot light, a pressure needle, a bulb on its last legs — and
+ * never means anything. Keeping them visually distinct is deliberate: a room
+ * full of blinking that might or might not be a message is atmosphere bought
+ * at the price of wasting a team's time.
+ */
+let relayTimers=[];
+function startRelays(list){
+  stopRelays();
+  (list||[]).forEach(cfg=>{
     const el=document.getElementById(cfg.el); if(!el) return;
-    if(on){ el.setAttribute('opacity','0.1'); on=false; return; }
-    const ch=cfg.seq[i%cfg.seq.length]; i++;
-    if(ch==='.'||ch==='-'){ el.setAttribute('opacity','1'); on=true; }
-  },260);
+    if(cfg.mode==='pulse'){
+      // smooth, obviously not a signal; CSS does the work
+      el.style.animation=`relaybreathe ${cfg.period||3.2}s ease-in-out infinite`;
+      el.style.animationDelay=(cfg.delay||0)+'s';
+      relayTimers.push({el, css:true});
+      return;
+    }
+    let i=0,on=false;
+    const t=setInterval(()=>{
+      const e=document.getElementById(cfg.el); if(!e) return;
+      if(on){ e.setAttribute('opacity','0.1'); on=false; return; }
+      const ch=cfg.seq[i%cfg.seq.length]; i++;
+      if(ch==='.'||ch==='-'){ e.setAttribute('opacity','1'); on=true; }
+    },cfg.step||260);
+    relayTimers.push({timer:t});
+  });
 }
-function stopRelay(){ clearInterval(lampTimer); lampTimer=null; }
+function stopRelays(){
+  relayTimers.forEach(r=>{
+    if(r.timer) clearInterval(r.timer);
+    if(r.css && r.el) r.el.style.animation='';
+  });
+  relayTimers=[];
+}
+/** Everything in this room that should be running, given what has been solved. */
+function relaysFor(room){
+  const all=[];
+  if(room.relay) all.push(room.relay);            // the original single-lamp form
+  (room.relays||[]).forEach(r=>all.push(r));
+  return all.filter(r=>!r.after || S.solved.has(r.after));
+}
+function refreshRelays(){ startRelays(relaysFor(currentRoom())); }
+
+/* ---------- the room answering back ----------
+   An object may carry onSolve:{el,op,fill,fx,say}. The `el`/`op`/`fill` part
+   is a lasting change to the scene — the hearth flares up, the aurora
+   brightens, a door light goes green — and has to be reapplied every time the
+   scene is rebuilt, because renderScene throws the SVG away and starts again.
+   `fx` is a one-off flourish and is only played at the moment of solving. */
+function paintReaction(o){
+  const r=o&&o.onSolve; if(!r||!r.el) return;
+  const el=document.getElementById(r.el); if(!el) return;
+  if(r.op!==undefined) el.setAttribute('opacity',String(r.op));
+  if(r.fill) el.setAttribute('fill',r.fill);
+  if(r.cls) el.classList.add(r.cls);
+}
+/** Replay every lasting change this room has earned so far. */
+function applyRoomReactions(){
+  currentRoom().objects.forEach(o=>{ if(S.solved.has(o.id)) paintReaction(o); });
+}
+/** The moment of solving: the lasting change, plus whatever flourish goes with it. */
+function reactTo(o){
+  if(!o) return;
+  paintReaction(o);
+  const r=o.onSolve;
+  if(r&&r.fx&&!S.isPhone) (ROOM_VFX[r.fx]||(()=>{}))();
+}
 
 /* ---------- room rendering ---------- */
 function currentRoom(){ return ACTIVE.rooms[S.roomIndex]; }
@@ -1155,14 +1314,18 @@ function objDesc(o){
 function renderScene(){
   const room=currentRoom();
   $('scene').innerHTML = ACTIVE.scenes[room.scene]();
-  $('stage').classList.toggle('rocking', !!room.stageFx);
+  // 'rocking' was the only motion there was; anything truthy still means it
+  $('stage').className=$('stage').className.replace(/\bmotion-\S+/g,'').trim();
+  const motion = room.stageFx===true ? 'rocking' : room.stageFx;
+  if(motion) $('stage').classList.add('motion-'+motion);
   setFxMode(ACTIVE.fx[S.roomIndex]);
   setAmbience(ACTIVE.ambience[S.roomIndex]);
   startRoomEvents(S.roomIndex);
   $('hud-room').textContent=room.name;
   $('objective').innerHTML=room.objective;
   renderHotspots();
-  if(room.relay && S.solved.has(room.relay.after)) startRelay(room.relay); else stopRelay();
+  applyRoomReactions();
+  refreshRelays();
 }
 function renderHotspots(){
   const layer=$('hotspots'); layer.innerHTML='';
@@ -1337,7 +1500,10 @@ function wrongAnswer(){
   const rf=$('redflash'); rf.classList.add('on'); setTimeout(()=>rf.classList.remove('on'),160);
   if(S.wrongCount%3===0){
     const k=(S.wrongCount/3-1)%ACTIVE.wrongBeats.length;
-    showBeat(ACTIVE.wrongBeats[k], ACTIVE.wrongSounds[k]);
+    // a wrong answer in the tower should sound like the tower, not like the
+    // dining car; the room gets the last word if it has an opinion
+    showBeat(ACTIVE.wrongBeats[k], currentRoom().wrongSound || ACTIVE.wrongSounds[k]);
+    if(currentRoom().wrongVfx) playRoomVfx(currentRoom().wrongVfx);
   }
   tick();
 }
@@ -1353,7 +1519,8 @@ function solvePuzzle(o){
   if(allDone && S.roomIndex===ACTIVE.rooms.length-1) return victory();
   openModal(o.id);
   renderHotspots();
-  if(room.relay && o.id===room.relay.after) startRelay(room.relay);
+  reactTo(o);
+  refreshRelays();
 }
 
 /* ---------- tuning dial (config via puzzle.dial) ---------- */
@@ -1870,7 +2037,7 @@ function applyRemote(room){
         sfxChime();
         if(o.pos) spawnBurst((o.pos.x+o.pos.w/2)/100*1600,(o.pos.y+o.pos.h/2)/100*900,
                              (ACTIVE.flare&&ACTIVE.flare.hue)||[255,200,120],18,4);
-        if(currentRoom().relay && id===currentRoom().relay.after) startRelay(currentRoom().relay);
+        reactTo(o); refreshRelays();
       }
     });
   } finally { MP.suppress = false; }

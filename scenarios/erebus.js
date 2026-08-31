@@ -77,7 +77,13 @@ ${[['CH 7',150,700],['CH 1',330,676],['CH 18',510,700],['CH 1',690,678],['CH 7',
 <!-- something's track, circling -->
 <path d="M60 880 q300 -50 700 -18 q400 30 780 -18" stroke="#5c7488" stroke-width="22" fill="none" opacity=".4"/>
 <path d="M120 858 q60 -8 120 0 M840 852 q60 -8 120 0" stroke="#46607a" stroke-width="8" opacity=".5"/>
-<g class="atmo"><!-- a second, slower aurora band deeper in the sky -->
+<g class="atmo">
+<!-- something in here is still running -->
+<circle id="rl-perimeter" cx="230" cy="210" r="6" fill="#ff9b6a" opacity=".12"/>
+<circle cx="230" cy="210" r="20" fill="#ff9b6a" opacity=".05"/>
+<!-- and something here answers back when the room gives way -->
+<ellipse id="rx-perimeter" class="surge" cx="160" cy="430" rx="96" ry="70" fill="#7fe0ff" opacity="0"/>
+<!-- a second, slower aurora band deeper in the sky -->
 <g class="aurora" style="animation-delay:7s;animation-duration:26s" opacity=".5">
   <path d="M-60 180 q380 -90 760 -14 q380 76 960 -30 l0 96 q-580 104 -960 28 q-380 -76 -760 12z" fill="#5fd8b0" opacity=".13"/>
   <path d="M-60 236 q420 -70 820 6 q400 76 900 -20 l0 62 q-500 96 -900 20 q-400 -76 -820 -4z" fill="#7f8fe8" opacity=".09"/>
@@ -162,7 +168,13 @@ ${[0,1].map(i=>`<g transform="translate(${420+i*250},0)">
 ${[0,1,2,3,4].map(i=>`<g><circle cx="${640+i*56}" cy="180" r="4" fill="#3a2d1a"/>
  <path d="M${640+i*56} 184 q-20 14 -18 70 l36 0 q2 -56 -18 -70z" fill="${i%2?'#b03a2a':'#46607a'}"/></g>`).join('')}
 </g>
-<g class="atmo"><!-- frost taking the window back -->
+<g class="atmo">
+<!-- something in here is still running -->
+<circle id="rl-quarters" cx="230" cy="210" r="6" fill="#ff9b6a" opacity=".12"/>
+<circle cx="230" cy="210" r="20" fill="#ff9b6a" opacity=".05"/>
+<!-- and something here answers back when the room gives way -->
+<ellipse id="rx-quarters" class="surge" cx="920" cy="430" rx="96" ry="70" fill="#7fe0ff" opacity="0"/>
+<!-- frost taking the window back -->
 <g opacity=".3"><path d="M60 60 q40 26 30 70 M120 50 q-20 40 8 76 M180 66 q34 30 18 66" stroke="#cfe8ff" stroke-width="2.4" fill="none"/></g>
 <!-- breath, because it is far too cold in here -->
 <ellipse class="steam" cx="820" cy="200" rx="34" ry="10" fill="#dff2ff" opacity=".10"/>
@@ -237,7 +249,13 @@ ${[['B',180,330,9,4],['T',290,330,2,6],['U',400,330,7,2],['R',510,330,6,1],['O',
 </g>
 <circle class="slowblink" cx="60" cy="60" r="8" fill="#c94a3d"/>
 <text x="84" y="66" font-family="Special Elite" font-size="15" fill="#7f5a5a">COLD ROOM: −40°</text>
-<g class="atmo"><!-- ice crystals turning over in air kept at minus forty -->
+<g class="atmo">
+<!-- something in here is still running -->
+<circle id="rl-corelab" cx="1220" cy="210" r="6" fill="#ff9b6a" opacity=".12"/>
+<circle cx="1220" cy="210" r="20" fill="#ff9b6a" opacity=".05"/>
+<!-- and something here answers back when the room gives way -->
+<ellipse id="rx-corelab" class="surge" cx="1140" cy="610" rx="96" ry="70" fill="#7fe0ff" opacity="0"/>
+<!-- ice crystals turning over in air kept at minus forty -->
 <circle class="sparkle" cx="120" cy="40" r="2.4" fill="#dff2ff" style="animation-delay:0.0s"/><circle class="sparkle" cx="257" cy="93" r="2.4" fill="#dff2ff" style="animation-delay:0.7s"/><circle class="sparkle" cx="394" cy="146" r="2.4" fill="#dff2ff" style="animation-delay:1.4s"/><circle class="sparkle" cx="531" cy="199" r="2.4" fill="#dff2ff" style="animation-delay:2.0999999999999996s"/><circle class="sparkle" cx="668" cy="82" r="2.4" fill="#dff2ff" style="animation-delay:2.8s"/><circle class="sparkle" cx="805" cy="135" r="2.4" fill="#dff2ff" style="animation-delay:3.5s"/><circle class="sparkle" cx="942" cy="188" r="2.4" fill="#dff2ff" style="animation-delay:4.199999999999999s"/><circle class="sparkle" cx="1079" cy="71" r="2.4" fill="#dff2ff" style="animation-delay:4.8999999999999995s"/><circle class="sparkle" cx="1216" cy="124" r="2.4" fill="#dff2ff" style="animation-delay:0.5999999999999996s"/><circle class="sparkle" cx="1353" cy="177" r="2.4" fill="#dff2ff" style="animation-delay:1.2999999999999998s"/><circle class="sparkle" cx="130" cy="60" r="2.4" fill="#dff2ff" style="animation-delay:2.0s"/><circle class="sparkle" cx="267" cy="113" r="2.4" fill="#dff2ff" style="animation-delay:2.6999999999999993s"/><circle class="sparkle" cx="404" cy="166" r="2.4" fill="#dff2ff" style="animation-delay:3.3999999999999986s"/>
 <ellipse class="steam" cx="1240" cy="700" rx="70" ry="18" fill="#dff2ff" opacity=".08"/>
 <ellipse class="steam" cx="1300" cy="660" rx="50" ry="13" fill="#dff2ff" opacity=".06" style="animation-delay:4s"/>
@@ -316,7 +334,13 @@ ${Array.from({length:30},(_,i)=>`<circle class="tw" cx="${(i*59+14)%1600}" cy="$
 <g opacity=".7">
   ${[0,1,2,3,4].map(i=>`<ellipse cx="${420+i*54}" cy="${800+(i%2)*8}" rx="10" ry="4.5" fill="#46607a"/>`).join('')}
 </g>
-<g class="atmo"><g class="aurora" style="animation-delay:4s;animation-duration:30s" opacity=".55">
+<g class="atmo">
+<!-- something in here is still running -->
+<circle id="rl-radiotower" cx="230" cy="210" r="6" fill="#ff9b6a" opacity=".12"/>
+<circle cx="230" cy="210" r="20" fill="#ff9b6a" opacity=".05"/>
+<!-- and something here answers back when the room gives way -->
+<ellipse id="rx-radiotower" class="surge" cx="580" cy="430" rx="96" ry="70" fill="#7fe0ff" opacity="0"/>
+<g class="aurora" style="animation-delay:4s;animation-duration:30s" opacity=".55">
   <path d="M-60 140 q400 -80 800 -10 q400 70 920 -26 l0 90 q-520 100 -920 26 q-400 -74 -800 6z" fill="#5fd8b0" opacity=".12"/>
   <path d="M-60 200 q440 -60 860 10 q420 70 860 -18 l0 58 q-440 92 -860 18 q-420 -70 -860 -2z" fill="#8f7fe8" opacity=".08"/>
 </g>
@@ -338,6 +362,9 @@ const ROOMS=[
 /* ============ ROOM 1 — THE PERIMETER ============ */
 {
   id:'perimeter', name:'Room 1 — The Perimeter', scene:'perimeter',
+  stageFx:'gust',
+  relays:[{el:'rl-perimeter',mode:'pulse',period:3.4}],
+  wrongSound:'creak',
   intro:"Nine days of silence. The plane drops you at the flag line and doesn't cut its engines.",
   objective:"Get inside before the front hits — <b>glowing rings</b> mark what the ice hasn't buried yet.",
   entryBeat:"The route flags run dead straight toward the station — except the last fifty meters, where every flag has been pulled up and replanted, ever so slightly, to curve the path toward the dark side of the buildings.",
@@ -358,7 +385,7 @@ const ROOMS=[
         solvedText:"G-A-R-A-G-E. The snowcat garage — half-buried, engine cold, and its supply cage locked with a 4-digit padlock."
       }
     },
-    { id:'garage', icon:'🚜', name:'The Snowcat Garage', pos:{x:12,y:76,w:22,h:18},
+    { id:'garage', onSolve:{el:'rx-perimeter',op:.2,fx:'surge'}, icon:'🚜', name:'The Snowcat Garage', pos:{x:12,y:76,w:22,h:18},
       desc:"The supply cage in the garage wears a 4-digit padlock. Four supply glyphs are stencilled on the fuel drums beside it, each with a digit — in no particular order:\n\n✚ MEDICAL 4      ● FUEL 8      ▲ FLARES 1      ■ FOOD 6\n\nAlong the back wall stand nine fuel drums; you rap each one down the line and six of them ring empty.\n\nDigits, but no sequence. Somewhere on this station is a standing order that puts supplies in order.",
       puzzle:{
         prompt:"Enter the 4-digit code.", placeholder:"0000", answers:['6841'],
@@ -403,6 +430,9 @@ const ROOMS=[
 /* ============ ROOM 2 — CREW QUARTERS ============ */
 {
   id:'quarters', name:'Room 2 — Crew Quarters', scene:'quarters',
+  relays:[{el:'rl-quarters',mode:'pulse',period:3.8}],
+  wrongSound:'creak',
+  wrongVfx:'shadow',
   intro:"Fourteen bunks, nine parkas on hooks, zero people. The kettle is still faintly warm.",
   objective:"The crew's last hours are recorded in this room. Find the frequency — then <b>read what they left.</b>",
   entryBeat:"Nine parkas on the hooks. Outside it is forty below. Wherever the crew went, they went without their coats — or they went as something that no longer felt the cold.",
@@ -428,7 +458,7 @@ const ROOMS=[
         solvedText:"At 88.2 the blizzard parts — dead air, keyed open from inside the station. Someone patched the reel-to-reel into the transmitter before the end… but the tape ran out years ago. The RECORDER is what's left. Go and look at what he did to it."
       }
     },
-    { id:'recorder', icon:'🎞️', name:'The Reel-to-Reel', pos:{x:71,y:60,w:16,h:15}, hiddenUntil:'shortwave',
+    { id:'recorder', onSolve:{el:'rx-quarters',op:.2,fx:'surge'}, icon:'🎞️', name:'The Reel-to-Reel', pos:{x:71,y:60,w:16,h:15}, hiddenUntil:'shortwave',
       desc:"The reel's last stretch of tape is blank — no recording. Instead, pressed into the leader by hand with a stylus, neat rows of raised dots:\n\n<span style='font-size:2rem;letter-spacing:10px'>⠍⠑⠇⠞&nbsp;&nbsp;⠝⠕⠞⠓⠊⠝⠛</span>\n\nThe last logbook page explains: snow-blind since day 80, the radio operator wrote the only way he still could — by touch. Divide the cells among the crew and work them out.",
       puzzle:{
         prompt:"Decode the tape (two words).",
@@ -474,6 +504,9 @@ const ROOMS=[
 /* ============ ROOM 3 — THE ICE CORE LAB ============ */
 {
   id:'corelab', name:'Room 3 — The Ice Core Lab', scene:'corelab',
+  relays:[{el:'rl-corelab',mode:'pulse',period:2.6}],
+  wrongSound:'geiger',
+  wrongVfx:'sparks',
   intro:"Minus forty in here, by design. Sample case E-9 is open, and its meltwater has been walking around.",
   objective:"Learn what the crew drilled up. The cold room keeps its secrets <b>frozen — keep it that way.</b>",
   entryBeat:"Sample E-9's case didn't fail — the bolts were backed out from the inside of the case. Whatever the drill brought up through three hundred thousand years of ice was awake when it arrived.",
@@ -493,7 +526,7 @@ const ROOMS=[
         solvedText:"ICE. The riddle isn't a lock — it's a warning label, written by someone who finally understood the archive they'd been sawing into. The core racks along the wall suddenly demand much closer reading."
       }
     },
-    { id:'cores', icon:'🔬', name:'The Core Racks', pos:{x:8,y:26,w:56,h:14}, hiddenUntil:'coreE9',
+    { id:'cores', onSolve:{el:'rx-corelab',op:.2,fx:'surge'}, icon:'🔬', name:'The Core Racks', pos:{x:8,y:26,w:56,h:14}, hiddenUntil:'coreE9',
       desc:"Eight cores in cold storage, each tagged with a letter and the depth it was drilled from (metres). Left to right:\n\nB — 812 m\nT — 435 m\nU — 604 m\nR — 286 m\nO — 3 m … (mislabelled, the tag notes)\nI — 550 m\nE — 178 m\nD — 944 m\n\nThe survey rule, taped to the rack: “ONLY CORES FROM AN EVEN DEPTH STAYED FROZEN THROUGH. ODD-DEPTH CORES CRACKED AND ARE CONTAMINATED.”",
       puzzle:{
         prompt:"Which cores can be trusted? Enter their letters in rack order.", placeholder:"LETTERS", answers:['BURIED'],
@@ -539,6 +572,10 @@ const ROOMS=[
 /* ============ ROOM 4 — THE RADIO TOWER ============ */
 {
   id:'radiotower', name:'Room 4 — The Radio Tower', scene:'radiotower',
+  stageFx:'gust',
+  relays:[{el:'rl-radiotower',mode:'pulse',period:3.0}],
+  wrongSound:'chug',
+  wrongVfx:'shake',
   intro:"Dawn is a rumor on the horizon and the plane is up there waiting. Light the runway and bring them down.",
   objective:"Restart the generator, raise the plane, and <b>light the drum line</b> — before what's below finishes its climb.",
   entryBeat:"The tower's guy-wires are thrumming — all of them, evenly. Not the wind. Something at the far anchor point is testing, very gently, whether the tower would fall.",
@@ -560,7 +597,7 @@ const ROOMS=[
         beatSound:'clank'
       }
     },
-    { id:'lockbox', icon:'📦', name:'The Tower Lockbox', pos:{x:42,y:68,w:11,h:16},
+    { id:'lockbox', onSolve:{el:'rx-radiotower',op:.2,fx:'surge'}, icon:'📦', name:'The Tower Lockbox', pos:{x:42,y:68,w:11,h:16},
       desc:"The transmitter's crystal is locked in a 4-digit box, stencilled with the radio officer's rule:\n\n“STATION EREBUS TRANSMITS ON ITS OWN BAND.\nTHE PLANE LISTENS AT TWICE IT.”",
       puzzle:{
         prompt:"Enter the 4-digit code.", placeholder:"0000", answers:['1764'],
@@ -667,12 +704,12 @@ registerScenario({
     {hum:.03, wind:.05, drone:.05},
     {wind:.2, drone:.06, hum:.02}
   ],
-  fx:['snow','motes','mist','snow'],
+  fx:['snow','ash','drips','snow'],
   events:[
-    [{s:'hiss',p:.5},{s:'creak',p:.3}],
-    [{s:'creak',p:.35},{s:'crackle',p:.3}],
-    [{s:'geiger',p:.45},{s:'drip',p:.3}],
-    [{s:'chug',p:.5},{s:'creak',p:.25}]
+    [{s:'hiss',p:.5},{s:'creak',p:.3,v:'shadow'}],
+    [{s:'creak',p:.35,v:'shadow'},{s:'crackle',p:.3,v:'sparks'}],
+    [{s:'geiger',p:.45,v:'sparks'},{s:'drip',p:.3}],
+    [{s:'chug',p:.5,v:'shake'},{s:'creak',p:.25,v:'shadow'}]
   ],
   wrongBeats:WRONG_BEATS, wrongSounds:WRONG_SOUNDS,
   scenes:SCENES, rooms:ROOMS

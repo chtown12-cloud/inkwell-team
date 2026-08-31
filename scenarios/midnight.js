@@ -82,7 +82,13 @@ ${[['PEMBERTON',480,700,-3],['ROSSITER',650,730,2],['CARMODY',820,700,-2],['WHIT
 </g>
 <!-- a top hat, left on a crate -->
 <g><ellipse cx="710" cy="600" rx="34" ry="8" fill="#0d0805"/><rect x="688" y="560" width="44" height="40" rx="4" fill="#100a06"/></g>
-<g class="atmo"><!-- embers off the stack, blown back past the open door -->
+<g class="atmo">
+<!-- something in here is still running -->
+<circle id="rl-baggage" cx="230" cy="210" r="6" fill="#ffd98c" opacity=".12"/>
+<circle cx="230" cy="210" r="20" fill="#ffd98c" opacity=".05"/>
+<!-- and something here answers back when the room gives way -->
+<ellipse id="rx-baggage" class="surge" cx="240" cy="430" rx="96" ry="70" fill="#ffb45e" opacity="0"/>
+<!-- embers off the stack, blown back past the open door -->
 <circle class="emberfly" cx="330" cy="520" r="2.6" fill="#ffb45e" opacity=".8" style="animation-delay:1s"/>
 <circle class="emberfly" cx="300" cy="560" r="2" fill="#ff9b4e" opacity=".7" style="animation-delay:5s"/>
 <circle class="emberfly" cx="352" cy="500" r="2.2" fill="#ffd08a" opacity=".6" style="animation-delay:9s"/>
@@ -161,7 +167,13 @@ ${[0,1,2,3].map(i=>`<g>
 </g>
 <!-- punched tickets scattered -->
 ${[[980,700,-10],[1060,740,14],[1150,700,-4]].map(([x,y,r])=>`<g transform="rotate(${r} ${x} ${y})"><rect x="${x-26}" y="${y-14}" width="52" height="28" rx="4" fill="#d9cba6"/><circle cx="${x+12}" cy="${y}" r="4" fill="#2c1f14"/></g>`).join('')}
-<g class="atmo"><!-- telegraph poles and treeline going past the windows -->
+<g class="atmo">
+<!-- something in here is still running -->
+<circle id="rl-sleeper" cx="230" cy="210" r="6" fill="#ffd98c" opacity=".12"/>
+<circle cx="230" cy="210" r="20" fill="#ffd98c" opacity=".05"/>
+<!-- and something here answers back when the room gives way -->
+<ellipse id="rx-sleeper" class="surge" cx="270" cy="430" rx="96" ry="70" fill="#ffb45e" opacity="0"/>
+<!-- telegraph poles and treeline going past the windows -->
 <rect class="rushpast" x="100" y="70" width="6" height="104" fill="#39435a" opacity=".5" style="animation-delay:0.0s;animation-duration:3.4s"/><rect class="rushpast" x="280" y="70" width="6" height="104" fill="#39435a" opacity=".5" style="animation-delay:0.8s;animation-duration:4.3s"/><rect class="rushpast" x="460" y="70" width="6" height="104" fill="#39435a" opacity=".5" style="animation-delay:1.6s;animation-duration:5.2s"/><rect class="rushpast" x="640" y="70" width="6" height="104" fill="#39435a" opacity=".5" style="animation-delay:2.4000000000000004s;animation-duration:3.4s"/><rect class="rushpast" x="820" y="70" width="6" height="104" fill="#39435a" opacity=".5" style="animation-delay:3.2s;animation-duration:4.3s"/><rect class="rushpast" x="1000" y="70" width="6" height="104" fill="#39435a" opacity=".5" style="animation-delay:4.0s;animation-duration:5.2s"/><rect class="rushpast" x="1180" y="70" width="6" height="104" fill="#39435a" opacity=".5" style="animation-delay:4.800000000000001s;animation-duration:3.4s"/>
 <path class="rushpast" d="M140 172 l16 -36 l16 36z" fill="#263a34" opacity=".5" style="animation-delay:0.0s;animation-duration:4s"/><path class="rushpast" d="M370 172 l16 -36 l16 36z" fill="#263a34" opacity=".5" style="animation-delay:1.2s;animation-duration:5s"/><path class="rushpast" d="M600 172 l16 -36 l16 36z" fill="#263a34" opacity=".5" style="animation-delay:2.4s;animation-duration:4s"/><path class="rushpast" d="M830 172 l16 -36 l16 36z" fill="#263a34" opacity=".5" style="animation-delay:3.5999999999999996s;animation-duration:5s"/><path class="rushpast" d="M1060 172 l16 -36 l16 36z" fill="#263a34" opacity=".5" style="animation-delay:4.8s;animation-duration:4s"/><path class="rushpast" d="M1290 172 l16 -36 l16 36z" fill="#263a34" opacity=".5" style="animation-delay:0.0s;animation-duration:5s"/>
 <circle cx="1300" cy="104" r="22" fill="#f0e6c8" opacity=".2"/>
@@ -242,7 +254,13 @@ ${[[300,640],[640,640],[980,660]].map(([x,y],t)=>`<g>
   <path d="M545 700 q-10 -34 14 -44 q-16 -8 -8 -26 q22 -10 30 8 q8 -6 14 2 q-22 44 -50 60z" fill="#8a4a24"/>
   <line x1="551" y1="630" x2="583" y2="666" stroke="#170f08" stroke-width="2.5"/>
 </g>
-<g class="atmo"><!-- dust turning over in the chandelier light -->
+<g class="atmo">
+<!-- something in here is still running -->
+<circle id="rl-dining" cx="420" cy="210" r="6" fill="#ffd98c" opacity=".12"/>
+<circle cx="420" cy="210" r="20" fill="#ffd98c" opacity=".05"/>
+<!-- and something here answers back when the room gives way -->
+<ellipse id="rx-dining" class="surge" cx="1220" cy="710" rx="96" ry="70" fill="#ffb45e" opacity="0"/>
+<!-- dust turning over in the chandelier light -->
 <circle class="sparkle" cx="386" cy="74" r="2.4" fill="#ffe9c9" style="animation-delay:0.0s"/><circle class="sparkle" cx="450" cy="97" r="2.4" fill="#ffe9c9" style="animation-delay:0.8s"/><circle class="sparkle" cx="840" cy="120" r="2.4" fill="#ffe9c9" style="animation-delay:1.6s"/><circle class="sparkle" cx="906" cy="89" r="2.4" fill="#ffe9c9" style="animation-delay:2.4000000000000004s"/><circle class="sparkle" cx="1310" cy="112" r="2.4" fill="#ffe9c9" style="animation-delay:3.2s"/><circle class="sparkle" cx="1374" cy="81" r="2.4" fill="#ffe9c9" style="animation-delay:4.0s"/><circle class="sparkle" cx="424" cy="104" r="2.4" fill="#ffe9c9" style="animation-delay:4.800000000000001s"/><circle class="sparkle" cx="940" cy="127" r="2.4" fill="#ffe9c9" style="animation-delay:0.6000000000000005s"/>
 <!-- a moth that has found the only warm thing on this train -->
 <ellipse class="batfly" cx="300" cy="112" rx="6" ry="3.4" fill="#d9cba6" opacity=".45"/>
@@ -327,7 +345,13 @@ SCENES.locomotive=()=>`
 <!-- the conductor's punch, hanging by the door -->
 <g><line x1="1080" y1="440" x2="1080" y2="470" stroke="#170f08" stroke-width="3"/>
 <path d="M1068 470 q12 -10 24 0 l-4 26 q-8 6 -16 0z" fill="#8a8a92"/></g>
-<g class="atmo"><!-- the firebox throwing its own weather -->
+<g class="atmo">
+<!-- something in here is still running -->
+<circle id="rl-locomotive" cx="230" cy="210" r="6" fill="#ffd98c" opacity=".12"/>
+<circle cx="230" cy="210" r="20" fill="#ffd98c" opacity=".05"/>
+<!-- and something here answers back when the room gives way -->
+<ellipse id="rx-locomotive" class="surge" cx="850" cy="430" rx="96" ry="70" fill="#ffb45e" opacity="0"/>
+<!-- the firebox throwing its own weather -->
 <circle class="emberfly" cx="820" cy="660" r="3" fill="#ffb45e" opacity=".85" style="animation-delay:.5s"/>
 <circle class="emberfly" cx="880" cy="680" r="2.4" fill="#ff9b4e" opacity=".75" style="animation-delay:3s"/>
 <circle class="emberfly" cx="760" cy="640" r="2.6" fill="#ffd08a" opacity=".7" style="animation-delay:6.5s"/>
@@ -358,6 +382,9 @@ const ROOMS=[
 /* ============ ROOM 1 — THE BAGGAGE CAR ============ */
 {
   id:'baggage', name:'Room 1 — The Baggage Car', scene:'baggage', stageFx:'rocking',
+  relays:[{el:'rl-baggage',mode:'pulse',period:3.6}],
+  wrongSound:'clack',
+  wrongVfx:'shadow',
   intro:"You woke between stations to an empty train. The baggage car is the way forward — and everyone's luggage is still here.",
   objective:"Work toward the front of the train — <b>glowing rings</b> mark what the passengers left behind.",
   entryBeat:"Six trunks, packed for six passengers you dined with at eight o'clock. The dust on the latches says the trunks have been here for years.",
@@ -380,7 +407,7 @@ const ROOMS=[
     },
     { id:'farecard', icon:'🎫', name:'The Fare Card', pos:{x:38,y:20,w:10,h:22},
       desc:"The company fare card, framed on the wall above the porter's desk:\n\n“GREAT NORTHERN & COASTAL RAILWAY —\nFARES SHALL BE RECKONED, AND TAKINGS COUNTED,\nFROM FIRST CLASS DOWN TO FREIGHT.\nNO EXCEPTIONS. NO REFUNDS.\nNO PASSAGE WITHOUT A PUNCHED TICKET.”\n\nSomeone has underlined the last line. The ink is fresh." },
-    { id:'desk', icon:'🗃️', name:"The Porter's Desk", pos:{x:28,y:44,w:15,h:18},
+    { id:'desk', onSolve:{el:'rx-baggage',op:.2,fx:'surge'}, icon:'🗃️', name:"The Porter's Desk", pos:{x:28,y:44,w:15,h:18},
       desc:"The porter's cash box wears a 4-digit lock. His punch-mark chart is pasted to the desk — four punch shapes, each with a takings figure, in no particular order:\n\n★ 8      ✚ 2      ● 5      ■ 3\n\nAnd the company chart beside it pairs punches with classes:\n\n★ FIRST CLASS   ✚ SECOND CLASS   ● THIRD CLASS   ■ FREIGHT\n\nDigits, but no sequence. The company counted its money in one fixed order — every porter knew it by heart, and the rule is posted somewhere in this car.",
       puzzle:{
         prompt:"Enter the 4-digit code.", placeholder:"0000", answers:['8253'],
@@ -425,6 +452,9 @@ const ROOMS=[
 /* ============ ROOM 2 — THE SLEEPER CORRIDOR ============ */
 {
   id:'sleeper', name:'Room 2 — The Sleeper Corridor', scene:'sleeper', stageFx:'rocking',
+  relays:[{el:'rl-sleeper',mode:'pulse',period:4.2}],
+  wrongSound:'creak',
+  wrongVfx:'shadow',
   intro:"Four cabins, all made up for the night. Cabin 3 stands ajar, and a gramophone is playing to nobody.",
   objective:"The passengers' things remember more than the passengers. Find the record's speed — then <b>mind what he left behind.</b>",
   entryBeat:"Every cabin's berth is turned down, and on every pillow sits a ticket, neatly punched. You did not hear him pass. You never hear him pass.",
@@ -450,7 +480,7 @@ const ROOMS=[
         solvedText:"At 78.4 the fourth song swells — a Russian waltz, beautiful and wrong. And as it plays, the RECORD SLEEVE propped on the cabinet catches the lamplight: someone has written across it, hard enough to tear the paper."
       }
     },
-    { id:'runout', icon:'💿', name:'The Record Sleeve', pos:{x:57,y:47,w:10,h:15}, hiddenUntil:'gramophone',
+    { id:'runout', onSolve:{el:'rx-sleeper',op:.2,fx:'surge'}, icon:'💿', name:'The Record Sleeve', pos:{x:57,y:47,w:10,h:15}, hiddenUntil:'gramophone',
       desc:"The sleeve of the Russian pressing — and across it, in heavy pencil, two words in the writer's own alphabet:\n\n<span style='font-size:1.7rem;letter-spacing:6px'>ВРОНГ&nbsp;&nbsp;СТОП</span>\n\nNot Russian words. The hand was writing English sounds the only way it knew how. Sound the letters out.",
       puzzle:{
         prompt:"Sound out the two penciled words.",
@@ -496,6 +526,8 @@ const ROOMS=[
 /* ============ ROOM 3 — THE DINING CAR ============ */
 {
   id:'dining', name:'Room 3 — The Dining Car', scene:'dining', stageFx:'rocking',
+  relays:[{el:'rl-dining',mode:'pulse',period:3.2}],
+  wrongSound:'bell',
   intro:"Every table is set for supper. The kitchen bell rings for orders no one is taking.",
   objective:"Cross the dining car and settle the house's accounts. <b>Mind the mirror.</b>",
   entryBeat:"Three tables are set with plates still steaming. The train has been abandoned for hours. Somebody keeps cooking.",
@@ -517,7 +549,7 @@ const ROOMS=[
         beatSound:'hiss'
       }
     },
-    { id:'tables', icon:'🍴', name:'The Table Settings', pos:{x:10,y:60,w:56,h:16}, hiddenUntil:'menu',
+    { id:'tables', onSolve:{el:'rx-dining',op:.2,fx:'surge'}, icon:'🍴', name:'The Table Settings', pos:{x:10,y:60,w:56,h:16}, hiddenUntil:'menu',
       desc:"Eight settings across the dining car, each place card stamped with a cover number. Reading front of the car to back:\n\nH — 4\nS — 3\nU — 9\nN — 1\nO — 2\nG — 4\nR — 9\nY — 1\n\nThe etiquette card in the mirror's frame: “AN HONEST HOUSE SEATS ONLY SQUARE COMPANY. CLEAR EVERY SETTING WHOSE NUMBER IS A PERFECT SQUARE (1, 4, 9, 16…).”",
       puzzle:{
         prompt:"Which settings get cleared? Enter their letters in order.", placeholder:"LETTERS", answers:['HUNGRY'],
@@ -563,6 +595,9 @@ const ROOMS=[
 /* ============ ROOM 4 — THE LOCOMOTIVE ============ */
 {
   id:'locomotive', name:'Room 4 — The Locomotive', scene:'locomotive', stageFx:'rocking',
+  relays:[{el:'rl-locomotive',mode:'pulse',period:2.4}],
+  wrongSound:'chug',
+  wrongVfx:'shake',
   intro:"The cab is empty, the firebox is roaring, and the junction to the living line is coming up fast.",
   objective:"Feed the fire, prove the drill, and <b>whistle the switchman</b> — miss the junction and the Special keeps its schedule forever.",
   entryBeat:"The coal in the tender is full — forty years of night runs, and the coal never falls. On the throttle, a gloved handprint in the soot. The glove had six fingers.",
@@ -584,7 +619,7 @@ const ROOMS=[
         beatSound:'whistle'
       }
     },
-    { id:'lantern', icon:'🏮', name:'The Signal Lantern Case', pos:{x:69,y:52,w:9,h:19},
+    { id:'lantern', onSolve:{el:'rx-locomotive',op:.2,fx:'surge'}, icon:'🏮', name:'The Signal Lantern Case', pos:{x:69,y:52,w:9,h:19},
       desc:"The signal lantern is locked in its case, 4 digits, stencilled with the brakeman's rule:\n\n“THE SPECIAL SINGS ON ITS OWN NUMBER.\nTHE JUNCTION LISTENS AT TWICE IT.”\n\nThe berth 13 card said it too: remember the record.",
       puzzle:{
         prompt:"Enter the 4-digit code.", placeholder:"0000", answers:['1568'],
@@ -691,12 +726,12 @@ registerScenario({
     {drone:.045, hum:.035, wind:.02},
     {drone:.06, hum:.05, wind:.05}
   ],
-  fx:['motes','motes','motes','embers'],
+  fx:['soot','soot','pollen','embers'],
   events:[
-    [{s:'clack',p:.65},{s:'creak',p:.3}],
-    [{s:'clack',p:.65},{s:'crackle',p:.22}],
+    [{s:'clack',p:.65},{s:'creak',p:.3,v:'shadow'}],
+    [{s:'clack',p:.65},{s:'crackle',p:.22,v:'sparks'}],
     [{s:'clack',p:.6},{s:'bell',p:.14}],
-    [{s:'chug',p:.5},{s:'whistlefar',p:.2}]
+    [{s:'chug',p:.5,v:'shake'},{s:'whistlefar',p:.2,v:'dim'}]
   ],
   wrongBeats:WRONG_BEATS, wrongSounds:WRONG_SOUNDS,
   scenes:SCENES, rooms:ROOMS
