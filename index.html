@@ -100,8 +100,20 @@ button{font-family:'Inter',sans-serif;cursor:pointer}
 @keyframes cardin{from{opacity:0}to{opacity:1}}
 
 /* ---------- narrative beats ---------- */
-#beat{position:fixed;top:78px;left:50%;transform:translateX(-50%);z-index:56;max-width:560px;width:calc(100% - 32px);background:linear-gradient(170deg,rgba(22,17,30,.96),rgba(10,8,16,.96));color:#cfc4de;border:1px solid #3d3350;border-radius:10px;padding:16px 22px;font-style:italic;text-align:center;box-shadow:0 10px 40px rgba(0,0,0,.8);opacity:0;pointer-events:none;transition:opacity 1.6s;font-size:1.02rem}
-#beat.show{opacity:1}
+/* A story beat waits to be dismissed rather than timing out — a table of six
+   reading aloud needs longer than any timer we could pick, and the old 6.8s
+   fade cut people off mid-sentence. It sits above the puzzle modal (z 60) so a
+   beat raised by a solve is never half-hidden behind it. */
+#beat{position:fixed;top:78px;left:50%;transform:translateX(-50%);z-index:62;max-width:560px;width:calc(100% - 32px);background:linear-gradient(170deg,rgba(22,17,30,.96),rgba(10,8,16,.96));color:#cfc4de;border:1px solid #3d3350;border-radius:10px;padding:16px 22px 13px;font-style:italic;text-align:center;box-shadow:0 10px 40px rgba(0,0,0,.8);opacity:0;pointer-events:none;transition:opacity .5s;font-size:1.02rem}
+#beat.show{opacity:1;pointer-events:auto;cursor:pointer}
+#beat .beat-go{margin-top:13px;font-style:normal;font-size:.72rem;letter-spacing:2.5px;
+  color:#7d6f97;text-transform:uppercase}
+#beat.show .beat-go{animation:beatnudge 2.4s ease-in-out 1.2s infinite}
+@keyframes beatnudge{0%,100%{opacity:.5}50%{opacity:1}}
+/* catches a click anywhere, so nobody has to hunt for the card */
+#beatveil{position:fixed;inset:0;z-index:61;display:none;cursor:pointer}
+#beatveil.on{display:block}
+@media (prefers-reduced-motion: reduce){ #beat.show .beat-go{animation:none;opacity:.85} }
 #beat::before{content:"· · ·";display:block;color:#5c4f74;letter-spacing:9px;font-style:normal;margin-bottom:5px}
 
 /* ---------- modal ---------- */
@@ -613,6 +625,7 @@ body.phone #modal{max-height:86vh}
   <button class="big-btn" id="continue-btn">Continue ➤</button>
 </div>
 
+<div id="beatveil"></div>
 <div id="beat"></div>
 <div id="overlay" class="hidden"><div id="modal"></div></div>
 <div id="end-root"></div>
@@ -1210,24 +1223,39 @@ setInterval(tick,250);
 
 /* ---------- narrative beats ---------- */
 let beatTimer=null, beatQueue=[];
+let beatShowing=false;
 function showBeat(text,sound){
   if(!text) return;
   beatQueue.push({text,sound});
-  if(!beatTimer) nextBeat();
+  if(!beatShowing) nextBeat();
 }
 function nextBeat(){
+  const b=$('beat'), veil=$('beatveil');
   const item=beatQueue.shift();
-  if(!item){ beatTimer=null; return; }
-  const b=$('beat');
-  b.textContent=item.text; b.classList.add('show');
+  if(!item){
+    beatShowing=false;
+    b.classList.remove('show'); veil.classList.remove('on');
+    $('dimmer').style.opacity=0;
+    return;
+  }
+  beatShowing=true;
+  b.innerHTML='<div class="beat-line"></div><div class="beat-go"></div>';
+  b.querySelector('.beat-line').textContent=item.text;
+  b.querySelector('.beat-go').textContent=S.isPhone?'Tap to continue':'Click to continue';
+  b.classList.add('show'); veil.classList.add('on');
   $('dimmer').style.opacity=0.3;
   if(item.sound && BEAT_SFX[item.sound]) BEAT_SFX[item.sound]();
-  beatTimer=setTimeout(()=>{
-    b.classList.remove('show');
-    $('dimmer').style.opacity=0;
-    beatTimer=setTimeout(nextBeat,1900);
-  },6800);
 }
+/** Read it in your own time; the next one waits behind this one. */
+function dismissBeat(){ if(beatShowing) nextBeat(); }
+/** Nothing should be able to leave the veil covering the screen. */
+function clearBeats(){ beatQueue.length=0; beatShowing=true; nextBeat(); }
+$('beatveil').addEventListener('click', dismissBeat);
+$('beat').addEventListener('click', dismissBeat);
+addEventListener('keydown', (e)=>{
+  if(!beatShowing) return;
+  if(e.key===' '||e.key==='Enter'||e.key==='Escape'){ e.preventDefault(); dismissBeat(); }
+});
 
 /* ---------- relay lamp (a scene element blinking morse) ---------- */
 let lampTimer=null;
@@ -1778,7 +1806,7 @@ function buildEmojiRow(){
 
 function enterRoom(idx){
   S.roomIndex=idx;
-  beatQueue.length=0;
+  clearBeats();
   const room=currentRoom();
   const card=document.createElement('div');
   card.id='room-card';
@@ -1869,7 +1897,7 @@ function ratingFor(totalSec,hints,overtime){
 }
 function gameOver(){
   if(S.finished||S.overtime) return;
-  S.finished=true; stopHeartbeat();
+  S.finished=true; stopHeartbeat(); clearBeats();
   $('end-root').innerHTML=`<div class="screen-center"><div class="end-card">
     <h2>⏳ TIME'S UP</h2>
     <div class="team-line">${S.teamEmoji} ${esc(S.teamName)}</div>
@@ -1884,7 +1912,7 @@ function continueOvertime(){ S.finished=false; S.overtime=true; $('end-root').in
 
 function victory(){
   S.finished=true; S.endElapsed=elapsedSec();
-  stopHeartbeat(); closeModal();
+  stopHeartbeat(); closeModal(); clearBeats();
   // the danger is over: hush the room's soundscape and let something warm play instead
   clearInterval(roomEventTimer);
   if(AC) setAmbience({});
