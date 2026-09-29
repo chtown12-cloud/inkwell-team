@@ -625,6 +625,7 @@ const ROOMS=[
     { id:'checklist', icon:'📋', name:'Launch Drill', pos:{x:13,y:52,w:9,h:20},
       desc:"The pod's launch drill, five steps, each on a numbered tag — but the tags have been torn off their ring and scattered. They read like the flight officer knew someone else would fly this drill someday:\n\nTAG A — “Align the guidance ring. Exactly one task must pass between priming the cells and aligning the ring.”\n\nTAG B — “Prime the fuel cells before the oxygen goes aboard.”\n\nTAG C — “Release the docking clamps only once the hatch is sealed.”\n\nTAG D — “Load the oxygen third.”\n\nTAG E — “Seal the hatch — never right before or right after loading the oxygen.”",
       puzzle:{
+        type:'order', order:{labels:{"A": "Align the guidance ring", "B": "Prime the fuel cells", "C": "Release the docking clamps", "D": "Load the oxygen", "E": "Seal the hatch"}},
         prompt:"Enter the five tag letters in launch order.", placeholder:"FIVE LETTERS", answers:['EBDAC'],
         hints:[
           "One tag names an exact slot — pin the oxygen down first, then see what must precede it.",
@@ -744,6 +745,13 @@ registerScenario({
     [{s:'ping',p:.5,v:'sparks'},{s:'crackle',p:.3,v:'sparks'}],
     [{s:'drip',p:.55},{s:'hiss',p:.25}],
     [{s:'clank',p:.4,v:'shake'},{s:'hiss',p:.3}]
+  ],
+  // shown free of charge when a team has gone quiet for a while
+  nudges:[
+    "A pod light cycles. In its glow, {it} looks like it is still waiting on you.",
+    "The console chirps once, unprompted. {it} has more to say.",
+    "Somewhere a pump kicks in. The sound draws your attention to {it}.",
+    "Bay pressure ticks down a notch. {it} is the thing you have not finished."
   ],
   wrongBeats:WRONG_BEATS, wrongSounds:WRONG_SOUNDS,
   scenes:SCENES, rooms:ROOMS

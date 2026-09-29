@@ -63,7 +63,18 @@ button{font-family:'Inter',sans-serif;cursor:pointer}
 .hotspot:hover .tag,.hotspot:focus .tag{opacity:1}
 .hotspot .ring{transition:transform .18s}
 .hotspot:hover .ring{border-color:#ffe9b8;transform:translate(-50%,-50%) scale(1.22) !important;animation-play-state:paused}
+/* A newly revealed clue was marked by a faster pulse and a slightly warmer
+   cream — two cues that are nearly the same colour and vanish entirely under
+   reduced motion. Give it a shape as well, so it does not depend on either. */
 .hotspot.new .ring{animation:ringpulse 1s ease-in-out infinite;border-color:#ffe9b8}
+.hotspot.new .ring::before,.hotspot.urged .ring::before{
+  content:"";position:absolute;left:50%;top:50%;width:66px;height:66px;
+  transform:translate(-50%,-50%);border-radius:50%;
+  border:2px dashed rgba(255,233,184,.7)}
+.hotspot.urged .ring::before{border-color:rgba(255,217,140,.85)}
+@media (prefers-reduced-motion: reduce){
+  .hotspot .ring,.hotspot.new .ring{animation:none}
+}
 
 /* ---------- cinematic overlays ---------- */
 #vignette{position:fixed;inset:0;pointer-events:none;z-index:30;background:radial-gradient(ellipse at 50% 46%, transparent 52%, rgba(0,0,0,.62) 100%);transition:opacity .8s}
@@ -106,12 +117,21 @@ button{font-family:'Inter',sans-serif;cursor:pointer}
    beat raised by a solve is never half-hidden behind it. */
 #beat{position:fixed;top:78px;left:50%;transform:translateX(-50%);z-index:62;max-width:560px;width:calc(100% - 32px);background:linear-gradient(170deg,rgba(22,17,30,.96),rgba(10,8,16,.96));color:#cfc4de;border:1px solid #3d3350;border-radius:10px;padding:16px 22px 13px;font-style:italic;text-align:center;box-shadow:0 10px 40px rgba(0,0,0,.8);opacity:0;pointer-events:none;transition:opacity .5s;font-size:1.02rem}
 #beat.show{opacity:1;pointer-events:auto;cursor:pointer}
-#beat .beat-go{margin-top:13px;font-style:normal;font-size:.72rem;letter-spacing:2.5px;
+#beat .beat-go{font-style:normal;font-size:.72rem;letter-spacing:2.5px;
   color:#7d6f97;text-transform:uppercase}
 #beat.show .beat-go{animation:beatnudge 2.4s ease-in-out 1.2s infinite}
 @keyframes beatnudge{0%,100%{opacity:.5}50%{opacity:1}}
+#beat .beat-row{display:flex;align-items:center;justify-content:center;gap:12px;margin-top:13px}
+#beat .beat-say{background:none;border:1px solid #3d3350;border-radius:6px;color:#9d8fb7;
+  font-size:.86rem;padding:3px 9px;cursor:pointer;line-height:1.3}
+#beat .beat-say:hover{border-color:#6a5a8c;color:#cfc4de}
+#narrate-btn.on{color:var(--teal-hi);text-shadow:0 0 10px rgba(111,211,154,.6)}
 /* catches a click anywhere, so nobody has to hunt for the card */
-#beatveil{position:fixed;inset:0;z-index:61;display:none;cursor:pointer}
+/* Catches a click anywhere, so nobody has to hunt for the card — but it stops
+   below the HUD strip, so sound and narration stay reachable while a beat is
+   up. Being unable to mute the game until you dismiss the story is exactly
+   backwards. */
+#beatveil{position:fixed;left:0;right:0;top:70px;bottom:0;z-index:61;display:none;cursor:pointer}
 #beatveil.on{display:block}
 @media (prefers-reduced-motion: reduce){ #beat.show .beat-go{animation:none;opacity:.85} }
 #beat::before{content:"· · ·";display:block;color:#5c4f74;letter-spacing:9px;font-style:normal;margin-bottom:5px}
@@ -347,6 +367,27 @@ pre.share{text-align:left;background:#0a1416;border:1px solid #2c4144;border-rad
 .rippleA{transform-box:fill-box;transform-origin:center;animation:rippl 3.4s ease-out infinite}
 .rippleA.r2{animation-delay:1.7s}
 @keyframes rippl{0%{transform:scale(.4);opacity:.6}100%{transform:scale(1.6);opacity:0}}
+/* Who cracked what — the payoff for splitting up across phones. */
+.crew-scores{margin:18px 0;text-align:left}
+.cs-head{font-family:'Special Elite',serif;color:var(--sand);letter-spacing:2px;
+  font-size:.82rem;text-transform:uppercase;margin-bottom:9px;opacity:.8}
+.cs-row{display:grid;grid-template-columns:minmax(90px,1fr) 2fr auto;gap:10px;align-items:center;margin:5px 0}
+.cs-who{color:var(--sand);font-size:.92rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cs-bar{height:9px;background:rgba(255,255,255,.07);border-radius:5px;overflow:hidden}
+.cs-bar i{display:block;height:100%;background:linear-gradient(90deg,var(--teal),var(--teal-hi));border-radius:5px}
+.cs-n{color:var(--teal-hi);font-family:'Special Elite',serif;min-width:1.4em;text-align:right}
+/* The designer's note of how each room interlocks. It was written for all
+   twenty rooms and only ever shown in the GM panel, which is sealed once the
+   game starts — so the people who would most enjoy it never saw it. */
+.chains{margin:16px 0;text-align:left;border:1px solid #2c4144;border-radius:9px;
+  background:rgba(8,18,20,.55)}
+.chains summary{cursor:pointer;padding:11px 15px;color:var(--sand);
+  font-family:'Special Elite',serif;letter-spacing:1.5px;font-size:.9rem}
+.chains summary::marker{color:var(--teal-hi)}
+.chains[open] summary{border-bottom:1px solid #2c4144}
+.chain-room{padding:11px 15px}
+.chain-room b{color:var(--teal-hi);font-weight:400;font-size:.88rem}
+.chain-room p{color:var(--dim);font-size:.85rem;line-height:1.55;margin-top:4px}
 @media (max-width:640px){#hud .stats{display:none}.end-card .stat-grid{grid-template-columns:1fr}}
 
 /* ---------- difficulty picker ---------- */
@@ -405,6 +446,27 @@ pre.share{text-align:left;background:#0a1416;border:1px solid #2c4144;border-rad
 #scene .surge{filter:blur(40px);transition:opacity .9s ease}
 #scene .surge.lit{opacity:.5 !important}
 
+/* A clue the room has just drawn attention to. Warmer and slower than the
+   ordinary ring, so it reads as the place nudging you rather than an alarm. */
+.hotspot.urged .ring{border-color:#ffd98c;box-shadow:0 0 0 4px rgba(255,217,140,.18),0 0 26px rgba(255,217,140,.5);
+  animation:urgepulse 2.6s ease-in-out infinite}
+@keyframes urgepulse{0%,100%{transform:translate(-50%,-50%) scale(1)}50%{transform:translate(-50%,-50%) scale(1.22)}}
+@media (prefers-reduced-motion: reduce){ .hotspot.urged .ring{animation:none} }
+
+/* Named solves, stacking bottom-left and clearing themselves away. Never
+   takes a click: the board is underneath it. */
+#credits{position:fixed;left:14px;bottom:14px;z-index:44;display:flex;flex-direction:column;
+  gap:7px;pointer-events:none;max-width:min(380px,46vw)}
+.credit-pop{background:rgba(6,16,16,.92);border:1px solid #47707a;border-left:3px solid var(--teal-hi);
+  border-radius:8px;padding:7px 13px;color:var(--sand);font-family:'Special Elite',serif;
+  font-size:.88rem;opacity:0;transform:translateX(-14px);
+  transition:opacity .45s ease,transform .45s cubic-bezier(.2,.9,.3,1);
+  box-shadow:0 4px 18px rgba(0,0,0,.55)}
+.credit-pop.in{opacity:1;transform:translateX(0)}
+.credit-pop .ce{font-size:1.05rem}
+.credit-pop b{color:var(--teal-hi);font-weight:400}
+body.phone #credits{display:none}
+
 /* ---------- atmosphere layer ----------
    Purely decorative scenery. Never interactive, never over a hotspot, and
    calmed right down for anyone who asks for less motion. */
@@ -447,8 +509,20 @@ pre.share{text-align:left;background:#0a1416;border:1px solid #2c4144;border-rad
   padding:3px 11px;font-size:.8rem;color:var(--sand);font-family:'Special Elite',serif}
 
 /* ---------- QR / join panel ---------- */
-#qr-panel{position:fixed;inset:0;z-index:120;background:rgba(3,8,9,.94);display:flex;
+/* Not a dialog over a black screen — a lobby. The room is already built and
+   lit behind this, so let it show: people watching the crew gather in front of
+   the place they are about to be shut inside is worth more than an opaque box. */
+#qr-panel{position:fixed;inset:0;z-index:120;display:flex;
+  background:radial-gradient(ellipse at center,rgba(3,8,9,.72),rgba(3,8,9,.93));
+  backdrop-filter:blur(3px);
   align-items:center;justify-content:center;overflow:auto;padding:20px}
+/* each arrival lands rather than appearing */
+.qr-players .chip{animation:crewland .5s cubic-bezier(.2,1.2,.35,1) both}
+@keyframes crewland{from{opacity:0;transform:translateY(9px) scale(.9)}to{opacity:1;transform:none}}
+#qr-players .waiting{opacity:.55;animation:none}
+.qr-count{color:var(--teal-hi);font-family:'Special Elite',serif;letter-spacing:2px;
+  font-size:.9rem;margin:14px 0 4px;min-height:1.3em}
+@media (prefers-reduced-motion: reduce){ .qr-players .chip{animation:none} }
 .qr-inner{text-align:center;max-width:520px}
 .qr-inner h2{font-family:'Special Elite',serif;color:var(--sand);letter-spacing:3px;margin-bottom:8px}
 .qr-lead{color:var(--dim);font-size:.95rem;margin-bottom:16px;line-height:1.5}
@@ -473,6 +547,28 @@ pre.share{text-align:left;background:#0a1416;border:1px solid #2c4144;border-rad
 .qr-players{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-bottom:18px;min-height:26px}
 .qr-players .chip{background:rgba(216,195,154,.1);border:1px solid #5c6f6d;border-radius:20px;
   padding:3px 12px;font-size:.9rem;color:var(--sand)}
+
+/* ---------- putting things in order ---------- */
+.ord-list{list-style:none;margin:14px 0 4px;padding:0;display:flex;flex-direction:column;gap:7px}
+/* touch-action does NOT inherit, and the touch lands on the row, not the list —
+   without this the browser claims the gesture as a scroll and cancels the drag
+   before it starts, which is exactly what it was doing on phones. */
+.ord-list,.ord-item,.ord-item *{touch-action:none}
+.ord-item{display:grid;grid-template-columns:auto auto 1fr auto;gap:11px;align-items:center;
+  padding:10px 12px;border:1px solid #3a565c;border-radius:9px;background:#0b1619;
+  cursor:grab;user-select:none;transition:border-color .2s ease,background .2s ease,transform .12s ease}
+.ord-item:hover{border-color:#6dc0b8}
+.ord-item.lifting{cursor:grabbing;border-color:var(--teal-hi);background:#12252a;
+  transform:scale(1.02);box-shadow:0 8px 22px rgba(0,0,0,.55)}
+.ord-grip{color:#4f747c;font-size:1.05rem;letter-spacing:-2px}
+.ord-letter{font-family:'Special Elite',serif;color:var(--teal-hi);font-size:1.15rem;min-width:1.2em;text-align:center}
+.ord-label{color:var(--sand);font-size:.92rem}
+.ord-move{display:flex;flex-direction:column;gap:2px}
+.ord-move button{background:#0e1f23;border:1px solid #3a565c;color:var(--dim);border-radius:5px;
+  width:30px;height:20px;line-height:1;font-size:.62rem;cursor:pointer;padding:0}
+.ord-move button:hover{border-color:#6dc0b8;color:var(--sand)}
+.ord-list.shakein{animation:shakeI .4s}
+@media (prefers-reduced-motion: reduce){ .ord-item{transition:none} .ord-list.shakein{animation:none} }
 
 /* ---------- simultaneity lock ---------- */
 .simul-grid{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin:14px 0}
@@ -614,6 +710,7 @@ body.phone #modal{max-height:86vh}
     <span>Penalties <b id="stat-pen">+0:00</b></span>
     <span id="crew-count" class="hidden" title="Players joined on their phones"></span>
     <button id="qr-btn" class="hidden" title="Show the join code">📱</button>
+    <button id="narrate-btn" title="Read story beats aloud">🗣️</button>
     <button id="mute-btn" title="Toggle sound">🔊</button>
   </div>
 </div>
@@ -625,6 +722,7 @@ body.phone #modal{max-height:86vh}
   <button class="big-btn" id="continue-btn">Continue ➤</button>
 </div>
 
+<div id="credits"></div>
 <div id="beatveil"></div>
 <div id="beat"></div>
 <div id="overlay" class="hidden"><div id="modal"></div></div>
@@ -666,8 +764,9 @@ body.phone #modal{max-height:86vh}
     <div class="qr-url" id="qr-url"></div>
     <div class="qr-alt">Can't scan? Open the same address and enter the code above.</div>
     <div class="qr-link" id="qr-link"></div>
+    <div class="qr-count" id="qr-count"></div>
     <div class="qr-players" id="qr-players"></div>
-    <button class="big-btn" onclick="closeQr()">DONE</button>
+    <button class="big-btn" id="qr-done" onclick="closeQr()">DONE</button>
   </div>
 </div>
 
@@ -1239,15 +1338,33 @@ function nextBeat(){
     return;
   }
   beatShowing=true;
-  b.innerHTML='<div class="beat-line"></div><div class="beat-go"></div>';
+  b.innerHTML='<div class="beat-line"></div><div class="beat-row">'
+    + '<button class="beat-say" title="Read this aloud">🔊</button>'
+    + '<span class="beat-go"></span></div>';
   b.querySelector('.beat-line').textContent=item.text;
   b.querySelector('.beat-go').textContent=S.isPhone?'Tap to continue':'Click to continue';
+  const say=b.querySelector('.beat-say');
+  say.onclick=(e)=>{ e.stopPropagation(); speakBeat(item.text); };
+  if(S.narrate) speakBeat(item.text);
   b.classList.add('show'); veil.classList.add('on');
   $('dimmer').style.opacity=0.3;
   if(item.sound && BEAT_SFX[item.sound]) BEAT_SFX[item.sound]();
 }
+/* One person sharing a screen ends up reading every line out loud. The room
+   can do it instead, which on a call is the difference between a story beat
+   and a wall of text somebody has to perform. */
+function speakBeat(text){
+  try{
+    if(!('speechSynthesis' in window)) return;
+    speechSynthesis.cancel();
+    const u=new SpeechSynthesisUtterance(text);
+    u.rate=0.92; u.pitch=0.9;
+    speechSynthesis.speak(u);
+  }catch(e){ /* no voice available: the words are on screen anyway */ }
+}
+function hushBeat(){ try{ if('speechSynthesis' in window) speechSynthesis.cancel(); }catch(e){} }
 /** Read it in your own time; the next one waits behind this one. */
-function dismissBeat(){ if(beatShowing) nextBeat(); }
+function dismissBeat(){ if(beatShowing){ hushBeat(); nextBeat(); } }
 /** Nothing should be able to leave the veil covering the screen. */
 function clearBeats(){ beatQueue.length=0; beatShowing=true; nextBeat(); }
 $('beatveil').addEventListener('click', dismissBeat);
@@ -1408,6 +1525,8 @@ function openModal(objId){
       html+=`<div class="solved-note">✓ ${p.solvedText||'Solved.'}</div>`;
     } else if(p.type==='simul'){
       html+=renderSimul(o)+renderHints(o);
+    } else if(p.type==='order'){
+      html+=renderOrder(o)+renderHints(o);
     } else if(p.type==='signal'){
       html+=renderSignalPad(o)+renderHints(o);
     } else if(p.type==='dial'){
@@ -1436,6 +1555,7 @@ function openModal(objId){
     MP.openObj=o.id; mpSend('sit',{objId:o.id});
   }
   if(o.puzzle&&o.puzzle.type==='dial'&&!solved) dialInit(o);
+  if(o.puzzle&&o.puzzle.type==='order'&&!solved) orderInit(o);
   const inp=$('answer-input'); if(inp) inp.focus();
 }
 function closeModal(){
@@ -1506,6 +1626,50 @@ function revealHint(objId){
   openModal(objId); tick();
 }
 
+/* ---------- when a team goes quiet ----------
+   A playtest came back saying the game was too hard, and the hint system can
+   only help a team that asks. Nobody wants to be the one who gives in, so a
+   stuck group just bleeds clock in silence. The room notices instead, and
+   offers something for nothing: no penalty, no hint counter, no admission of
+   defeat — just the place drawing your eye back to something you have not
+   properly looked at. Once per room, and never while a puzzle is open, so it
+   cannot interrupt someone mid-thought. */
+const STUCK_MS = 6*60*1000;
+let stuckTimer=null;
+function noteProgress(){ S.lastSolveAt=Date.now(); }
+function startStuckWatch(){
+  clearInterval(stuckTimer);
+  if(S.isPhone) return;                       // the shared screen speaks for the room
+  noteProgress();
+  stuckTimer=setInterval(()=>{
+    if(S.finished || beatShowing) return;
+    if(S.nudged && S.nudged[S.roomIndex]) return;
+    if(!$('overlay').classList.contains('hidden')) return;   // someone is working
+    if(Date.now() - (S.lastSolveAt||0) < STUCK_MS) return;
+    offerNudge();
+  }, 20000);
+}
+function stopStuckWatch(){ clearInterval(stuckTimer); stuckTimer=null; }
+/** Point at the clue with the fewest dependencies still unsolved. */
+function nudgeTarget(){
+  const room=currentRoom();
+  const open=room.objects.filter(o=>o.puzzle && !S.solved.has(o.id) && objVisible(o));
+  if(!open.length) return null;
+  // prefer one nobody has taken a hint on: that is the one being overlooked
+  const untouched=open.filter(o=>!(S.hintsShown[o.id]||0));
+  return (untouched.length?untouched:open)[0];
+}
+function offerNudge(){
+  const o=nudgeTarget(); if(!o) return;
+  S.nudged=S.nudged||{}; S.nudged[S.roomIndex]=true;
+  noteProgress();                              // don't fire again straight away
+  const b=(ACTIVE.nudges&&ACTIVE.nudges[S.roomIndex])||'Something here has not been looked at properly.';
+  showBeat(b.replace('{it}', o.name), null);
+  // mark it on the board so the words have somewhere to land
+  const btn=document.querySelector(`.hotspot[data-obj="${o.id}"]`);
+  if(btn){ btn.classList.add('urged'); setTimeout(()=>btn.classList.remove('urged'), 22000); }
+}
+
 /* ---------- answers ---------- */
 function norm(s){ return (s||'').toUpperCase().replace(/[^A-Z0-9]/g,''); }
 function submitAnswer(objId){
@@ -1537,6 +1701,7 @@ function wrongAnswer(){
 }
 function solvePuzzle(o){
   S.solved.add(o.id);
+  noteProgress();
   if(!MP.suppress) mpSend('solve',{objId:o.id});
   sfxChime();
   const hue=(ACTIVE.flare&&ACTIVE.flare.hue)||[255,200,120];
@@ -1717,6 +1882,108 @@ function simulPull(objId){
   solvePuzzle(o);
 }
 
+/* ---------- putting things in order ----------
+   These five puzzles were already orderings — five lettered tags to arrange —
+   typed in as a five-letter string. Arranging them by hand is the same puzzle
+   with the reasoning made physical, which is what makes the tuning dial the
+   best thing in the game. Dragging uses pointer events so a phone works the
+   same as a laptop, and the arrows are there for anyone who would rather not
+   drag at all. The typed box stays, because it is the accessible path and
+   because some people just know the answer. */
+function orderLetters(o){
+  return (o.puzzle.answers[0]||'').split('');
+}
+function renderOrder(o){
+  const p=o.puzzle, letters=orderLetters(o);
+  const labels=p.order&&p.order.labels||{};
+  // a fixed, reproducible shuffle so it doesn't reshuffle on every re-render
+  const start=(S.orderState&&S.orderState[o.id]) ||
+    letters.slice().sort((a,b)=>((a.charCodeAt(0)*37+o.id.length*11)%7)-((b.charCodeAt(0)*37+o.id.length*11)%7));
+  S.orderState=S.orderState||{}; S.orderState[o.id]=start;
+  const rows=start.map((ch,i)=>`
+    <li class="ord-item" data-ch="${ch}" draggable="false">
+      <span class="ord-grip">⠿</span>
+      <span class="ord-letter">${ch}</span>
+      <span class="ord-label">${esc(labels[ch]||'')}</span>
+      <span class="ord-move">
+        <button class="ord-up" data-i="${i}" aria-label="Move up">▲</button>
+        <button class="ord-down" data-i="${i}" aria-label="Move down">▼</button>
+      </span>
+    </li>`).join('');
+  return `<div class="puzzle-box">
+    <div class="prompt">${p.prompt}</div>
+    <ol class="ord-list" id="ord-list">${rows}</ol>
+    <div class="how">Drag the tags into order, or use ▲▼. When the order looks right, lock it in — a wrong order only costs 5 seconds.</div>
+    <button class="big-btn" style="margin-top:12px" onclick="submitOrder('${o.id}')">🔒 LOCK THIS ORDER</button>
+    <div class="answer-row" style="margin-top:14px">
+      <input id="answer-input" placeholder="${p.placeholder||'FIVE LETTERS'}" autocomplete="off"
+             onkeydown="if(event.key==='Enter')submitAnswer('${o.id}')">
+      <button onclick="submitAnswer('${o.id}')">Try It</button>
+    </div>
+    <div class="feedback" id="feedback"></div>
+  </div>`;
+}
+function orderInit(o){
+  const list=$('ord-list'); if(!list) return;
+  const save=()=>{ S.orderState[o.id]=[...list.querySelectorAll('.ord-item')].map(li=>li.dataset.ch); };
+
+  list.querySelectorAll('.ord-up,.ord-down').forEach(b=>{
+    b.onclick=(e)=>{
+      e.stopPropagation();
+      const li=b.closest('.ord-item');
+      const to=b.classList.contains('ord-up')?li.previousElementSibling:li.nextElementSibling;
+      if(!to) return;
+      if(b.classList.contains('ord-up')) list.insertBefore(li,to); else list.insertBefore(to,li);
+      save(); sfxThud();
+    };
+  });
+
+  /* Dragging is the nicer way to do this and the arrows are the reliable one,
+     so both are wired. Touch gets its own handlers rather than riding on
+     pointer events: touch-action, scroll-claiming and pointer capture all
+     interact badly on phones, and the oldest API is the one that behaves. */
+  let dragging=null;
+  const grab=(el)=>{ if(!el) return; dragging=el; el.classList.add('lifting'); };
+  const moveTo=(x,y)=>{
+    if(!dragging) return;
+    const over=document.elementFromPoint(x,y);
+    const target=over&&over.closest&&over.closest('.ord-item');
+    if(!target||target===dragging||target.parentElement!==list) return;
+    const up=target.getBoundingClientRect().top < dragging.getBoundingClientRect().top;
+    list.insertBefore(dragging, up?target:target.nextSibling);
+  };
+  const drop=()=>{ if(!dragging) return; dragging.classList.remove('lifting'); dragging=null; save(); sfxThud(); };
+  const from=(e)=>{
+    const t=e.target;
+    if(!t||!t.closest||t.closest('.ord-move')) return null;
+    return t.closest('.ord-item');
+  };
+
+  list.addEventListener('pointerdown',(e)=>{ if(e.pointerType==='touch') return; grab(from(e)); });
+  list.addEventListener('pointermove',(e)=>{ if(!dragging||e.pointerType==='touch') return; e.preventDefault(); moveTo(e.clientX,e.clientY); });
+  list.addEventListener('pointerup',(e)=>{ if(e.pointerType==='touch') return; drop(); });
+  list.addEventListener('pointercancel',drop);
+
+  list.addEventListener('touchstart',(e)=>{ grab(from(e)); },{passive:true});
+  list.addEventListener('touchmove',(e)=>{
+    if(!dragging) return;
+    e.preventDefault();                       // we own the gesture, not the scroller
+    const t=e.touches[0]; if(t) moveTo(t.clientX,t.clientY);
+  },{passive:false});
+  list.addEventListener('touchend',drop);
+  list.addEventListener('touchcancel',drop);
+}
+function submitOrder(objId){
+  const o=currentRoom().objects.find(x=>x.id===objId);
+  const list=$('ord-list'); if(!list) return;
+  const guess=[...list.querySelectorAll('.ord-item')].map(li=>li.dataset.ch).join('');
+  if(o.puzzle.answers.includes(guess)) return solvePuzzle(o);
+  wrongAnswer();
+  const fb=$('feedback');
+  fb.className='feedback bad'; fb.textContent='\u2717 The steps fight each other. (+0:05 penalty)';
+  list.classList.remove('shakein'); void list.offsetWidth; list.classList.add('shakein');
+}
+
 /* ---------- signal pad (labels via puzzle.labels) ---------- */
 function renderSignalPad(o){
   const L=Object.assign({short:'🔥 SHORT BURST ·',long:'🔥 LONG BURN −',reset:'RESET',send:'📡 SEND SIGNAL'},o.puzzle.labels||{});
@@ -1818,6 +2085,7 @@ function enterRoom(idx){
   card.querySelector('#enter-room-btn').onclick=()=>{
     card.remove();
     showBeat(room.entryBeat,room.entrySound);
+    startStuckWatch();
   };
 }
 $('start-btn').onclick=async ()=>{
@@ -1863,6 +2131,13 @@ $('continue-btn').onclick=()=>{
   }
 };
 $('mute-btn').onclick=toggleMute;
+$('narrate-btn').onclick=()=>{
+  S.narrate=!S.narrate;
+  $('narrate-btn').classList.toggle('on',S.narrate);
+  $('narrate-btn').title=S.narrate?'Story beats are read aloud':'Read story beats aloud';
+  if(!S.narrate) hushBeat();
+  else if(beatShowing) speakBeat($('beat').querySelector('.beat-line').textContent);
+};
 $('qr-btn').onclick=openQr;
 $('hg-take').onclick=()=>{ location.href=takeoverUrl(); };
 
@@ -1897,7 +2172,7 @@ function ratingFor(totalSec,hints,overtime){
 }
 function gameOver(){
   if(S.finished||S.overtime) return;
-  S.finished=true; stopHeartbeat(); clearBeats();
+  S.finished=true; stopHeartbeat(); clearBeats(); stopStuckWatch();
   $('end-root').innerHTML=`<div class="screen-center"><div class="end-card">
     <h2>⏳ TIME'S UP</h2>
     <div class="team-line">${S.teamEmoji} ${esc(S.teamName)}</div>
@@ -1912,7 +2187,7 @@ function continueOvertime(){ S.finished=false; S.overtime=true; $('end-root').in
 
 function victory(){
   S.finished=true; S.endElapsed=elapsedSec();
-  stopHeartbeat(); closeModal(); clearBeats();
+  stopHeartbeat(); closeModal(); clearBeats(); stopStuckWatch();
   // the danger is over: hush the room's soundscape and let something warm play instead
   clearInterval(roomEventTimer);
   if(AC) setAmbience({});
@@ -1928,14 +2203,24 @@ function victory(){
   },620);
   setTimeout(showVictoryCard,5600);
 }
+/** Who solved what, for the end card. Empty on a single screen. */
+function crewScores(){
+  if(!MP.active() || !window.NET || !NET.scoreboard) return [];
+  const hostId=(NET.state&&NET.state.host&&NET.state.host.id)||null;
+  return NET.scoreboard().filter(p=>p.id!==hostId);
+}
 function showVictoryCard(){
   const total=S.endElapsed+S.penaltySec;
   const rating=ratingFor(total,S.hintsUsed,S.overtime);
+  const crew=crewScores();
+  const crewLine=crew.length
+    ? '\n👥 ' + crew.map(p=>`${p.emoji} ${p.name} ${p.n}`).join('   ')
+    : '';
   const share=
 `${S.teamEmoji} TEAM ${S.teamName} — ${ACTIVE.shareTitle}
 ⏱️ Finishing time: ${fmt(total)} (play ${fmt(S.endElapsed)} + penalties ${fmt(S.penaltySec)})
 💡 Hints used: ${S.hintsUsed}   ❌ Wrong answers: ${S.wrongCount}
-🏅 Rating: ${rating.replace(/^\S+\s/,'')}`;
+🏅 Rating: ${rating.replace(/^\S+\s/,'')}${crewLine}`;
   $('end-root').innerHTML=`<div class="screen-center"><div class="end-card">
     <h2>${ACTIVE.victoryTitle}</h2>
     <div class="team-line">${S.teamEmoji} TEAM ${esc(S.teamName)} — ${fmt(total)}</div>
@@ -1947,6 +2232,16 @@ function showVictoryCard(){
       <div class="stat"><div class="k">Hints used</div><div class="v">${S.hintsUsed} (+${fmt(S.penaltySec-S.wrongCount*WRONG_PENALTY)})</div></div>
       <div class="stat"><div class="k">Wrong answers</div><div class="v">${S.wrongCount} (+${fmt(S.wrongCount*WRONG_PENALTY)})</div></div>
     </div>
+    ${crew.length?`<div class="crew-scores">
+      <div class="cs-head">Who cracked what</div>
+      ${crew.map(p=>`<div class="cs-row"><span class="cs-who">${p.emoji} ${esc(p.name)}</span>
+        <span class="cs-bar"><i style="width:${Math.round(p.n/crew[0].n*100)}%"></i></span>
+        <span class="cs-n">${p.n}</span></div>`).join('')}
+    </div>`:''}
+    <details class="chains">
+      <summary>How it all fitted together</summary>
+      ${ACTIVE.rooms.map(r=>`<div class="chain-room"><b>${esc(r.name)}</b><p>${esc(r.chain||'')}</p></div>`).join('')}
+    </details>
     <pre class="share" id="share-text">${share}</pre>
     <div class="btn-row">
       <button class="big-btn" id="save-card-btn" onclick="saveScoreCard(event)">📸 Save Score Card</button>
@@ -1983,8 +2278,18 @@ function drawScoreCard(){
   x.fillText(rating,600,442);
   x.fillStyle='#9ab0ac'; x.font='25px "Special Elite",serif';
   x.fillText(`play ${fmt(S.endElapsed)}   ·   hints ${S.hintsUsed}   ·   wrong answers ${S.wrongCount}   ·   penalties +${fmt(S.penaltySec)}`,600,498);
-  x.fillStyle='#d8c39a'; x.font='27px "Special Elite",serif';
-  x.fillText(S.teamEmoji+' '+(ACTIVE.shareTitle||'ESCAPED!'),600,560);
+  // The card is what gets sent to the group chat, so the crew belong on it.
+  const crew=crewScores();
+  if(crew.length){
+    x.fillStyle='#8fd8c8'; x.font='24px "Special Elite",serif';
+    const line=crew.slice(0,6).map(p=>`${p.emoji} ${p.name} ${p.n}`).join('    ');
+    x.fillText(line,600,544);
+    x.fillStyle='#d8c39a'; x.font='25px "Special Elite",serif';
+    x.fillText(S.teamEmoji+' '+(ACTIVE.shareTitle||'ESCAPED!'),600,584);
+  } else {
+    x.fillStyle='#d8c39a'; x.font='27px "Special Elite",serif';
+    x.fillText(S.teamEmoji+' '+(ACTIVE.shareTitle||'ESCAPED!'),600,560);
+  }
   return c;
 }
 async function playAgain(){
@@ -2058,6 +2363,7 @@ function applyRemote(room){
     (room.solved||[]).forEach(id=>{
       if(S.solved.has(id)) return;
       S.solved.add(id);
+      noteProgress();
       const o = currentRoom().objects.find(x=>x.id===id);
       // if a team-mate solved the puzzle you have open, show them beating you to it
       if(o && MP.openObj===id){ MP.openObj=null; openModal(id); }
@@ -2066,6 +2372,7 @@ function applyRemote(room){
         if(o.pos) spawnBurst((o.pos.x+o.pos.w/2)/100*1600,(o.pos.y+o.pos.h/2)/100*900,
                              (ACTIVE.flare&&ACTIVE.flare.hue)||[255,200,120],18,4);
         reactTo(o); refreshRelays();
+        creditSolve(id, o);
       }
     });
   } finally { MP.suppress = false; }
@@ -2202,6 +2509,24 @@ function renderPlayerTokens(){
   });
 }
 
+/* ---------- who cracked what ----------
+   A solve used to arrive on the shared screen authorless, which made working
+   alone on a phone feel invisible — the opposite of the point of splitting up.
+   Named, briefly, as it happens; tallied properly at the end. */
+function creditSolve(objId, o){
+  if(!MP.active()) return;
+  const who=NET.solvedBy(objId);
+  const hostId=(NET.state&&NET.state.host&&NET.state.host.id)||null;
+  if(!who || who===hostId || who===NET.playerId) return;   // the screen itself needs no credit
+  const name=NET.playerName(who); if(!name) return;
+  const el=document.createElement('div');
+  el.className='credit-pop';
+  el.innerHTML=`<span class="ce">${NET.playerEmoji(who)}</span> <b>${esc(name)}</b> cracked ${esc(o.name)}`;
+  $('credits').appendChild(el);
+  requestAnimationFrame(()=>el.classList.add('in'));
+  setTimeout(()=>{ el.classList.remove('in'); setTimeout(()=>el.remove(),600); }, 4200);
+}
+
 function refreshCrew(){
   let bar = $('crew-bar');
   if(!MP.active()){ if(bar) bar.remove(); return; }
@@ -2266,12 +2591,30 @@ function refreshCrewCount(){
   el.classList.toggle('none', n===0);
   el.textContent = n===0 ? '👥 nobody joined yet' : ('👥 ' + n + (n===1?' player':' players'));
 }
+let crewSeen=new Set();
 function refreshQrPlayers(){
-  const players = (NET.state&&NET.state.players)||[];
   const el=$('qr-players'); if(!el) return;
-  el.innerHTML = players.length
-    ? players.map(p=>`<span class="chip">${p.emoji} ${esc(p.name)}</span>`).join('')
-    : '<span class="chip" style="opacity:.6">waiting for players…</span>';
+  const hostId=(NET.state&&NET.state.host&&NET.state.host.id)||null;
+  const players=((NET.state&&NET.state.players)||[]).filter(p=>p.id!==hostId);
+  // Rebuild only when the roster actually changes, so the arrival animation
+  // plays once per person instead of restarting on every sync.
+  const sig=players.map(p=>p.id).join('|');
+  if(el.dataset.sig!==sig){
+    el.dataset.sig=sig;
+    el.innerHTML = players.length
+      ? players.map(p=>`<span class="chip">${p.emoji} ${esc(p.name)}</span>`).join('')
+      : '<span class="chip waiting">waiting for the crew…</span>';
+    players.forEach(p=>{
+      if(crewSeen.has(p.id)) return;
+      crewSeen.add(p.id);
+      if(!S.isPhone) sfxChime();               // someone just walked in
+    });
+  }
+  const n=players.length;
+  const count=$('qr-count');
+  if(count) count.textContent = n===0 ? '' : (n===1?'1 aboard':n+' aboard');
+  const btn=$('qr-done');
+  if(btn) btn.textContent = n===0 ? 'START WITHOUT PHONES' : "WE'RE ALL HERE ➤";
 }
 
 /* ---------- the shared screen going away ---------- */

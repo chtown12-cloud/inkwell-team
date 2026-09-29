@@ -586,6 +586,7 @@ const ROOMS=[
     { id:'genstart', icon:'⚙️', name:'The Generator Sled', pos:{x:11,y:66,w:18,h:18},
       desc:"The tower generator's cold-start drill, five steps on five tags shuffled by nine days of wind:\n\nTAG A — “Close the choke — never right before or right after warming the plugs.”\n\nTAG B — “Crank the flywheel. Exactly one step passes between opening the fuel line and cranking.”\n\nTAG C — “Throw the breaker only once the choke is closed.”\n\nTAG D — “Open the fuel line before the glow plugs warm.”\n\nTAG E — “Warm the glow plugs second.”",
       puzzle:{
+        type:'order', order:{labels:{"A": "Close the choke", "B": "Crank the flywheel", "C": "Throw the breaker", "D": "Open the fuel line", "E": "Warm the glow plugs"}},
         prompt:"Enter the five tag letters in start order.", placeholder:"FIVE LETTERS", answers:['DEBAC'],
         hints:[
           "One tag names an exact slot. Fix the glow plugs, then see what must come before them.",
@@ -710,6 +711,13 @@ registerScenario({
     [{s:'creak',p:.35,v:'shadow'},{s:'crackle',p:.3,v:'sparks'}],
     [{s:'geiger',p:.45,v:'sparks'},{s:'drip',p:.3}],
     [{s:'chug',p:.5,v:'shake'},{s:'creak',p:.25,v:'shadow'}]
+  ],
+  // shown free of charge when a team has gone quiet for a while
+  nudges:[
+    "The wind turns, and the station shows you {it} once more.",
+    "The generator surges. For a second, {it} is properly lit.",
+    "The cold ticks through the metal. You look back at {it}.",
+    "A gust clears the snow off {it}. It is still unread."
   ],
   wrongBeats:WRONG_BEATS, wrongSounds:WRONG_SOUNDS,
   scenes:SCENES, rooms:ROOMS
