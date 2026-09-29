@@ -657,6 +657,7 @@ const ROOMS=[
     { id:'rig', icon:'🔩', name:'The Ignition Rig', pos:{x:45,y:12,w:12,h:56},
       desc:"The Baron's launch ritual, five steps on five scattered vellum tags:\n\nTAG A — “Crank the capacitor second. The chains must already hang.”\n\nTAG B — “Throw the master switch only once the coil is coupled.”\n\nTAG C — “Couple the coil — never right before or right after cranking the capacitor.”\n\nTAG D — “Raise the rod. Exactly one task passes between grounding the chains and raising the rod.”\n\nTAG E — “Ground the chains before the capacitor is cranked.”",
       puzzle:{
+        type:'order', order:{labels:{"A": "Crank the capacitor", "B": "Throw the master switch", "C": "Couple the coil", "D": "Raise the rod", "E": "Ground the chains"}},
         prompt:"Enter the five tag letters in ritual order.", placeholder:"FIVE LETTERS", answers:['EADCB'],
         hints:[
           "One tag names an exact position. Fix the capacitor's slot, then see what must come before it.",
@@ -783,6 +784,13 @@ registerScenario({
     [{s:'creak',p:.4,v:'shadow'},{s:'bell',p:.12}],
     [{s:'drip',p:.4},{s:'clank',p:.3,v:'shake'}],
     [{s:'thunder',p:.55,v:'flash'},{s:'clank',p:.2,v:'shake'}]
+  ],
+  // shown free of charge when a team has gone quiet for a while
+  nudges:[
+    "The rain slackens for a moment, and the courtyard shows you {it} again.",
+    "A log shifts in the hearth. Firelight moves across {it}.",
+    "Something in the glassware settles. Your eye lands on {it}.",
+    "The wind drops. In the quiet, {it} is what you have left."
   ],
   wrongBeats:WRONG_BEATS, wrongSounds:WRONG_SOUNDS,
   scenes:SCENES, rooms:ROOMS

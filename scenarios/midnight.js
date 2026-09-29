@@ -608,6 +608,7 @@ const ROOMS=[
     { id:'firebox', icon:'🔥', name:'The Firebox Drill', pos:{x:26,y:52,w:11,h:22},
       desc:"The company fire drill, five steps on five soot-stained tags, scattered across the footplate:\n\nTAG A — “Release the brake only after the injector is set.”\n\nTAG B — “Feed the firebox second.”\n\nTAG C — “Break the coal before the firebox is fed.”\n\nTAG D — “Set the injector — never right before or right after feeding the firebox.”\n\nTAG E — “Open the dampers. Exactly one task passes between breaking coal and opening the dampers.”",
       puzzle:{
+        type:'order', order:{labels:{"A": "Release the brake", "B": "Feed the firebox", "C": "Break the coal", "D": "Set the injector", "E": "Open the dampers"}},
         prompt:"Enter the five tag letters in drill order.", placeholder:"FIVE LETTERS", answers:['CBEDA'],
         hints:[
           "One tag names an exact slot. Fix the firebox feed, then see what must come before it.",
@@ -732,6 +733,13 @@ registerScenario({
     [{s:'clack',p:.65},{s:'crackle',p:.22,v:'sparks'}],
     [{s:'clack',p:.6},{s:'bell',p:.14}],
     [{s:'chug',p:.5,v:'shake'},{s:'whistlefar',p:.2,v:'dim'}]
+  ],
+  // shown free of charge when a team has gone quiet for a while
+  nudges:[
+    "The car sways over a joint in the rails. {it} slides into view.",
+    "A door swings on its latch somewhere down the corridor. You think of {it}.",
+    "Cutlery shivers on the tables. Your eye goes to {it}.",
+    "The firebox roars and settles. {it} is the thing still waiting."
   ],
   wrongBeats:WRONG_BEATS, wrongSounds:WRONG_SOUNDS,
   scenes:SCENES, rooms:ROOMS

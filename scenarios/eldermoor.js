@@ -881,6 +881,7 @@ const ROOMS = [
     { id:'raftkit', icon:'🛶', name:'Raft Materials', pos:{x:39,y:75,w:18,h:16},
       desc:"The operator staged everything and labeled each step with a tag — but the tags have scattered in the wind, and they read like a dead man's riddle:\n\nTAG A — “Raise the mast. Exactly one task must pass between lashing the logs and raising the mast, or the lashings slip.”\n\nTAG B — “Lash the logs before the deck is laid.”\n\nTAG C — “Rig the sail only once the rudder is true.”\n\nTAG D — “Lay the deck second. The logs will have settled by then.”\n\nTAG E — “Never fix the rudder right before or right after laying the deck. The hull can't take the strain.”",
       puzzle:{
+        type:'order', order:{labels:{"A": "Raise the mast", "B": "Lash the logs", "C": "Rig the sail", "D": "Lay the deck", "E": "Fix the rudder"}},
         prompt:"Enter the five tag letters in build order.", placeholder:"FIVE LETTERS", answers:['BDAEC'],
         hints:[
           "One tag names an exact position — pin that down first, then see what must come before it.",
@@ -1010,6 +1011,13 @@ registerScenario({
     [{s:'crackle',p:.6,v:'sparks'}],
     [{s:'crickets',p:.55},{s:'creak',p:.2,v:'shadow'}],
     [{s:'wave',p:.5}]
+  ],
+  // shown free of charge when a team has gone quiet for a while
+  nudges:[
+    "The tide pushes something further up the sand. {it} is still sitting there, unread.",
+    "The set hisses, then settles. Your eye keeps going back to {it}.",
+    "The canopy shifts. Whatever is out there moves off — and you notice {it} again.",
+    "A wave breaks and draws back. {it} has not given up everything it holds."
   ],
   wrongBeats:WRONG_BEATS, wrongSounds:WRONG_SOUNDS,
   scenes:SCENES, rooms:ROOMS
