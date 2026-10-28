@@ -552,6 +552,37 @@ body.phone #credits{display:none}
 .qr-players .chip{background:rgba(216,195,154,.1);border:1px solid #5c6f6d;border-radius:20px;
   padding:3px 12px;font-size:.9rem;color:var(--sand)}
 
+/* ---------- pick the ones that qualify ---------- */
+.sel-grid{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 10px;justify-content:center}
+.sel-chip{display:flex;flex-direction:column;align-items:center;gap:3px;min-width:92px;
+  padding:10px 12px;border:1px solid #3a565c;border-radius:10px;background:#0b1619;
+  color:var(--dim);cursor:pointer;transition:border-color .15s,background .15s,transform .1s}
+.sel-chip:hover{border-color:#6dc0b8}
+.sel-chip.on{border-color:var(--teal-hi);background:rgba(79,163,155,.22);transform:translateY(-2px)}
+.sel-chip.on .sel-letter{color:var(--teal-hi)}
+.sel-letter{font-family:'Special Elite',serif;font-size:1.5rem;color:var(--sand);line-height:1}
+.sel-val{font-size:.74rem;font-family:Inter,sans-serif;letter-spacing:.3px;text-align:center}
+.sel-readout{text-align:center;color:var(--dim);font-size:.85rem;margin-bottom:4px}
+.sel-readout b{font-family:'Special Elite',serif;font-size:1.25rem;color:var(--teal-hi);letter-spacing:3px}
+.sel-grid.shakein{animation:shakeI .4s}
+
+/* ---------- a combination lock ---------- */
+.pad-display{display:flex;gap:9px;justify-content:center;margin:16px 0 14px}
+.pad-display i{width:46px;height:58px;border:1px solid #3a565c;border-radius:8px;background:#06110f;
+  font-style:normal;font-family:'Special Elite',serif;font-size:1.9rem;color:var(--teal-hi);
+  display:flex;align-items:center;justify-content:center}
+.pad-display i.set{border-color:var(--teal-hi);box-shadow:0 0 12px rgba(111,211,154,.2)}
+.pad-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;max-width:300px;margin:0 auto}
+.pad-key{padding:15px 0;border:1px solid #3a565c;border-radius:10px;background:#0e1f23;
+  color:var(--sand);font-family:'Special Elite',serif;font-size:1.3rem;cursor:pointer;
+  transition:background .1s,border-color .15s}
+.pad-key:hover{border-color:#6dc0b8;background:#143036}
+.pad-key:active{background:#1b4048;transform:translateY(1px)}
+.pad-key.go{border-color:#6dc0b8;background:linear-gradient(180deg,var(--teal-hi),var(--teal));color:#eafaf7}
+.pad-key.del{color:var(--dim)}
+.pad-grid.shakein{animation:shakeI .4s}
+@media (prefers-reduced-motion: reduce){ .sel-chip,.pad-key{transition:none} .sel-grid.shakein,.pad-grid.shakein{animation:none} }
+
 /* ---------- a control panel ---------- */
 .pan-grid{display:flex;flex-direction:column;gap:9px;margin:14px 0 4px}
 .pan-row{display:flex;flex-direction:column;gap:6px;padding:10px 12px;
@@ -1578,7 +1609,8 @@ function renderHotspots(){
     if(el) el.style.display = objVisible(o)?'':'none';
     if(!objVisible(o)) return;
     const b=document.createElement('button');
-    b.className='hotspot'+(S.solved.has(o.id)?' done':'')+(o.hiddenUntil&&!S.solved.has(o.id)?' new':'');
+    b.className='hotspot'+(S.solved.has(o.id)?' done':'')+(o.hiddenUntil&&!S.solved.has(o.id)?' new':'')
+      +(S.urged===o.id?' urged':'');
     b.dataset.obj=o.id;
     b.style.cssText=`left:${o.pos.x}%;top:${o.pos.y}%;width:${o.pos.w}%;height:${o.pos.h}%`;
     b.innerHTML=`<span class="ring"></span><span class="tag">${o.icon} ${o.name}${S.solved.has(o.id)?' ✓':''}</span>`;
@@ -1623,6 +1655,10 @@ function openModal(objId){
       html+=`<div class="solved-note">✓ ${p.solvedText||'Solved.'}</div>`;
     } else if(p.type==='simul'){
       html+=renderSimul(o)+renderHints(o);
+    } else if(p.type==='select'){
+      html+=renderSelect(o)+renderHints(o);
+    } else if(p.type==='keypad'){
+      html+=renderKeypad(o)+renderHints(o);
     } else if(p.type==='panel'){
       html+=renderPanel(o)+renderHints(o);
     } else if(p.type==='hold'){
@@ -1658,6 +1694,8 @@ function openModal(objId){
   }
   if(o.puzzle&&o.puzzle.type==='dial'&&!solved) dialInit(o);
   if(o.puzzle&&o.puzzle.type==='order'&&!solved) orderInit(o);
+  if(o.puzzle&&o.puzzle.type==='select'&&!solved) selectInit(o);
+  if(o.puzzle&&o.puzzle.type==='keypad'&&!solved) keypadInit(o);
   if(o.puzzle&&o.puzzle.type==='panel'&&!solved) panelInit(o);
   if(o.puzzle&&o.puzzle.type==='hold'&&!solved) holdInit(o);
   const inp=$('answer-input'); if(inp) inp.focus();
@@ -1769,9 +1807,13 @@ function offerNudge(){
   noteProgress();                              // don't fire again straight away
   const b=(ACTIVE.nudges&&ACTIVE.nudges[S.roomIndex])||'Something here has not been looked at properly.';
   showBeat(b.replace('{it}', o.name), null);
-  // mark it on the board so the words have somewhere to land
-  const btn=document.querySelector(`.hotspot[data-obj="${o.id}"]`);
-  if(btn){ btn.classList.add('urged'); setTimeout(()=>btn.classList.remove('urged'), 22000); }
+  // Mark it on the board so the words have somewhere to land. This lives in
+  // state rather than on the element: any team-mate's update re-renders the
+  // hotspots, and a class pinned straight onto the button was being wiped
+  // seconds later by somebody else's keep-alive.
+  S.urged=o.id;
+  setTimeout(()=>{ if(S.urged===o.id){ S.urged=null; renderHotspots(); } }, 22000);
+  renderHotspots();
 }
 
 /* ---------- answers ---------- */
@@ -2088,6 +2130,108 @@ function submitOrder(objId){
   list.classList.remove('shakein'); void list.offsetWidth; list.classList.add('shakein');
 }
 
+/* ---------- pick the ones that qualify ----------
+   This puzzle was identical in all five scenarios: a rack of lettered things,
+   a rule about which ones are sound, and a box to type the survivors' letters
+   into. Tapping the rack itself is the same deduction with the bookkeeping
+   taken away — you can see what you have chosen instead of holding it in your
+   head while you transcribe. */
+function renderSelect(o){
+  const p=o.puzzle, cfg=p.select;
+  const picked=(S.selectState&&S.selectState[o.id]) || [];
+  S.selectState=S.selectState||{}; S.selectState[o.id]=picked;
+  const chips=cfg.items.map((it,i)=>`
+    <button class="sel-chip${picked.includes(i)?' on':''}" data-i="${i}">
+      <span class="sel-letter">${esc(it.letter)}</span>
+      <span class="sel-val">${esc(it.value)}</span>
+    </button>`).join('');
+  return `<div class="puzzle-box">
+    <div class="prompt">${p.prompt}</div>
+    <div class="sel-grid" id="sel-grid">${chips}</div>
+    <div class="sel-readout">Chosen: <b id="sel-read">—</b></div>
+    <div class="how">Tap the ones the rule keeps. They stay in rack order, so you do not have to work out the spelling yourself — tap again to put one back.</div>
+    <button class="big-btn" style="margin-top:12px" onclick="submitSelect('${o.id}')">${cfg.commit||'✔ THAT IS THE SET'}</button>
+    <div class="feedback" id="feedback"></div>
+  </div>`;
+}
+function selectWord(o){
+  const picked=S.selectState[o.id]||[];
+  return o.puzzle.select.items.filter((it,i)=>picked.includes(i)).map(it=>it.letter).join('');
+}
+function selectInit(o){
+  const grid=$('sel-grid'); if(!grid) return;
+  const paint=()=>{
+    const w=selectWord(o);
+    const read=$('sel-read'); if(read) read.textContent=w||'—';
+  };
+  grid.querySelectorAll('.sel-chip').forEach(b=>{
+    b.onclick=()=>{
+      const i=+b.dataset.i, picked=S.selectState[o.id];
+      const at=picked.indexOf(i);
+      if(at>=0) picked.splice(at,1); else picked.push(i);
+      b.classList.toggle('on',at<0);
+      sfxThud(); paint();
+    };
+  });
+  paint();
+}
+function submitSelect(objId){
+  const o=currentRoom().objects.find(x=>x.id===objId);
+  if(o.puzzle.answers.includes(norm(selectWord(o)))) return solvePuzzle(o);
+  wrongAnswer();
+  const fb=$('feedback');
+  fb.className='feedback bad';
+  fb.textContent='\u2717 '+(o.puzzle.select.wrong||'That set does not hold.')+' (+0:05 penalty)';
+  const g=$('sel-grid'); g.classList.remove('shakein'); void g.offsetWidth; g.classList.add('shakein');
+}
+
+/* ---------- a combination lock ----------
+   Every one of these is a lock in the fiction — a crate, a safe, a fuse box,
+   a winch — and was a text box you typed four digits into. The keys are the
+   thing the room actually has. */
+function renderKeypad(o){
+  const p=o.puzzle, n=(p.answers[0]||'').length;
+  S.padState=S.padState||{}; S.padState[o.id]=S.padState[o.id]||'';
+  const keys=['1','2','3','4','5','6','7','8','9','⌫','0','✔'];
+  return `<div class="puzzle-box">
+    <div class="prompt">${p.prompt}</div>
+    <div class="pad-display" id="pad-display">${'<i></i>'.repeat(n)}</div>
+    <div class="pad-grid" id="pad-grid">
+      ${keys.map(k=>`<button class="pad-key${k==='✔'?' go':''}${k==='⌫'?' del':''}" data-k="${k}">${k}</button>`).join('')}
+    </div>
+    <div class="how">${p.padHow||ACTIVE.padHow||'Key in the combination. A wrong one only costs 5 seconds.'}</div>
+    <div class="feedback" id="feedback"></div>
+  </div>`;
+}
+function keypadInit(o){
+  const grid=$('pad-grid'); if(!grid) return;
+  const n=(o.puzzle.answers[0]||'').length;
+  const paint=()=>{
+    const v=S.padState[o.id], d=$('pad-display'); if(!d) return;
+    d.innerHTML=Array.from({length:n},(_,i)=>`<i${v[i]?' class="set"':''}>${v[i]||''}</i>`).join('');
+  };
+  grid.querySelectorAll('.pad-key').forEach(b=>{
+    b.onclick=()=>{
+      const k=b.dataset.k;
+      let v=S.padState[o.id];
+      if(k==='⌫'){ v=v.slice(0,-1); sfxThud(); }
+      else if(k==='✔'){
+        if(o.puzzle.answers.includes(norm(v))) return solvePuzzle(o);
+        wrongAnswer();
+        const fb=$('feedback');
+        fb.className='feedback bad';
+        fb.textContent='\u2717 '+(o.puzzle.padMiss||ACTIVE.padMiss||'The lock does not move.')+' (+0:05 penalty)';
+        S.padState[o.id]=''; paint();
+        const g=$('pad-grid'); g.classList.remove('shakein'); void g.offsetWidth; g.classList.add('shakein');
+        return;
+      }
+      else if(v.length<n){ v+=k; tone(520+(+k||0)*18,0.05,undefined,0.09,'square'); }
+      S.padState[o.id]=v; paint();
+    };
+  });
+  paint();
+}
+
 /* ---------- a control panel ----------
    Set each control to the right position, then commit. Different in kind from
    everything else here: not a sequence, not a value, not a word — a
@@ -2268,6 +2412,7 @@ function buildEmojiRow(){
 
 function enterRoom(idx){
   S.roomIndex=idx;
+  S.urged=null;
   clearBeats();
   const room=currentRoom();
   const card=document.createElement('div');
@@ -2520,6 +2665,8 @@ function buildGmPanel(){
                  o.puzzle.type==='panel'?`set ${(o.puzzle.panel.controls||[]).map((c,i)=>c.label+' → '+(o.puzzle.answers[0].split('|')[i])).join(', ')}, then commit`:
                  o.puzzle.type==='hold'?`hold until the gauge reads ${o.puzzle.hold.target}${o.puzzle.hold.unit||''}, then let go (±${o.puzzle.hold.tolerance||0.45})`:
                  o.puzzle.type==='order'?`${(o.puzzle.answers||['—'])[0]} — drag the tags into that order`:
+                 o.puzzle.type==='select'?`${(o.puzzle.answers||['—'])[0]} — tap those, in rack order`:
+                 o.puzzle.type==='keypad'?`${(o.puzzle.answers||['—'])[0]} — key it in`:
                  (o.puzzle.answers||['—'])[0];
       html+=`<div class="gm-puzzle"><b>${o.icon} ${o.name}</b> — answer: <span class="gm-answer">${disp}</span>
         <ul>${o.puzzle.hints.map((h,i)=>`<li>Hint ${i+1} (+${fmt(HINT_COSTS[i])}): ${h}</li>`).join('')}</ul></div>`;

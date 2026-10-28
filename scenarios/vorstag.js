@@ -458,7 +458,8 @@ const ROOMS=[
     { id:'well', onSolve:{el:'rx-gatehouse',op:.2,fx:'surge'}, icon:'⛲', name:'The Courtyard Well', pos:{x:34,y:66,w:18,h:18},
       desc:"The well crank is bound by a 4-digit lock. Four symbols are chiselled around the rim, each with a digit — in no particular order:\n\n☾ 7      ✠ 3      ⚘ 9      ♜ 5\n\nAnd on the crossbeam, one line of the household's motto:\n\n“WIND THE YEAR FROM SPRING.”",
       puzzle:{
-        prompt:"Enter the 4-digit crank code.", placeholder:"0000", answers:['9357'],
+        type:'keypad',
+        prompt:"Enter the 4-digit crank code.", answers:['9357'],
         hints:[
           "You need the symbols in a seasonal order — something else in this court pairs symbols with seasons.",
           "The tapestry: ⚘ SPRING, ✠ SUMMER, ♜ AUTUMN. The moon ☾ can only be winter. Wind the year from spring.",
@@ -560,7 +561,8 @@ const ROOMS=[
     { id:'orrery', icon:'🪐', name:'The Orrery Lock', pos:{x:38,y:70,w:12,h:20}, hiddenUntil:'folio',
       desc:"A brass orrery guards the bookcase mechanism. Three planet-weights hang loose beside it, each stamped in the Baron's beloved Roman numerals:\n\n⬤ VII      ⬤ III      ⬤ VI\n\nThe rule plate on the pedestal reads:\n\n“HANG THE HEAVIEST NEAREST THE SUN,\nTHE LIGHTEST FARTHEST OUT.\nTHEN READ THE ARMS SUNWARD-OUT,\nAND GIVE THE ORRERY ITS NUMBER.”",
       puzzle:{
-        prompt:"Convert the numerals, hang the weights heaviest-to-lightest, and type the three digits from the sun outward.", placeholder:"000", answers:['763'],
+        type:'keypad',
+        prompt:"Convert the numerals, hang the weights heaviest-to-lightest, and type the three digits from the sun outward.", answers:['763'],
         hints:[
           "First convert the Roman numerals: VII, VI and III.",
           "That's 7, 6 and 3. Heaviest hangs nearest the sun, lightest farthest — so read them largest to smallest.",
@@ -599,9 +601,12 @@ const ROOMS=[
       }
     },
     { id:'jars', onSolve:{el:'rx-laboratory',op:.2,fx:'surge'}, icon:'⚡', name:'Leyden Jar Rack', pos:{x:6,y:24,w:38,h:16}, hiddenUntil:'slab',
-      desc:"Eight Leyden jars on the rack, each chalked with a letter and a charge reading. Left to right:\n\nR — 5\nM — 2\nI — 3\nU — 4\nS — 7\nE — 1\nD — 6\nN — 9\n\nThe Baron's rule, burned into the shelf: “AN EVEN CHARGE HAS ALREADY EARTHED ITSELF AND IS DEAD. TRUST ONLY THE ODD.”",
+      desc:"Eight Leyden jars on the rack, each chalked with a letter and a charge reading. Left to right:\n\nAn even charge has already earthed itself and is dead. Trust only the odd.",
       puzzle:{
-        prompt:"Which jars can be trusted? Enter their letters in rack order.", placeholder:"LETTERS", answers:['RISEN'],
+        type:'select',
+        select:{commit:"\u26a1 THESE JARS HOLD CHARGE", wrong:"The rack stays dead.",
+          items:[{letter:"R",value:"charge 5"},{letter:"M",value:"charge 2"},{letter:"I",value:"charge 3"},{letter:"U",value:"charge 4"},{letter:"S",value:"charge 7"},{letter:"E",value:"charge 1"},{letter:"D",value:"charge 6"},{letter:"N",value:"charge 9"}]},
+        prompt:"Which jars can be trusted? Tap the ones still sound.", answers:['RISEN'],
         hints:[
           "Odd numbers end in 1, 3, 5, 7, 9. Check each jar's charge; split the rack among the crew.",
           "Drop the even charges — M(2), U(4), D(6). Read the odd ones left to right.",
@@ -615,7 +620,8 @@ const ROOMS=[
     { id:'switchboard', icon:'🎛️', name:'Galvanic Switchboard', pos:{x:76,y:28,w:18,h:38},
       desc:"The master switchboard is locked behind three fuse dials, 0–9 each. The Baron's tag swings from the lever:\n\n“THREE EVEN FIGURES WAKE THE BOARD.\nMULTIPLIED TOGETHER THEY MAKE FORTY-EIGHT.\nSET THEM: LARGEST, THEN SMALLEST, THEN MIDDLE.”",
       puzzle:{
-        prompt:"Find the three even digits whose product is 48, then dial them largest, smallest, middle.", placeholder:"000", answers:['624'],
+        type:'keypad',
+        prompt:"Find the three even digits whose product is 48, then dial them largest, smallest, middle.", answers:['624'],
         hints:[
           "You need three even digits (2, 4, 6 or 8) that multiply to exactly 48. Try factor pairs as a team.",
           "48 = 2 × 4 × 6 — and no other trio of even digits works.",
@@ -672,7 +678,8 @@ const ROOMS=[
     { id:'fusebox', onSolve:{el:'rx-tower',op:.2,fx:'surge'}, icon:'🕯️', name:'Chapel Fuse Box', pos:{x:13,y:50,w:9,h:20},
       desc:"The chapel mains feed the tower through a 4-digit fuse box. On its door, in the Baron's hand:\n\n“FATHER SANG IT TWICE\nWHEN THE STORM CAME CLOSE.”",
       puzzle:{
-        prompt:"Enter the 4-digit code.", placeholder:"0000", answers:['2386'],
+        type:'keypad',
+        prompt:"Enter the 4-digit code.", answers:['2386'],
         hints:[
           "You've already 'sung it' once tonight — on the organ, downstairs.",
           "The stop was 119.3. Sing it twice: double it.",
@@ -696,7 +703,8 @@ const ROOMS=[
     { id:'portcullis', icon:'⚙️', name:'Portcullis Winch', pos:{x:85,y:70,w:12,h:22}, hiddenUntil:'barometer',
       desc:"The portcullis winch answers to four glyph rings — the same four symbols from the courtyard well, in the same seasonal order:\n\n☾   ✠   ⚘   ♜\n\nAnd chiselled beneath, the Vorstag motto's other half:\n\n“THE YEAR WINDS FORWARD.\nTHE GATE WINDS BACK.”",
       puzzle:{
-        prompt:"Enter the 4-digit release.", placeholder:"0000", answers:['7539'],
+        type:'keypad',
+        prompt:"Enter the 4-digit release.", answers:['7539'],
         hints:[
           "You wound the year forward at the well. The gate winds back.",
           "The well code was 9357. Reverse it.",
@@ -793,6 +801,9 @@ registerScenario({
     "Something in the glassware settles. Your eye lands on {it}.",
     "The wind drops. In the quiet, {it} is what you have left."
   ],
+  // One wording for every lock in this fiction: a salt-seized crate and a
+  // frozen hut safe do not fail the same way.
+  padMiss:'The wards grind, catch, and hold.', padHow:'Key in the figures. A wrong set only wakes the mechanism for 5 seconds.',
   wrongBeats:WRONG_BEATS, wrongSounds:WRONG_SOUNDS,
   scenes:SCENES, rooms:ROOMS
 });

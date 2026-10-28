@@ -414,7 +414,8 @@ const ROOMS=[
     { id:'locker', onSolve:{el:'rx-cryobay',op:.2,fx:'surge'}, icon:'🗄️', name:'Maintenance Locker', pos:{x:79,y:40,w:10,h:30},
       desc:"A tall maintenance locker sealed with a 4-digit mag-lock. Four system glyphs are stencilled above it, each with a digit — in no particular order:\n\n⚡ POWER 9      ❄ CRYO 2      ☢ REACTOR 6      💧 WATER 4\n\nDigits, but no sequence. Somewhere on this deck there's a procedure that puts these systems in order.",
       puzzle:{
-        prompt:"Enter the 4-digit code.", placeholder:"0000", answers:['6942'],
+        type:'keypad',
+        prompt:"Enter the 4-digit code.", answers:['6942'],
         hints:[
           "Four systems, four digits — you need an official ORDER. Check the wall by the pods.",
           "The evacuation placard: SHUT DOWN IN THIS ORDER — REACTOR, POWER, WATER, CRYO.",
@@ -522,7 +523,8 @@ const ROOMS=[
     { id:'reactor', icon:'☢️', name:'Reactor Calibration', pos:{x:88,y:40,w:9,h:42}, hiddenUntil:'console',
       desc:"Three numbered control rods — COPPER, IRON, and LEAD — must seat into the LEFT, CENTER and RIGHT sockets, and the readout takes their numbers left to right. The engineer's notes:\n\n• “The copper rod is stamped with the perfect number.” (Six — the engineer's little joke: 6 = 1+2+3.)\n• “The lead rod bears the loneliest number.”\n• “Iron carries the one that's left: five.”\n\n• “Copper shorts out in any socket but the leftmost.”\n• “Iron holds only when seated somewhere left of lead.”\n\nAnd below, urgent: “REMEMBER THE DISH HEADING. YOU WILL NEED IT AGAIN.”",
       puzzle:{
-        prompt:"Seat the rods, then type the readout — the three rod numbers, left socket to right.", placeholder:"000", answers:['651'],
+        type:'keypad',
+        prompt:"Seat the rods, then type the readout — the three rod numbers, left socket to right.", answers:['651'],
         hints:[
           "Two jobs: first match each metal to its number (copper 6, lead 1, iron 5), then place them using the socket rules.",
           "Copper (6) can only sit leftmost. That leaves center and right for iron (5) and lead (1) — and iron must be left of lead.",
@@ -564,9 +566,12 @@ const ROOMS=[
       }
     },
     { id:'trays', onSolve:{el:'rx-hydro',op:.2,fx:'surge'}, icon:'🧪', name:'Specimen Trays', pos:{x:32,y:68,w:56,h:12}, hiddenUntil:'vines',
-      desc:"Nine specimen trays under the grow lights, each stamped with a letter and a live seed count. Left to right:\n\nS — 7 seeds\nB — 4 seeds\nT — 5 seeds\nA — 3 seeds\nI — 8 seeds\nR — 2 seeds\nV — 11 seeds\nO — 9 seeds\nE — 13 seeds\n\nThe botanist's rule, stamped on the rack: “HARVEST ONLY THE TRAYS WHOSE COUNT IS A PRIME NUMBER — the rest cross-pollinated. Trust nothing divisible.”",
+      desc:"Nine specimen trays under the grow lights, each stamped with a letter and a live seed count. Left to right:\n\nHarvest only the trays whose count is a prime number.",
       puzzle:{
-        prompt:"Which trays get harvested? Enter their letters in order.", placeholder:"LETTERS", answers:['STARVE'],
+        type:'select',
+        select:{commit:"\ud83c\udf31 HARVEST THESE", wrong:"The rack rejects the harvest.",
+          items:[{letter:"S",value:"7 seeds"},{letter:"B",value:"4 seeds"},{letter:"T",value:"5 seeds"},{letter:"A",value:"3 seeds"},{letter:"I",value:"8 seeds"},{letter:"R",value:"2 seeds"},{letter:"V",value:"11 seeds"},{letter:"O",value:"9 seeds"},{letter:"E",value:"13 seeds"}]},
+        prompt:"Which trays get harvested? Tap the ones worth taking.", answers:['STARVE'],
         hints:[
           "A prime is divisible only by 1 and itself. Check each tray's count; split the nine among the crew.",
           "Drop 4 (2×2), 8 (2×4) and 9 (3×3). Keep 7, 5, 3, 2, 11, 13 and read those letters left to right.",
@@ -580,7 +585,8 @@ const ROOMS=[
     { id:'pumps', icon:'⚙️', name:'Nutrient Pumps', pos:{x:4,y:68,w:13,h:20},
       desc:"The pump manifold is padlocked — a 3-digit dial, one digit per pump down the line. The priming instructions are stencilled on the intake:\n\n“PRIMING SEQUENCE —\nPump one draws half a dozen litres a stroke.\nEach pump down the line draws two litres less than the one before it.\nDial the three stroke-counts in line order.”",
       puzzle:{
-        prompt:"Work out each pump's litres-per-stroke and type the three numbers in order.", placeholder:"000", answers:['642'],
+        type:'keypad',
+        prompt:"Work out each pump's litres-per-stroke and type the three numbers in order.", answers:['642'],
         hints:[
           "Start with pump one: how many is half a dozen?",
           "Pump one draws 6. Each pump after it draws two less: 6, then 4, then…",
@@ -640,7 +646,8 @@ const ROOMS=[
     { id:'fuelpanel', onSolve:{el:'rx-podbay',op:.2,fx:'surge'}, icon:'⛽', name:'Fuel Lock', pos:{x:25,y:40,w:11,h:14},
       desc:"The fuel line is locked behind a 4-digit panel. The engineer's plate reads:\n\n“PROSPERO FUELING PROTOCOL.\nAN OFFICER NEVER FORGETS THE DISH HEADING —\nAND THE EMERGENCY CHANNEL SITS AT TWICE IT.”",
       puzzle:{
-        prompt:"Enter the 4-digit code.", placeholder:"0000", answers:['9430'],
+        type:'keypad',
+        prompt:"Enter the 4-digit code.", answers:['9430'],
         hints:[
           "You set the dish heading yourself, back on the bridge. The plate wants twice it.",
           "The heading was 47.15. Double it.",
@@ -664,7 +671,8 @@ const ROOMS=[
     { id:'clamps', icon:'🗜️', name:'Docking Clamps', pos:{x:72,y:56,w:16,h:22}, hiddenUntil:'window',
       desc:"Four heavy clamps pin the pod to its cradle, released by four glyph tumblers — the same system glyphs from the cryo bay locker, in the same order:\n\n⚡   ❄   ☢   💧\n\nA single line is stamped beneath them:\n\n“SHUTDOWN RUNS FORWARD.\nRELEASE RUNS BACKWARD.”",
       puzzle:{
-        prompt:"Enter the 4-digit release code.", placeholder:"0000", answers:['2496'],
+        type:'keypad',
+        prompt:"Enter the 4-digit release code.", answers:['2496'],
         hints:[
           "You've used these glyphs before — the locker in the cryo bay opened on the shutdown order.",
           "The shutdown code was 6942. Release runs backward.",
@@ -762,6 +770,9 @@ registerScenario({
     "Somewhere a pump kicks in. The sound draws your attention to {it}.",
     "Bay pressure ticks down a notch. {it} is the thing you have not finished."
   ],
+  // One wording for every lock in this fiction: a salt-seized crate and a
+  // frozen hut safe do not fail the same way.
+  padMiss:'The bolt stays shut. Somewhere down the corridor, something answers it.', padHow:'Key in the code. The pad beeps once for a bad entry, and that costs 5 seconds.',
   wrongBeats:WRONG_BEATS, wrongSounds:WRONG_SOUNDS,
   scenes:SCENES, rooms:ROOMS
 });
