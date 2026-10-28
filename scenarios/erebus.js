@@ -473,7 +473,7 @@ const ROOMS=[
         beatSound:'hiss'
       }
     },
-    { id:'footlocker', icon:'🧳', name:'The Foot Locker', pos:{x:26,y:69,w:13,h:14}, hiddenUntil:'recorder',
+    { id:'footlocker', icon:'🧳', name:'The Foot Locker', pos:{x:26,y:69,w:13,h:14},
       desc:"A foot locker banded in steel, its 5-letter lock guarded by a Vigenère cipher — the scientist scratched the wheel and its keyword right onto the lid:\n\nKEYWORD: ICE  (the one thing this station studies)\nCIPHER:  N T S A V\n\n“Line the keyword under the cipher, repeating — I, C, E, I, C — and subtract each key letter (A=0). What's left is the word.”",
       puzzle:{
         prompt:"Enter the deciphered word.", placeholder:"FIVE LETTERS", answers:['FROST'],
@@ -540,7 +540,7 @@ const ROOMS=[
         beatSound:'growl'
       }
     },
-    { id:'coldsafe', icon:'🔐', name:'The Cold Safe', pos:{x:8,y:68,w:12,h:20}, hiddenUntil:'cores',
+    { id:'coldsafe', icon:'🔐', name:'The Cold Safe', pos:{x:8,y:68,w:12,h:20},
       desc:"The lab's cold safe, 3-digit dial. The tag from the core rack, in the lead scientist's careful print:\n\n“Three different digits, every one a multiple of three, none of them zero.\nThe first is the sum of the other two.\nThe smallest hides in the middle.”",
       puzzle:{
         prompt:"Find the three digits that fit and enter them in order.", placeholder:"000", answers:['936'],
@@ -610,7 +610,7 @@ const ROOMS=[
         solvedText:"176.4 — the plane's guard channel. The crystal seats, the transmitter warms, and a voice you could weep at answers on the third call: “Erebus, we see your lights. Give us a runway and a window.”"
       }
     },
-    { id:'weather', icon:'🌨️', name:'The Weather Fax', pos:{x:57,y:66,w:14,h:18}, hiddenUntil:'lockbox',
+    { id:'weather', icon:'🌨️', name:'The Weather Fax', pos:{x:57,y:66,w:14,h:18},
       desc:"The fax chatters out the morning's landing windows:\n\n“WINDOW 1 — 4:50 · visibility 800 m\nWINDOW 2 — 6:10 · visibility 2200 m\nWINDOW 3 — 9:30 · visibility 3000 m\n\nMINIMUM LEGAL VISIBILITY: 1500 m.\nAIRCRAFT FUEL EXHAUSTED BY 8:00.\nDRUM LINE MUST BURN 40 MINUTES BEFORE THE WINDOW.”",
       puzzle:{
         prompt:"Set the drum-line ignition time (hour then minutes).", placeholder:"H:MM", answers:['530','0530'],
