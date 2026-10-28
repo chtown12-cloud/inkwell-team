@@ -78,7 +78,11 @@ button{font-family:'Inter',sans-serif;cursor:pointer}
 
 /* ---------- cinematic overlays ---------- */
 #vignette{position:fixed;inset:0;pointer-events:none;z-index:30;background:radial-gradient(ellipse at 50% 46%, transparent 52%, rgba(0,0,0,.62) 100%);transition:opacity .8s}
-#vignette.tense{background:radial-gradient(ellipse at 50% 46%, transparent 38%, rgba(10,0,0,.82) 100%)}
+/* The hour has a shape: this layer comes up continuously underneath the whole
+   game, instead of the red snapping on at five minutes and never moving again. */
+#vignette::after{content:"";position:absolute;inset:0;
+  background:radial-gradient(ellipse at 50% 46%, transparent 38%, rgba(10,0,0,.82) 100%);
+  opacity:var(--tight,0);transition:opacity 2.4s linear}
 #vignette.pulse{animation:vigpulse 1.05s ease-in-out infinite}
 @keyframes vigpulse{0%,100%{opacity:.85}50%{opacity:1}}
 #redflash{position:fixed;inset:0;pointer-events:none;z-index:31;background:radial-gradient(ellipse at center, rgba(160,30,10,.28), rgba(90,10,0,.5));opacity:0;transition:opacity .5s}
@@ -318,6 +322,11 @@ pre.share{text-align:left;background:#0a1416;border:1px solid #2c4144;border-rad
 /* ---------- dynamic-visuals pass ---------- */
 #scene{transition:filter .14s}
 #scene.lightsdip{filter:brightness(.45)}
+/* a real failure, not a flicker: long enough that somebody says something */
+#scene.blackout{filter:brightness(.05) saturate(.3);transition:filter .4s}
+@keyframes tamperflick{0%,100%{opacity:1}12%,42%{opacity:.15}22%,64%{opacity:1}78%{opacity:.3}}
+.tampered{animation:tamperflick 2.4s ease-in-out}
+@media (prefers-reduced-motion: reduce){ .tampered{animation:none} }
 /* ---------- how a place carries itself ----------
    Each scenario moves in its own way. Every one of these is deliberately
    tiny: the hotspots ride along with the scene, so anything bigger would
@@ -565,6 +574,10 @@ body.phone #credits{display:none}
 .sel-readout{text-align:center;color:var(--dim);font-size:.85rem;margin-bottom:4px}
 .sel-readout b{font-family:'Special Elite',serif;font-size:1.25rem;color:var(--teal-hi);letter-spacing:3px}
 .sel-grid.shakein{animation:shakeI .4s}
+
+/* the phone, once the last lock is open and the screen has not been pressed */
+.ph-wait{margin:14px 2px 0;padding:12px 14px;border:1px solid var(--teal-hi);border-radius:10px;
+  background:rgba(79,163,155,.14);color:var(--sand);font-size:.95rem;line-height:1.45;text-align:center}
 
 /* ---------- a combination lock ---------- */
 .pad-display{display:flex;gap:9px;justify-content:center;margin:16px 0 14px}
@@ -937,13 +950,18 @@ function initAudio(){
     rSrc.start(); rLFO.start();
   }catch(e){ AC=null; }
 }
-function setAmbience(p){
-  if(!AC) return;
-  const t=AC.currentTime;
-  amb.surf.gain.setTargetAtTime(p.surf||0, t, 2.5);
-  amb.wind.gain.setTargetAtTime(p.wind||0, t, 2.5);
-  amb.drone.gain.setTargetAtTime(p.drone||0, t, 4);
-  amb.hum.gain.setTargetAtTime(p.hum||0, t, 2);
+let ambBed=null;
+function setAmbience(p){ ambBed=p||null; applyAmbience(); }
+/* The bed is the room; the lift on top of it is the hour. Re-applied every few
+   seconds so the low end creeps up under the team rather than arriving all at
+   once at five minutes to go. */
+function applyAmbience(){
+  if(!AC||!ambBed) return;
+  const t=AC.currentTime, p=ambBed, k=S.finished?0:pressure(), sq=k*k;
+  amb.surf.gain.setTargetAtTime((p.surf||0)*(1+0.16*k), t, 2.5);
+  amb.wind.gain.setTargetAtTime((p.wind||0)*(1+0.3*k), t, 2.5);
+  amb.drone.gain.setTargetAtTime((p.drone||0)+0.038*sq, t, 4);
+  amb.hum.gain.setTargetAtTime((p.hum||0)+0.022*sq, t, 2);
   amb.rustle.gain.setTargetAtTime(p.rustle||0, t, 2.5);
 }
 
@@ -1015,11 +1033,23 @@ function playMorse(pattern,gain=0.16,unit=0.085,freq=640){
   }
   return t-(AC.currentTime);
 }
-function startHeartbeat(){
-  if(heartbeatTimer||!AC) return;
-  heartbeatTimer=setInterval(()=>{ if(muted||!AC) return; const t=AC.currentTime; tone(52,0.13,t,0.4); tone(48,0.15,t+0.22,0.3); },950);
+/* It used to switch on at five minutes, at full volume, at one fixed speed.
+   Now it starts early and almost inaudible, and climbs. */
+let heartbeatPeriod=0;
+const HEART_FROM=0.58;                       // where you first half-hear it
+function heartbeatFor(k){
+  if(!AC) return;
+  if(k<HEART_FROM) return stopHeartbeat();
+  const up=Math.min(1,(k-HEART_FROM)/(1-HEART_FROM));
+  const period=Math.round(1250-430*up), gain=0.1+0.32*up;
+  if(heartbeatTimer && Math.abs(period-heartbeatPeriod)<45) return;   // close enough
+  stopHeartbeat();
+  heartbeatPeriod=period;
+  heartbeatTimer=setInterval(()=>{ if(muted||!AC) return; const t=AC.currentTime;
+    tone(52,0.13,t,gain); tone(48,0.15,t+0.22,gain*0.75); },period);
 }
-function stopHeartbeat(){ clearInterval(heartbeatTimer); heartbeatTimer=null; }
+function startHeartbeat(){ heartbeatFor(Math.max(pressure(),HEART_FROM+0.01)); }
+function stopHeartbeat(){ clearInterval(heartbeatTimer); heartbeatTimer=null; heartbeatPeriod=0; }
 
 /* --- victory theme: the tension lifts, something warm plays you home --- */
 let victoryMusicTimer=null;
@@ -1130,18 +1160,23 @@ function playRoomVfx(name){
 }
 
 function startRoomEvents(idx){
-  clearInterval(roomEventTimer);
+  clearTimeout(roomEventTimer);
   const spec=(ACTIVE.events||[])[idx]||[];
-  roomEventTimer=setInterval(()=>{
-    if(S.finished) return;
-    // the lights aren't entirely reliable in any of these places
-    if(!S.isPhone && Math.random()<0.11) ROOM_VFX.dim();
-    spec.forEach(ev=>{
-      if(Math.random()>=ev.p) return;
-      if(AC && !muted) (AMBIENT_SFX[ev.s]||(()=>{}))();
-      if(ev.v) playRoomVfx(ev.v);      // ...and let it be seen, not just heard
-    });
-  },5200);
+  // Re-armed each time rather than a fixed interval: the room gets more
+  // restless as the hour goes on, from about every five seconds to about
+  // every three.
+  const beat=()=>{
+    if(!S.finished){
+      if(!S.isPhone && Math.random()<0.11+0.08*pressure()) ROOM_VFX.dim();
+      spec.forEach(ev=>{
+        if(Math.random()>=ev.p) return;
+        if(AC && !muted) (AMBIENT_SFX[ev.s]||(()=>{}))();
+        if(ev.v) playRoomVfx(ev.v);      // ...and let it be seen, not just heard
+      });
+    }
+    roomEventTimer=setTimeout(beat, 5200-2200*pressure());
+  };
+  roomEventTimer=setTimeout(beat, 5200-2200*pressure());
 }
 
 /* ============================================================
@@ -1374,7 +1409,8 @@ const S = {
   hintsShown:{}, hintsUsed:0, wrongCount:0, penaltySec:0,
   startTime:null, endElapsed:null,
   signalPattern:'', teamName:'THE CASTAWAYS', teamEmoji:'⚓',
-  difficulty:'standard', isPhone:false, code:null
+  difficulty:'standard', isPhone:false, code:null,
+  urged:null, staged:{}, lastIntrusion:0
 };
 
 /* ---------- stage scaling & parallax ---------- */
@@ -1394,24 +1430,120 @@ addEventListener('mousemove', e=>{
 /* ---------- timer ---------- */
 function elapsedSec(){ if(S.endElapsed!==null) return S.endElapsed; return S.startTime?Math.floor((Date.now()-S.startTime)/1000):0; }
 function fmt(sec){ sec=Math.max(0,Math.floor(sec)); return Math.floor(sec/60)+':'+String(sec%60).padStart(2,'0'); }
+/* ============================================================
+   PRESSURE — the shape of the hour
+
+   The game used to have exactly one dramatic event in it: a switch at five
+   minutes to go that turned the screen red and started a heartbeat. Before
+   that, minute 1 and minute 40 were indistinguishable.
+
+   This is a single 0-1 number instead, and everything that can lean on it
+   does: the ambience bed, the heartbeat, how restless the room is, and how
+   far the dark has closed in. It takes the HIGHER of "how much of the clock
+   is gone" and "how far through the rooms you are", so a team that is ahead
+   still gets a climax as it reaches the last room, and a team that is behind
+   gets one from the clock. Being proportional also fixes the relaxed hour,
+   which was using the same absolute five-minute threshold on a longer game.
+   ============================================================ */
+function pressure(){
+  if(!S.started) return 0;
+  const rooms=(ACTIVE&&ACTIVE.rooms&&ACTIVE.rooms.length)||4;
+  const here=currentRoom&&currentRoom();
+  const puz=here&&here.objects?here.objects.filter(o=>o.puzzle):[];
+  const part=puz.length?puz.filter(o=>S.solved.has(o.id)).length/puz.length:0;
+  const byRoom=Math.min(1,(S.roomIndex+part)/rooms);
+  // Press On and the deadline is gone, so the clock stops driving this at all;
+  // what is left is simply being deep in the story.
+  if(S.overtime) return byRoom*0.5;
+  const byClock=Math.min(1,(elapsedSec()+S.penaltySec)/START_SECONDS);
+  return Math.max(byClock,byRoom);
+}
+
+/* ---------- the director: things that happen TO you ----------
+   The threat in all five of these stories used to be pure implication for
+   forty-five minutes. Three times a game, something intrudes: the lights
+   fail, something crosses the room, or a clue you had already settled is
+   found disturbed. Each is a composite of effects the game already had,
+   plus a line in the scenario's own voice. */
+let directorBusy=false;
+const DIRECTOR={
+  blackout(done){
+    const sc=$('scene'), dm=$('dimmer');
+    if(AC&&!muted) sfxThud();
+    sc.classList.add('blackout'); dm.style.opacity=0.85;
+    setTimeout(()=>{
+      sc.classList.remove('blackout'); dm.style.opacity=0;
+      playRoomVfx('surge'); playRoomVfx('sparks');
+      done();
+    }, CALM?900:2300);
+  },
+  passing(done){
+    playRoomVfx('shadow');
+    if(AC&&!muted) sfxWhoosh();
+    setTimeout(()=>{ playRoomVfx('surge'); done(); }, 1600);
+  },
+  tamper(done){
+    // a clue you had already settled, found disturbed — on the scene art
+    // rather than the hotspot, which any team-mate's update would rebuild
+    const had=currentRoom().objects.filter(o=>S.solved.has(o.id));
+    const o=had[Math.floor(Math.random()*had.length)];
+    const el=o&&document.getElementById('el-'+o.id);
+    if(el){ el.classList.remove('tampered'); void el.getBBox; el.classList.add('tampered');
+            setTimeout(()=>el.classList.remove('tampered'),2600); }
+    else playRoomVfx('sparks');
+    if(AC&&!muted) sfxStatic(0.5,0.1);
+    playRoomVfx('dim'); setTimeout(()=>playRoomVfx('dim'),420);
+    setTimeout(done,1300);
+  },
+};
+const INTRUSION_FX={squeeze:'blackout', arrival:'passing', midroom:'tamper'};
+const INTRUSION_GAP=75*1000;         // never two on top of each other
+function directorCheck(){
+  if(S.isPhone||!S.started||S.finished||S.overtime||directorBusy) return;
+  if(beatShowing) return;
+  if(!$('overlay').classList.contains('hidden')) return;      // someone is working
+  if(!$('room-complete').classList.contains('hidden')) return; // the room is won
+  const cues=(ACTIVE&&ACTIVE.intrusions)||{};
+  S.staged=S.staged||{};
+  if(Date.now()-(S.lastIntrusion||0)<INTRUSION_GAP) return;
+  const room=currentRoom(), last=ACTIVE.rooms.length-1;
+  const puz=room.objects.filter(o=>o.puzzle);
+  const doneHere=puz.filter(o=>S.solved.has(o.id)).length;
+  let cue=null;
+  if(!S.staged.arrival && S.roomIndex===last) cue='arrival';
+  else if(!S.staged.squeeze && pressure()>=0.62) cue='squeeze';
+  else if(!S.staged.midroom && S.roomIndex>0 && doneHere>=Math.ceil(puz.length/2)) cue='midroom';
+  if(!cue||!cues[cue]) return;
+  S.staged[cue]=true; S.lastIntrusion=Date.now(); directorBusy=true;
+  DIRECTOR[INTRUSION_FX[cue]](()=>{ directorBusy=false; showBeat(cues[cue],null); });
+}
+
+/* Everything that only needs to move slowly. */
+setInterval(()=>{
+  if(!S.started||S.finished) return;
+  applyAmbience();
+  heartbeatFor(pressure());      // phones hear it too; it is in their hand
+  directorCheck();
+},2500);
+
 function tick(){
   if(!S.started||S.finished) return;
   const used=elapsedSec()+S.penaltySec, remaining=START_SECONDS-used, t=$('timer');
   if(!S.overtime && remaining<=0){ t.textContent='0:00'; return gameOver(); }
   if(!S.overtime){
     t.textContent=fmt(remaining);
-    const low=remaining<=300;
-    t.classList.toggle('low',low);
-    $('vignette').classList.toggle('tense',low);
-    $('vignette').classList.toggle('pulse',low);
-    if(low) startHeartbeat();
+    t.classList.toggle('low',remaining<=300);
+    const k=pressure();
+    $('vignette').style.setProperty('--tight',k.toFixed(3));
+    $('vignette').classList.toggle('pulse',k>=0.93);   // the last couple of minutes
   } else {
     t.textContent='+'+fmt(used-START_SECONDS); t.classList.add('overtime'); t.classList.remove('low');
     // Press On and the deadline is gone — so let the alarm go with it. The red
     // pulse and the heartbeat used to switch on at 5:00 and then had no code
     // path to ever switch off again, so a team playing past time sat under a
     // throbbing red screen and a racing heart for as long as they kept going.
-    $('vignette').classList.remove('tense','pulse');
+    $('vignette').style.setProperty('--tight',pressure().toFixed(3));
+    $('vignette').classList.remove('pulse');
     stopHeartbeat();
   }
   $('stat-elapsed').textContent=fmt(elapsedSec());
@@ -1855,7 +1987,12 @@ function solvePuzzle(o){
   if(o.puzzle.solveBeat) showBeat(o.puzzle.solveBeat,o.puzzle.beatSound);
   const room=currentRoom();
   const allDone=room.objects.filter(x=>x.puzzle).every(x=>S.solved.has(x.id));
-  if(allDone && S.roomIndex===ACTIVE.rooms.length-1) return victory();
+  // The last lock being open is not the same as being out. The room card
+  // comes up with the scenario's own button on it — LAUNCH, CALL THE PLANE,
+  // RIDE THE LIGHTNING — and somebody presses it. Those labels have been in
+  // the scenario files all along and had no code path that could show them,
+  // because victory used to fire the instant the final puzzle fell.
+  if(allDone && S.roomIndex===ACTIVE.rooms.length-1) armFinalLaunch();
   openModal(o.id);
   renderHotspots();
   reactTo(o);
@@ -2468,7 +2605,7 @@ $('continue-btn').onclick=()=>{
   if(S.roomIndex<ACTIVE.rooms.length-1){
     mpSend('advance',{roomIndex:S.roomIndex+1});
     enterRoom(S.roomIndex+1);
-  }
+  } else launchFinale();
 };
 $('mute-btn').onclick=toggleMute;
 $('narrate-btn').onclick=()=>{
@@ -2525,11 +2662,25 @@ function gameOver(){
 }
 function continueOvertime(){ S.finished=false; S.overtime=true; $('end-root').innerHTML=''; tick(); }
 
+/* The escape is a deliberate act, so it waits for a hand on it. The timer is
+   a safety net rather than a countdown: an unattended screen still gets its
+   ending instead of sitting on a button for good. */
+let finalLaunchTimer=null;
+function armFinalLaunch(){
+  if(finalLaunchTimer||S.finished) return;
+  finalLaunchTimer=setTimeout(launchFinale,45000);
+}
+function launchFinale(){
+  clearTimeout(finalLaunchTimer); finalLaunchTimer=null;
+  if(S.finished) return;
+  mpSend('finish',{});
+  victory();
+}
 function victory(){
   S.finished=true; S.endElapsed=elapsedSec();
   stopHeartbeat(); closeModal(); clearBeats(); stopStuckWatch();
   // the danger is over: hush the room's soundscape and let something warm play instead
-  clearInterval(roomEventTimer);
+  clearTimeout(roomEventTimer);
   if(AC) setAmbience({});
   setTimeout(startVictoryMusic,1400);
   $('room-complete').classList.add('hidden');
@@ -2738,12 +2889,15 @@ function applyRemote(room){
   maybeVictory();
 }
 
-/** Victory can now be triggered by a team-mate's solve, so check on every sync. */
+/** The press reaches every device as `finished`, so check on every sync. */
 function maybeVictory(){
   if(!S.started || S.finished) return;
   const room = currentRoom();
-  if(room.objects.filter(x=>x.puzzle).every(x=>S.solved.has(x.id))
-     && S.roomIndex===ACTIVE.rooms.length-1) victory();
+  const open = room.objects.filter(x=>x.puzzle).every(x=>S.solved.has(x.id))
+            && S.roomIndex===ACTIVE.rooms.length-1;
+  if(!open) return;
+  if(NET.state && NET.state.finished) return victory();
+  if(!S.isPhone) armFinalLaunch();     // somebody at the screen has to do it
 }
 
 /* ---------- where each player is standing ---------- */
@@ -3001,6 +3155,11 @@ function renderPhone(){
     </button>`;
   });
   html+='</div>';
+  const last=S.roomIndex===ACTIVE.rooms.length-1;
+  if(last && !S.finished && room.objects.filter(o=>o.puzzle).every(o=>S.solved.has(o.id))){
+    html+=`<div class="ph-wait">Everything is open. ${esc(ACTIVE.finalButton||'FINISH')} is
+      waiting on the big screen — somebody press it.</div>`;
+  }
   wrap.innerHTML=html;
 }
 function phoneOpen(id){

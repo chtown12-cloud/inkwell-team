@@ -608,7 +608,7 @@ const ROOMS=[
   objective:"Feed the fire, prove the drill, and <b>whistle the switchman</b> — miss the junction and the Special keeps its schedule forever.",
   entryBeat:"The coal in the tender is full — forty years of night runs, and the coal never falls. On the throttle, a gloved handprint in the soot. The glove had six fingers.",
   entrySound:'chug',
-  completeText:"",
+  completeText:"The firebox is lit, the coupling is dropped, and the signal ahead is green. All that is left is to throw it before the junction.",
   chain:"Fire drill tags with positional constraints → unique order C-B-E-D-A → signal lantern case: “the junction listens at TWICE the record” = 78.4×2 = 156.8 → 1568 → timetable: only the 4:45 junction is manned before the line 'ends' at 6:00; minus 65 min = 3:40 → coupling pins: takings counted forward, pulled in reverse = 3528 → whistle the distress pattern (SOS) → THE JUNCTION.",
   objects:[
     { id:'firebox', icon:'🔥', name:'The Firebox Drill', pos:{x:26,y:52,w:11,h:22},
@@ -754,6 +754,14 @@ registerScenario({
     "Cutlery shivers on the tables. Your eye goes to {it}.",
     "The firebox roars and settles. {it} is the thing still waiting."
   ],
+  // Three times a game something happens TO the team rather than around
+  // them: the lights fail, something crosses the room, and a clue they had
+  // already settled turns up disturbed.
+  intrusions:{
+    squeeze:'The lights fail the length of the train. For a while there is only the rail joints underneath you, counting.',
+    arrival:'A figure passes the corridor glass, walking the other way. The train is doing sixty.',
+    midroom:'The setting you had already laid out has been turned back. The table is exactly as it was before you touched it.'
+  },
   // One wording for every lock in this fiction: a salt-seized crate and a
   // frozen hut safe do not fail the same way.
   padMiss:'The brass does not click. The carriage sways on.', padHow:'Key in the figures. A wrong set only costs 5 seconds of track.',
