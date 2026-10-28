@@ -636,20 +636,25 @@ const ROOMS=[
         beatSound:'clank'
       }
     },
-    { id:'runway', icon:'🔥', name:'Light the Drum Line', pos:{x:46,y:84,w:14,h:12}, hiddenUntil:'flarebox',
-      desc:"The drum line ignition rig: short burns and long, down the line of barrels. One pattern every pilot alive will read from the air — the oldest call there is, written in fire on the ice.\n\nGet it right, and the plane commits. Get it wrong, and they log a false light and climb away.",
+    { id:'runway', icon:'📡', name:'The Approach Beacon', pos:{x:46,y:84,w:14,h:10}, hiddenUntil:'flarebox',
+      desc:"The drum line is lit and the strip is bright enough to land on. What the plane still has no reason to do is believe it — a fire on the ice is a fire on the ice until somebody on the ground is talking.\n\nThe tower's transmit set is cold but intact. The lockbox gave you the number: the approach frequency is twice the station's own, and the station's own is the one you tuned nine days of silence out of.\n\nPut the beacon on it and hold it there. They are low on fuel and they will only come round once.",
       puzzle:{
-        type:'signal',
-        labels:{short:'🔥 SHORT BURN ·',long:'🔥 LONG BURN −',reset:'SMOTHER THE LINE',send:'🛩️ CALL THEM DOWN'},
-        missText:'The line burns nonsense. The plane holds its orbit.',
-        prompt:"Burn the distress pattern into the drum line, then CALL THEM DOWN. (Watch the runway behind this panel.)",
-        answers:['...---...'],
+        type:'dial',
+        dial:{ min:1500, max:2000, target:1764, div:10, pad:5,
+               meter:'CARRIER STRENGTH', lock:'TRANSMIT', miss:'nothing out there but the ice.',
+               knobs:[ {label:'Antenna match', target:62},
+                       {label:'Power stage',   target:38},
+                       {label:'Keying bias',   target:74} ] },
+        prompt:"Set the beacon to the approach frequency, trim it in, and transmit.",
+        answers:['176.4'],
         hints:[
-          "Three letters every pilot knows.",
-          "S is three shorts. O is three longs. Spell the distress call.",
-          "Short short short, long long long, short short short — SOS."
+          "You already worked this number out. The lockbox needed it as four digits; the set wants it as a frequency.",
+          "The station listens on 88.2. The plane listens at twice that.",
+          "176.4 — set the main dial there, then bring the three trims to their sweet spots and transmit."
         ],
-        solvedText:""
+        solvedText:"",
+        solveBeat:"The carrier catches. Thirty seconds of nothing — and then a voice, thin and flat and utterly ordinary, reading your position back to you.",
+        beatSound:'ping'
       }
     }
   ]

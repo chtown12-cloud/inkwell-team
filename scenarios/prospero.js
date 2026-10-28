@@ -675,20 +675,29 @@ const ROOMS=[
         beatSound:'growl'
       }
     },
-    { id:'thrusters', icon:'🚀', name:'Ignition Sequence', pos:{x:42,y:86,w:16,h:10}, hiddenUntil:'clamps',
-      desc:"The manual ignition rig: short pulses and long burns, nine charges in the rack. One pattern every flight officer in the fleet would recognize — the oldest distress call there is, hammered into the thrusters themselves.\n\nGet it right and the pod flies. Get it wrong, and you've spent your charges announcing dinner.",
+    { id:'thrusters', icon:'🚀', name:'Launch Configuration', pos:{x:42,y:86,w:16,h:10}, hiddenUntil:'clamps',
+      desc:"The pod's launch board: three banks, each with a setting, and a single commit lever under a wire guard. The flight officer's drill card is still clipped above it, and the four tags you have already read say the rest.\n\nGUIDANCE — stowed for dock, ALIGNED for a powered burn, LOCKED only once the ring has been trued.\n\nFUEL — the cells were primed in the drill. A primed cell is held at PRESSURE until the moment of burn.\n\nCLAMPS — the hatch is sealed and the drill ends on the clamps. They go to RELEASE.\n\nGet the board right and the pod flies. Get it wrong and you have announced yourself to the dark and gone nowhere.",
       puzzle:{
-        type:'signal',
-        labels:{short:'🔥 SHORT PULSE ·',long:'🔥 LONG BURN −',reset:'RESET RACK',send:'🚀 IGNITE'},
-        missText:'The burn stutters out of sequence. The pod stays down.',
-        prompt:"Fire the thrusters in the international distress pattern, then IGNITE. (Watch the test ports below the pod.)",
-        answers:['...---...'],
+        type:'panel',
+        panel:{
+          commit:'🚀 COMMIT THE BOARD',
+          wrong:'The board rejects the configuration. Nothing fires. (+0:05 penalty)',
+          controls:[
+            {id:'guidance', icon:'🎯', label:'Guidance ring', options:['STOWED','ALIGNED','LOCKED']},
+            {id:'fuel',     icon:'⛽', label:'Fuel cells',    options:['VENTED','PRESSURE','DUMPED']},
+            {id:'clamps',   icon:'🔩', label:'Docking clamps',options:['HOLD','RELEASE','WELD']},
+          ],
+        },
+        prompt:"Set all three banks the way the drill leaves them, then commit.",
+        answers:['LOCKED|PRESSURE|RELEASE'],
         hints:[
-          "Three letters every sailor — wet navy or void — knows by heart.",
-          "S is three shorts. O is three longs. Spell the distress call.",
-          "Short short short, long long long, short short short — SOS."
+          "Every setting is named in the board's own text. Read it as a checklist, not as prose.",
+          "The ring has been trued, the cells were primed and are held, and the drill ends on the clamps.",
+          "GUIDANCE → LOCKED. FUEL → PRESSURE. CLAMPS → RELEASE."
         ],
-        solvedText:""
+        solvedText:"",
+        solveBeat:"The clamps let go with a sound like a held breath, and for one second the pod is simply falling.",
+        beatSound:'clank'
       }
     }
   ]

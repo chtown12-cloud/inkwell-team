@@ -707,20 +707,21 @@ const ROOMS=[
         beatSound:'growl'
       }
     },
-    { id:'rod', icon:'💡', name:'The Tower Lamp', pos:{x:44,y:70,w:14,h:16}, hiddenUntil:'portcullis',
-      desc:"The Baron's signal lamp, aimed down at the sleeping village and the valley gate. Short flashes and long burns — and one pattern every watchman in the valley drills for: the distress call older than the castle itself.\n\nGet it right, and the valley opens. Get it wrong, and the village shutters its windows against you.",
+    { id:'rod', icon:'⚡', name:'The Master Switch', pos:{x:44,y:70,w:14,h:12}, hiddenUntil:'portcullis',
+      desc:"The Baron's master switch, a brass handle the length of your forearm. Hold it closed and the capacitor bank charges; let it go and the charge bleeds away through the ground chains.\n\nThe rig's own plate is explicit, and the storm glass told you the rest:\n\n“THE GATE RELEASES ON A NINE-KILOVOLT ARC. BELOW NINE IT WILL NOT CARRY. ABOVE NINE THE COIL GOES, AND THE COIL IS NOT REPLACEABLE.”\n\nHold it too long and you will take the rig with you. Let go too early and nothing crosses the gap.",
       puzzle:{
-        type:'signal',
-        labels:{short:'🕯️ SHORT FLASH ·',long:'🕯️ LONG BURN −',reset:'DOUSE THE LAMP',send:'⚡ THROW THE SWITCH'},
-        missText:'The lamp stutters nonsense. Down in the valley, a light goes out.',
-        prompt:"Flash the distress pattern to the village, then THROW THE SWITCH. (Watch the sky above the rod.)",
-        answers:['...---...'],
+        type:'hold',
+        hold:{ label:'⚡ HOLD THE SWITCH CLOSED', unit:'kV', max:14, target:9, tolerance:0.5,
+               rate:2.6, fall:3.6, ticks:[3,6,9,12] },
+        prompt:"Hold the switch closed and let go at the arc the gate needs.",
         hints:[
-          "Three letters every watchman knows.",
-          "S is three shorts. O is three longs. Spell the distress call.",
-          "Short short short, long long long, short short short — SOS."
+          "The plate gives the number outright. The difficulty is not knowing it — it is stopping there.",
+          "The gauge climbs while you hold and falls back the moment you let go. Nine kilovolts, no more.",
+          "Hold until the gauge reads 9.0 and release. If you overshoot, let it fall and come up again."
         ],
-        solvedText:""
+        solvedText:"",
+        solveBeat:"Nine kilovolts crosses the gap with a crack you feel in your teeth, and somewhere below, iron begins to move.",
+        beatSound:'thunder'
       }
     }
   ]

@@ -658,20 +658,25 @@ const ROOMS=[
         beatSound:'bell'
       }
     },
-    { id:'whistle', icon:'🚂', name:'Whistle & Lamp', pos:{x:6,y:69,w:16,h:22}, hiddenUntil:'coupling',
-      desc:"The whistle cord and the signal lantern, rigged together the brakeman's way: short blasts and long. One pattern every switchman on the living line still drills by — the oldest call there is.\n\nGet it right, and the switch throws. Get it wrong, and the Special sails past the junction into the timetable's blank pages.",
+    { id:'whistle', icon:'🚂', name:'Whistle & Lamp', pos:{x:44,y:84,w:14,h:10}, hiddenUntil:'coupling',
+      desc:"The whistle cord hangs over the driver's side; the signal lantern is bracketed out on the fireman's. Rigged together the brakeman's way — which is to say they were never meant for one person.\n\nThe junction reads both or neither. A whistle with no lamp is a train in trouble. A lamp with no whistle is a train that has already stopped. Both at once, and only both at once, is a train asking to be let through.\n\nOne of you on the cord. One of you on the lamp. On three.",
       puzzle:{
-        type:'signal',
-        labels:{short:'🚂 SHORT BLAST ·',long:'🚂 LONG BLAST −',reset:'LET THE STEAM DIE',send:'🔔 SIGNAL THE JUNCTION'},
-        missText:'The whistle garbles it. Far ahead, the switch lamp stays red.',
-        prompt:"Sound the distress pattern, then SIGNAL THE JUNCTION. (Watch the steam above the cab.)",
-        answers:['...---...'],
-        hints:[
-          "Three letters every switchman knows.",
-          "S is three shorts. O is three longs. Spell the distress call.",
-          "Short short short, long long long, short short short — SOS."
+        type:'simul',
+        stations:[
+          {id:'whistle-cord', label:'The Whistle Cord', icon:'🚂'},
+          {id:'whistle-lamp', label:'The Signal Lantern', icon:'🏮'},
         ],
-        solvedText:""
+        need:2,
+        pullLabel:'SIGNAL THE JUNCTION',
+        prompt:"The junction reads both or neither. Take the cord and the lamp, then give it together.",
+        hints:[
+          "This is not a code. It is two hands in two places at the same moment.",
+          "Take a station on your phone — one of you on the cord, one on the lantern — and the release arms when the last one fills.",
+          "On a single screen one pair of hands will do; otherwise get somebody onto the other station and give it together."
+        ],
+        solvedText:"",
+        solveBeat:"The whistle and the lamp go together, and a quarter-mile ahead a point blade swings over and locks.",
+        beatSound:'bell'
       }
     }
   ]
