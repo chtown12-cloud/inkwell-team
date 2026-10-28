@@ -552,6 +552,36 @@ body.phone #credits{display:none}
 .qr-players .chip{background:rgba(216,195,154,.1);border:1px solid #5c6f6d;border-radius:20px;
   padding:3px 12px;font-size:.9rem;color:var(--sand)}
 
+/* ---------- a control panel ---------- */
+.pan-grid{display:flex;flex-direction:column;gap:9px;margin:14px 0 4px}
+.pan-row{display:flex;flex-direction:column;gap:6px;padding:10px 12px;
+  border:1px solid #3a565c;border-radius:9px;background:#0b1619}
+.pan-label{font-family:'Special Elite',serif;color:var(--sand);font-size:.95rem}
+.pan-opts{display:flex;gap:6px;flex-wrap:wrap}
+.pan-opt{flex:1;min-width:84px;padding:9px 8px;border-radius:7px;border:1px solid #3a565c;
+  background:#0e1f23;color:var(--dim);font-family:'Special Elite',serif;font-size:.84rem;
+  letter-spacing:1px;cursor:pointer;transition:border-color .15s,background .15s,color .15s}
+.pan-opt:hover{border-color:#6dc0b8;color:var(--sand)}
+.pan-opt.on{border-color:var(--teal-hi);background:linear-gradient(180deg,var(--teal-hi),var(--teal));
+  color:#eafaf7}
+.pan-grid.shakein{animation:shakeI .4s}
+
+/* ---------- hold it, and let go at the right moment ---------- */
+.hold-gauge{position:relative;height:22px;margin:18px 0 8px;border-radius:11px;
+  background:rgba(255,255,255,.06);border:1px solid #3a565c;overflow:hidden}
+.hold-gauge i{display:block;height:100%;width:0;border-radius:11px;
+  background:linear-gradient(90deg,var(--teal),var(--teal-hi));transition:background .2s}
+.hold-gauge i.near{background:linear-gradient(90deg,#c9a04a,#ffd98c)}
+.hold-ticks{position:absolute;inset:0;pointer-events:none}
+.hold-ticks b{position:absolute;top:0;bottom:0;width:2px;background:rgba(255,255,255,.3)}
+.hold-read{text-align:center;font-family:'Special Elite',serif;font-size:1.7rem;
+  color:var(--teal-hi);margin-bottom:12px}
+.hold-read small{font-size:.8rem;color:var(--dim);letter-spacing:2px}
+.hold-btn{width:100%;touch-action:none;user-select:none}
+.hold-btn.pressing{background:linear-gradient(180deg,#c9a04a,#8a6a2a);border-color:#ffd98c;
+  transform:scale(.985)}
+@media (prefers-reduced-motion: reduce){ .pan-opt{transition:none} .pan-grid.shakein{animation:none} }
+
 /* ---------- putting things in order ---------- */
 .ord-list{list-style:none;margin:14px 0 4px;padding:0;display:flex;flex-direction:column;gap:7px}
 /* touch-action does NOT inherit, and the touch lands on the row, not the list —
@@ -1593,6 +1623,10 @@ function openModal(objId){
       html+=`<div class="solved-note">✓ ${p.solvedText||'Solved.'}</div>`;
     } else if(p.type==='simul'){
       html+=renderSimul(o)+renderHints(o);
+    } else if(p.type==='panel'){
+      html+=renderPanel(o)+renderHints(o);
+    } else if(p.type==='hold'){
+      html+=renderHold(o)+renderHints(o);
     } else if(p.type==='order'){
       html+=renderOrder(o)+renderHints(o);
     } else if(p.type==='signal'){
@@ -1624,10 +1658,12 @@ function openModal(objId){
   }
   if(o.puzzle&&o.puzzle.type==='dial'&&!solved) dialInit(o);
   if(o.puzzle&&o.puzzle.type==='order'&&!solved) orderInit(o);
+  if(o.puzzle&&o.puzzle.type==='panel'&&!solved) panelInit(o);
+  if(o.puzzle&&o.puzzle.type==='hold'&&!solved) holdInit(o);
   const inp=$('answer-input'); if(inp) inp.focus();
 }
 function closeModal(){
-  $('overlay').classList.add('hidden'); S.signalPattern=''; dialTeardown();
+  $('overlay').classList.add('hidden'); S.signalPattern=''; dialTeardown(); holdTeardown();
   if(MP.openObj){ mpSend('stand',{objId:MP.openObj}); MP.openObj=null; }
   if(S.isPhone) renderPhone();
 }
@@ -2052,6 +2088,97 @@ function submitOrder(objId){
   list.classList.remove('shakein'); void list.offsetWidth; list.classList.add('shakein');
 }
 
+/* ---------- a control panel ----------
+   Set each control to the right position, then commit. Different in kind from
+   everything else here: not a sequence, not a value, not a word — a
+   configuration, where every control is visible and wrong at once. */
+function renderPanel(o){
+  const p=o.puzzle, cfg=p.panel;
+  const state=(S.panelState&&S.panelState[o.id]) || cfg.controls.map(()=>0);
+  S.panelState=S.panelState||{}; S.panelState[o.id]=state;
+  const rows=cfg.controls.map((c,i)=>`
+    <div class="pan-row">
+      <div class="pan-label">${c.icon||'🎚️'} ${esc(c.label)}</div>
+      <div class="pan-opts" data-i="${i}">
+        ${c.options.map((opt,j)=>`<button class="pan-opt${state[i]===j?' on':''}" data-i="${i}" data-j="${j}">${esc(opt)}</button>`).join('')}
+      </div>
+    </div>`).join('');
+  return `<div class="puzzle-box">
+    <div class="prompt">${p.prompt}</div>
+    <div class="pan-grid" id="pan-grid">${rows}</div>
+    <div class="how">Set every control, then commit. A wrong configuration only costs 5 seconds.</div>
+    <button class="big-btn" style="margin-top:14px" onclick="submitPanel('${o.id}')">${cfg.commit||'⚙️ COMMIT'}</button>
+    <div class="feedback" id="feedback"></div>
+  </div>`;
+}
+function panelInit(o){
+  const grid=$('pan-grid'); if(!grid) return;
+  grid.querySelectorAll('.pan-opt').forEach(b=>{
+    b.onclick=()=>{
+      const i=+b.dataset.i, j=+b.dataset.j;
+      S.panelState[o.id][i]=j;
+      grid.querySelectorAll(`.pan-opt[data-i="${i}"]`).forEach(x=>x.classList.toggle('on',+x.dataset.j===j));
+      sfxThud();
+    };
+  });
+}
+function submitPanel(objId){
+  const o=currentRoom().objects.find(x=>x.id===objId);
+  const cfg=o.puzzle.panel, state=S.panelState[objId];
+  const guess=cfg.controls.map((c,i)=>c.options[state[i]]).join('|');
+  if(o.puzzle.answers.includes(guess)) return solvePuzzle(o);
+  wrongAnswer();
+  const fb=$('feedback');
+  fb.className='feedback bad'; fb.textContent='\u2717 '+(cfg.wrong||'Nothing engages. (+0:05 penalty)');
+  const g=$('pan-grid'); g.classList.remove('shakein'); void g.offsetWidth; g.classList.add('shakein');
+}
+
+/* ---------- hold it, and let go at the right moment ----------
+   A gauge climbs while the control is held and falls back when it is not. The
+   team has to work out from the room what reading to stop at, then actually
+   stop there — the only puzzle in the game where knowing the answer is not
+   quite the same as doing it. */
+let holdTimer=null, holdVal=0, holdDown=false;
+function renderHold(o){
+  const p=o.puzzle, h=p.hold;
+  return `<div class="puzzle-box">
+    <div class="prompt">${p.prompt}</div>
+    <div class="hold-gauge"><i id="hold-bar"></i>
+      <span class="hold-ticks">${(h.ticks||[]).map(t=>`<b style="left:${t/h.max*100}%"></b>`).join('')}</span></div>
+    <div class="hold-read"><span id="hold-val">0.0</span> <small>${esc(h.unit||'')}</small></div>
+    <button class="big-btn hold-btn" id="hold-btn">${h.label||'HOLD'}</button>
+    <div class="how">Press and hold to bring it up; let go to stop. It falls back when you are not holding. Let go at the reading the room gives you.</div>
+    <div class="feedback" id="feedback"></div>
+  </div>`;
+}
+function holdTeardown(){ if(holdTimer) clearInterval(holdTimer); holdTimer=null; holdDown=false; holdVal=0; }
+function holdInit(o){
+  holdTeardown();
+  const h=o.puzzle.hold, btn=$('hold-btn'); if(!btn) return;
+  const down=(e)=>{ e.preventDefault(); holdDown=true; btn.classList.add('pressing'); };
+  const up=()=>{
+    if(!holdDown) return;
+    holdDown=false; btn.classList.remove('pressing');
+    const hit=Math.abs(holdVal-h.target)<=(h.tolerance||0.45);
+    if(hit) return solvePuzzle(o);
+    wrongAnswer();
+    const fb=$('feedback');
+    if(fb){ fb.className='feedback bad';
+      fb.textContent='\u2717 '+(holdVal<h.target?'Not enough. ':'Too far. ')+'(+0:05 penalty)'; }
+  };
+  btn.addEventListener('pointerdown',down);
+  btn.addEventListener('touchstart',down,{passive:false});
+  ['pointerup','pointerleave','pointercancel','touchend','touchcancel'].forEach(t=>btn.addEventListener(t,up));
+  holdTimer=setInterval(()=>{
+    const bar=$('hold-bar'); if(!bar){ holdTeardown(); return; }
+    holdVal = holdDown ? Math.min(h.max, holdVal + (h.rate||2.2)/20)
+                       : Math.max(0, holdVal - (h.fall||3.2)/20);
+    bar.style.width=(holdVal/h.max*100).toFixed(1)+'%';
+    bar.classList.toggle('near', Math.abs(holdVal-h.target)<=(h.tolerance||0.45));
+    const v=$('hold-val'); if(v) v.textContent=holdVal.toFixed(1);
+  },50);
+}
+
 /* ---------- signal pad (labels via puzzle.labels) ---------- */
 function renderSignalPad(o){
   const L=Object.assign({short:'🔥 SHORT BURST ·',long:'🔥 LONG BURN −',reset:'RESET',send:'📡 SEND SIGNAL'},o.puzzle.labels||{});
@@ -2390,6 +2517,9 @@ function buildGmPanel(){
       const disp=o.puzzle.type==='signal'?'··· −−− ··· (short×3, long×3, short×3)':
                  o.puzzle.type==='dial'?`tune to ${(o.puzzle.dial.target/o.puzzle.dial.div).toFixed(o.puzzle.dial.div>=100?2:1)}, then lock in`:
                  o.puzzle.type==='simul'?`man all ${(o.puzzle.stations||[]).length} stations at once (${(o.puzzle.stations||[]).map(x=>x.label).join(' + ')}), then haul`:
+                 o.puzzle.type==='panel'?`set ${(o.puzzle.panel.controls||[]).map((c,i)=>c.label+' → '+(o.puzzle.answers[0].split('|')[i])).join(', ')}, then commit`:
+                 o.puzzle.type==='hold'?`hold until the gauge reads ${o.puzzle.hold.target}${o.puzzle.hold.unit||''}, then let go (±${o.puzzle.hold.tolerance||0.45})`:
+                 o.puzzle.type==='order'?`${(o.puzzle.answers||['—'])[0]} — drag the tags into that order`:
                  (o.puzzle.answers||['—'])[0];
       html+=`<div class="gm-puzzle"><b>${o.icon} ${o.name}</b> — answer: <span class="gm-answer">${disp}</span>
         <ul>${o.puzzle.hints.map((h,i)=>`<li>Hint ${i+1} (+${fmt(HINT_COSTS[i])}): ${h}</li>`).join('')}</ul></div>`;
