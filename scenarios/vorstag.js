@@ -545,7 +545,7 @@ const ROOMS=[
         beatSound:'thunder'
       }
     },
-    { id:'folio', icon:'📜', name:"The Baron's Folio", pos:{x:22,y:56,w:14,h:16}, hiddenUntil:'chimes',
+    { id:'folio', icon:'📜', name:"The Baron's Folio", pos:{x:22,y:56,w:14,h:16},
       desc:"The Baron's working folio lies chained to its desk, the last page in his alchemist's mirror-script. His own key to the script is pinned above the page:\n\n“THE MIRROR ALPHABET — A becomes Z, B becomes Y, C becomes X… and back again.”\n\nThe final line reads:\n\nGSV  WLLI  LKVMH  GL:  HKZIP",
       puzzle:{
         prompt:"Enter the deciphered word.", placeholder:"FIVE LETTERS", answers:['SPARK'],
@@ -612,7 +612,7 @@ const ROOMS=[
         beatSound:'clank'
       }
     },
-    { id:'switchboard', icon:'🎛️', name:'Galvanic Switchboard', pos:{x:76,y:28,w:18,h:38}, hiddenUntil:'jars',
+    { id:'switchboard', icon:'🎛️', name:'Galvanic Switchboard', pos:{x:76,y:28,w:18,h:38},
       desc:"The master switchboard is locked behind three fuse dials, 0–9 each. The Baron's tag swings from the lever:\n\n“THREE EVEN FIGURES WAKE THE BOARD.\nMULTIPLIED TOGETHER THEY MAKE FORTY-EIGHT.\nSET THEM: LARGEST, THEN SMALLEST, THEN MIDDLE.”",
       puzzle:{
         prompt:"Find the three even digits whose product is 48, then dial them largest, smallest, middle.", placeholder:"000", answers:['624'],
@@ -681,7 +681,7 @@ const ROOMS=[
         solvedText:"238.6 — the hymn, sung twice, as the storm demands. The chapel mains close and the tower's veins fill with potential."
       }
     },
-    { id:'barometer', icon:'⛈️', name:'The Storm-Glass Table', pos:{x:37,y:72,w:12,h:18}, hiddenUntil:'fusebox',
+    { id:'barometer', icon:'⛈️', name:'The Storm-Glass Table', pos:{x:37,y:72,w:12,h:18},
       desc:"The Baron's storm-glass and his strike table for tonight, in a steady hand that gets less steady:\n\n“FRONT ONE — strikes at 10:15 · six thousand volts\nFRONT TWO — strikes at 11:30 · twelve thousand volts\nFRONT THREE — strikes at 1:20 · nine thousand volts\n\nTHE COIL NEEDS NINE THOUSAND OR BETTER.\nAFTER THE CHAPEL BELL TOLLS ONE, THE DOORS BELOW OPEN ON THEIR OWN. WE MUST BE GONE.\nBEGIN THE CHARGE 50 MINUTES BEFORE THE STRIKE.”",
       puzzle:{
         prompt:"Set the charge time (hour then minutes, e.g. 730).", placeholder:"H:MM", answers:['1040'],

@@ -507,7 +507,7 @@ const ROOMS=[
         beatSound:'hiss'
       }
     },
-    { id:'console', icon:'🧭', name:'Nav Console', pos:{x:55,y:66,w:13,h:12}, hiddenUntil:'beacon',
+    { id:'console', icon:'🧭', name:'Nav Console', pos:{x:55,y:66,w:13,h:12},
       desc:"The navigation console is locked. Its status line blinks five groups of machine bits — the ship talks in binary when it doesn't trust its crew:\n\n00111   00001   01101   01101   00001\n\nA legend is etched below: “A=00001 · B=00010 · C=00011 · … each letter is its place in the alphabet, in five bits.”",
       puzzle:{
         prompt:"Enter the unlock word.", placeholder:"FIVE LETTERS", answers:['GAMMA'],
@@ -577,7 +577,7 @@ const ROOMS=[
         beatSound:'growl'
       }
     },
-    { id:'pumps', icon:'⚙️', name:'Nutrient Pumps', pos:{x:4,y:68,w:13,h:20}, hiddenUntil:'trays',
+    { id:'pumps', icon:'⚙️', name:'Nutrient Pumps', pos:{x:4,y:68,w:13,h:20},
       desc:"The pump manifold is padlocked — a 3-digit dial, one digit per pump down the line. The priming instructions are stencilled on the intake:\n\n“PRIMING SEQUENCE —\nPump one draws half a dozen litres a stroke.\nEach pump down the line draws two litres less than the one before it.\nDial the three stroke-counts in line order.”",
       puzzle:{
         prompt:"Work out each pump's litres-per-stroke and type the three numbers in order.", placeholder:"000", answers:['642'],
@@ -649,7 +649,7 @@ const ROOMS=[
         solvedText:"94.30 — the emergency channel. Fuel hisses into the pod's cells, and a launch-window table lights up on the gantry screen."
       }
     },
-    { id:'window', icon:'🛰️', name:'Launch Window Table', pos:{x:72,y:22,w:16,h:20}, hiddenUntil:'fuelpanel',
+    { id:'window', icon:'🛰️', name:'Launch Window Table', pos:{x:72,y:22,w:16,h:20},
       desc:"The gantry screen scrolls the beacon's orbital passes:\n\n“PASS 1 — 2:40 · burn required 11 units\nPASS 2 — 5:20 · burn required 8 units\nPASS 3 — 8:45 · burn required 7 units\n\nFUEL ABOARD: 9 UNITS.\nREACTOR SUSTAINS BAY POWER UNTIL 7:00 — NO LAUNCH AFTER.\nBEGIN IGNITION 45 MINUTES BEFORE YOUR PASS.”",
       puzzle:{
         prompt:"Set ignition time (hour then minutes, e.g. 730).", placeholder:"H:MM", answers:['435','0435'],

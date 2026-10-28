@@ -495,7 +495,7 @@ const ROOMS=[
         beatSound:'hiss'
       }
     },
-    { id:'valise', icon:'💼', name:'The Locked Valise', pos:{x:21,y:73,w:12,h:15}, hiddenUntil:'runout',
+    { id:'valise', icon:'💼', name:'The Locked Valise', pos:{x:21,y:73,w:12,h:15},
       desc:"A gentleman's valise, banded shut. Someone has scratched a zigzag and five letters into the lock plate:\n\nZIGZAG CIPHER · TWO RAILS\nBAERK\n\n“Written up and down two rails, then read straight off — top rail first. Put it back on the rails to read it properly.”",
       puzzle:{
         prompt:"Enter the deciphered word.", placeholder:"FIVE LETTERS", answers:['BRAKE'],
@@ -563,7 +563,7 @@ const ROOMS=[
         beatSound:'clank'
       }
     },
-    { id:'till', icon:'🧾', name:'The Till', pos:{x:84,y:52,w:10,h:14}, hiddenUntil:'tables',
+    { id:'till', icon:'🧾', name:'The Till', pos:{x:84,y:52,w:10,h:14},
       desc:"The bar till, locked at 3 digits. Three unpaid chits still hang on the spike beside it:\n\nTABLE 2 — 85¢\nTABLE 5 — $1.15\nTABLE 7 — $1.85\n\nThe head waiter's tag on the drawer: “THE TILL OPENS ON THE NIGHT'S TOTAL — DOLLARS, THEN CENTS.”",
       puzzle:{
         prompt:"Add up the three chits and enter the total as three digits (dollars, then cents).", placeholder:"000", answers:['385'],
@@ -632,7 +632,7 @@ const ROOMS=[
         solvedText:"156.8 — twice the dead man's waltz. The case opens on the signal lantern, its red lens polished bright by hands that wanted, very much, for someone to finally use it."
       }
     },
-    { id:'timetable', icon:'🕰️', name:'The Timetable', pos:{x:80,y:18,w:15,h:28}, hiddenUntil:'lantern',
+    { id:'timetable', icon:'🕰️', name:'The Timetable', pos:{x:80,y:18,w:15,h:28},
       desc:"The company timetable, annotated in the brakeman's hand:\n\n“JUNCTIONS TONIGHT —\n3:15 · MILE 40 — switch unmanned\n4:45 · MILE 62 — switchman on duty\n7:05 · MILE 90 — switchman on duty\n\nTHE PRINTED LINE ENDS AT 6:00. THERE IS NO 6:01 IN THIS BOOK.\nSIGNAL THE SWITCHMAN 65 MINUTES BEFORE THE JUNCTION.”",
       puzzle:{
         prompt:"Set the signal time (hour then minutes, e.g. 730).", placeholder:"H:MM", answers:['340','0340'],
