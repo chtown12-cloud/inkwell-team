@@ -586,7 +586,7 @@ const ROOMS=[
   objective:"Restart the generator, raise the plane, and <b>light the drum line</b> — before what's below finishes its climb.",
   entryBeat:"The tower's guy-wires are thrumming — all of them, evenly. Not the wind. Something at the far anchor point is testing, very gently, whether the tower would fall.",
   entrySound:'clank',
-  completeText:"",
+  completeText:"The generator is running, the runway flares are laid, and the set is warm. There is a plane out there in the dark, waiting to be told.",
   chain:"Generator drill tags with positional constraints → unique order D-E-B-A-C → tower lockbox: “the plane listens at TWICE the station” = 88.2×2 = 176.4 → 1764 → weather fax: only the 6:10 window has legal visibility before fuel runs out; minus 40 min = 5:30 → flare cache: stocked in resupply order, unlocked in reverse = 1486 → light the drum line in the old pattern (SOS) → WHEELS UP.",
   objects:[
     { id:'genstart', icon:'⚙️', name:'The Generator Sled', pos:{x:11,y:66,w:18,h:18},

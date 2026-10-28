@@ -575,6 +575,10 @@ body.phone #credits{display:none}
 .sel-readout b{font-family:'Special Elite',serif;font-size:1.25rem;color:var(--teal-hi);letter-spacing:3px}
 .sel-grid.shakein{animation:shakeI .4s}
 
+/* the phone, once the last lock is open and the screen has not been pressed */
+.ph-wait{margin:14px 2px 0;padding:12px 14px;border:1px solid var(--teal-hi);border-radius:10px;
+  background:rgba(79,163,155,.14);color:var(--sand);font-size:.95rem;line-height:1.45;text-align:center}
+
 /* ---------- a combination lock ---------- */
 .pad-display{display:flex;gap:9px;justify-content:center;margin:16px 0 14px}
 .pad-display i{width:46px;height:58px;border:1px solid #3a565c;border-radius:8px;background:#06110f;
@@ -953,7 +957,7 @@ function setAmbience(p){ ambBed=p||null; applyAmbience(); }
    once at five minutes to go. */
 function applyAmbience(){
   if(!AC||!ambBed) return;
-  const t=AC.currentTime, p=ambBed, k=pressure(), sq=k*k;
+  const t=AC.currentTime, p=ambBed, k=S.finished?0:pressure(), sq=k*k;
   amb.surf.gain.setTargetAtTime((p.surf||0)*(1+0.16*k), t, 2.5);
   amb.wind.gain.setTargetAtTime((p.wind||0)*(1+0.3*k), t, 2.5);
   amb.drone.gain.setTargetAtTime((p.drone||0)+0.038*sq, t, 4);
@@ -1983,7 +1987,12 @@ function solvePuzzle(o){
   if(o.puzzle.solveBeat) showBeat(o.puzzle.solveBeat,o.puzzle.beatSound);
   const room=currentRoom();
   const allDone=room.objects.filter(x=>x.puzzle).every(x=>S.solved.has(x.id));
-  if(allDone && S.roomIndex===ACTIVE.rooms.length-1) return victory();
+  // The last lock being open is not the same as being out. The room card
+  // comes up with the scenario's own button on it — LAUNCH, CALL THE PLANE,
+  // RIDE THE LIGHTNING — and somebody presses it. Those labels have been in
+  // the scenario files all along and had no code path that could show them,
+  // because victory used to fire the instant the final puzzle fell.
+  if(allDone && S.roomIndex===ACTIVE.rooms.length-1) armFinalLaunch();
   openModal(o.id);
   renderHotspots();
   reactTo(o);
@@ -2596,7 +2605,7 @@ $('continue-btn').onclick=()=>{
   if(S.roomIndex<ACTIVE.rooms.length-1){
     mpSend('advance',{roomIndex:S.roomIndex+1});
     enterRoom(S.roomIndex+1);
-  }
+  } else launchFinale();
 };
 $('mute-btn').onclick=toggleMute;
 $('narrate-btn').onclick=()=>{
@@ -2653,6 +2662,20 @@ function gameOver(){
 }
 function continueOvertime(){ S.finished=false; S.overtime=true; $('end-root').innerHTML=''; tick(); }
 
+/* The escape is a deliberate act, so it waits for a hand on it. The timer is
+   a safety net rather than a countdown: an unattended screen still gets its
+   ending instead of sitting on a button for good. */
+let finalLaunchTimer=null;
+function armFinalLaunch(){
+  if(finalLaunchTimer||S.finished) return;
+  finalLaunchTimer=setTimeout(launchFinale,45000);
+}
+function launchFinale(){
+  clearTimeout(finalLaunchTimer); finalLaunchTimer=null;
+  if(S.finished) return;
+  mpSend('finish',{});
+  victory();
+}
 function victory(){
   S.finished=true; S.endElapsed=elapsedSec();
   stopHeartbeat(); closeModal(); clearBeats(); stopStuckWatch();
@@ -2866,12 +2889,15 @@ function applyRemote(room){
   maybeVictory();
 }
 
-/** Victory can now be triggered by a team-mate's solve, so check on every sync. */
+/** The press reaches every device as `finished`, so check on every sync. */
 function maybeVictory(){
   if(!S.started || S.finished) return;
   const room = currentRoom();
-  if(room.objects.filter(x=>x.puzzle).every(x=>S.solved.has(x.id))
-     && S.roomIndex===ACTIVE.rooms.length-1) victory();
+  const open = room.objects.filter(x=>x.puzzle).every(x=>S.solved.has(x.id))
+            && S.roomIndex===ACTIVE.rooms.length-1;
+  if(!open) return;
+  if(NET.state && NET.state.finished) return victory();
+  if(!S.isPhone) armFinalLaunch();     // somebody at the screen has to do it
 }
 
 /* ---------- where each player is standing ---------- */
@@ -3129,6 +3155,11 @@ function renderPhone(){
     </button>`;
   });
   html+='</div>';
+  const last=S.roomIndex===ACTIVE.rooms.length-1;
+  if(last && !S.finished && room.objects.filter(o=>o.puzzle).every(o=>S.solved.has(o.id))){
+    html+=`<div class="ph-wait">Everything is open. ${esc(ACTIVE.finalButton||'FINISH')} is
+      waiting on the big screen — somebody press it.</div>`;
+  }
   wrap.innerHTML=html;
 }
 function phoneOpen(id){

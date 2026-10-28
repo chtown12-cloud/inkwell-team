@@ -879,7 +879,7 @@ const ROOMS = [
   objective:"The operator staged an escape and never used it. <b>Finish it.</b> The ship's lights are already on the horizon.",
   entryBeat:"Fresh prints circle the raft materials — the same long, dragging prints from the beach where you started. It has been here. It has been waiting to see if you'd make it this far.",
   entrySound:'knock',
-  completeText:"",
+  completeText:"The raft is rigged, the winch is free, and the tide is going out under you. Nothing holds it to this island now but the hand on the line.",
   chain:"Five tags with positional constraints (deck is 2nd; logs before deck; exactly one task between logs and mast; rudder never adjacent to the deck; sail after rudder) → unique order B-D-A-E-C → flare locker: “the military listens at TWICE the band” = 121.5×2 = 243.0 → 2430 → tide table: three highs, but only 6:40 (11 ft) clears the 9-ft reef before dark; minus 90 min = 5:10 → 510 → winch: the sail's order, but “the sea returns all things reversed” → 8513 backward = 3158 → fire flares in SOS (···−−−···) → LAUNCH.",
   objects:[
     { id:'dragmarks', icon:'👣', name:'Drag-Marks in the Sand', pos:{x:24,y:87,w:16,h:9},

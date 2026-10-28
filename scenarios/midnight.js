@@ -608,7 +608,7 @@ const ROOMS=[
   objective:"Feed the fire, prove the drill, and <b>whistle the switchman</b> — miss the junction and the Special keeps its schedule forever.",
   entryBeat:"The coal in the tender is full — forty years of night runs, and the coal never falls. On the throttle, a gloved handprint in the soot. The glove had six fingers.",
   entrySound:'chug',
-  completeText:"",
+  completeText:"The firebox is lit, the coupling is dropped, and the signal ahead is green. All that is left is to throw it before the junction.",
   chain:"Fire drill tags with positional constraints → unique order C-B-E-D-A → signal lantern case: “the junction listens at TWICE the record” = 78.4×2 = 156.8 → 1568 → timetable: only the 4:45 junction is manned before the line 'ends' at 6:00; minus 65 min = 3:40 → coupling pins: takings counted forward, pulled in reverse = 3528 → whistle the distress pattern (SOS) → THE JUNCTION.",
   objects:[
     { id:'firebox', icon:'🔥', name:'The Firebox Drill', pos:{x:26,y:52,w:11,h:22},

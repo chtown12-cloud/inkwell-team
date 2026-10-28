@@ -657,7 +657,7 @@ const ROOMS=[
   objective:"Rig the conductor, charge the coil, and <b>ride the lightning</b> — the portcullis runs on the storm.",
   entryBeat:"The tower door was barred from this side — and the bar now leans against the battlement, set aside as gently as a sleeping child. It wanted you to reach the top. It's the gate it never learned to open.",
   entrySound:'thunder',
-  completeText:"",
+  completeText:"The rig is wound, the fuses hold, and the portcullis is up. The storm is directly overhead — the next strike is yours to take.",
   chain:"Five ignition tags with positional constraints → unique order E-A-D-C-B → chapel fuse box: “father sang it twice when the storm came close” = hymn 119.3 doubled = 2386 → storm-glass table: only the 11:30 front carries 9kV+ before the bell tolls one; minus 50 min = 10:40 → portcullis glyphs: the well code reversed = 7539 → signal the village with the tower lamp (SOS) → THROW THE SWITCH.",
   objects:[
     { id:'rig', icon:'🔩', name:'The Ignition Rig', pos:{x:45,y:12,w:12,h:56},

@@ -623,7 +623,7 @@ const ROOMS=[
   objective:"Prep, fuel, and launch — the beacon window won't wait. <b>Neither will the thing in the vents.</b>",
   entryBeat:"The pod bay's dust is untouched except for one path — a wide, smooth track circling the pod itself. Around and around. Years of it. Something has been guarding your way out, or coveting it.",
   entrySound:'hiss',
-  completeText:"",
+  completeText:"Clamps clear, fuel green, the bay doors standing open on the dark. The pod is ready to go the moment somebody says so.",
   chain:"Launch drill tags with positional constraints → unique order E-B-D-A-C → fuel lock: “the emergency channel sits at TWICE the dish” = 47.15×2 = 94.30 → 9430 → orbital pass table: only the 5:20 pass is reachable; minus 45 min = 4:35 → docking clamps: shutdown code reversed = 2496 → thruster ignition in the old pattern (SOS) → LAUNCH.",
   objects:[
     { id:'scratches', icon:'🪟', name:'Viewport Scratches', pos:{x:8,y:14,w:14,h:20},
