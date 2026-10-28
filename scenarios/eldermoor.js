@@ -673,7 +673,8 @@ const ROOMS = [
     { id:'crate', onSolve:{el:'rx-beach',op:.2,fx:'surge'}, icon:'📦', name:'Cargo Crate', pos:{x:46,y:72,w:11,h:14},
       desc:"A heavy cargo crate sits banded in iron, sealed with a 4-digit dial lock. Its lid is stencilled MANIFEST — ONE OF SEVEN, and around it in the sand five sister crates lie burst open on the rocks.\n\nOn its side, four shapes, each with a number — printed in no particular order:\n\n■ 5      ◆ 1      ▲ 8      ● 3\n\nNumbers, but no sequence. Something on this beach pairs these shapes with something else — and something else again gives the order.",
       puzzle:{
-        prompt:"Enter the 4-digit combination.", placeholder:"0000", answers:['8513'],
+        type:'keypad',
+        prompt:"Enter the 4-digit combination.", answers:['8513'],
         hints:[
           "Three pieces of wreckage must meet: the crate's numbers, the sail's pairings, and a rule carved on the wreck itself.",
           "The keel plate says READ THE WIND SUNWISE (CLOCKWISE) FROM NORTH — that's N, E, S, W. The sail tells you which shape belongs to which wind.",
@@ -778,7 +779,8 @@ const ROOMS = [
     { id:'transmitter', icon:'🔌', name:'Emergency Transmitter', pos:{x:69,y:79,w:13,h:14}, hiddenUntil:'hatch',
       desc:"The emergency transmitter wants a 3-digit arming code. A calibration card in the operator's hand is taped beside the keypad — five test codes, and what the panel lamps said to each:\n\n1 2 3 — one lamp lit, seated wrong\n4 5 6 — one lamp lit, seated wrong\n6 1 2 — all lamps dark\n9 2 5 — one lamp lit, seated wrong\n8 3 9 — two lamps lit, both seated wrong\n\n“A lit lamp: that digit is in the code. Seated true: right digit, right position. Seated wrong: right digit, wrong position.”\n\nBelow, tiny and urgent: “REMEMBER THE BAND. YOU WILL NEED IT AGAIN.”",
       puzzle:{
-        prompt:"Enter the 3-digit arming code.", placeholder:"000", answers:['394'],
+        type:'keypad',
+        prompt:"Enter the 3-digit arming code.", answers:['394'],
         hints:[
           "Work it like detectives: the all-dark row eliminates its three digits everywhere. Then ask what each 'one lamp' row can still mean.",
           "6, 1 and 2 are dead. So row one's lamp is the 3 — and it can't sit third. Row five lights two lamps: with 6 gone and only three slots, they must be 3 and 9 — and 9 can't sit third or first.",
@@ -820,9 +822,12 @@ const ROOMS = [
       }
     },
     { id:'stones', onSolve:{el:'rx-jungle',op:.2,fx:'surge'}, icon:'🪨', name:'River Crossing Stones', pos:{x:22,y:71,w:52,h:12},
-      desc:"Eight flat stones cross the black water. Each is chiseled with a letter and a shape, and each wears patches of moss. Reading left to right from your bank:\n\nB — square (4 sides), 5 moss patches\nD — pentagon (5 sides), 2 moss patches\nE — triangle (3 sides), 3 moss patches\nR — hexagon (6 sides), 1 moss patch\nO — square (4 sides), 2 moss patches\nA — triangle (3 sides), 4 moss patches\nW — pentagon (5 sides), 3 moss patches\nN — hexagon (6 sides), 4 moss patches\n\nA mossy carving on the bank warns:\n\n“Only a stone whose sides outnumber its moss will bear your weight. Name the stones that hold, in order, and the river lets you pass.”",
+      desc:"Eight flat stones cross the black water. Each is chiseled with a letter and a shape, and each wears patches of moss. Reading left to right from your bank:\n\nOnly a stone whose sides outnumber its moss will bear your weight.",
       puzzle:{
-        prompt:"Which stones hold? Enter their letters in crossing order.", placeholder:"LETTERS", answers:['DROWN'],
+        type:'select',
+        select:{commit:"\ud83e\udea8 THESE STONES HOLD", wrong:"The river does not take your weight.",
+          items:[{letter:"B",value:"square \u00b7 4 sides \u00b7 5 moss"},{letter:"D",value:"pentagon \u00b7 5 sides \u00b7 2 moss"},{letter:"E",value:"triangle \u00b7 3 sides \u00b7 3 moss"},{letter:"R",value:"hexagon \u00b7 6 sides \u00b7 1 moss"},{letter:"O",value:"square \u00b7 4 sides \u00b7 2 moss"},{letter:"A",value:"triangle \u00b7 3 sides \u00b7 4 moss"},{letter:"W",value:"pentagon \u00b7 5 sides \u00b7 3 moss"},{letter:"N",value:"hexagon \u00b7 6 sides \u00b7 4 moss"}]},
+        prompt:"Which stones hold? Tap them in crossing order.", answers:['DROWN'],
         hints:[
           "Judge every stone: does its shape's side-count strictly beat its moss count? Split the eight stones among the crew.",
           "Equal doesn't count — E (3 sides, 3 moss) tips. Keep only sides > moss, then read the survivors left to right.",
@@ -836,7 +841,8 @@ const ROOMS = [
     { id:'pack', icon:'🎒', name:"Ranger's Pack", pos:{x:67,y:69,w:9,h:13},
       desc:"A weathered ranger's pack lies dropped beside the path, sealed with a 3-digit padlock. A waterproof tag hangs from the zip, the writing still legible:\n\n“Three digits guard my cache.\nThe first is twice the last.\nThe middle is the sum of the other two.\nAll three together make eighteen.”",
       puzzle:{
-        prompt:"Enter the 3-digit code.", placeholder:"000", answers:['693'],
+        type:'keypad',
+        prompt:"Enter the 3-digit code.", answers:['693'],
         hints:[
           "Turn the tag into equations. Call the digits F, M, L — one person writes, one checks.",
           "F = 2×L and M = F+L, so M = 3×L. Then F+M+L = 6×L = 18.",
@@ -896,7 +902,8 @@ const ROOMS = [
     { id:'locker', onSolve:{el:'rx-cove',op:.2,fx:'surge'}, icon:'🧨', name:'Flare Locker', pos:{x:66,y:73,w:12,h:14},
       desc:"A steel flare locker, painted with fading emergency stripes, sealed with a 4-digit lock. The plaque riveted to the lid reads:\n\n“PROPERTY OF STATION 7.\nAN OPERATOR NEVER FORGETS THE EMERGENCY BAND —\nAND THE MILITARY LISTENS AT TWICE IT.”",
       puzzle:{
-        prompt:"Enter the 4-digit code.", placeholder:"0000", answers:['2430'],
+        type:'keypad',
+        prompt:"Enter the 4-digit code.", answers:['2430'],
         hints:[
           "You knew the emergency band once — you tuned to it yourself, back in the station. But the plaque wants where the military listens.",
           "Twice the band. Take the frequency from the radio room and double it.",
@@ -921,7 +928,8 @@ const ROOMS = [
     { id:'winch', icon:'⚙️', name:'Launch Winch Tumblers', pos:{x:85,y:67,w:10,h:16}, hiddenUntil:'tide',
       desc:"The winch release is guarded by four numbered tumblers — and above them, chiseled deep into the rock, four familiar shapes in a familiar order:\n\n▲   ■   ◆   ●\n\nBeneath them:\n\n“THE SAIL ORDERED THEM ONCE.\nTHE SEA RETURNS ALL THINGS REVERSED.”\n\nYou've seen these shapes before. On a beach. A lifetime ago this morning.",
       puzzle:{
-        prompt:"Enter the 4-digit release code.", placeholder:"0000", answers:['3158'],
+        type:'keypad',
+        prompt:"Enter the 4-digit release code.", answers:['3158'],
         hints:[
           "The shapes are in the sail's wind order — the same order that opened the crate. But read the second line of the carving again.",
           "The crate opened on 8-5-1-3. The sea returns all things reversed.",
@@ -1019,6 +1027,9 @@ registerScenario({
     "The canopy shifts. Whatever is out there moves off — and you notice {it} again.",
     "A wave breaks and draws back. {it} has not given up everything it holds."
   ],
+  // One wording for every lock in this fiction: a salt-seized crate and a
+  // frozen hut safe do not fail the same way.
+  padMiss:'The salt-swollen tumblers refuse to turn.', padHow:'Key in the combination. The dial is stiff with salt — a wrong four only costs 5 seconds.',
   wrongBeats:WRONG_BEATS, wrongSounds:WRONG_SOUNDS,
   scenes:SCENES, rooms:ROOMS
 });

@@ -410,7 +410,8 @@ const ROOMS=[
     { id:'desk', onSolve:{el:'rx-baggage',op:.2,fx:'surge'}, icon:'🗃️', name:"The Porter's Desk", pos:{x:28,y:44,w:15,h:18},
       desc:"The porter's cash box wears a 4-digit lock. His punch-mark chart is pasted to the desk — four punch shapes, each with a takings figure, in no particular order:\n\n★ 8      ✚ 2      ● 5      ■ 3\n\nAnd the company chart beside it pairs punches with classes:\n\n★ FIRST CLASS   ✚ SECOND CLASS   ● THIRD CLASS   ■ FREIGHT\n\nDigits, but no sequence. The company counted its money in one fixed order — every porter knew it by heart, and the rule is posted somewhere in this car.",
       puzzle:{
-        prompt:"Enter the 4-digit code.", placeholder:"0000", answers:['8253'],
+        type:'keypad',
+        prompt:"Enter the 4-digit code.", answers:['8253'],
         hints:[
           "You need the classes in the official order — read the framed fare card on the wall above the desk.",
           "The fare card: “COUNT THE TAKINGS FROM FIRST CLASS DOWN TO FREIGHT.”",
@@ -510,7 +511,8 @@ const ROOMS=[
     { id:'berthlock', icon:'🚪', name:'Berth 13', pos:{x:82,y:26,w:11,h:42}, hiddenUntil:'valise',
       desc:"Berth 13 — the cabin that isn't on the car plan — locked at 3 digits. Three punched ticket stubs are pinned to the door — SEAT 2, SEAT 6, SEAT 7 — above the brakeman's memory-note:\n\n“The lock takes the three seats in boarding order.\nSeat 7 boarded between the other two.\nSeat 2 boarded somewhere before seat 6.”\n\nAnd scrawled under it: “REMEMBER THE RECORD. THE JUNCTION WILL ASK.”",
       puzzle:{
-        prompt:"Work out the boarding order of seats 2, 6 and 7, then enter the three digits.", placeholder:"000", answers:['276'],
+        type:'keypad',
+        prompt:"Work out the boarding order of seats 2, 6 and 7, then enter the three digits.", answers:['276'],
         hints:[
           "Seat 7 boarded between the other two — so 7 is the MIDDLE digit, never first or last.",
           "That leaves 2 and 6 for the ends, and seat 2 boarded before seat 6.",
@@ -550,9 +552,12 @@ const ROOMS=[
       }
     },
     { id:'tables', onSolve:{el:'rx-dining',op:.2,fx:'surge'}, icon:'🍴', name:'The Table Settings', pos:{x:10,y:60,w:56,h:16}, hiddenUntil:'menu',
-      desc:"Eight settings across the dining car, each place card stamped with a cover number. Reading front of the car to back:\n\nH — 4\nS — 3\nU — 9\nN — 1\nO — 2\nG — 4\nR — 9\nY — 1\n\nThe etiquette card in the mirror's frame: “AN HONEST HOUSE SEATS ONLY SQUARE COMPANY. CLEAR EVERY SETTING WHOSE NUMBER IS A PERFECT SQUARE (1, 4, 9, 16…).”",
+      desc:"Eight settings across the dining car, each place card stamped with a cover number. Reading front of the car to back:\n\nAn honest house seats only square company. Clear every setting whose number is a perfect square.",
       puzzle:{
-        prompt:"Which settings get cleared? Enter their letters in order.", placeholder:"LETTERS", answers:['HUNGRY'],
+        type:'select',
+        select:{commit:"\ud83c\udf7d\ufe0f CLEAR THESE", wrong:"The settings stay where they are.",
+          items:[{letter:"H",value:"cover 4"},{letter:"S",value:"cover 3"},{letter:"U",value:"cover 9"},{letter:"N",value:"cover 1"},{letter:"O",value:"cover 2"},{letter:"G",value:"cover 4"},{letter:"R",value:"cover 9"},{letter:"Y",value:"cover 1"}]},
+        prompt:"Which settings get cleared? Tap them along the car.", answers:['HUNGRY'],
         hints:[
           "A perfect square is some whole number times itself: 1(=1×1), 4(=2×2), 9(=3×3). Check each cover; split the tables among the crew.",
           "Drop the non-squares — S(3) and O(2). Keep 4, 9, 1 and read the survivors front to back.",
@@ -566,7 +571,8 @@ const ROOMS=[
     { id:'till', icon:'🧾', name:'The Till', pos:{x:84,y:52,w:10,h:14},
       desc:"The bar till, locked at 3 digits. Three unpaid chits still hang on the spike beside it:\n\nTABLE 2 — 85¢\nTABLE 5 — $1.15\nTABLE 7 — $1.85\n\nThe head waiter's tag on the drawer: “THE TILL OPENS ON THE NIGHT'S TOTAL — DOLLARS, THEN CENTS.”",
       puzzle:{
-        prompt:"Add up the three chits and enter the total as three digits (dollars, then cents).", placeholder:"000", answers:['385'],
+        type:'keypad',
+        prompt:"Add up the three chits and enter the total as three digits (dollars, then cents).", answers:['385'],
         hints:[
           "Straight addition — split the chits among the crew and check each other.",
           "85¢ + $1.15 = $2.00 even. Now add the last chit.",
@@ -623,7 +629,8 @@ const ROOMS=[
     { id:'lantern', onSolve:{el:'rx-locomotive',op:.2,fx:'surge'}, icon:'🏮', name:'The Signal Lantern Case', pos:{x:69,y:52,w:9,h:19},
       desc:"The signal lantern is locked in its case, 4 digits, stencilled with the brakeman's rule:\n\n“THE SPECIAL SINGS ON ITS OWN NUMBER.\nTHE JUNCTION LISTENS AT TWICE IT.”\n\nThe berth 13 card said it too: remember the record.",
       puzzle:{
-        prompt:"Enter the 4-digit code.", placeholder:"0000", answers:['1568'],
+        type:'keypad',
+        prompt:"Enter the 4-digit code.", answers:['1568'],
         hints:[
           "You set the Special's number yourself — on the gramophone, back in Cabin 3.",
           "The record played at 78.4. The junction listens at twice it.",
@@ -647,7 +654,8 @@ const ROOMS=[
     { id:'coupling', icon:'🔗', name:'The Coupling Pins', pos:{x:80,y:70,w:15,h:20}, hiddenUntil:'timetable',
       desc:"To make the junction light enough, the ghost cars have to go. The coupling release wears four punch-glyph tumblers — the porter's marks, in the fare card's order:\n\n★   ✚   ●   ■\n\nStamped beneath:\n\n“TAKINGS COUNTED FORWARD.\nPINS PULLED IN REVERSE.”",
       puzzle:{
-        prompt:"Enter the 4-digit release.", placeholder:"0000", answers:['3528'],
+        type:'keypad',
+        prompt:"Enter the 4-digit release.", answers:['3528'],
         hints:[
           "You counted the takings forward once already — the porter's cash box in the baggage car.",
           "The cash box opened on 8253. The pins pull in reverse.",
@@ -746,6 +754,9 @@ registerScenario({
     "Cutlery shivers on the tables. Your eye goes to {it}.",
     "The firebox roars and settles. {it} is the thing still waiting."
   ],
+  // One wording for every lock in this fiction: a salt-seized crate and a
+  // frozen hut safe do not fail the same way.
+  padMiss:'The brass does not click. The carriage sways on.', padHow:'Key in the figures. A wrong set only costs 5 seconds of track.',
   wrongBeats:WRONG_BEATS, wrongSounds:WRONG_SOUNDS,
   scenes:SCENES, rooms:ROOMS
 });

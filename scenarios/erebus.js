@@ -388,7 +388,8 @@ const ROOMS=[
     { id:'garage', onSolve:{el:'rx-perimeter',op:.2,fx:'surge'}, icon:'🚜', name:'The Snowcat Garage', pos:{x:12,y:76,w:22,h:18},
       desc:"The supply cage in the garage wears a 4-digit padlock. Four supply glyphs are stencilled on the fuel drums beside it, each with a digit — in no particular order:\n\n✚ MEDICAL 4      ● FUEL 8      ▲ FLARES 1      ■ FOOD 6\n\nAlong the back wall stand nine fuel drums; you rap each one down the line and six of them ring empty.\n\nDigits, but no sequence. Somewhere on this station is a standing order that puts supplies in order.",
       puzzle:{
-        prompt:"Enter the 4-digit code.", placeholder:"0000", answers:['6841'],
+        type:'keypad',
+        prompt:"Enter the 4-digit code.", answers:['6841'],
         hints:[
           "You need the official ORDER of supplies — check what's posted by the main door.",
           "The resupply notice: UNLOAD IN THIS ORDER — FOOD, FUEL, MEDICAL, FLARES.",
@@ -488,7 +489,8 @@ const ROOMS=[
     { id:'genpanel', icon:'🔌', name:'Generator Panel', pos:{x:43,y:69,w:12,h:20}, hiddenUntil:'footlocker',
       desc:"The backup generator wants a 3-digit setting. The calibration card from the locker, in the engineer's block capitals:\n\n“COLD-START RULE —\nEACH DIGIT IS DOUBLE THE DIGIT THAT FOLLOWS IT.\nALL THREE TOGETHER MAKE FOURTEEN.”\n\nAnd beneath, double-underlined: “REMEMBER THE STATION'S BAND. THE PLANE WILL NEED IT.”",
       puzzle:{
-        prompt:"Find the three digits that fit the cold-start rule and enter them in order.", placeholder:"000", answers:['842'],
+        type:'keypad',
+        prompt:"Find the three digits that fit the cold-start rule and enter them in order.", answers:['842'],
         hints:[
           "The digits halve as you read: the second is half the first, the third is half the second. Try a starting digit and follow it down.",
           "Only one chain of halves sums to 14 — start from 8: 8, 4, 2 makes 14.",
@@ -527,9 +529,12 @@ const ROOMS=[
       }
     },
     { id:'cores', onSolve:{el:'rx-corelab',op:.2,fx:'surge'}, icon:'🔬', name:'The Core Racks', pos:{x:8,y:26,w:56,h:14}, hiddenUntil:'coreE9',
-      desc:"Eight cores in cold storage, each tagged with a letter and the depth it was drilled from (metres). Left to right:\n\nB — 812 m\nT — 435 m\nU — 604 m\nR — 286 m\nO — 3 m … (mislabelled, the tag notes)\nI — 550 m\nE — 178 m\nD — 944 m\n\nThe survey rule, taped to the rack: “ONLY CORES FROM AN EVEN DEPTH STAYED FROZEN THROUGH. ODD-DEPTH CORES CRACKED AND ARE CONTAMINATED.”",
+      desc:"Eight cores in cold storage, each tagged with a letter and the depth it was drilled from (metres). Left to right:\n\nOnly cores from an even depth stayed frozen through.",
       puzzle:{
-        prompt:"Which cores can be trusted? Enter their letters in rack order.", placeholder:"LETTERS", answers:['BURIED'],
+        type:'select',
+        select:{commit:"\ud83e\uddca THESE CORES ARE SOUND", wrong:"The survey log will not accept that set.",
+          items:[{letter:"B",value:"812 m"},{letter:"T",value:"435 m"},{letter:"U",value:"604 m"},{letter:"R",value:"286 m"},{letter:"O",value:"3 m \u2014 mislabelled"},{letter:"I",value:"550 m"},{letter:"E",value:"178 m"},{letter:"D",value:"944 m"}]},
+        prompt:"Which cores can be trusted? Tap the ones that survive.", answers:['BURIED'],
         hints:[
           "Even numbers end in 0, 2, 4, 6, 8. Check the last digit of each depth; split the rack among the crew.",
           "Drop the odd depths — T(435) and O(3). Read the even-depth cores left to right.",
@@ -543,7 +548,8 @@ const ROOMS=[
     { id:'coldsafe', icon:'🔐', name:'The Cold Safe', pos:{x:8,y:68,w:12,h:20},
       desc:"The lab's cold safe, 3-digit dial. The tag from the core rack, in the lead scientist's careful print:\n\n“Three different digits, every one a multiple of three, none of them zero.\nThe first is the sum of the other two.\nThe smallest hides in the middle.”",
       puzzle:{
-        prompt:"Find the three digits that fit and enter them in order.", placeholder:"000", answers:['936'],
+        type:'keypad',
+        prompt:"Find the three digits that fit and enter them in order.", answers:['936'],
         hints:[
           "Your only materials are 3, 6 and 9 — the single-digit multiples of three.",
           "Which of them is the sum of the other two? 9 = 3 + 6, so 9 leads.",
@@ -601,7 +607,8 @@ const ROOMS=[
     { id:'lockbox', onSolve:{el:'rx-radiotower',op:.2,fx:'surge'}, icon:'📦', name:'The Tower Lockbox', pos:{x:42,y:68,w:11,h:16},
       desc:"The transmitter's crystal is locked in a 4-digit box, stencilled with the radio officer's rule:\n\n“STATION EREBUS TRANSMITS ON ITS OWN BAND.\nTHE PLANE LISTENS AT TWICE IT.”",
       puzzle:{
-        prompt:"Enter the 4-digit code.", placeholder:"0000", answers:['1764'],
+        type:'keypad',
+        prompt:"Enter the 4-digit code.", answers:['1764'],
         hints:[
           "You found the station's band yourself, on the shortwave in the quarters.",
           "The band was 88.2. The plane listens at twice it.",
@@ -625,7 +632,8 @@ const ROOMS=[
     { id:'flarebox', icon:'🧨', name:'The Flare Cache', pos:{x:74,y:69,w:11,h:15}, hiddenUntil:'weather',
       desc:"The flare cache, 4-digit lock, stencilled in the quartermaster's hand:\n\n“STOCKED IN RESUPPLY ORDER.\nUNLOCKED IN REVERSE.”\n\nThe same four supply glyphs from the garage look back at you: ■ ● ✚ ▲.",
       puzzle:{
-        prompt:"Enter the 4-digit code.", placeholder:"0000", answers:['1486'],
+        type:'keypad',
+        prompt:"Enter the 4-digit code.", answers:['1486'],
         hints:[
           "You stocked this code once already — the garage cage, in resupply order.",
           "The garage opened on 6841. Unlock in reverse.",
@@ -724,6 +732,9 @@ registerScenario({
     "The cold ticks through the metal. You look back at {it}.",
     "A gust clears the snow off {it}. It is still unread."
   ],
+  // One wording for every lock in this fiction: a salt-seized crate and a
+  // frozen hut safe do not fail the same way.
+  padMiss:'The lock is frozen hard and does not give.', padHow:'Key in the numbers with your gloves off. A wrong four costs 5 seconds of warmth.',
   wrongBeats:WRONG_BEATS, wrongSounds:WRONG_SOUNDS,
   scenes:SCENES, rooms:ROOMS
 });
