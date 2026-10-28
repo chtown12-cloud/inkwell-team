@@ -732,6 +732,14 @@ registerScenario({
     "The cold ticks through the metal. You look back at {it}.",
     "A gust clears the snow off {it}. It is still unread."
   ],
+  // Three times a game something happens TO the team rather than around
+  // them: the lights fail, something crosses the room, and a clue they had
+  // already settled turns up disturbed.
+  intrusions:{
+    squeeze:'The generator drops. The hut goes black and the cold is inside it immediately — then the lights come up again, browner than before.',
+    arrival:'Something passes the window at eye height. Nothing out there stands that tall.',
+    midroom:'The core you had already cleared has frosted over again, hard, in the time it took to turn around.'
+  },
   // One wording for every lock in this fiction: a salt-seized crate and a
   // frozen hut safe do not fail the same way.
   padMiss:'The lock is frozen hard and does not give.', padHow:'Key in the numbers with your gloves off. A wrong four costs 5 seconds of warmth.',

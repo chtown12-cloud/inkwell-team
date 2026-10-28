@@ -770,6 +770,14 @@ registerScenario({
     "Somewhere a pump kicks in. The sound draws your attention to {it}.",
     "Bay pressure ticks down a notch. {it} is the thing you have not finished."
   ],
+  // Three times a game something happens TO the team rather than around
+  // them: the lights fail, something crosses the room, and a clue they had
+  // already settled turns up disturbed.
+  intrusions:{
+    squeeze:'The lights die one bank at a time, all the way down the corridor. When they come back, the far end stays dark.',
+    arrival:'Something goes past the viewport on the outside of the hull. It does not hurry.',
+    midroom:'A panel you have already cracked flickers and resets itself. Nobody is standing near it.'
+  },
   // One wording for every lock in this fiction: a salt-seized crate and a
   // frozen hut safe do not fail the same way.
   padMiss:'The bolt stays shut. Somewhere down the corridor, something answers it.', padHow:'Key in the code. The pad beeps once for a bad entry, and that costs 5 seconds.',

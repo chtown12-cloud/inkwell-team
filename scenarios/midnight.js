@@ -754,6 +754,14 @@ registerScenario({
     "Cutlery shivers on the tables. Your eye goes to {it}.",
     "The firebox roars and settles. {it} is the thing still waiting."
   ],
+  // Three times a game something happens TO the team rather than around
+  // them: the lights fail, something crosses the room, and a clue they had
+  // already settled turns up disturbed.
+  intrusions:{
+    squeeze:'The lights fail the length of the train. For a while there is only the rail joints underneath you, counting.',
+    arrival:'A figure passes the corridor glass, walking the other way. The train is doing sixty.',
+    midroom:'The setting you had already laid out has been turned back. The table is exactly as it was before you touched it.'
+  },
   // One wording for every lock in this fiction: a salt-seized crate and a
   // frozen hut safe do not fail the same way.
   padMiss:'The brass does not click. The carriage sways on.', padHow:'Key in the figures. A wrong set only costs 5 seconds of track.',

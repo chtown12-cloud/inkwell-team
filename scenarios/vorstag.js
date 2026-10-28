@@ -801,6 +801,14 @@ registerScenario({
     "Something in the glassware settles. Your eye lands on {it}.",
     "The wind drops. In the quiet, {it} is what you have left."
   ],
+  // Three times a game something happens TO the team rather than around
+  // them: the lights fail, something crosses the room, and a clue they had
+  // already settled turns up disturbed.
+  intrusions:{
+    squeeze:'Every candle in the hall leans flat and goes out together. The dark lasts long enough that somebody says so. Then they take again.',
+    arrival:'A shadow crosses the far doorway at the height of a man, and the rain goes on falling through where it was.',
+    midroom:'The jar you had already settled is standing open. Its wax seal is on the floor beside it.'
+  },
   // One wording for every lock in this fiction: a salt-seized crate and a
   // frozen hut safe do not fail the same way.
   padMiss:'The wards grind, catch, and hold.', padHow:'Key in the figures. A wrong set only wakes the mechanism for 5 seconds.',

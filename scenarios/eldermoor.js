@@ -1027,6 +1027,14 @@ registerScenario({
     "The canopy shifts. Whatever is out there moves off — and you notice {it} again.",
     "A wave breaks and draws back. {it} has not given up everything it holds."
   ],
+  // Three times a game something happens TO the team rather than around
+  // them: the lights fail, something crosses the room, and a clue they had
+  // already settled turns up disturbed.
+  intrusions:{
+    squeeze:'The lamp gutters, and goes out. For a few seconds there is nothing but the sea — then it catches again, lower than it was.',
+    arrival:'Something long moves between you and the water, slow, and is gone before anyone can put a name to it.',
+    midroom:'Behind you, something you had already worked out shifts in the wind. It is not where you left it.'
+  },
   // One wording for every lock in this fiction: a salt-seized crate and a
   // frozen hut safe do not fail the same way.
   padMiss:'The salt-swollen tumblers refuse to turn.', padHow:'Key in the combination. The dial is stiff with salt — a wrong four only costs 5 seconds.',
