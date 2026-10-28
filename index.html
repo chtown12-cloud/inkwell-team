@@ -388,7 +388,11 @@ pre.share{text-align:left;background:#0a1416;border:1px solid #2c4144;border-rad
 .chain-room{padding:11px 15px}
 .chain-room b{color:var(--teal-hi);font-weight:400;font-size:.88rem}
 .chain-room p{color:var(--dim);font-size:.85rem;line-height:1.55;margin-top:4px}
-@media (max-width:640px){#hud .stats{display:none}.end-card .stat-grid{grid-template-columns:1fr}}
+/* A narrow screen drops the three readouts, NOT the controls beside them.
+   Hiding the whole bar took the mute and narration buttons with it, on the one
+   kind of device that cannot do anything about the sound any other way. */
+#hud .stats .readouts{display:contents}
+@media (max-width:640px){#hud .stats .readouts{display:none}.end-card .stat-grid{grid-template-columns:1fr}}
 
 /* ---------- difficulty picker ---------- */
 .diff-row{display:flex;gap:10px;justify-content:center;margin-top:14px}
@@ -608,13 +612,32 @@ body.phone #credits{display:none}
   padding:7px 11px;cursor:pointer}
 #join-emoji button.on{border-color:var(--teal-hi);background:rgba(79,163,155,.25)}
 .join-note{color:var(--dim);font-size:.8rem;margin-top:14px;line-height:1.5}
+/* The room, behind the list of clues. A phone never shows the stage — no
+   hotspots, no particles, no motion — but sitting in a flat grey list while
+   everyone else is somewhere is the single biggest thing separating the two
+   halves of a team. Dimmed and blurred hard so the cards stay readable. */
+#phone-scene{position:fixed;inset:0;z-index:1;pointer-events:none;overflow:hidden}
+#phone-scene svg{position:absolute;inset:0;width:100%;height:100%;
+  opacity:.55;filter:blur(2px) saturate(.85)}
+/* Light enough to read as a place, dark enough that the cards and the
+   objective stay legible on top of it. The cards are near-opaque; the
+   objective text is what sets the ceiling here. */
+#phone-scene::after{content:"";position:absolute;inset:0;
+  background:linear-gradient(180deg,rgba(3,10,11,.82) 0,rgba(3,10,11,.6) 30%,rgba(3,10,11,.78) 100%)}
+body:not(.phone) #phone-scene{display:none}
 #phone-root{position:fixed;inset:0;overflow:auto;padding:64px 12px 28px;z-index:20}
+/* the room label wraps on a narrow screen, so the HUD is two lines tall there
+   and the list has to start below it */
+@media (max-width:640px){ #phone-root{padding-top:96px} }
 .ph-objective{color:var(--dim);font-size:.9rem;line-height:1.5;margin:0 4px 14px;text-align:center}
 .ph-list{display:flex;flex-direction:column;gap:10px}
 .ph-card{display:flex;align-items:center;gap:11px;width:100%;text-align:left;padding:14px 13px;
   background:rgba(10,24,26,.9);border:1px solid #2b4145;border-radius:12px;color:var(--sand);
   font-family:'Special Elite',serif;font-size:1.05rem;cursor:pointer}
 .ph-card.done{opacity:.55;border-color:#2a4a3a}
+.ph-card.justsolved{animation:phsolve 1.5s ease-out}
+@keyframes phsolve{0%{border-color:var(--teal-hi);background:rgba(79,163,155,.3)}100%{}}
+@media (prefers-reduced-motion: reduce){ .ph-card.justsolved{animation:none} }
 .ph-card.lore{border-style:dashed}
 .ph-icon{font-size:1.4rem}
 .ph-name{flex:1}
@@ -705,9 +728,11 @@ body.phone #modal{max-height:86vh}
   <div class="room-label"><span id="team-badge"></span><span id="hud-room"></span></div>
   <div id="timer">45:00</div>
   <div class="stats">
-    <span>Elapsed <b id="stat-elapsed">0:00</b></span>
-    <span>Hints <b id="stat-hints">0</b></span>
-    <span>Penalties <b id="stat-pen">+0:00</b></span>
+    <span class="readouts">
+      <span>Elapsed <b id="stat-elapsed">0:00</b></span>
+      <span>Hints <b id="stat-hints">0</b></span>
+      <span>Penalties <b id="stat-pen">+0:00</b></span>
+    </span>
     <span id="crew-count" class="hidden" title="Players joined on their phones"></span>
     <button id="qr-btn" class="hidden" title="Show the join code">📱</button>
     <button id="narrate-btn" title="Read story beats aloud">🗣️</button>
@@ -740,6 +765,7 @@ body.phone #modal{max-height:86vh}
     <p class="join-note" id="join-note"></p>
   </div>
 </div>
+<div id="phone-scene"></div>
 <div id="phone-root" class="hidden"></div>
 
 <div id="host-gone" class="hidden">
@@ -1085,12 +1111,16 @@ function newParticle(mode){
   return {m:'none',x:0,y:0};
 }
 function spawnBurst(x,y,hue,n=18,speed=4){
+  // fxLoop skips the paint on phones, and culling only happens inside the
+  // paint — so without this every solve leaked its sparks for the whole game
+  if(typeof S!=='undefined' && S.isPhone) return;
   for(let i=0;i<n;i++){
     const a=Math.random()*6.283, v=speed*(0.4+Math.random());
     particles.push({m:'spark',x,y,vx:Math.cos(a)*v,vy:Math.sin(a)*v-1.4,life:0,maxlife:38+Math.random()*26,hue});
   }
 }
 function spawnFlare(big){
+  if(typeof S!=='undefined' && S.isPhone){ sfxWhoosh(); return; }   // heard, not drawn
   const c=(ACTIVE&&ACTIVE.flare)||{x:852,y:470,hue:[255,120,90]};
   particles.push({m:'flare',x:c.x,y:c.y,vx:(Math.random()-.5)*1.4,vy:big?-7.4:-5.6,life:0,maxlife:big?150:85,burst:big?46:26,hue:c.hue});
   sfxWhoosh();
@@ -1177,6 +1207,7 @@ requestAnimationFrame(fxLoop);
 /* film grain */
 const grainC=$('grain'), gctx=grainC.getContext('2d');
 setInterval(()=>{
+  if(typeof S!=='undefined' && S.isPhone) return;   // the canvas is display:none there
   const img=gctx.createImageData(480,270);
   for(let i=0;i<img.data.length;i+=4){ const v=Math.random()*255|0; img.data[i]=img.data[i+1]=img.data[i+2]=v; img.data[i+3]=255; }
   gctx.putImageData(img,0,0);
@@ -1313,7 +1344,15 @@ function tick(){
     $('vignette').classList.toggle('tense',low);
     $('vignette').classList.toggle('pulse',low);
     if(low) startHeartbeat();
-  } else { t.textContent='+'+fmt(used-START_SECONDS); t.classList.add('overtime'); t.classList.remove('low'); }
+  } else {
+    t.textContent='+'+fmt(used-START_SECONDS); t.classList.add('overtime'); t.classList.remove('low');
+    // Press On and the deadline is gone — so let the alarm go with it. The red
+    // pulse and the heartbeat used to switch on at 5:00 and then had no code
+    // path to ever switch off again, so a team playing past time sat under a
+    // throbbing red screen and a racing heart for as long as they kept going.
+    $('vignette').classList.remove('tense','pulse');
+    stopHeartbeat();
+  }
   $('stat-elapsed').textContent=fmt(elapsedSec());
   $('stat-hints').textContent=S.hintsUsed;
   $('stat-pen').textContent='+'+fmt(S.penaltySec);
@@ -1472,6 +1511,35 @@ function renderScene(){
   applyRoomReactions();
   refreshRelays();
 }
+/**
+ * What a phone gets when the team changes room.
+ *
+ * It has no stage, so none of renderScene's hotspot, particle or motion
+ * machinery applies — but it is in the same room as everyone else and had,
+ * until now, no way of knowing that. No scene, and more to the point no
+ * ambience and no room sounds at all, because setAmbience and startRoomEvents
+ * were only ever reached through renderScene.
+ */
+function enterRoomPhone(){
+  const room=currentRoom();
+  const back=$('phone-scene');
+  if(back) back.innerHTML = ACTIVE.scenes[room.scene] ? ACTIVE.scenes[room.scene]() : '';
+  setAmbience(ACTIVE.ambience[S.roomIndex]);
+  startRoomEvents(S.roomIndex);
+  $('hud-room').textContent=room.name;
+  renderPhone();
+}
+/** A team-mate solved something: say so, quietly. Has to run AFTER the list is
+    rebuilt, because renderPhone replaces the very card we want to flash. */
+let justSolved=[];
+function phoneSolveEcho(){
+  justSolved.forEach(id=>{
+    const card=document.querySelector(`.ph-card[data-obj="${id}"]`);
+    if(card) card.classList.add('justsolved');
+  });
+  justSolved=[];
+}
+
 function renderHotspots(){
   const layer=$('hotspots'); layer.innerHTML='';
   const room=currentRoom();
@@ -2355,7 +2423,7 @@ function applyRemote(room){
     // a room the rest of the crew has already moved on from
     if(typeof room.roomIndex==='number' && room.roomIndex>S.roomIndex){
       S.roomIndex = room.roomIndex;
-      if(S.isPhone){ closeModal(); }
+      if(S.isPhone){ closeModal(); enterRoomPhone(); }
       else { $('room-complete').classList.add('hidden'); enterRoom(room.roomIndex); }
     }
 
@@ -2367,6 +2435,7 @@ function applyRemote(room){
       const o = currentRoom().objects.find(x=>x.id===id);
       // if a team-mate solved the puzzle you have open, show them beating you to it
       if(o && MP.openObj===id){ MP.openObj=null; openModal(id); }
+      if(o && S.isPhone){ sfxChime(); justSolved.push(id); }
       if(o && !S.isPhone){
         sfxChime();
         if(o.pos) spawnBurst((o.pos.x+o.pos.w/2)/100*1600,(o.pos.y+o.pos.h/2)/100*900,
@@ -2377,7 +2446,7 @@ function applyRemote(room){
     });
   } finally { MP.suppress = false; }
 
-  if(S.isPhone){ renderPhone(); refreshHostBanner(); }
+  if(S.isPhone){ renderPhone(); phoneSolveEcho(); refreshHostBanner(); }
   else { renderHotspots(); renderPlayerTokens(); }
   // a simultaneity lock has to show crew arriving in real time
   if(!$('overlay').classList.contains('hidden')){
@@ -2712,12 +2781,13 @@ async function bootPhone(code){
     $('team-badge').textContent=chosen+' '+name.toUpperCase();
     $('hud-room').textContent='';
     initAudio(); if(AC&&AC.state==='suspended') AC.resume();
+    enterRoomPhone();
     NET.startPolling();
     // The takeover offer used to be checked only when a message arrived — but a
     // screen that has gone quiet sends nothing, so the one case that needed
     // noticing was the one case that never was. Look on a timer too.
     setInterval(refreshHostBanner, 8000);
-    renderPhone(); tick();
+    tick();
   };
 }
 
