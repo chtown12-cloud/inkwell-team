@@ -32,22 +32,27 @@ feels fresh rather than repeating the first:
 
 | Slot | Eldermoor | Prospero | Vorstag | Erebus | Midnight |
 |------|-----------|----------|---------|--------|----------|
-| Room-1 opener | letter-indexing | **acrostic** | **anagram** | **A1Z26** (№→letter) | **book cipher** (line·word) |
-| Room-2 cipher | Caesar (shift 3) | **binary** (5-bit) | **Atbash** (mirror) | **Vigenère** (key ICE) | **rail fence** (zigzag) |
-| Room-2 deduction | mastermind lamps | **logic-grid** rod seating | **Roman-numeral** weighing | **halving-chain** riddle | **boarding-order** logic |
-| Room-3 filter | threshold (>) | **prime** counts | **odd** charges | **even** depths | **perfect-square** covers |
-| Room-3 number lock | linked relations | **countdown sequence** | **factor riddle** (×48) | **multiples-of-three** | **money addition** |
-| Co-op set piece | **simultaneity lock** (two winches) | — | — | — | — |
+| Room-1 opener | tacked letters + davit list | **acrostic** (phosphor burn-in) | **anagram** | **A1Z26** (№→letter) | **book cipher** (line·word) |
+| Room-2 cipher | Caesar (disc, ring spun) | **binary** (5-bit) | **Atbash** (mirror) | **Vigenère** (key ICE) | **rail fence** (zigzag) |
+| Room-2 deduction | lamps per correct dial | **logic-grid** rod seating | **Roman-numeral** weighing | **halving-chain** rule | **boarding-order** logic |
+| Room-3 filter | **threshold** (sides beat moss) | **number property** (primes) | **provenance** (the Baron's wax) | **date range** (before the store failed) | **cross-reference** (covers that settled) |
+| Room-3 number lock | linked relations | **countdown sequence** | **factor puzzle** (×48) | **multiples-of-three** | **money addition** |
+| Co-op set piece | **simultaneity lock** (two winches) | — | — | — | **whistle and lamp** together |
 | Signal code | **morse** (its home turf) | **tap code** (knock pairs) | **pigpen** (masons' cipher) | **braille** (embossed dots) | **Cyrillic** (émigré's hand) |
 
 Each scenario's two mid-game signal decodes use its own real-world code —
 morse, prisoners' tap code, pigpen, braille, or phonetic Cyrillic — and teams
-look the alphabet up themselves. The mechanics deliberately shared by all five
-— because they're the game's signature co-op moments — are the two-stage
-tuning **console** (the exact frequency comes from clues, then three trim
-knobs are coaxed by watching the meter until the panel reads LOCKED IN), the
-**scheduling-constraint** drill, the doubled/reversed **callbacks**, and the
-SOS finale.
+look the alphabet up themselves. The one mechanic deliberately shared by all
+five, because it's the game's signature co-op moment, is the two-stage tuning
+**console**: the exact frequency comes from clues, then three trim knobs are
+coaxed by watching the meter until the panel reads LOCKED IN.
+
+**No puzzle tells you what to do to it.** Every clue is carried by something
+that exists in the world for its own reasons — a compass rose on a lock face,
+a rising tide, a quarantine tag wound to 4, a seal register, a builder's
+plate. Nothing is reversed or doubled because a prop said so. The rules are
+written down in [PUZZLES.md](PUZZLES.md) and the checkable ones are enforced
+by `node tests/audit.js`.
 
 ## How to run it
 

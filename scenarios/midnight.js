@@ -331,7 +331,7 @@ SCENES.locomotive=()=>`
   <rect x="1300" y="640" width="220 " height="160" rx="12" fill="#2c1c10" stroke="#170f08" stroke-width="7"/>
   ${[0,1,2,3].map(i=>`<g><rect x="${1322+i*52}" y="668" width="34" height="76" rx="8" fill="#170f08" stroke="#c9a04a" stroke-width="3"/>
    <text x="${1339+i*52}" y="712" text-anchor="middle" font-size="15" fill="#e0cfa2">${'★✚●■'[i]}</text></g>`).join('')}
-  <text x="1410" y="774" text-anchor="middle" font-family="Special Elite" font-size="10" fill="#8a6a3a">PULLED IN REVERSE</text>
+  <text x="1410" y="774" text-anchor="middle" font-family="Special Elite" font-size="10" fill="#8a6a3a">REAR FORWARD</text>
 </g>
 <!-- whistle pull (final) -->
 <g id="el-whistle">
@@ -390,58 +390,58 @@ const ROOMS=[
   entryBeat:"Six trunks, packed for six passengers you dined with at eight o'clock. The dust on the latches says the trunks have been here for years.",
   entrySound:'clack',
   completeText:"The forward door unbolts. Through it, the sleeper corridor sways gently — and at its far end, a shape in a peaked cap turns, unhurried, into a cabin that has no floor number.",
-  chain:"Trunk tags: book cipher (line·word into the Standing Orders) spells PORTER → the porter's desk pairs punch-marks with classes; the fare card gives the order (first class down to freight) → 8253 → mail cage riddle (TIME) — “on this train it runs backward” = EMIT → the waybill cross-references Halifax crates, crates remaining, and the mail sacks → 49.",
+  chain:"Six trunk tags carry line-and-word pairs into the Standing Orders on the wall, and the porter's own pencilled working on the rack rail shows what he did with them: PORTER → the punch chart pairs shapes with digits and the framed fare card gives the company's order, first class down to freight: 8253 → the mail cage's seal register lists a different word for every night of the run, and every shipping tag in the car is stamped 16 NOV: COAL → the forward door takes the crates short (eleven loaded, seven standing) then the sacks aboard (nine in the open cage): 49.",
   objects:[
     { id:'trunks', icon:'🧳', name:'Steamer Trunks', pos:{x:26,y:66,w:66,h:18},
-      desc:"Six steamer trunks in a luggage row. Each shipping tag carries a pair of numbers — a LINE and a WORD — keyed to the company's Standing Orders bolted to the wall above them:\n\n1. All passengers present tickets promptly on request.\n2. Passengers of the overnight service remain seated.\n3. Refreshments are served rearward, then removed.\n4. The evening express tolerates no exceptions ever.\n\nTAGS (line·word):  1·2   ·   2·4   ·   3·1   ·   4·4   ·   4·2   ·   3·4\n\nA stencil on the rack rail explains the tags: “EACH TAG NAMES A WORD. THE WORD'S FIRST LETTER IS YOURS.”",
+      desc:"Six steamer trunks in a luggage row, every shipping tag date-stamped 16 NOV in the same purple ink.\n\nEach tag also carries a pair of numbers, keyed to the company's Standing Orders bolted to the wall above the rack:\n\n   1. All passengers present tickets promptly on request.\n   2. Passengers of the overnight service remain seated.\n   3. Refreshments are served rearward, then removed.\n   4. The evening express tolerates no exceptions ever.\n\n   TAGS:   1·2   ·   2·4   ·   3·1   ·   4·4   ·   4·2   ·   3·4\n\nPencilled on the rack rail, the porter's own working from some earlier consignment, left there the way a man leaves a note to himself:\n\n   “2·3 = remain = R”",
       puzzle:{
-        prompt:"The trunks hide a word. Whose desk should you search?",
+        prompt:"The tags point into the orders. Whose desk do they name?",
         placeholder:"SIX LETTERS", answers:['PORTER'],
         hints:[
-          "It's a book cipher: each pair points at a word in the Standing Orders (line, then word number). Take that word's first letter.",
-          "1·2 = line 1, word 2 = “passengers” = P.  2·4 = “overnight” = O.  3·1 = “Refreshments” = R.",
-          "1·2 P, 2·4 O, 3·1 R, 4·4 “tolerates” T, 4·2 “evening” E, 3·4 “rearward” R — the PORTER's desk."
+          "The porter's pencilled line on the rail is a worked example. Follow exactly what he did with 2·3 and do it to all six tags.",
+          "Line, then word: 1·2 is line 1's second word, “passengers” — P. 2·4 is “overnight” — O. 3·1 is “Refreshments” — R.",
+          "P, O, R, then 4·4 “tolerates” T, 4·2 “evening” E, 3·4 “rearward” R. The tags name the PORTER."
         ],
-        solvedText:"P-O-R-T-E-R. The porter's desk — cash box locked at four digits, ledger open, chair still warm. You choose not to dwell on the chair."
+        solvedText:"P-O-R-T-E-R. The porter's desk: cash box locked at four digits, ledger open, chair still warm. You choose not to dwell on the chair."
       }
     },
     { id:'farecard', icon:'🎫', name:'The Fare Card', pos:{x:38,y:20,w:10,h:22},
       desc:"The company fare card, framed on the wall above the porter's desk:\n\n“GREAT NORTHERN & COASTAL RAILWAY —\nFARES SHALL BE RECKONED, AND TAKINGS COUNTED,\nFROM FIRST CLASS DOWN TO FREIGHT.\nNO EXCEPTIONS. NO REFUNDS.\nNO PASSAGE WITHOUT A PUNCHED TICKET.”\n\nSomeone has underlined the last line. The ink is fresh." },
     { id:'desk', onSolve:{el:'rx-baggage',op:.2,fx:'surge'}, icon:'🗃️', name:"The Porter's Desk", pos:{x:28,y:44,w:15,h:18},
-      desc:"The porter's cash box wears a 4-digit lock. His punch-mark chart is pasted to the desk — four punch shapes, each with a takings figure, in no particular order:\n\n★ 8      ✚ 2      ● 5      ■ 3\n\nAnd the company chart beside it pairs punches with classes:\n\n★ FIRST CLASS   ✚ SECOND CLASS   ● THIRD CLASS   ■ FREIGHT\n\nDigits, but no sequence. The company counted its money in one fixed order — every porter knew it by heart, and the rule is posted somewhere in this car.",
+      desc:"The porter's cash box wears a four-digit lock. His punch-mark chart is pasted to the desk — four punch shapes, each with its takings figure, written up in the order he happened to empty his apron:\n\n   ★ 8        ✚ 2        ● 5        ■ 3\n\nAnd the company chart beside it pairs the punches with the classes they belong to:\n\n   ★ FIRST CLASS     ✚ SECOND CLASS     ● THIRD CLASS     ■ FREIGHT\n\nFour figures and no sequence. But the company counted its money in one fixed order, and every porter on the line knew it by heart, because it is framed on the wall of every car.",
       puzzle:{
         type:'keypad',
         prompt:"Enter the 4-digit code.", answers:['8253'],
         hints:[
-          "You need the classes in the official order — read the framed fare card on the wall above the desk.",
-          "The fare card: “COUNT THE TAKINGS FROM FIRST CLASS DOWN TO FREIGHT.”",
-          "★8 ✚2 ●5 ■3 → enter 8253."
+          "The digits belong to classes, so you need the company's order for classes. It is framed on the wall above this desk.",
+          "The fare card: takings are counted from first class down to freight.",
+          "★ 8, ✚ 2, ● 5, ■ 3. Enter 8253."
         ],
-        solvedText:"8-2-5-3 and the cash box opens. Inside: no money — only a conductor's pocket watch, stopped dead, and a single ticket stamped with one word, the stamp mirrored: EMIT… no. Read it from the other side: TIME.",
+        solvedText:"8-2-5-3 and the cash box opens. Inside: no money at all — only a conductor's pocket watch, stopped dead, and a punched ticket for a seat in a car this train does not have.",
         solveBeat:"The stopped watch in your hand ticks once. Only once. As if something, somewhere, allowed the train one more second.",
         beatSound:'clank'
       }
     },
     { id:'mailcage', icon:'📮', name:'The Mail Cage', pos:{x:70,y:24,w:20,h:42},
-      desc:"The mail cage is locked with a 4-letter dial. A riddle is engraved on the frame, in the flourished hand of a company that took pride in such things:\n\n“I am taken, kept, lost, and killed,\nyet no hand has ever touched me.\nWhat am I?”\n\nAnd punched below it, crooked, recent:\n\n“ON THIS TRAIN, IT RUNS BACKWARD.”",
+      desc:"The mail cage is locked with a four-letter dial, the way the Post Office insisted on and the railway resented paying for.\n\nScrewed inside the frame, the clerk's seal register — the word the cage is sealed with changes every night of the run, so that a cage found open can be dated:\n\n   14 NOV ......... ASHES\n   15 NOV ......... LAMP\n   16 NOV ......... COAL\n   17 NOV ......... BELL\n   18 NOV ......... SOOT\n\nThe register is the only thing in this car that still smells of ink.",
       puzzle:{
-        prompt:"Set the four letter dials.", placeholder:"FOUR LETTERS", answers:['EMIT'],
+        prompt:"Set the four letter dials.", placeholder:"FOUR LETTERS", answers:['COAL'],
         hints:[
-          "Solve the riddle first — something taken, kept, lost and killed without being touched.",
-          "The riddle's answer is TIME — the mirrored ticket agrees. On this train, it runs backward.",
-          "TIME reversed is EMIT. Enter EMIT."
+          "The register gives you a different seal word for every night of the run. All you need is which night this is.",
+          "Nothing in this car is dated except the luggage. Every shipping tag on the trunk row is stamped with the same date.",
+          "The tags are stamped 16 NOV, and the register's word for the 16th is COAL. Enter COAL."
         ],
-        solvedText:"E-M-I-T — time, running backward, like everything aboard tonight. The cage opens on three mail sacks, all full, all addressed to towns that stopped existing before you were born."
+        solvedText:"C-O-A-L. The cage opens on nine mail sacks, all full, all addressed to towns that stopped existing before you were born."
       }
     },
     { id:'waybill', icon:'📄', name:'The Waybill', pos:{x:54,y:31,w:10,h:19}, hiddenUntil:'mailcage',
-      desc:"The car's waybill hangs clipped inside the cage, next to the forward door and its 2-digit lock. The bill reads:\n\n“FORWARD DOOR — first figure: crates loaded at Halifax, less the crates still standing in this car. Second figure: the mail sacks, tripled.”\n\nThe manifest line above it: “Eleven crates loaded at Halifax.” You count the car: seven remain.",
+      desc:"The car's waybill hangs clipped inside the cage, next to the forward door and its two-digit lock. The instruction is printed on the door plate, not written — the railway set this lock the same way in every car on the line:\n\n   “FORWARD DOOR — THE CRATES SHORT, THEN THE SACKS ABOARD.”\n\nThe manifest line at the top of the bill: “Eleven crates loaded at Halifax.”\n\nYou count the crates still standing in this car. Seven. And the sacks are behind you in the open cage, where you can count those too.",
       puzzle:{
         prompt:"Enter the 2-digit code.", placeholder:"TWO DIGITS", answers:['49'],
         hints:[
-          "Two numbers are on the bill and in this car; the third you just uncaged.",
-          "11 loaded minus 7 remaining is 4. Three mail sacks, tripled, is 9.",
-          "4 then 9 — enter 49."
+          "Two counts, both of them in this car. One person on the crates, one on the sacks.",
+          "Eleven crates were loaded and seven are still standing, so some are short. Then count the mail sacks in the cage.",
+          "Four crates short, nine sacks aboard. Enter 49."
         ],
         solvedText:"4-9. The forward bolt slides — and from the corridor beyond, faint and courteous, comes the click of a ticket punch, testing itself.",
         solveBeat:"Behind you in the baggage car, one trunk latch pops open. Just one. As if something wanted you to know which passenger it kept.",
@@ -509,7 +509,7 @@ const ROOMS=[
       }
     },
     { id:'berthlock', icon:'🚪', name:'Berth 13', pos:{x:82,y:26,w:11,h:42}, hiddenUntil:'valise',
-      desc:"Berth 13 — the cabin that isn't on the car plan — locked at 3 digits. Three punched ticket stubs are pinned to the door — SEAT 2, SEAT 6, SEAT 7 — above the brakeman's memory-note:\n\n“The lock takes the three seats in boarding order.\nSeat 7 boarded between the other two.\nSeat 2 boarded somewhere before seat 6.”\n\nAnd scrawled under it: “REMEMBER THE RECORD. THE JUNCTION WILL ASK.”",
+      desc:"Berth 13 — the cabin that is not on the car plan — locked at three digits. Three punched ticket stubs are pinned to the door, SEAT 2, SEAT 6 and SEAT 7, above the brakeman's note to himself:\n\n   “The lock takes the three seats in boarding order.\n    Seat 7 boarded between the other two.\n    Seat 2 boarded somewhere before seat 6.”",
       puzzle:{
         type:'keypad',
         prompt:"Work out the boarding order of seats 2, 6 and 7, then enter the three digits.", answers:['276'],
@@ -535,7 +535,7 @@ const ROOMS=[
   entryBeat:"Three tables are set with plates still steaming. The train has been abandoned for hours. Somebody keeps cooking.",
   entrySound:'bell',
   completeText:"The service door to the tender swings wide. Behind you, in the dining car, a chair scrapes politely back into place — supper, apparently, is over.",
-  chain:"Chef's board riddle = MIRROR → table settings: clear only PERFECT-SQUARE covers; survivors spell HUNGRY → the till chit addition ($3.85) = 385 → the galley order ticket is Cyrillic = AGAIN.",
+  chain:"The chef's board riddle points at the one thing in the car nobody wants to look at: the bar MIRROR → the head waiter's book lists the covers that settled tonight, and his instruction is to clear what has settled and never touch a setting that has not paid, which leaves two laid and spells HUNGRY in what is cleared → the three unpaid chits on the spike add to $3.85: 385 → the galley's order ticket comes up in the same Cyrillic hand as the record sleeve: AGAIN.",
   objects:[
     { id:'menu', icon:'🍽️', name:"The Chef's Board", pos:{x:64,y:33,w:8,h:18},
       desc:"Tonight's menu, chalked in a strong hand that failed at the dessert line. Under the entrées, a riddle — the chef's game with the waiters, every service:\n\n“I show you the whole car.\nI seat a second party opposite yours.\nNo guest of mine has ever paid,\nand no guest of mine has ever left.\nWhat am I?”",
@@ -552,18 +552,18 @@ const ROOMS=[
       }
     },
     { id:'tables', onSolve:{el:'rx-dining',op:.2,fx:'surge'}, icon:'🍴', name:'The Table Settings', pos:{x:10,y:60,w:56,h:16}, hiddenUntil:'menu',
-      desc:"Eight settings across the dining car, each place card stamped with a cover number. Reading front of the car to back:\n\nAn honest house seats only square company. Clear every setting whose number is a perfect square.",
+      desc:"Eight settings down the dining car, each place card stamped with its cover number.\n\nThe head waiter's book lies open on the sideboard at tonight's page, and his standing instruction is written across the top of it in the same hand every night for thirty years:\n\n   “CLEAR WHAT HAS SETTLED. WE DO NOT TOUCH A SETTING THAT HAS NOT PAID.”\n\n   SETTLED TONIGHT — covers 2, 6, 9, 12, 14, 21\n\nReading from the front of the car to the back:",
       puzzle:{
         type:'select',
-        select:{commit:"\ud83c\udf7d\ufe0f CLEAR THESE", wrong:"The settings stay where they are.",
-          items:[{letter:"H",value:"cover 4"},{letter:"S",value:"cover 3"},{letter:"U",value:"cover 9"},{letter:"N",value:"cover 1"},{letter:"O",value:"cover 2"},{letter:"G",value:"cover 4"},{letter:"R",value:"cover 9"},{letter:"Y",value:"cover 1"}]},
+        select:{commit:"🍽️ CLEAR THESE", wrong:"The settings stay where they are.",
+          items:[{letter:"H",value:"cover 12"},{letter:"S",value:"cover 3"},{letter:"U",value:"cover 21"},{letter:"N",value:"cover 6"},{letter:"O",value:"cover 17"},{letter:"G",value:"cover 9"},{letter:"R",value:"cover 14"},{letter:"Y",value:"cover 2"}]},
         prompt:"Which settings get cleared? Tap them along the car.", answers:['HUNGRY'],
         hints:[
-          "A perfect square is some whole number times itself: 1(=1×1), 4(=2×2), 9(=3×3). Check each cover; split the tables among the crew.",
-          "Drop the non-squares — S(3) and O(2). Keep 4, 9, 1 and read the survivors front to back.",
-          "H(4) U(9) N(1) G(4) R(9) Y(1) are perfect squares — the cleared settings spell HUNGRY."
+          "The book lists the covers that settled tonight. Go along the car and check each place card's number against that list.",
+          "Six of the eight covers are in the book. Two are not, and those two stay exactly where they are.",
+          "Covers 12, 21, 6, 9, 14 and 2 settled; 3 and 17 never did. Cleared front to back, they spell HUNGRY."
         ],
-        solvedText:"H-U-N-G-R-Y. The word sits on the table linen like a spill. In the mirror, you'd swear the cleared seats are no longer empty — and every one of the seated shapes is facing the kitchen.",
+        solvedText:"H-U-N-G-R-Y. The word sits on the linen like a spill. Two settings stay laid — covers three and seventeen, who ate and never paid and have not, in any sense anybody wants to examine, left.",
         solveBeat:"The kitchen's serving hatch slides up two inches. Steam drifts out. Nothing looks through. It doesn't need to.",
         beatSound:'clank'
       }
@@ -609,17 +609,17 @@ const ROOMS=[
   entryBeat:"The coal in the tender is full — forty years of night runs, and the coal never falls. On the throttle, a gloved handprint in the soot. The glove had six fingers.",
   entrySound:'chug',
   completeText:"The firebox is lit, the coupling is dropped, and the signal ahead is green. All that is left is to throw it before the junction.",
-  chain:"Fire drill tags with positional constraints → unique order C-B-E-D-A → signal lantern case: “the junction listens at TWICE the record” = 78.4×2 = 156.8 → 1568 → timetable: only the 4:45 junction is manned before the line 'ends' at 6:00; minus 65 min = 3:40 → coupling pins: takings counted forward, pulled in reverse = 3528 → whistle the distress pattern (SOS) → THE JUNCTION.",
+  chain:"Five fire-drill tags, each carrying its reason: coal is broken first, the box is fed once there is broken coal, the dampers are opened once there is something to draw on, the injector waits until she is drawing, and the brake is last because nothing moves without steam — CBEDA → the lantern case is keyed to the engine's own number, riveted to the cab side on the builder's plate: 1568 → the timetable rules out the unmanned 3:15 switch and the 7:05, which is past where the printed line ends, leaving 4:45 less the sixty-five minutes the switchman needs = 3:40 → the coupling release carries the consist and the rule that pins are pulled from the rear forward, so freight, third, second, first: 3528 → whistle and lamp together, two pairs of hands, or the junction reads neither.",
   objects:[
     { id:'firebox', icon:'🔥', name:'The Firebox Drill', pos:{x:26,y:52,w:11,h:22},
-      desc:"The company fire drill, five steps on five soot-stained tags, scattered across the footplate:\n\nTAG A — “Release the brake only after the injector is set.”\n\nTAG B — “Feed the firebox second.”\n\nTAG C — “Break the coal before the firebox is fed.”\n\nTAG D — “Set the injector — never right before or right after feeding the firebox.”\n\nTAG E — “Open the dampers. Exactly one task passes between breaking coal and opening the dampers.”",
+      desc:"The company fire drill, five steps on five soot-stained tags, scattered across the footplate. Every one of them carries the reason, because the company lost two firemen the year they printed the version that did not.\n\n   TAG A — “Release the brake. Last of all, and not one second before: nothing moves until there is steam to move it.”\n\n   TAG B — “Feed the firebox, once there is broken coal to feed it with.”\n\n   TAG C — “Break the coal first. You cannot feed a fire with lumps you are still swinging a hammer at.”\n\n   TAG D — “Set the injector once she is properly drawing. Cold water into a fire that has not caught will put it straight out.”\n\n   TAG E — “Open the dampers once there is something in the box to draw on. Dampers on an empty firebox pull your fire up the chimney.”",
       puzzle:{
         type:'order', order:{labels:{"A": "Release the brake", "B": "Feed the firebox", "C": "Break the coal", "D": "Set the injector", "E": "Open the dampers"}},
         prompt:"Enter the five tag letters in drill order.", placeholder:"FIVE LETTERS", answers:['CBEDA'],
         hints:[
-          "One tag names an exact slot. Fix the firebox feed, then see what must come before it.",
-          "Feeding is 2nd; breaking coal comes before it — 1st. 'Exactly one task between breaking coal and the dampers' puts the dampers 3rd. Where can the injector legally sit?",
-          "The injector can't touch slot 1 or 3 (adjacent to the feed in slot 2)… slot 4. The brake releases last: 5th. C-B-E-D-A."
+          "Every tag says why. Two of them claim an end: one is explicitly first, one explicitly last.",
+          "Coal first (C), brake last (A). The firebox is fed once there is broken coal, and the dampers are opened once there is something in the box.",
+          "Coal, feed, dampers, then the injector once she is drawing, then the brake: enter CBEDA."
         ],
         solvedText:"Coal, feed, dampers, injector, brake. The Special surges under your feet, eager — too eager — and the pressure needles climb toward the junction like they know the way.",
         solveBeat:"The train's whistle sounds, far above you. Nobody pulled it. It sounded… pleased.",
@@ -627,16 +627,16 @@ const ROOMS=[
       }
     },
     { id:'lantern', onSolve:{el:'rx-locomotive',op:.2,fx:'surge'}, icon:'🏮', name:'The Signal Lantern Case', pos:{x:69,y:52,w:9,h:19},
-      desc:"The signal lantern is locked in its case, 4 digits, stencilled with the brakeman's rule:\n\n“THE SPECIAL SINGS ON ITS OWN NUMBER.\nTHE JUNCTION LISTENS AT TWICE IT.”\n\nThe berth 13 card said it too: remember the record.",
+      desc:"The signal lantern is locked in its case on the fireman's side, four digits, stencilled by the brakeman in paint that has been there a long time:\n\n   “KEYED TO HER OWN NUMBER. IF YOU ARE ON THIS FOOTPLATE YOU CAN READ IT.”\n\nHe is not wrong. The builder's plate is riveted to the cab side at eye height, polished by forty years of elbows:\n\n   GREAT NORTHERN & COASTAL RAILWAY\n   No. 1568\n   BUILT 1911",
       puzzle:{
         type:'keypad',
         prompt:"Enter the 4-digit code.", answers:['1568'],
         hints:[
-          "You set the Special's number yourself — on the gramophone, back in Cabin 3.",
-          "The record played at 78.4. The junction listens at twice it.",
-          "78.4 × 2 = 156.8 → enter 1568."
+          "Nothing to carry in from the rest of the train. The brakeman keyed this case to the engine you are standing in.",
+          "The engine's number is on the builder's plate riveted to the cab side.",
+          "She is No. 1568. Enter 1568."
         ],
-        solvedText:"156.8 — twice the dead man's waltz. The case opens on the signal lantern, its red lens polished bright by hands that wanted, very much, for someone to finally use it."
+        solvedText:"1-5-6-8, her own number. The case opens on the signal lantern, its red lens polished bright by hands that wanted, very much, for somebody to finally use it."
       }
     },
     { id:'timetable', icon:'🕰️', name:'The Timetable', pos:{x:80,y:18,w:15,h:28},
@@ -652,16 +652,16 @@ const ROOMS=[
       }
     },
     { id:'coupling', icon:'🔗', name:'The Coupling Pins', pos:{x:80,y:70,w:15,h:20}, hiddenUntil:'timetable',
-      desc:"To make the junction light enough, the ghost cars have to go. The coupling release wears four punch-glyph tumblers — the porter's marks, in the fare card's order:\n\n★   ✚   ●   ■\n\nStamped beneath:\n\n“TAKINGS COUNTED FORWARD.\nPINS PULLED IN REVERSE.”",
+      desc:"To make the junction light enough, the dead cars have to go. The coupling release wears four punch-glyph tumblers, and each glyph is stamped with its figure right there on the housing:\n\n   ★ 8        ✚ 2        ● 5        ■ 3\n\nRiveted above them, the train board for tonight's consist, in the order she is made up from the engine back:\n\n   ENGINE — FIRST — SECOND — THIRD — FREIGHT\n\nAnd stamped across the release itself, the only way anybody has ever uncoupled a train:\n\n   “PINS ARE PULLED FROM THE REAR FORWARD. SHE DROPS WHAT IS BEHIND HER FIRST.”",
       puzzle:{
         type:'keypad',
         prompt:"Enter the 4-digit release.", answers:['3528'],
         hints:[
-          "You counted the takings forward once already — the porter's cash box in the baggage car.",
-          "The cash box opened on 8253. The pins pull in reverse.",
-          "8253 backward is 3528. Enter 3528."
+          "Everything is on the release: the four figures, the order she is made up in, and which end you start from.",
+          "She is made up engine, first, second, third, freight — so from the rear forward that is freight, third, second, first.",
+          "■ 3, ● 5, ✚ 2, ★ 8. Enter 3528."
         ],
-        solvedText:"3-5-2-8 — the night's accounts, run backward, the way this train keeps all its books. The pins drop, the dead cars sigh loose — and in the cab it is suddenly, mercifully, just you and the engine.",
+        solvedText:"3-5-2-8. The pins drop one after another from the back of the train forward, the dead cars sigh loose — and in the cab it is suddenly, mercifully, just you and the engine.",
         solveBeat:"From the receding dark behind the last coach, a lantern swings side to side — the old signal. Not a warning. A farewell from staff to staff.",
         beatSound:'bell'
       }

@@ -303,7 +303,7 @@ ${Array.from({length:30},(_,i)=>`<circle class="tw" cx="${(i*59+14)%1600}" cy="$
 <g id="el-lockbox">
   <rect x="700" y="640" width="130 " height="100" rx="8" fill="#46607a" stroke="#2a3a48" stroke-width="5"/>
   <circle cx="765" cy="690" r="18" fill="#0d1216" stroke="#8aa4ba" stroke-width="4"/>
-  <text x="765" y="628" text-anchor="middle" font-family="Special Elite" font-size="11" fill="#c8ecff">TWICE THE STATION</text>
+  <text x="765" y="628" text-anchor="middle" font-family="Special Elite" font-size="11" fill="#c8ecff">APPROACH CRYSTAL</text>
 </g>
 <!-- weather fax (hidden) -->
 <g id="el-weather">
@@ -370,7 +370,7 @@ const ROOMS=[
   entryBeat:"The route flags run dead straight toward the station — except the last fifty meters, where every flag has been pulled up and replanted, ever so slightly, to curve the path toward the dark side of the buildings.",
   entrySound:'hiss',
   completeText:"The inner door seals behind you with a hiss of warm air. Out on the ice, through the closing gap, the flag line is moving again — one flag at a time, patiently, back into a straight line.",
-  chain:"Route flags: channel numbers as A1Z26 letters spell GARAGE → drum stencils pair supplies with digits; the resupply poster gives the order (food, fuel, medical, flares) → 6841 → main door riddle (NORTH — every direction from here is north) but the mirrored tag says the drill ran the other way = SOUTH → notice board cross-references the roster, the drums and the garage → 73.",
+  chain:"Six route flags carry radio-channel numbers and the first stake says channels are lettered the old way, A is one: GARAGE → the drums are stencilled with supply glyphs and digits in no order, and the resupply notice by the main door gives the order they are unloaded in: 6841 → outside the main door the signpost has every arm stencilled NORTH, because from here they all are, and the re-keying notice asks for the one direction this station does not have: SOUTH → the sitrep's souls-on-station line was never filled in, but the winter-over sheet has fourteen names with seven struck through, and the days-to-flight line is printed: 73.",
   objects:[
     { id:'flags', icon:'🚩', name:'Route Flags', pos:{x:6,y:62,w:62,h:16},
       desc:"Six route flags on the depot line, each staked with a radio-channel board, in order:\n\nFLAG 1 — CH 7\nFLAG 2 — CH 1\nFLAG 3 — CH 18\nFLAG 4 — CH 1\nFLAG 5 — CH 7\nFLAG 6 — CH 5\n\nThe first stake carries a stencil: “CHANNELS ARE LETTERED THE OLD WAY — A IS ONE.”",
@@ -386,42 +386,42 @@ const ROOMS=[
       }
     },
     { id:'garage', onSolve:{el:'rx-perimeter',op:.2,fx:'surge'}, icon:'🚜', name:'The Snowcat Garage', pos:{x:12,y:76,w:22,h:18},
-      desc:"The supply cage in the garage wears a 4-digit padlock. Four supply glyphs are stencilled on the fuel drums beside it, each with a digit — in no particular order:\n\n✚ MEDICAL 4      ● FUEL 8      ▲ FLARES 1      ■ FOOD 6\n\nAlong the back wall stand nine fuel drums; you rap each one down the line and six of them ring empty.\n\nDigits, but no sequence. Somewhere on this station is a standing order that puts supplies in order.",
+      desc:"The supply cage in the garage wears a four-digit padlock. Four supply glyphs are stencilled on the fuel drums beside it, each with its digit, painted wherever the drum gave a flat face:\n\n   ✚ MEDICAL 4        ● FUEL 8        ▲ FLARES 1        ■ FOOD 6\n\nFour glyphs, four digits, and nothing here to put them in order. But a station that unloads a plane in a fifty-knot wind does not leave the order of that to anybody's judgement; it posts it.\n\nAlong the back wall stand nine fuel drums. You rap each one down the line, and six of them ring hollow.",
       puzzle:{
         type:'keypad',
         prompt:"Enter the 4-digit code.", answers:['6841'],
         hints:[
-          "You need the official ORDER of supplies — check what's posted by the main door.",
+          "The digits belong to supply types, so you need the station's own order for unloading supplies. It is posted by the main door.",
           "The resupply notice: UNLOAD IN THIS ORDER — FOOD, FUEL, MEDICAL, FLARES.",
-          "■6 ●8 ✚4 ▲1 → enter 6841."
+          "■ is 6, ● is 8, ✚ is 4, ▲ is 1. Enter 6841."
         ],
-        solvedText:"6-8-4-1 and the cage swings open. Inside: a hand-crank lantern, the snowcat's dead battery — and a brass depot tag stamped SOUTH, the stamp mirrored, as if punched from the far side.",
+        solvedText:"6-8-4-1 and the cage swings open. Inside: a hand-crank lantern, the snowcat's dead battery, and a tin of boiled sweets with nine of them gone, one for each day nobody has been here.",
         solveBeat:"Behind the garage, snow squeaks under something heavy taking exactly three steps. Then nothing. Whatever it is, it has learned that you stop to listen after three.",
         beatSound:'knock'
       }
     },
     { id:'maindoor', icon:'🚪', name:'The Main Door', pos:{x:72,y:60,w:10,h:20},
-      desc:"The station's outer door — letter-lock, five characters, and a riddle etched by some bored winter-over crew a decade ago:\n\n“Stand here, and every direction is me.\nEvery road home begins by walking me.\nWhat am I?”\n\nThe station's standing resupply notice is taped beside the lock:\n\n“UNLOAD IN THIS ORDER, ALWAYS:\n1. FOOD   2. FUEL   3. MEDICAL   4. FLARES”\n\nBelow it, scratched much more recently, much less steadily:\n\n“WE DRILLED THE OTHER WAY.”",
+      desc:"The station's outer door takes a five-letter word.\n\nOutside it stands the signpost every polar station builds sooner or later — a post with arms pointing every way there is, and every single arm stencilled with the same word, because from here there is only one:\n\n   NORTH   ·   NORTH   ·   NORTH   ·   NORTH   ·   NORTH\n\nTaped beside the lock, a re-keying notice in a hand that is trying hard to be steady:\n\n   “LOCK RE-KEYED. NEW WORD IS THE ONE DIRECTION THIS STATION DOES NOT HAVE.\n    If you have to ask, you have not been outside at night. — J.O.”",
       puzzle:{
         prompt:"Set the five letter dials.", placeholder:"FIVE LETTERS", answers:['SOUTH'],
         hints:[
-          "Stand at the South Pole and think about compasses. Which way is every way?",
-          "The riddle's answer is NORTH — from here, every direction is north. But the scratched line says they drilled the OTHER way… and check the mirrored depot tag.",
-          "The opposite of the riddle's answer: SOUTH. The tag already told you."
+          "The signpost is not a joke for its own sake — it is the whole answer to where you are standing. Read what every arm says.",
+          "From the pole, every direction you can walk is north. So there is exactly one direction this station does not have.",
+          "The one direction that does not exist here is SOUTH. Enter SOUTH."
         ],
-        solvedText:"S-O-U-T-H. The lock gives. The riddle's answer was NORTH — the joke of the station — but the last crew re-keyed it to its opposite, and mirrored the tag, and you'd very much like to stop thinking about why."
+        solvedText:"S-O-U-T-H. The lock gives. Somebody re-keyed this door to the one word the station cannot point at, and then went back inside, and you would very much like to stop thinking about why."
       }
     },
     { id:'noticeboard', icon:'📌', name:'The Notice Board', pos:{x:82,y:62,w:10,h:16}, hiddenUntil:'maindoor',
-      desc:"Inside the cold porch, a notice board and the inner door's 2-digit keypad. The posted standing order reads:\n\n“INNER DOOR — first figure: the bunks this station sleeps, less the crew rotated home last month. Second figure: fuel drums standing full in the garage.”\n\nA crew sheet pinned beside it reads “STATION EREBUS SLEEPS 14,” and the rotation log below adds: “7 rotated home on the last flight.”",
+      desc:"Inside the cold porch, a notice board and the inner door's two-digit keypad. The instruction is printed on the keypad's own faceplate:\n\n   “INNER DOOR — SET TO TODAY'S SITREP: SOULS ON STATION, THEN DAYS TO THE FLIGHT.”\n\nPinned beside it, today's sitrep form, half filled in:\n\n   STATION EREBUS — SITREP, DAY 88\n     SOULS ON STATION ...........\n     DAYS TO NEXT FLIGHT ........ 3\n\nNobody filled the first line in. But the winter-over sheet is pinned next to it with all fourteen names on it, and seven of them are struck through with a single ruled line and the note “out on the last flight”.",
       puzzle:{
         prompt:"Enter the 2-digit code.", placeholder:"TWO DIGITS", answers:['73'],
         hints:[
-          "Two numbers are pinned right here. The third you saw in the garage.",
-          "14 bunks minus 7 rotated home is 7. The garage held nine drums and six rang empty when you knocked — 3 full.",
-          "7 then 3 — enter 73."
+          "The sitrep gives you one of the two figures outright. The other one nobody got round to writing, so you will have to work it out from the sheet beside it.",
+          "Fourteen names on the winter-over sheet, seven of them struck through as flown out. Days to the flight is already printed.",
+          "Seven souls still on station, three days to the flight. Enter 73."
         ],
-        solvedText:"7-3. The inner door unseals — heat, dark, and a smell you'll place later: nine days of nobody, and one bowl on the floor, freshly emptied.",
+        solvedText:"7-3. The inner door unseals on heat, dark, and a smell you will place later: nine days of nobody, and one bowl on the floor, freshly emptied.",
         solveBeat:"As the porch light flickers on, every window on the dark side of the station creaks — softly, together — under a pressure that isn't wind.",
         beatSound:'hiss'
       }
@@ -439,24 +439,24 @@ const ROOMS=[
   entryBeat:"Nine parkas on the hooks. Outside it is forty below. Wherever the crew went, they went without their coats — or they went as something that no longer felt the cold.",
   entrySound:'knock',
   completeText:"The generator panel accepts the code and the station's spine of lights marches on, building by building, out toward the core lab. The last building lights with something already standing at its window. By the time anyone can point, it isn't.",
-  chain:"Duty roster (last entry Station day 88) + radio log (two checks daily — “the point, then the checks”) → tune 88.2 → the reel-to-reel's tape leader is embossed braille = MELT NOTHING → foot locker Vigenère (keyword ICE) = FROST → generator halving-chain rule (8→4→2, sum 14) = 842.",
+  chain:"The roster says the operator kept the sked at 0600 and 1800 and never missed one; the sked card pinned under it lists the schedules by their hours, and only the weather base runs at those: 88.2 → the channel is open and the reel-to-reel's leader has been pressed by hand with braille, by a man snow-blind since day 80: MELT NOTHING → the foot locker's Vigenère, with the wheel and the keyword scratched on the lid by the scientist who set it: FROST → the generator's cold-start rule, each digit double the one after it and fourteen in all: 842.",
   objects:[
     { id:'roster', icon:'📋', name:'Duty Roster', pos:{x:3,y:46,w:10,h:20},
-      desc:"The duty roster, filled in to a point and then not:\n\n“STATION DAY 86 — cores E-1 through E-8 catalogued. E-9 tomorrow.”\n“STATION DAY 87 — E-9 case will not stay shut. Weather radio at 0600 and 1800, as always. Two checks daily, never miss.”\n“STATION DAY 88 — ”\n\nDay 88 is blank. They stopped counting on 88. In the margin, tiny: “the band is the day we stopped, the point, then the checks.”" },
+      desc:"The duty roster, filled in to a point and then not:\n\n“STATION DAY 86 — cores E-1 through E-8 catalogued. E-9 tomorrow.”\n“STATION DAY 87 — E-9 case will not stay shut. Kept the weather sked, 0600 and 1800, as always. Two checks a day, never miss one.”\n“STATION DAY 88 — ”\n\nDay 88 is blank. They stopped counting on 88.\n\nPinned beneath the roster, the station's sked card — who this place talks to, and when:\n\n   AIR OPERATIONS ....... on request ......... 118.1\n   FIELD PARTIES ........ 0900 daily ......... 94.6\n   WEATHER BASE ......... 0600 and 1800 ...... 88.2" },
     { id:'shortwave', icon:'📻', name:'The Shortwave Set', pos:{x:70,y:38,w:20,h:20},
-      desc:"The station's shortwave, still warm on standby, its dial waiting. The roster margin said the band is a number in two parts — a day, a point, and a count.\n\nOutside, the blizzard eats every other frequency alive.",
+      desc:"The station's shortwave, still warm on standby, its dial waiting.\n\nOutside, the blizzard eats every other frequency alive — but the sked the operator never missed is the one he would have left this set sitting on.",
       puzzle:{
         type:'dial',
-        prompt:"Sweep the band to the station's frequency, then work the trim knobs until the signal holds through the storm.",
+        prompt:"Sweep the band to the sked he never missed, then work the trim knobs until the signal holds through the storm.",
         answers:['882'],
         dial:{min:760,max:1080,div:10,target:882,pad:4,meter:'SIGNAL THROUGH THE STORM',lock:'LOCK IT IN',miss:'the blizzard swallows it.',
           knobs:[{label:'RF GAIN',target:58},{label:'SQUELCH',target:31},{label:'ANTENNA TRIM',target:77}]},
         hints:[
-          "The roster gives the whole number — the day they stopped counting. Its margin gives the decimal.",
-          "They stopped on station day 88. Two radio checks daily: that's your point-two.",
-          "Tune to exactly 88.2, then work the three knobs one at a time until the panel reads LOCKED IN."
+          "The roster tells you which sked he kept and at what hours. The sked card pinned under it lists every schedule by its times.",
+          "He kept the one at 0600 and 1800 — twice a day, never missed. Find the schedule on the card with those hours against it.",
+          "Weather base, 0600 and 1800: 88.2. Tune there, then work the three knobs one at a time until the panel reads LOCKED IN."
         ],
-        solvedText:"At 88.2 the blizzard parts — dead air, keyed open from inside the station. Someone patched the reel-to-reel into the transmitter before the end… but the tape ran out years ago. The RECORDER is what's left. Go and look at what he did to it."
+        solvedText:"At 88.2 the blizzard parts — dead air, keyed open from inside the station. Somebody patched the reel-to-reel into the transmitter before the end, but the tape ran out years ago. The recorder is what is left. Go and look at what he did to it."
       }
     },
     { id:'recorder', onSolve:{el:'rx-quarters',op:.2,fx:'surge'}, icon:'🎞️', name:'The Reel-to-Reel', pos:{x:71,y:60,w:16,h:15}, hiddenUntil:'shortwave',
@@ -487,7 +487,7 @@ const ROOMS=[
       }
     },
     { id:'genpanel', icon:'🔌', name:'Generator Panel', pos:{x:43,y:69,w:12,h:20}, hiddenUntil:'footlocker',
-      desc:"The backup generator wants a 3-digit setting. The calibration card from the locker, in the engineer's block capitals:\n\n“COLD-START RULE —\nEACH DIGIT IS DOUBLE THE DIGIT THAT FOLLOWS IT.\nALL THREE TOGETHER MAKE FOURTEEN.”\n\nAnd beneath, double-underlined: “REMEMBER THE STATION'S BAND. THE PLANE WILL NEED IT.”",
+      desc:"The backup generator wants a three-digit setting. The calibration card from the foot locker, in the engineer's block capitals:\n\n   “COLD-START RULE —\n    EACH DIGIT IS DOUBLE THE DIGIT THAT FOLLOWS IT.\n    ALL THREE TOGETHER MAKE FOURTEEN.”",
       puzzle:{
         type:'keypad',
         prompt:"Find the three digits that fit the cold-start rule and enter them in order.", answers:['842'],
@@ -514,7 +514,7 @@ const ROOMS=[
   entryBeat:"Sample E-9's case didn't fail — the bolts were backed out from the inside of the case. Whatever the drill brought up through three hundred thousand years of ice was awake when it arrived.",
   entrySound:'clank',
   completeText:"The tower door unbolts. Behind you, the intercom's open channel exhales once and goes dead — like a thing satisfied you finally understand where it went.",
-  chain:"E-9's chalked riddle = ICE → core racks: keep only EVEN drill depths; survivors spell BURIED → cold safe multiples-of-three riddle = 936 → the drill-shed key fob is embossed braille = BELOW.",
+  chain:"The frost-writing on the steel table names what this whole lab exists to study: ICE → the cold store's chart recorder gives the day it lost temperature, day 61, and anything drilled after that never froze through, which leaves six of the eight cores spelling BURIED → the cold safe's tag wants three different non-zero multiples of three, the first the sum of the other two and the smallest in the middle: 936 → the drill-shed key fob is embossed in the same braille as the tape: BELOW.",
   objects:[
     { id:'coreE9', icon:'🧊', name:'Sample E-9', pos:{x:30,y:60,w:15,h:18},
       desc:"The shattered case, and beside it, in the frost on the steel table, someone wrote with a fingertip — the station's last riddle:\n\n“I hold yesterday's air in bubbles.\nI remember every winter that ever was.\nI break like glass and bleed like water,\nand I kept your visitor patient for a very long time.”",
@@ -529,18 +529,18 @@ const ROOMS=[
       }
     },
     { id:'cores', onSolve:{el:'rx-corelab',op:.2,fx:'surge'}, icon:'🔬', name:'The Core Racks', pos:{x:8,y:26,w:56,h:14}, hiddenUntil:'coreE9',
-      desc:"Eight cores in cold storage, each tagged with a letter and the depth it was drilled from (metres). Left to right:\n\nOnly cores from an even depth stayed frozen through.",
+      desc:"Eight cores in the cold store, each tagged with a letter and the station day it was drilled.\n\nPinned to the store door, the chart recorder's trace for the season, and the lead scientist's note under the place where the line falls off a cliff:\n\n   “STORE LOST TEMPERATURE ON DAY 61 AND WE DID NOT NOTICE FOR A WEEK.\n    ANYTHING THAT CAME IN AFTER THAT NEVER FROZE THROUGH. LOG IT AND BIN IT.”\n\nLeft to right along the rack:",
       puzzle:{
         type:'select',
-        select:{commit:"\ud83e\uddca THESE CORES ARE SOUND", wrong:"The survey log will not accept that set.",
-          items:[{letter:"B",value:"812 m"},{letter:"T",value:"435 m"},{letter:"U",value:"604 m"},{letter:"R",value:"286 m"},{letter:"O",value:"3 m \u2014 mislabelled"},{letter:"I",value:"550 m"},{letter:"E",value:"178 m"},{letter:"D",value:"944 m"}]},
-        prompt:"Which cores can be trusted? Tap the ones that survive.", answers:['BURIED'],
+        select:{commit:"🧊 THESE CORES ARE SOUND", wrong:"The survey log will not accept that set.",
+          items:[{letter:"B",value:"drilled day 12"},{letter:"T",value:"drilled day 74"},{letter:"U",value:"drilled day 30"},{letter:"R",value:"drilled day 55"},{letter:"O",value:"drilled day 80"},{letter:"I",value:"drilled day 48"},{letter:"E",value:"drilled day 19"},{letter:"D",value:"drilled day 8"}]},
+        prompt:"Which cores froze through? Tap the ones that came in before the store failed.", answers:['BURIED'],
         hints:[
-          "Even numbers end in 0, 2, 4, 6, 8. Check the last digit of each depth; split the rack among the crew.",
-          "Drop the odd depths — T(435) and O(3). Read the even-depth cores left to right.",
-          "B(812) U(604) R(286) I(550) E(178) D(944) are all even — the rack spells BURIED."
+          "One number decides every core: the day the store lost temperature. Everything drilled before it is sound, everything after it is not.",
+          "The chart says day 61. Go along the rack and keep only the cores drilled earlier than that.",
+          "Day 74 and day 80 came in after the store failed, so T and O are out. The rest spell BURIED."
         ],
-        solvedText:"B-U-R-I-E-D. The word the glacier kept trying to say. The trusted cores also hide the cold safe's tag, tucked behind R like a bookmark.",
+        solvedText:"B-U-R-I-E-D. The word the glacier kept trying to say. The sound cores also hide the cold safe's tag, tucked behind R like a bookmark.",
         solveBeat:"Deep under the floor, the ice groans one long syllable — and the meltwater around E-9's case shivers in rings, in time with it.",
         beatSound:'growl'
       }
@@ -587,34 +587,34 @@ const ROOMS=[
   entryBeat:"The tower's guy-wires are thrumming — all of them, evenly. Not the wind. Something at the far anchor point is testing, very gently, whether the tower would fall.",
   entrySound:'clank',
   completeText:"The generator is running, the runway flares are laid, and the set is warm. There is a plane out there in the dark, waiting to be told.",
-  chain:"Generator drill tags with positional constraints → unique order D-E-B-A-C → tower lockbox: “the plane listens at TWICE the station” = 88.2×2 = 176.4 → 1764 → weather fax: only the 6:10 window has legal visibility before fuel runs out; minus 40 min = 5:30 → flare cache: stocked in resupply order, unlocked in reverse = 1486 → light the drum line in the old pattern (SOS) → WHEELS UP.",
+  chain:"Five cold-start tags, each with its reason: fuel first because nothing else matters without it, plugs with fuel already in the line, crank while the plugs are hot, choke only once she has caught, breaker last — DEBAC → the approach plate gives the skiway's three channels and the lockbox lid says it holds the approach crystal, coded with the point omitted: 1764 → the weather fax rules out the 4:50 window (under the 1500 m minimum) and the 9:30 (after the aircraft's fuel is gone), leaving 6:10 less the forty minutes the drum line needs = 5:30 → the depot cache's bins are numbered on the door and the quartermaster's stock card gives the quantities in a different order: 1486 → put the beacon on the approach channel, 176.4, and transmit.",
   objects:[
     { id:'genstart', icon:'⚙️', name:'The Generator Sled', pos:{x:11,y:66,w:18,h:18},
-      desc:"The tower generator's cold-start drill, five steps on five tags shuffled by nine days of wind:\n\nTAG A — “Close the choke — never right before or right after warming the plugs.”\n\nTAG B — “Crank the flywheel. Exactly one step passes between opening the fuel line and cranking.”\n\nTAG C — “Throw the breaker only once the choke is closed.”\n\nTAG D — “Open the fuel line before the glow plugs warm.”\n\nTAG E — “Warm the glow plugs second.”",
+      desc:"The tower generator's cold-start drill, five steps on five tags that nine days of wind have shuffled across the floor. The engineer wrote each one with the reason attached, the way you do when you expect to be read by somebody with cold hands and no time:\n\n   TAG A — “Close the choke, and not until she has actually caught. Choking a cold engine only floods it.”\n\n   TAG B — “Crank the flywheel while the plugs are still hot. You get about twenty seconds of hot.”\n\n   TAG C — “Throw the breaker last, once she is running steady. Put a load on her before that and she stalls.”\n\n   TAG D — “Open the fuel line first. Nothing else on this list matters if she has nothing to burn.”\n\n   TAG E — “Warm the glow plugs — with fuel already in the line, or you are just heating air.”",
       puzzle:{
         type:'order', order:{labels:{"A": "Close the choke", "B": "Crank the flywheel", "C": "Throw the breaker", "D": "Open the fuel line", "E": "Warm the glow plugs"}},
         prompt:"Enter the five tag letters in start order.", placeholder:"FIVE LETTERS", answers:['DEBAC'],
         hints:[
-          "One tag names an exact slot. Fix the glow plugs, then see what must come before them.",
-          "Plugs are 2nd; the fuel line comes before them — 1st. 'Exactly one step between fuel line and crank' puts the crank 3rd. Where can the choke legally go?",
-          "The choke can't touch slot 1 or 3 (adjacent to the plugs in slot 2)… slot 4. The breaker follows: 5th. D-E-B-A-C."
+          "Each tag says why it sits where it sits. Two of them claim an end outright: one is explicitly first, one explicitly last.",
+          "Fuel line first (D), breaker last (C). The plugs want fuel already in the line, and the crank wants the plugs still hot.",
+          "Fuel, plugs, crank, then the choke once she has caught, then the breaker: enter DEBAC."
         ],
-        solvedText:"Fuel, plugs, crank, choke, breaker. The generator coughs, catches, and settles into a steady chug that you feel through your boots like a second heartbeat. A better one than the ice's.",
+        solvedText:"Fuel, plugs, crank, choke, breaker. The generator coughs, catches, and settles into a steady chug you feel through your boots like a second heartbeat. A better one than the ice's.",
         solveBeat:"The moment the engine steadies, the thrumming in the guy-wires stops — the way a fisherman goes still when the line finally moves.",
         beatSound:'clank'
       }
     },
     { id:'lockbox', onSolve:{el:'rx-radiotower',op:.2,fx:'surge'}, icon:'📦', name:'The Tower Lockbox', pos:{x:42,y:68,w:11,h:16},
-      desc:"The transmitter's crystal is locked in a 4-digit box, stencilled with the radio officer's rule:\n\n“STATION EREBUS TRANSMITS ON ITS OWN BAND.\nTHE PLANE LISTENS AT TWICE IT.”",
+      desc:"The transmitter's approach crystal is locked in a four-digit box.\n\nBolted to the wall above it, the skiway's approach plate — the card every aircraft working this strip flies off:\n\n   EREBUS SKIWAY — APPROACH\n     TOWER, GROUND ............. 88.2\n     APPROACH BEACON ........... 176.4\n     EMERGENCY ONLY ............ 243.0\n\nAnd stencilled across the lid of the box itself, the radio officer's own shorthand:\n\n   “CRYSTAL: APPROACH. CODE IS THE CHANNEL, POINT OMITTED.”",
       puzzle:{
         type:'keypad',
         prompt:"Enter the 4-digit code.", answers:['1764'],
         hints:[
-          "You found the station's band yourself, on the shortwave in the quarters.",
-          "The band was 88.2. The plane listens at twice it.",
-          "88.2 × 2 = 176.4 → enter 1764."
+          "The plate on the wall gives you three channels. The lid tells you which one this box holds and how to type it.",
+          "The box holds the approach crystal, so you want the approach beacon's channel — and the lock has no decimal point.",
+          "176.4 with the point left out is 1764. Enter 1764."
         ],
-        solvedText:"176.4 — the plane's guard channel. The crystal seats, the transmitter warms, and a voice you could weep at answers on the third call: “Erebus, we see your lights. Give us a runway and a window.”"
+        solvedText:"1-7-6-4. The crystal seats, the transmitter warms, and a voice you could weep at answers on the third call: “Erebus, we see your lights. Give us a runway and a window.”"
       }
     },
     { id:'weather', icon:'🌨️', name:'The Weather Fax', pos:{x:57,y:66,w:14,h:18},
@@ -630,22 +630,22 @@ const ROOMS=[
       }
     },
     { id:'flarebox', icon:'🧨', name:'The Flare Cache', pos:{x:74,y:69,w:11,h:15}, hiddenUntil:'weather',
-      desc:"The flare cache, 4-digit lock, stencilled in the quartermaster's hand:\n\n“STOCKED IN RESUPPLY ORDER.\nUNLOCKED IN REVERSE.”\n\nThe same four supply glyphs from the garage look back at you: ■ ● ✚ ▲.",
+      desc:"The outer depot cache, four-digit lock, everything the station keeps for the dark months stacked behind it — flares included.\n\nThe door is stencilled into four bins, numbered the way the quartermaster had them loaded:\n\n   BIN 1 ▲        BIN 2 ✚        BIN 3 ●        BIN 4 ■\n\nHis stock card is wired to the handle, written up in whatever order he happened to count things:\n\n   ● FUEL ............. 8 drums\n   ■ FOOD ............. 6 crates\n   ▲ FLARES ........... 1 case\n   ✚ MEDICAL .......... 4 cases\n\n   “CODE IS THIS SEASON'S ISSUE, BIN BY BIN.”",
       puzzle:{
         type:'keypad',
         prompt:"Enter the 4-digit code.", answers:['1486'],
         hints:[
-          "You stocked this code once already — the garage cage, in resupply order.",
-          "The garage opened on 6841. Unlock in reverse.",
-          "6841 backward is 1486. Enter 1486."
+          "The card has the quantities and the door has the bins, and the two are not in the same order. You need both.",
+          "Work along the bins, one to four, and look up what the card says is in each.",
+          "Bin 1 is flares (1), bin 2 medical (4), bin 3 fuel (8), bin 4 food (6). Enter 1486."
         ],
-        solvedText:"1-4-8-6 — the garage code, run backward, the way everything on this station eventually runs. Flares. Dozens. Enough to write on the dark with.",
+        solvedText:"1-4-8-6 and the cache opens on flares. Dozens of them. Enough to write on the dark with.",
         solveBeat:"At the base of the tower, unhurried, something begins to climb. The ladder rungs ring one at a time — patient as a metronome, far apart as a tall man's reach. Taller.",
         beatSound:'clank'
       }
     },
     { id:'runway', icon:'📡', name:'The Approach Beacon', pos:{x:46,y:84,w:14,h:10}, hiddenUntil:'flarebox',
-      desc:"The drum line is lit and the strip is bright enough to land on. What the plane still has no reason to do is believe it — a fire on the ice is a fire on the ice until somebody on the ground is talking.\n\nThe tower's transmit set is cold but intact. The lockbox gave you the number: the approach frequency is twice the station's own, and the station's own is the one you tuned nine days of silence out of.\n\nPut the beacon on it and hold it there. They are low on fuel and they will only come round once.",
+      desc:"The drum line is lit and the strip is bright enough to land on. What the plane still has no reason to do is believe it — a fire on the ice is a fire on the ice until somebody on the ground is talking.\n\nThe tower's transmit set is cold but intact, and the approach plate is still bolted to the wall where it has always been.\n\nPut the beacon on the approach channel and hold it there. They are low on fuel and they will only come round once.",
       puzzle:{
         type:'dial',
         dial:{ min:1500, max:2000, target:1764, div:10, pad:5,
@@ -653,12 +653,12 @@ const ROOMS=[
                knobs:[ {label:'Antenna match', target:62},
                        {label:'Power stage',   target:38},
                        {label:'Keying bias',   target:74} ] },
-        prompt:"Set the beacon to the approach frequency, trim it in, and transmit.",
+        prompt:"Set the beacon to the approach channel, trim it in, and transmit.",
         answers:['176.4'],
         hints:[
-          "You already worked this number out. The lockbox needed it as four digits; the set wants it as a frequency.",
-          "The station listens on 88.2. The plane listens at twice that.",
-          "176.4 — set the main dial there, then bring the three trims to their sweet spots and transmit."
+          "The approach plate on the wall has the number. It is the same channel the crystal in the lockbox was cut for, which is the point of the crystal.",
+          "APPROACH BEACON — 176.4.",
+          "Set the main dial to 176.4, bring the three trims to their sweet spots, and transmit."
         ],
         solvedText:"",
         solveBeat:"The carrier catches. Thirty seconds of nothing — and then a voice, thin and flat and utterly ordinary, reading your position back to you.",

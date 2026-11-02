@@ -649,64 +649,64 @@ const ROOMS = [
   entryBeat:"As you take your first steps up the beach, the treeline goes quiet all at once — the way a room goes quiet when something walks in.",
   entrySound:null,
   completeText:"Chart in hand, you leave the wreck behind. Five paces north, four east, and a trail opens in the vines like a mouth.",
-  chain:"Planks: tally-strokes index into each carved word, spelling SAIL → sail pairs each shape with a wind letter → hull keel plate rule: READ THE WIND SUNWISE FROM NORTH (N,E,S,W) → crate digits in that order = 8513 → crate holds mirror-stamped key TIDE → box riddle answers TIDE, engraving says speak it backward = EDIT → box holds chart → chart math cross-references hull muster (12−4), drift days (3) and crate manifest (2 unbroken, doubled) = 54.",
+  chain:"Four lifeboat boards each carry a copper tack through one letter — S, A, I, L — and the hull's rail lists the boats in davit order (SALVAGE, GALE, ADRIFT, PETREL), which puts them in sequence: SAIL → the mainsail's wind marks pair each shipper's symbol with a compass point, and the crate's lock face is a compass rose, so the marks read round from north: 8513 → the four broken jetty posts are branded S, A, L, T, and a rising tide covers them shortest first: SALT → the chart asks one pace north per signature on the ship's articles and one pace east per witnessed mark: 5 and 4 = 54.",
   objects:[
     { id:'hull', icon:'🚢', name:"Shattered Hull", pos:{x:69,y:52,w:22,h:24},
-      desc:"What's left of the Eldermoor lies on its side, ribs open to the sky. Inside, the dark holds its breath. You call out. Your echo comes back a half-second too late, and slightly… wrong.\n\nBeneath the bow, the shipwright's compass rose is carved into the keel plate, its old rule still legible:\n\n“READ THE WIND SUNWISE — CLOCKWISE — FROM NORTH.”\n\nHigher on the beam, the muster: twelve names scratched by hand. Four have been struck through — recently, by the look of the cuts." },
+      desc:"What is left of the Eldermoor lies on her side, ribs open to the sky. Inside, the dark holds its breath. You call out. Your echo comes back half a second late, and slightly… wrong.\n\nTwo documents survive on her, both bolted where the law says they must be.\n\nBy the stump of the mainmast, the ARTICLES OF AGREEMENT — the crew's contract, signed the morning she sailed:\n\n   SIGNED, IN THEIR OWN HAND\n      J. Alder · M. Renn · T. Okonkwo · S. Pike · E. Marsh\n\n   HIS MARK, WITNESSED\n      ✕   ✕   ✕   ✕\n\nAnd along the rail, the boat list, in davit order from the port bow aft:\n\n   No.1 SALVAGE      No.2 GALE      No.3 ADRIFT      No.4 PETREL" },
     { id:'driftwood', icon:'🪵', name:'Driftwood Planks', pos:{x:4,y:78,w:12,h:14},
-      desc:"Four planks from a lifeboat bench lie in a rough row. Into each, someone carved a word — and beside each word, a count of tally strokes:\n\nCASTAWAY — 3 strokes\nGALE — 2 strokes\nADRIFT — 4 strokes\nSALVAGE — 3 strokes\n\nA word and a number on each plank. The carver meant them to be read together.",
+      desc:"Four lifeboat name-boards lie where the surf left them, face up in the sand and in no order at all — the sea saw to that:\n\n   G A L E            A D R I F T\n   P E T R E L        S A L V A G E\n\nThrough a single letter of each board somebody has driven a copper tack and hammered it flat. Four tacks, four letters, every one of them deliberate:\n\n   GALE — the tack is through the A\n   ADRIFT — through the I\n   PETREL — through the L\n   SALVAGE — through the S\n\nSomeone wanted four letters found. They did not leave them in order.",
       puzzle:{
-        prompt:"The planks hide a word. Where should you look next?",
+        prompt:"Four tacked letters, four boats. What word did they leave you?",
         placeholder:"FOUR LETTERS", answers:['SAIL'],
         hints:[
-          "Each plank has a word AND a number of strokes. The strokes point INTO the word.",
-          "Take the letter at the stroke-count's position: CASTAWAY's 3rd letter, GALE's 2nd, ADRIFT's 4th, SALVAGE's 3rd.",
-          "C-A-S… S. G-A… A. A-D-R-I… I. S-A-L… L. The answer is SAIL."
+          "You have the letters already — the tacks give them to you. What you are missing is the order, and the sea is not going to tell you. Something still aboard the wreck lists these four boats properly.",
+          "The hull's rail carries the boat list in davit order: No.1 SALVAGE, No.2 GALE, No.3 ADRIFT, No.4 PETREL. Take each board's tacked letter in that order.",
+          "SALVAGE gives S, GALE gives A, ADRIFT gives I, PETREL gives L. The answer is SAIL."
         ],
-        solvedText:"S… A… I… L. Up the beach, the Eldermoor's torn mainsail is snagged across a rock — and now that you look properly, there's something painted along its edge."
+        solvedText:"S… A… I… L. Up the beach, the Eldermoor's mainsail lies snagged across a rock, folded over on itself and half-buried. Salvage-marked canvas is never blank."
       }
     },
     { id:'sail', icon:'⛵', name:'Torn Sail', pos:{x:23,y:53,w:12,h:16}, revealedBy:'driftwood',
-      desc:"A great sheet of salt-stiff canvas, snagged on the rocks. It's crusted and folded on itself — you can't make anything of it yet. Maybe something else on the beach will tell you why it matters.",
-      revealDesc:"You haul the canvas flat. Tar-painted loading marks pair each shape with a single letter — winds, by the look of them — but the pairs are scattered in no useful order:",
+      desc:"A great sheet of salt-stiff canvas, snagged on the rocks and folded over on itself. You cannot make anything of it while it lies like this — and nothing on this beach has told you yet why it should matter.",
+      revealDesc:"You haul the canvas flat and walk the length of it.\n\nAlong the foot run the Eldermoor's wind marks, still bright in tar — the sailmaker's shorthand, one shipper's symbol against the quarter of the compass it belongs to. He stitched them wherever there was room, in no order whatever:",
       revealSymbols:"● W &nbsp;&nbsp;▲ N &nbsp;&nbsp;◆ S &nbsp;&nbsp;■ E" },
     { id:'crate', onSolve:{el:'rx-beach',op:.2,fx:'surge'}, icon:'📦', name:'Cargo Crate', pos:{x:46,y:72,w:11,h:14},
-      desc:"A heavy cargo crate sits banded in iron, sealed with a 4-digit dial lock. Its lid is stencilled MANIFEST — ONE OF SEVEN, and around it in the sand five sister crates lie burst open on the rocks.\n\nOn its side, four shapes, each with a number — printed in no particular order:\n\n■ 5      ◆ 1      ▲ 8      ● 3\n\nNumbers, but no sequence. Something on this beach pairs these shapes with something else — and something else again gives the order.",
+      desc:"A heavy cargo crate, iron-banded, sealed with a four-digit dial lock. Stencilled across the lid: MANIFEST — ONE OF SEVEN. Five sister crates lie burst open on the rocks around it.\n\nThe lock face is a brass compass rose, worn smooth but perfectly readable — N at the top, E to the right, S below, W to the left, set out exactly as it would be on any chart.\n\nPainted along the crate's side, four of the shipper's marks, each with a number against it, and nothing at all to say which comes first:\n\n   ■ 5          ◆ 1          ▲ 8          ● 3",
       puzzle:{
         type:'keypad',
-        prompt:"Enter the 4-digit combination.", answers:['8513'],
+        prompt:"Enter the four-digit combination.", answers:['8513'],
         hints:[
-          "Three pieces of wreckage must meet: the crate's numbers, the sail's pairings, and a rule carved on the wreck itself.",
-          "The keel plate says READ THE WIND SUNWISE (CLOCKWISE) FROM NORTH — that's N, E, S, W. The sail tells you which shape belongs to which wind.",
-          "N is ▲8, E is ■5, S is ◆1, W is ●3 → enter 8513."
+          "The crate hands you four numbers and refuses to put them in order. The marks mean nothing on their own — something else on this beach says which wind each one belongs to.",
+          "The mainsail's wind marks do the pairing: ▲ is N, ■ is E, ◆ is S, ● is W. And the lock face is a compass rose, so read it round from the top the way any compass is read.",
+          "North ▲ is 8, east ■ is 5, south ◆ is 1, west ● is 3. Enter 8513."
         ],
-        solvedText:"The lock falls open on 8-5-1-3. Inside, wrapped in oilcloth: a small brass key. A word is stamped into it — TIDE — but the stamp is mirrored, as if it were meant to be read from the other side of something.",
+        solvedText:"8-5-1-3, and the lid comes up. Inside, bone dry in oilcloth: three signal flares and a tin of matches, packed by somebody who expected them to be needed.",
         solveBeat:"As the crate lid creaks open, something big shifts its weight in the treeline. One branch snaps. Then the silence resumes, heavier than before.",
         beatSound:'knock'
       }
     },
     { id:'box', icon:'🧰', name:'Weatherproof Box', pos:{x:75,y:82,w:10,h:10},
-      desc:"A ship's weatherproof document box, bolted shut with a 4-letter combination lock. A riddle is engraved on the lid in fine script:\n\n“Twice each day I come, and twice I leave.\nThe moon commands me; no anchor holds me.\nI kiss the shore, then take it with me.”\n\nAnd beneath the riddle, in harder, deeper strokes:\n\n“NAME ME AS THE EBB WOULD SPEAK IT — BACKWARD.”",
+      desc:"A ship's weatherproof document box, bolted to the stump of the old jetty and locked with four lettered dials.\n\nThe jetty is four mooring posts now, each snapped off at a different height, each branded with a single letter by whoever drove them:\n\n   chest-high, the tallest of them ........ T\n   waist-high ............................. L\n   knee-high .............................. A\n   a stub barely a hand above the sand .... S\n\nThe tide is making. The water is already working at the foot of the shortest post, and it will have the rest of them before noon.",
       puzzle:{
-        prompt:"Set the four letter dials.", placeholder:"FOUR LETTERS", answers:['EDIT'],
+        prompt:"Set the four lettered dials.", placeholder:"FOUR LETTERS", answers:['SALT'],
         hints:[
-          "Solve the riddle first. Then do to the answer exactly what the second engraving says.",
-          "The riddle's answer is TIDE — the mirrored key from the crate agrees. Now speak it as the ebb does: backward.",
-          "TIDE reversed is EDIT. Enter EDIT."
+          "The four posts carry the four letters, so the only real question is what order they go in — and the sea is in the middle of answering it.",
+          "A rising tide takes the shortest post first and the tallest last. Read the letters in the order the water will cover them.",
+          "Shortest to tallest: S, then A at knee height, then L at the waist, then T. Enter SALT."
         ],
-        solvedText:"E-D-I-T — the tide, running backward, like everything on this island. The box sighs open. Inside: a torn nautical chart of this very island, annotated in a hurried hand."
+        solvedText:"S-A-L-T. The lid lifts on a wad of oilcloth, and folded small inside it, kept dry through everything: a chart of this island, marked up in a hurried hand."
       }
     },
     { id:'chart', icon:'🗺️', name:'Chart Fragment', pos:{x:41,y:88,w:9,h:8}, hiddenUntil:'box',
-      desc:"The chart shows the island and a circled square: RADIO STN. A margin note, hurried: “Day three: land. God help us.”\n\nBelow it, sailing directions from the tallest palm — two numbers, each to be worked out from the wreck itself:\n\n“NORTH: how many of us the sea spared, minus the days we drifted.\n\nEAST: twice the number of crates that reached the sand unbroken.”\n\nThe muster is carved on the hull. The crates are here on the beach. The days are in the note above.",
+      desc:"The chart shows the whole island, and inland, ringed twice in pencil and underlined: RADIO STN.\n\nThe walk to it starts at the tallest palm. The operator wrote the distance the way a purser writes everything — against the crew who walked it:\n\n   “NORTH — one pace for every hand that signed its own name.\n    EAST  — one pace for every hand that could only make its mark.”\n\nThe articles are still bolted to the mainmast stump, out on the wreck.",
       puzzle:{
-        prompt:"Enter the paces: north digit, then east digit.", placeholder:"TWO DIGITS", answers:['54'],
+        prompt:"Enter the paces: north first, then east.", placeholder:"TWO DIGITS", answers:['54'],
         hints:[
-          "Two small sums. Send one person to read the hull's muster and another to count the crates while you work out the days.",
-          "NORTH: the hull's muster shows 12 names, 4 struck through — 8 spared — minus the 3 days adrift (this chart: “Day three: land”). EAST: the crate manifest says one of seven; five burst — 2 unbroken, doubled.",
-          "North 8−3 = 5. East 2×2 = 4. Enter 54."
+          "Two counts, and both of them are out at the hull on the ship's articles. Send somebody to read while the rest of you hold the chart.",
+          "The articles keep two lists: the hands that signed their own names, and the crosses witnessed beside them. Count each list.",
+          "Five signed — Alder, Renn, Okonkwo, Pike, Marsh. Four made their mark. Five north, four east: enter 54."
         ],
-        solvedText:"Five north, four east from the tallest palm — and there it is: a trailhead cut into the jungle wall, and far up the ridge, the dull glint of an antenna.",
+        solvedText:"Five paces north, four east from the tallest palm, and there it is: a trail cut into the jungle wall, and far up the ridge, the dull glint of an antenna.",
         solveBeat:"You count your paces aloud. On “four,” something in the undergrowth counts one pace with you. On “five,” it doesn't.",
         beatSound:'growl'
       }
@@ -724,28 +724,28 @@ const ROOMS = [
   entryBeat:"The door swings shut behind you on its own. Rusted hinges don't do that quietly. This one did.",
   entrySound:'knock',
   completeText:"The transmitter hums, your distress call looping out to sea. A stencilled arrow on the equipment rack points to a back door: ANTENNA LINE — THIS WAY. The cable runs straight into the jungle.",
-  chain:"Logbook: last entry is Day 121 — “the band is the day I stopped counting, then the point, then the count of the knocks” + window sill gouges (5 nightly knocks) → tune 121.5 → broadcast is 10 letters of morse = LOOK UNDER → rug hides floor hatch → Caesar plate with NO stated shift (crack via WKH = THE, shift 3) = STORM → transmitter: calibration-lamp deduction (mastermind-style, unique solution) = 394.",
+  chain:"The band plan lists four licensed frequencies, but this set's dial only reaches 88–135 Mc/s, which leaves exactly one of them: 121.5, the R/T distress watch the logbook says the operator was ordered to keep → that channel is repeating ten letters of morse: LOOK UNDER → under the rug, a hatch with a cipher disc and a line scratched beside it; WKH where THE belongs gives a shift of three, and the line reads WHAT KEEPS IT OUT IS THE STORM → STORM → the transmitter lights one lamp per correctly set dial, and the three two-lamp entries in the calibration log pin the code to 394.",
   objects:[
     { id:'logbook', icon:'📖', name:"Operator's Logbook", pos:{x:29,y:63,w:11,h:9},
-      desc:"Three final entries, in a deteriorating hand:\n\n“Day 119 — It watched the door all night. I did not open it.”\n\n“Day 120 — Found its marks beneath the window. I have stopped sleeping.”\n\n“Day 121 — It knocks each night now. Always the same count. If anyone finds this: the band is the day I stopped counting, then the point, then the count of the knocks. Listen. Then get—”\n\nThe entry stops there. The pen is still in the crease of the page." },
+      desc:"Three final entries, in a hand that gets worse as it goes.\n\n“Day 119 — It stood at the door the whole night. I did not open it.”\n\n“Day 120 — Found its marks under the window. I have stopped sleeping.”\n\n“Day 121 — It knocks now. Always the same count, always the same hour.\n\nStation orders are to keep the R/T distress watch and not leave the set. I have not left the set. Whoever finds this: keep the same watch I kept. Listen on it. Then get—”\n\nThe entry stops there. The pen is still lying in the crease of the page." },
     { id:'window', icon:'🪟', name:'Salt-Crusted Window', pos:{x:6,y:19,w:19,h:27},
-      desc:"The glass is fogged with years of salt. Through it, the clearing, the treeline, the ordinary green.\n\nIn the bottom corner of the pane, for just a moment, there is a shape. Tall. Patient. It's gone when you look directly at it.\n\nBeneath the sill, someone cut gouges into the wood — five of them, deep and evenly spaced. Under them, in pencil, barely legible:\n\n“every night. always five.”" },
+      desc:"The glass is fogged with years of salt. Through it: the clearing, the treeline, the ordinary green.\n\nIn the bottom corner of the pane, for just a moment, there is a shape. Tall. Patient. It is gone when you look at it directly.\n\nBeneath the sill, somebody has cut gouges into the wood — five of them, deep and evenly spaced. Underneath, in pencil, barely legible:\n\n“every night. always five.”" },
     { id:'poster', icon:'📜', name:'Torn Code Poster', pos:{x:76,y:19,w:12,h:28},
       desc:"A yellowed training poster is pinned above the desk: INTERNATIONAL MORSE CODE.\n\nThe alphabet itself has been torn away — a ragged rectangle of bare wall where the letters used to be, as though the operator ripped it down in a hurry and took it with him.\n\nEvery radio operator alive knows the code by heart. Your crew will have to find it the modern way." },
     { id:'radio', icon:'📻', name:'Radio Receiver', pos:{x:39,y:40,w:27,h:20},
-      desc:"The heart of the station: a wall of dials and meters, still warm, its panel light flickering like a failing heartbeat. A brass plate reads: EMERGENCY MONITORING STATION 7 — TUNE WITH CARE.\n\nStatic washes from the speaker like surf. The main tuning dial waits. The operator's note said the band is a number in two parts — a day, a point, and a count.",
+      desc:"The heart of the station: a wall of dials and meters, still faintly warm, the panel lamp flickering like a failing pulse. Static washes out of the speaker like surf on shingle.\n\nThe main tuning dial carries one scale, and the scale runs from 88 to 135 Mc/s. Nothing outside that is reachable on this set. Below it sit three trim knobs and a carrier meter.\n\nScrewed to the cabinet, the enamelled band plan — every frequency this station is licensed to work:\n\n   500 kc/s ......... CALLING AND DISTRESS (W/T)\n   121.5 Mc/s ....... DISTRESS (R/T)\n   156.8 Mc/s ....... HARBOUR AND PORT OPERATIONS\n   162.4 Mc/s ....... WEATHER BROADCAST",
       puzzle:{
         type:'dial',
-        prompt:"Sweep the dial to the operator's frequency, then coax the trim knobs until the carrier locks.",
+        prompt:"Sweep the dial to the watch the operator kept, then coax the trim knobs until the carrier locks.",
         answers:['1215'],
         dial:{min:880,max:1350,div:10,target:1215,nearMorse:'.-.. --- --- -.-  ..- -. -.. . .-.',
           knobs:[{label:'RF GAIN',target:62},{label:'BANDWIDTH',target:27},{label:'AERIAL TRIM',target:84}]},
         hints:[
-          "The logbook gives you the whole number. Something else in this room counts what comes after the point.",
-          "Day 121 was the last entry — the day he stopped counting. The five gouges beneath the window sill count the nightly knocks: that's your decimal.",
-          "Tune to exactly 121.5, then work the three knobs one at a time — slowly — until the panel reads LOCKED IN."
+          "Four licensed frequencies, and this set's scale only reaches from 88 to 135. Start by crossing off every band the hardware cannot even reach.",
+          "That leaves exactly one: 121.5, the R/T distress watch — which is the watch the logbook says he was ordered to keep and never left.",
+          "Sweep to 121.5. Then work the three trim knobs until the carrier meter settles and the panel reads LOCKED IN."
         ],
-        solvedText:"At 121.5 the static parts like a curtain. A recorded voice, looped for years, keys the same message over and over. The SPEAKER is carrying a signal now — go listen to it, and split the work: it's a long one."
+        solvedText:"The carrier locks. Under the hiss, something is repeating — patient, mechanical, and nothing like a voice."
       }
     },
     { id:'broadcast', onSolve:{el:'rx-radio',op:.2,fx:'surge'}, icon:'📡', name:'The Broadcast', pos:{x:28,y:44,w:10,h:15}, hiddenUntil:'radio',
@@ -765,28 +765,28 @@ const ROOMS = [
       }
     },
     { id:'hatch', icon:'🕳️', name:'Floor Hatch', pos:{x:44,y:85,w:12,h:11},
-      desc:"You drag aside the woven rug under the operator's desk and find a steel hatch with a five-letter wheel lock. A brass plate riveted beside the wheel is stamped with what looks like nonsense:\n\nWKH  ZKHHO  RSHQV  WR:  VWRUP\n\nNo key. No alphabet. Just the nonsense — and the nagging feeling that it isn't nonsense at all.",
+      desc:"A corner of the rug is turned back, and under it the floorboards give way to a steel hatch with five lettered dials set into the handle.\n\nBolted to the hatch is a brass cipher disc — two alphabet rings, the inner one free to turn against the outer. Standard station issue; every operator was trained on one.\n\nScratched into the steel beside it, deep enough to catch a fingernail:\n\n   ZKDW NHHSV LW RXW LV WKH VWRUP\n\nThe inner ring has been spun since that was written. Nobody left it where it stood.",
       puzzle:{
-        prompt:"Set the wheel to the decoded word.", placeholder:"FIVE LETTERS", answers:['STORM'],
+        prompt:"Set the five lettered dials.", placeholder:"FIVE LETTERS", answers:['STORM'],
         hints:[
-          "It isn't nonsense — every letter has been marched the same number of steps through the alphabet.",
-          "That first three-letter word is almost certainly THE. Count how far W sits from T. Then walk every letter back that far.",
-          "The shift is 3. VWRUP walks back to STORM. The plate reads: THE WHEEL OPENS TO: STORM."
+          "The disc shifts every letter by the same step. The message was written at one setting and the ring has been moved since — so find the step, and the message comes back.",
+          "The little words give it away. LW and LV are two-letter words, and WKH sits exactly where THE belongs. W back to T, K back to H, H back to E: every letter has moved three places along.",
+          "Shifted back three, ZKDW NHHSV LW RXW LV WKH VWRUP reads WHAT KEEPS IT OUT IS THE STORM. The dials want STORM."
         ],
-        solvedText:"S-T-O-R-M. The wheel spins free and the hatch lifts on a narrow crawlspace — and a squat emergency transmitter on a battery bank, its keypad glowing faintly."
+        solvedText:"S-T-O-R-M. The hatch lifts on a short ladder and a crawlspace that smells of hot dust and old batteries — and bolted to the joists down there, still wired in, an emergency transmitter."
       }
     },
     { id:'transmitter', icon:'🔌', name:'Emergency Transmitter', pos:{x:69,y:79,w:13,h:14}, hiddenUntil:'hatch',
-      desc:"The emergency transmitter wants a 3-digit arming code. A calibration card in the operator's hand is taped beside the keypad — five test codes, and what the panel lamps said to each:\n\n1 2 3 — one lamp lit, seated wrong\n4 5 6 — one lamp lit, seated wrong\n6 1 2 — all lamps dark\n9 2 5 — one lamp lit, seated wrong\n8 3 9 — two lamps lit, both seated wrong\n\n“A lit lamp: that digit is in the code. Seated true: right digit, right position. Seated wrong: right digit, wrong position.”\n\nBelow, tiny and urgent: “REMEMBER THE BAND. YOU WILL NEED IT AGAIN.”",
+      desc:"The emergency transmitter wants three dials set before it will arm. Across the top of the panel sit three lamps, and a worn brass legend explains them:\n\n   ONE LAMP FOR EACH DIAL THAT IS CORRECTLY SET.\n\nTaped beside the keypad, the operator's calibration log — every setting he tried, and what the lamps did:\n\n   SET  1 2 3  —  no lamps\n   SET  3 9 1  —  two lamps\n   SET  2 9 4  —  two lamps\n   SET  3 8 4  —  two lamps\n   SET  ? ? ?  —\n\nThe page ends there.",
       puzzle:{
         type:'keypad',
         prompt:"Enter the 3-digit arming code.", answers:['394'],
         hints:[
-          "Work it like detectives: the all-dark row eliminates its three digits everywhere. Then ask what each 'one lamp' row can still mean.",
-          "6, 1 and 2 are dead. So row one's lamp is the 3 — and it can't sit third. Row five lights two lamps: with 6 gone and only three slots, they must be 3 and 9 — and 9 can't sit third or first.",
-          "3 first, 9 second — and the last row of logic forces 4 (not 5, or row four would light two lamps). The code is 394."
+          "Every line tells you how many dials were right, but never which ones — that is the whole job. The three lines that scored two lamps are the ones worth working on: each of those has exactly one dial wrong.",
+          "Look at the middle dial. 3 9 1 and 2 9 4 both set it to 9. If 9 were the wrong one, each of those lines would need both its other dials right — but one says the first dial is 3 and the other says it is 2, and they cannot both be true. So the middle dial really is 9.",
+          "With 9 settled, 3 8 4 must be getting its other two dials right: first dial 3, last dial 4. Enter 394."
         ],
-        solvedText:"3-9-4. The transmitter thumps to life and begins looping a distress call out to sea. MAYDAY, MAYDAY, MAYDAY. Someone, somewhere, might be listening. Now — the antenna cable runs out the back door and into the jungle. That's your path.",
+        solvedText:"3-9-4. The transmitter thumps to life and starts looping a distress call out to sea. MAYDAY, MAYDAY, MAYDAY. Somebody, somewhere, might be listening. The antenna cable runs out the back door and straight into the jungle — and so will you.",
         solveBeat:"The moment the distress call starts broadcasting, something outside answers it — one long, low sound from deep in the island, too slow to be any bird.",
         beatSound:'growl'
       }
@@ -805,12 +805,12 @@ const ROOMS = [
   entryBeat:"Ten steps in, you find one of the operator's boots. Just the one. It has been placed, neatly, in the exact center of the path — facing back the way you came.",
   entrySound:'growl',
   completeText:"You cross the rope bridge at a dead sprint and cut the lines behind you. Below the cliffs lies a hidden cove — and stacked on the sand, under a tarp, materials for a raft. The operator planned an escape. You're going to finish it.",
-  chain:"Two threads run in parallel: the tree riddle = RIVER → eight crossing stones (sides must outnumber moss) spell DROWN; independently the ranger's pack tag algebra (first = 2×last, middle = sum, total 18) = 693. Crossing reveals the gorge gate — a SIMULTANEITY lock: the crew must man both winches at once (2 per station, scaled down for small teams) and haul together.",
+  chain:"The carved tree asks to be named before it will give up the crossing: RIVER → a stake on the bank gives the rule, that a stone bears you only while its sides outnumber its moss, which leaves five of the eight and spells DROWN → the ranger's padlock is dialled WATER, FOOD, FLARES, and his own packing note fixes all three (water twice the flares, food the two together, eighteen in all): 693 → the gorge gate's counterweight beam needs both winches turned at the same moment, so the crew has to split and haul together.",
   objects:[
     { id:'branches', icon:'🌿', name:'Snapped Branches', pos:{x:6,y:47,w:12,h:22},
       desc:"The trail-side branches are broken inward, all along one side, at a height that makes your neck prickle. The breaks are fresh — sap still bleeding.\n\nWhatever walks here doesn't go around things. It goes through them. You keep your voices low from now on." },
     { id:'tree', icon:'🌴', name:'Carved Tree', pos:{x:17,y:48,w:9,h:26},
-      desc:"A massive trunk, carved long ago, the letters darkened with tar so they'd survive the seasons:\n\n“I grow strong when it rains and starve in the sun.\nI sing loudest where I am shallow,\nand hold my breath where I run deep.\nI have swallowed stronger crews than yours whole —\nyet you must ask me for the crossing.”",
+      desc:"A massive trunk, carved long ago and the cuts darkened with tar so the seasons would not take them:\n\n   “I grow strong when it rains and starve in the sun.\n    I sing loudest where I am shallow\n    and hold my breath where I run deep.\n    I have swallowed better crews than yours whole —\n    and still you must ask me for the crossing.”\n\nAway to the left, under the insects, you can hear it.",
       puzzle:{
         prompt:"What must you find and ask for the crossing?", placeholder:"ANSWER", answers:['RIVER','ARIVER','THERIVER'],
         hints:[
@@ -822,33 +822,33 @@ const ROOMS = [
       }
     },
     { id:'stones', onSolve:{el:'rx-jungle',op:.2,fx:'surge'}, icon:'🪨', name:'River Crossing Stones', pos:{x:22,y:71,w:52,h:12},
-      desc:"Eight flat stones cross the black water. Each is chiseled with a letter and a shape, and each wears patches of moss. Reading left to right from your bank:\n\nOnly a stone whose sides outnumber its moss will bear your weight.",
+      desc:"Eight flat stones cross the black water, and the current between them is faster than it looks.\n\nA stake is driven into the near bank, cut by somebody who crossed here often enough to want it remembered:\n\n   “A STONE BEARS YOU ONLY WHILE ITS SIDES OUTNUMBER ITS MOSS.”\n\nEach stone is chiselled with a letter and cut to a shape, and each wears its own patches of moss. Reading left to right from this bank:",
       puzzle:{
         type:'select',
         select:{commit:"\ud83e\udea8 THESE STONES HOLD", wrong:"The river does not take your weight.",
           items:[{letter:"B",value:"square \u00b7 4 sides \u00b7 5 moss"},{letter:"D",value:"pentagon \u00b7 5 sides \u00b7 2 moss"},{letter:"E",value:"triangle \u00b7 3 sides \u00b7 3 moss"},{letter:"R",value:"hexagon \u00b7 6 sides \u00b7 1 moss"},{letter:"O",value:"square \u00b7 4 sides \u00b7 2 moss"},{letter:"A",value:"triangle \u00b7 3 sides \u00b7 4 moss"},{letter:"W",value:"pentagon \u00b7 5 sides \u00b7 3 moss"},{letter:"N",value:"hexagon \u00b7 6 sides \u00b7 4 moss"}]},
         prompt:"Which stones hold? Tap them in crossing order.", answers:['DROWN'],
         hints:[
-          "Judge every stone: does its shape's side-count strictly beat its moss count? Split the eight stones among the crew.",
-          "Equal doesn't count — E (3 sides, 3 moss) tips. Keep only sides > moss, then read the survivors left to right.",
-          "D (5>2), R (6>1), O (4>2), W (5>3), N (6>4). The crossing spells DROWN."
+          "Judge each stone on its own: does its shape have strictly more sides than it has patches of moss? Eight stones, so split them among the crew and compare notes.",
+          "Equal is not enough — the triangle with three sides and three patches tips you in. Keep only the stones where sides beat moss, then read what is left from this bank to the far one.",
+          "D (5 sides, 2 moss), R (6 and 1), O (4 and 2), W (5 and 3), N (6 and 4). The safe crossing spells DROWN."
         ],
-        solvedText:"D… R… O… W… N. Every safe stone holds. It isn't until the far bank that somebody says the word the river just made you spell — and nobody laughs. Ahead, half-buried in ferns: a ranger's pack.",
+        solvedText:"D… R… O… W… N. Every stone holds. It is not until the far bank that somebody says out loud the word the river just made you spell, and nobody laughs. Ahead, half-buried in ferns: a ranger's pack.",
         solveBeat:"Halfway across, the river goes strangely quiet upstream — the sound of water breaking around something that has stepped into the current behind you. You do not turn around.",
         beatSound:'growl'
       }
     },
     { id:'pack', icon:'🎒', name:"Ranger's Pack", pos:{x:67,y:69,w:9,h:13},
-      desc:"A weathered ranger's pack lies dropped beside the path, sealed with a 3-digit padlock. A waterproof tag hangs from the zip, the writing still legible:\n\n“Three digits guard my cache.\nThe first is twice the last.\nThe middle is the sum of the other two.\nAll three together make eighteen.”",
+      desc:"A weathered ranger's pack lies dropped beside the path. The padlock through its zip has three dials, and each dial is stamped with what it counts:\n\n   WATER        FOOD        FLARES\n\nA luggage tag is wired to the strap, in a careful hand:\n\n   “Set it the way I pack it, every time, so I never have to think:\n    water twice the flares,\n    food the two of them put together,\n    eighteen items on my back and not one more.”",
       puzzle:{
         type:'keypad',
         prompt:"Enter the 3-digit code.", answers:['693'],
         hints:[
-          "Turn the tag into equations. Call the digits F, M, L — one person writes, one checks.",
-          "F = 2×L and M = F+L, so M = 3×L. Then F+M+L = 6×L = 18.",
-          "L = 3, F = 6, M = 9. Enter 693."
+          "Three dials, three sentences, and the dials are labelled in the order the tag uses them. One person writes the three statements down, another checks the arithmetic.",
+          "Call the flares F. Then water is 2F, and food is water plus flares, so food is 3F. All three together is 6F — and he says that comes to eighteen.",
+          "6F = 18, so flares = 3, water = 6, food = 9. The dials read WATER, FOOD, FLARES: enter 693."
         ],
-        solvedText:"6-9-3. Inside: a machete and a battery signal lamp, its shutter trigger worn smooth from use. Why would a ranger carry a lamp built for sending code?"
+        solvedText:"6-9-3. Inside: a machete, and a battery signal lamp with its shutter trigger worn smooth from use. Why would a ranger this deep in the trees carry a lamp built for sending code?"
       }
     },
     { id:'gate', icon:'🌉', name:'Gorge Gate', pos:{x:43,y:22,w:15,h:18}, hiddenUntil:'stones',
@@ -880,68 +880,68 @@ const ROOMS = [
   entryBeat:"Fresh prints circle the raft materials — the same long, dragging prints from the beach where you started. It has been here. It has been waiting to see if you'd make it this far.",
   entrySound:'knock',
   completeText:"The raft is rigged, the winch is free, and the tide is going out under you. Nothing holds it to this island now but the hand on the line.",
-  chain:"Five tags with positional constraints (deck is 2nd; logs before deck; exactly one task between logs and mast; rudder never adjacent to the deck; sail after rudder) → unique order B-D-A-E-C → flare locker: “the military listens at TWICE the band” = 121.5×2 = 243.0 → 2430 → tide table: three highs, but only 6:40 (11 ft) clears the 9-ft reef before dark; minus 90 min = 5:10 → 510 → winch: the sail's order, but “the sea returns all things reversed” → 8513 backward = 3158 → fire flares in SOS (···−−−···) → LAUNCH.",
+  chain:"Five build tags, each giving its own reason, force one order: logs first because nothing floats before them, deck second because nothing is stood on her before it, mast before rudder because the mast lashing runs under the rudder head, sail last because canvas ends the work — BDAEC → the flare locker's dials are reset each week to the stock on the shelves, counted top down: 2 rockets, 4 hand flares, 3 smoke floats, 0 line-throwers = 2430 → the tide card rules out 4:10 (too shallow for the nine-foot bar) and 9:55 (after dark), leaving 6:40, less the ninety minutes the winch takes = 5:10 → the lead line coiled on the winch drum carries four numbered soundings out through the channel, 3-1-5-8 → fire the flares in the international distress pattern, SOS.",
   objects:[
     { id:'dragmarks', icon:'👣', name:'Drag-Marks in the Sand', pos:{x:24,y:87,w:16,h:9},
       desc:"Long furrows circle the cove, the same as the beach at dawn — but here they're layered dozens deep, old over older, like a patrol route walked for years.\n\nAt the center of the pattern, planted upright in the sand: the operator's other boot.\n\nBuild fast." },
     { id:'raftkit', icon:'🛶', name:'Raft Materials', pos:{x:39,y:75,w:18,h:16},
-      desc:"The operator staged everything and labeled each step with a tag — but the tags have scattered in the wind, and they read like a dead man's riddle:\n\nTAG A — “Raise the mast. Exactly one task must pass between lashing the logs and raising the mast, or the lashings slip.”\n\nTAG B — “Lash the logs before the deck is laid.”\n\nTAG C — “Rig the sail only once the rudder is true.”\n\nTAG D — “Lay the deck second. The logs will have settled by then.”\n\nTAG E — “Never fix the rudder right before or right after laying the deck. The hull can't take the strain.”",
+      desc:"The operator staged every piece of it and tagged each step. The wind has scattered the tags, and he wrote them the way a boatbuilder thinks — each one a reason, not an order:\n\n   TAG A — “Raise the mast.”\n\n   TAG B — “Lash the logs. Nothing sits on the water until the logs are lashed.”\n\n   TAG C — “Rig the sail. Last of all: the moment there is canvas up she takes charge, and whoever is still working goes swimming.”\n\n   TAG D — “Lay the deck. Before anything is stood up on her or fixed to her.”\n\n   TAG E — “Fix the rudder — but step the mast first. The mast lashing runs aft under the rudder head, and you will never thread it afterwards.”",
       puzzle:{
         type:'order', order:{labels:{"A": "Raise the mast", "B": "Lash the logs", "C": "Rig the sail", "D": "Lay the deck", "E": "Fix the rudder"}},
         prompt:"Enter the five tag letters in build order.", placeholder:"FIVE LETTERS", answers:['BDAEC'],
         hints:[
-          "One tag names an exact position — pin that down first, then see what must come before it.",
-          "Deck is 2nd, and logs come before the deck, so logs are 1st. 'Exactly one task between logs and mast' puts the mast 3rd. Now where can the rudder legally sit?",
-          "The rudder can't touch slot 1 or 3 (both adjacent to the deck in slot 2), and the sail must follow it: rudder 4th, sail 5th. Enter BDAEC."
+          "Nothing here is arbitrary — every tag says why. Start at the ends: one task has to be first because nothing floats without it, and one has to be last because it ends the work.",
+          "Logs first (B), and the deck goes down before anything is stood on or fixed to her, so that is second (D). The sail is last (C).",
+          "That leaves the mast and the rudder in the middle, and tag E says step the mast first. Logs, deck, mast, rudder, sail: enter BDAEC."
         ],
-        solvedText:"Logs, deck, mast, rudder, sail. It comes together fast under ten hands — an ugly, beautiful, seaworthy-enough raft. Now you need the flares and the tide.",
+        solvedText:"Logs, deck, mast, rudder, sail. It comes together fast under ten hands — an ugly, beautiful, seaworthy-enough raft. Now you need the flares and you need the tide.",
         solveBeat:"As the mast goes up, from the clifftop above the cove comes a sound like slow applause — two heavy limbs striking together. Once. Twice. Then nothing.",
         beatSound:'knock'
       }
     },
     { id:'locker', onSolve:{el:'rx-cove',op:.2,fx:'surge'}, icon:'🧨', name:'Flare Locker', pos:{x:66,y:73,w:12,h:14},
-      desc:"A steel flare locker, painted with fading emergency stripes, sealed with a 4-digit lock. The plaque riveted to the lid reads:\n\n“PROPERTY OF STATION 7.\nAN OPERATOR NEVER FORGETS THE EMERGENCY BAND —\nAND THE MILITARY LISTENS AT TWICE IT.”",
+      desc:"A steel flare locker in fading emergency stripes, four dials on the door, the stock just visible through a cracked inspection window.\n\nTaped inside the glass, the station's standing order in the operator's hand:\n\n   “DIALS ARE RESET EACH WEEK TO THE COUNT ON THE SHELVES,\n    TOP SHELF FIRST. IF YOU CANNOT COUNT IT, YOU DO NOT HAVE IT.”\n\nAnd beside it the shelf list:\n\n   SHELF 1 — ROCKETS, PARACHUTE\n   SHELF 2 — HAND FLARES\n   SHELF 3 — SMOKE FLOATS\n   SHELF 4 — LINE-THROWING CARTRIDGES\n\nThrough the glass you can see what is actually left. Two fat rocket tubes on the top shelf. Four hand flares in a rack built for twelve. Three smoke floats. And the bottom shelf swept completely bare.",
       puzzle:{
         type:'keypad',
         prompt:"Enter the 4-digit code.", answers:['2430'],
         hints:[
-          "You knew the emergency band once — you tuned to it yourself, back in the station. But the plaque wants where the military listens.",
-          "Twice the band. Take the frequency from the radio room and double it.",
-          "121.5 × 2 = 243.0. Enter 2430."
+          "You are not being asked to work anything out — you are being asked to count, and to count in the order the standing order gives.",
+          "Top shelf first, then down: rockets, hand flares, smoke floats, line-throwing cartridges.",
+          "Two rockets, four hand flares, three smoke floats, and nothing at all on the bottom shelf. Enter 2430."
         ],
-        solvedText:"243.0 — twice the band that started all this. The locker opens on a bundle of signal flares, dry and intact, and beneath them a laminated tide table for the cove.",
+        solvedText:"2-4-3-0, and the door swings. The flares come out dry and intact — and underneath them, a laminated tide card for the cove.",
         solveBeat:null
       }
     },
     { id:'tide', icon:'🌊', name:'Tide Table & Winch Notes', pos:{x:77,y:56,w:9,h:11},
-      desc:"The laminated card, in the operator's neat hand:\n\n“COVE TIDES —\nLOW  1:05 … 2 FT\nHIGH 4:10 … 8 FT\nHIGH 6:40 … 11 FT\nHIGH 9:55 … 9 FT (after dark)\n\nThe reef needs nine feet or better to clear.\nWe must not be on the water in the dark. Not here.\nSet the winch timer to launch 90 minutes before the tide we can survive.”",
+      desc:"The laminated card, in the operator's neat hand:\n\n   COVE TIDES —\n     LOW   1:05 ....  2 ft\n     HIGH  4:10 ....  8 ft\n     HIGH  6:40 .... 11 ft\n     HIGH  9:55 ....  9 ft\n\n   The bar across the mouth of this cove carries nine feet of rock on it.\n   Nothing swims over it on less than that, and nothing survives touching it.\n\n   Dark by seven. Do not be on the water in the dark. Not here.\n\n   Allow an hour and a half on the winch to run her down the ways —\n   so start that much before the water is at its height.",
       puzzle:{
         prompt:"Set the launch time (hour then minutes, e.g. 730).", placeholder:"H:MM", answers:['510','0510'],
         hints:[
-          "Two filters: the reef's depth, and the dark. Only one high tide passes both.",
-          "4:10 is only 8 feet — the raft grounds. 9:55 clears the reef but it's after dark, and the card is very clear about the dark. That leaves 6:40 — now count back 90 minutes.",
-          "6:40 minus 1:30 is 5:10. Enter 510."
+          "Three high waters, and two tests to put them through: the bar needs more than nine feet under the raft, and you must not still be out there after dark.",
+          "4:10 is only eight feet and the raft grounds on the bar. 9:55 would clear it, but seven o'clock is already dark. That leaves 6:40 — and then the card tells you how long the winch takes.",
+          "An hour and a half before 6:40 is 5:10. Enter 510."
         ],
-        solvedText:"5:10. The timer arms with a clunk — and the brass key from the beach, the one stamped TIDE, turns smoothly in the winch housing, as if the whole island had been one machine waiting for you to wind it."
+        solvedText:"5:10. The timer arms with a clunk you feel through the sand, and somewhere under the ways the winch drum takes up its slack and waits."
       }
     },
     { id:'winch', icon:'⚙️', name:'Launch Winch Tumblers', pos:{x:85,y:67,w:10,h:16}, hiddenUntil:'tide',
-      desc:"The winch release is guarded by four numbered tumblers — and above them, chiseled deep into the rock, four familiar shapes in a familiar order:\n\n▲   ■   ◆   ●\n\nBeneath them:\n\n“THE SAIL ORDERED THEM ONCE.\nTHE SEA RETURNS ALL THINGS REVERSED.”\n\nYou've seen these shapes before. On a beach. A lifetime ago this morning.",
+      desc:"The launch winch: four brass tumbler wheels set into the drum housing, and cut into the housing beside them so it can never be lost —\n\n   “SET HER TO THE CHANNEL.”\n\nThe channel is on the drum. The operator's lead line is coiled there, marked at every fathom in the old way, and he has knotted a paper tag at four places along it. The tags are numbered in the order he took the soundings, working from the beach out to open water:\n\n   tag 1 ..... three fathoms\n   tag 2 ..... one fathom\n   tag 3 ..... five fathoms\n   tag 4 ..... eight fathoms\n\nOne fathom at the second mark. That is the shoal the bar is made of, and it is why nobody rows out of here blind.",
       puzzle:{
         type:'keypad',
         prompt:"Enter the 4-digit release code.", answers:['3158'],
         hints:[
-          "The shapes are in the sail's wind order — the same order that opened the crate. But read the second line of the carving again.",
-          "The crate opened on 8-5-1-3. The sea returns all things reversed.",
-          "8513 backward is 3158. Enter 3158."
+          "The lead line is a record of the way out, taken in order. The tags are numbered so you cannot get the order wrong.",
+          "Read the soundings off the tags, tag one to tag four — beach to open water.",
+          "Three, one, five, eight. Enter 3158."
         ],
-        solvedText:"3-1-5-8 — the beach code, coming back to you the way the tide brings everything back. The release lever frees with a heavy CLACK. All that's left is to bring that ship — fire the flares in a signal no sailor on Earth can ignore.",
+        solvedText:"3-1-5-8 — the depth of the water you are about to take her over, dialled into the machine that is going to put her there. The release lever frees with a heavy CLACK. All that is left is to bring that ship: fire the flares in a signal no sailor alive can ignore.",
         solveBeat:"From the treeline at the cove's edge, for the first time, you hear it breathe. It is very close now. It has stopped hiding.",
         beatSound:'growl'
       }
     },
     { id:'signal', icon:'🔥', name:'Fire the Signal Flares', pos:{x:49,y:47,w:11,h:14}, hiddenUntil:'winch',
-      desc:"The flare rack holds nine flares: enough for one message. Short bursts and long burns — the oldest distress signal there is. Get the pattern right and that ship WILL turn.\n\nGet it wrong, and you've lit yourself up for something other than rescue.",
+      desc:"The rack holds nine flares. Nine is exactly enough for one message and nothing left over for a second attempt.\n\nShort bursts and long burns — the oldest distress call there is, and the one the morse poster back at the station still had its heading for even after the alphabet was torn away.\n\nGet it right and that ship turns. Get it wrong and you have simply lit yourself up for something that is not a ship.",
       puzzle:{
         type:'signal',
         labels:{short:'🔥 SHORT BURST ·',long:'🔥 LONG BURN −',reset:'RESET RACK',send:'📡 SEND SIGNAL'},

@@ -349,7 +349,7 @@ ${[0,1,2,3,4,5].map(i=>`<rect x="${560+i*96}" y="754" width="12" height="30" fil
   <rect x="1180" y="520" width="240" height="180" rx="14" fill="#141e2a" stroke="#31465c" stroke-width="6"/>
   ${[0,1,2,3].map(i=>`<rect x="${1204+i*54}" y="548" width="38" height="70" rx="6" fill="#0a141c" stroke="#5a7a94" stroke-width="3"/>
    <text x="${1223+i*54}" y="592" text-anchor="middle" font-size="18" fill="#7f97ab">${'⚡❄☢💧'[i]}</text>`).join('')}
-  <text x="1300" y="666" text-anchor="middle" font-family="Special Elite" font-size="12" fill="#5a7a94">RELEASE RUNS BACKWARD</text>
+  <text x="1300" y="666" text-anchor="middle" font-family="Special Elite" font-size="11" fill="#5a7a94">RELEASE: CRYO·WATER·POWER·REACTOR</text>
 </g>
 <!-- thruster test rig (hidden until clamps) -->
 <g id="el-thrusters">
@@ -394,62 +394,62 @@ const ROOMS=[
   entryBeat:"The bay's ceiling panels creak, one after another, in a slow line from the vent to the door — the sound of weight moving where no crew could walk.",
   entrySound:'clank',
   completeText:"The lift accepts the deck code and grinds upward toward the bridge. Behind you, in the bay, a pod lid whines open. You do not go back to check.",
-  chain:"Pod status-log acrostic (first letters) spells LOCKER → locker stencils pair systems with digits; the evac placard gives the shutdown order (reactor, power, water, cryo) → 6942 → med terminal riddle (STAR) answered backward = RATS → terminal log gives the crew count and the twin cores; the six pods and the placard give the rest → lift code 34.",
+  chain:"Forty years of the same six status lines have burned the first character of each one into the pod plates, and read down the column they spell LOCKER → the locker's four glyphs carry digits but no order, and the evacuation placard supplies one: shut down REACTOR, POWER, WATER, CRYO = 6942 → the med terminal asks for the standing order at the level this deck is set to; the quarantine tag on the vent grille is wound to 4 and the placard says level 4 is BURN → the bridge lift's code is reset each watch to the duty count then the relief, and the watch bill shows three and four = 34.",
   objects:[
     { id:'vent', icon:'🌬️', name:'Vent Grille', pos:{x:66,y:2,w:12,h:14},
-      desc:"The maintenance vent over the pods hangs open on one hinge. Two of its screws lie on the deck below — placed side by side, dead parallel, like surgical tools.\n\nThe shaft behind it is pitch dark and utterly silent, which is wrong: shafts hum. This one is holding still." },
+      desc:"The maintenance vent over the pods hangs open on one hinge. Two of its screws lie on the deck below — placed side by side, dead parallel, like surgical tools.\n\nZip-tied to the grille is a quarantine tag, the kind with a brass pointer you wind round to whatever level the deck is running at.\n\nSomebody has wound this one all the way round to 4, and then snapped the stop off so that it cannot be wound back.\n\nThe shaft behind the grille is pitch dark and completely silent, which is wrong. Shafts hum. This one is holding still." },
     { id:'pods', icon:'🧊', name:'Cryo Pods', pos:{x:6,y:36,w:52,h:34},
-      desc:"Six pods. Five dark, their occupants gone — not thawed, gone. Yours stands open, dripping.\n\nEach pod's status plate shows its last automated log line, top to bottom:\n\nPOD 1 — “Life-support nominal.”\nPOD 2 — “Occupant absent.”\nPOD 3 — “Cryo-seal breached.”\nPOD 4 — “Kelvin drift climbing.”\nPOD 5 — “Egress hatch open.”\nPOD 6 — “Return date overdue.”\n\nSomeone scratched one line beneath the plates: “someone hid a name in us — read straight down.”",
+      desc:"Six pods. Five dark, their occupants gone — not thawed, gone. Yours stands open, dripping.\n\nEach pod's status plate still shows the last line its system wrote. The plates are forty years old and the phosphor has burned in, so the first character of every line sits brighter than the rest of it, stacked down the column:\n\n   POD 1 — “Life-support nominal.”\n   POD 2 — “Occupant absent.”\n   POD 3 — “Cryo-seal breached.”\n   POD 4 — “Kelvin drift climbing.”\n   POD 5 — “Egress hatch open.”\n   POD 6 — “Return date overdue.”\n\nSix bright letters, burned into the glass by forty years of the same six lines.",
       puzzle:{
-        prompt:"The status log hides a word. Where should you look next?",
+        prompt:"Six plates, six burned-in letters. What do they spell?",
         placeholder:"SIX LETTERS", answers:['LOCKER'],
         hints:[
-          "“Read straight down” — an acrostic. Take the first letter of each pod's log line, top to bottom.",
+          "You are not decoding anything. The burn-in has done the work — read what is bright, pod 1 down to pod 6.",
           "Life… Occupant… Cryo… Kelvin… Egress… Return…",
-          "L, O, C, K, E, R — the maintenance LOCKER across the bay."
+          "L, O, C, K, E, R. It is pointing at the maintenance locker across the bay."
         ],
         solvedText:"L-O-C-K-E-R. The maintenance locker by the bulkhead — tall, sealed, and stencilled with four system glyphs."
       }
     },
     { id:'locker', onSolve:{el:'rx-cryobay',op:.2,fx:'surge'}, icon:'🗄️', name:'Maintenance Locker', pos:{x:79,y:40,w:10,h:30},
-      desc:"A tall maintenance locker sealed with a 4-digit mag-lock. Four system glyphs are stencilled above it, each with a digit — in no particular order:\n\n⚡ POWER 9      ❄ CRYO 2      ☢ REACTOR 6      💧 WATER 4\n\nDigits, but no sequence. Somewhere on this deck there's a procedure that puts these systems in order.",
+      desc:"A tall maintenance locker sealed with a 4-digit mag-lock. Four system glyphs are stencilled above it, each with a digit, and they are stencilled in no order at all — whoever painted them worked round the door as the space allowed:\n\n   ⚡ POWER 9       ❄ CRYO 2       ☢ REACTOR 6       💧 WATER 4\n\nFour systems, four digits, and nothing here to say which comes first. But a ship this size does not leave the order of its systems to memory; it puts it on the wall.",
       puzzle:{
         type:'keypad',
         prompt:"Enter the 4-digit code.", answers:['6942'],
         hints:[
-          "Four systems, four digits — you need an official ORDER. Check the wall by the pods.",
+          "The digits belong to systems, so what you need is an official order for those systems. This deck has one posted on it.",
           "The evacuation placard: SHUT DOWN IN THIS ORDER — REACTOR, POWER, WATER, CRYO.",
-          "☢6 ⚡9 💧4 ❄2 → enter 6942."
+          "☢ is 6, ⚡ is 9, 💧 is 4, ❄ is 2. Enter 6942."
         ],
-        solvedText:"The mag-lock releases on 6-9-4-2. Inside: a med-bay keycard, an empty tool rack — every cutting tool gone — and a note: “the terminal answers to the old riddle — answered the wrong way round.”",
+        solvedText:"The mag-lock releases on 6-9-4-2. Inside: a med-bay keycard, an empty tool rack with every cutting tool gone from it, and a dust-free rectangle where something long used to lie.",
         solveBeat:"As the locker opens, the vent above the pods exhales a long, slow breath of cold air. Vents push air in pulses. They do not exhale.",
         beatSound:'hiss'
       }
     },
     { id:'placard', icon:'📋', name:'Evacuation Placard', pos:{x:88,y:35,w:9,h:16},
-      desc:"A laminated evacuation placard hangs on the wall, corporate-cheerful under forty years of dust:\n\n“IN THE EVENT OF EVACUATION, SHUT DOWN SYSTEMS IN THIS ORDER:\n1. REACTOR   2. POWER   3. WATER   4. CRYO\n\nProspero carries twin reactor cores. Both must sleep before you do.”\n\nSomeone has underlined the word “twin”. Twice." },
+      desc:"A laminated placard hangs on the wall, corporate-cheerful under forty years of dust. Two notices share it.\n\n   IN THE EVENT OF EVACUATION, SHUT DOWN SYSTEMS IN THIS ORDER:\n     1. REACTOR    2. POWER    3. WATER    4. CRYO\n\n   CONTAMINATION STANDING ORDERS — THE LEVEL IS SET ON EACH DECK:\n     LEVEL 1 — CLEAN\n     LEVEL 2 — WATCH\n     LEVEL 3 — SEAL\n     LEVEL 4 — BURN\n\nProspero carries twin reactor cores. Both must sleep before you do.\n\nSomeone has underlined the word “twin”. Twice. Someone else has gone over LEVEL 4 so hard the marker tore the laminate." },
     { id:'terminal', icon:'🖥️', name:'Med Terminal', pos:{x:56,y:44,w:12,h:16},
-      desc:"The med terminal wants a password. Its screensaver has looped the same riddle for four decades:\n\n“I die each morning and am born each night.\nSailors of the void steer by my elders.\nWhat am I?”\n\nBelow, in the operator's hand: “answer it the wrong way round — nothing on this ship runs the way it should.”",
+      desc:"The med terminal wants a password. Its lock screen has been showing the same prompt for four decades, and the cursor has burned a groove in the phosphor waiting for an answer:\n\n   CONTAMINATION CONTROL — RESTRICTED\n\n   ENTER THE STANDING ORDER FOR THE LEVEL THIS DECK IS SET TO.\n\nThe level is not set in software. On this ship it is set by hand, on the deck it applies to, and it is not the kind of thing anybody raises for a drill.",
       puzzle:{
-        prompt:"Enter the password.", placeholder:"PASSWORD", answers:['RATS'],
+        prompt:"Enter the password.", placeholder:"PASSWORD", answers:['BURN'],
         hints:[
-          "Solve the riddle first — something that appears at night and 'dies' at dawn, that navigators steer by.",
-          "The riddle's answer is STAR. The note wants it the wrong way round — spell it backward.",
-          "STAR reversed is RATS. Enter RATS."
+          "Two things to find and put together: what level this deck is actually set to, and what the standing order for that level is.",
+          "The quarantine tag on the vent grille has been wound round to 4 and the stop snapped off. The placard on the wall lists what each level means.",
+          "Level 4 on the placard reads BURN. Enter BURN."
         ],
-        solvedText:"STAR… backward. R-A-T-S. The terminal unlocks and vomits forty years of medical logs. The last entry, in the director's hand: “Crew of nine aboard at launch, and both reactor cores still burning. The scratching in the vents is not rats. Rats stop when you knock.”",
+        solvedText:"B-U-R-N. Somebody set this deck to burn and then did not get the chance. The terminal unlocks and brings up forty years of medical logs. The last entry is in the director's hand: “Crew of nine aboard at launch, and both reactor cores still burning. The scratching in the vents is not rats. Rats stop when you knock.”",
         solveBeat:"Somewhere in the shaft above you, something knocks back. Three times. Patient.",
         beatSound:'knock'
       }
     },
     { id:'manifest', icon:'📄', name:'Deck Manifest', pos:{x:27,y:74,w:10,h:14}, hiddenUntil:'terminal',
-      desc:"The lift to the bridge wants a 2-digit deck code. The manifest clipboard beside it reads:\n\n“LIFT CODE — first digit: souls aboard at launch, less the pods in this bay. Second digit: reactor cores, doubled.”\n\nThe numbers aren't on this page. You've already seen all of them.",
+      desc:"The lift to the bridge is restricted, and its panel wants two digits.\n\nClipped beside it, the deck's watch bill — who was standing what when the ship went quiet. The instruction across the top is printed, not written:\n\n   BRIDGE LIFT — CODE IS RESET EVERY WATCH:\n   THE DUTY WATCH COUNT, THEN THE RELIEF.\n\n   DUTY WATCH ....... Okafor · Lindqvist · Barre\n   RELIEF WATCH ..... Yusuf · Marchetti · Osei · Hallgren\n   OFF WATCH ........ Reyes · Tanaka\n\nNine names. Nobody has crossed any of them off.",
       puzzle:{
         prompt:"Enter the 2-digit lift code.", placeholder:"TWO DIGITS", answers:['34'],
         hints:[
-          "Each number lives somewhere else on this deck: the terminal log, the pod bay, the placard.",
-          "The terminal log said a crew of nine; there are six pods here: 9−6=3. The log and the placard both say twin cores: 2×2=4.",
-          "3 then 4 — enter 34."
+          "Nothing to work out here — only two lists to count, and the panel tells you which order it wants them in.",
+          "Count the duty watch, then count the relief watch. Ignore the off watch; the panel did not ask for it.",
+          "Three on duty, four on relief. Enter 34."
         ],
         solvedText:"3-4. The lift doors part on a corridor of dead lights — and one live one, far down, above the bridge hatch.",
         solveBeat:"As the lift rises, something rises with you — inside the wall, matching your speed exactly, then passing you.",
@@ -470,26 +470,26 @@ const ROOMS=[
   entryBeat:"The captain's chair faces the viewport. The dust on the armrests is disturbed — four long furrows on each side, as if something sat here recently. And gripped.",
   entrySound:'clank',
   completeText:"The reactor accepts the code and channels power aft. A service map blinks: ESCAPE POD — VIA HYDROPONICS. The green deck. The one the crew sealed first.",
-  chain:"Captain's log (Day 47: aimed the dish) + star chart gouges (15 scratches) → tune the dish to 47.15 → beacon loop is tap code (knock pairs, 5×5 grid) = SEAL VENTS → nav console binary status line (5-bit A1Z26) = GAMMA → reactor rod-seating logic (copper/iron/lead sockets) = 651.",
+  chain:"The captain's log says he aimed the dish at the one beacon that had stopped talking; the chart's register lists four bearings and marks exactly one SILENT, so the dish swings to 47.15 → that channel is carrying a hand-knocked loop in prisoners' tap code: SEAL VENTS → the nav console's status line is five letters in 5-bit binary, and the legend is etched below it: GAMMA → the rods are stamped 6, 5 and 1, and the engineer's two notes (copper leftmost, iron left of lead) fix the seating: 651.",
   objects:[
     { id:'log', icon:'📖', name:"Captain's Log", pos:{x:18,y:66,w:10,h:12},
-      desc:"The last entries, voice-to-text, punctuation failing with the speaker's nerve:\n\n“Day 44. Something answered our hail. Not on any channel we transmit on.”\n\n“Day 46. Crew hear it in the vents now. I have ordered the shafts welded.”\n\n“Day 47. I aimed the dish where the beacon died and I will not move it again. If anyone follows us: the heading is the day, then the scratches under the chart. Listen. Then get off this ship.”" },
+      desc:"The last entries, voice-to-text, the punctuation failing along with the speaker's nerve:\n\n“Day 44. Something answered our hail. Not on any channel we transmit on.”\n\n“Day 46. Crew hear it in the vents now. I have ordered the shafts welded.”\n\n“Day 47. I have aimed the dish at the one beacon out there that stopped talking, and I will not move it again. Its bearing is on the chart with all the others; I am not writing it in here, in case this log is read by something that is not you. Find it, listen, and then get off this ship.”" },
     { id:'starchart', icon:'🗺️', name:'Star Chart', pos:{x:66,y:26,w:16,h:20},
-      desc:"A star chart of the sector, one course line burned in amber toward a dead beacon.\n\nBeneath the chart's frame, someone has cut tally scratches into the console — small, neat, obsessive. You count them twice to be sure:\n\nFifteen.\n\nUnder them, in grease pencil: “after the point.”" },
+      desc:"A star chart of the sector, one course line burned in amber toward a dead beacon. Down the margin, the chart's beacon register:\n\n   BEACON ................ BEARING ...... STATUS\n   CASSIA RELAY .......... 31.08 ........ ACTIVE\n   ARDEN BUOY ............ 44.02 ........ ACTIVE\n   KEPLER MARK ........... 47.15 ........ SILENT — 40 YRS\n   TORVALD LIGHT ......... 52.60 ........ ACTIVE\n\nBeneath the chart's frame somebody has cut tally scratches into the console — small, neat, obsessive. You count them twice to be sure.\n\nNine.\n\nThere were nine of them aboard." },
     { id:'antenna', icon:'📡', name:'Deep-Space Dish', pos:{x:38,y:44,w:14,h:16},
-      desc:"The dish control console. A great steel ear on the hull, and a dial to swing it across the sky. The readout waits for a heading.\n\nThe captain's log said the heading is a day and a count — a number in two parts.",
+      desc:"The dish control console: a great steel ear out on the hull, and a dial to swing it across the sky. The readout is waiting for a bearing, to two decimal places, the way the chart writes them.\n\nThe captain aimed this at one specific thing on Day 47 and left a log entry saying so, and a bearing register on the chart beside you listing every beacon in the sector.",
       puzzle:{
         type:'dial',
-        prompt:"Swing the dish to the heading, then coax the trim knobs until the carrier holds.",
+        prompt:"Swing the dish to the captain's bearing, then coax the trim knobs until the carrier holds.",
         answers:['4715'],
         dial:{min:4000,max:5000,div:100,target:4715,pad:5,meter:'CARRIER STRENGTH',lock:'LOCK HEADING',miss:'nothing out there but hiss.',
           knobs:[{label:'AZIMUTH TRIM',target:41},{label:'GAIN',target:73},{label:'POLARIZATION',target:18}]},
         hints:[
-          "The captain's log gives the whole number; something near the star chart counts what comes after the point.",
-          "Day 47 — the day he aimed the dish. The fifteen scratches under the chart: “after the point.”",
-          "Set the heading to exactly 47.15, then work the three knobs one at a time until the panel reads LOCKED IN."
+          "The log says what he aimed at without giving you the number; the chart's register gives every number without saying which. Put the two together.",
+          "He aimed at the beacon that stopped talking. The register marks exactly one as SILENT — forty years silent, which is how long this ship has been out here.",
+          "KEPLER MARK, bearing 47.15. Set it there, then work the three knobs one at a time until the panel reads LOCKED IN."
         ],
-        solvedText:"At 47.15 the hiss opens like a door — and underneath it, something is knocking. A repeating loop, forty years old, knocked out by hand. The COMMS SPEAKER is carrying it now. Split up the letters; it's a long one."
+        solvedText:"At 47.15 the hiss opens like a door — and underneath it, something is knocking. A repeating loop, forty years old, knocked out by hand. The comms speaker is carrying it now. Split the letters up; it is a long one."
       }
     },
     { id:'beacon', onSolve:{el:'rx-bridge',op:.2,fx:'surge'}, icon:'🔊', name:'The Beacon Loop', pos:{x:25,y:44,w:10,h:14}, hiddenUntil:'antenna',
@@ -521,16 +521,16 @@ const ROOMS=[
       }
     },
     { id:'reactor', icon:'☢️', name:'Reactor Calibration', pos:{x:88,y:40,w:9,h:42}, hiddenUntil:'console',
-      desc:"Three numbered control rods — COPPER, IRON, and LEAD — must seat into the LEFT, CENTER and RIGHT sockets, and the readout takes their numbers left to right. The engineer's notes:\n\n• “The copper rod is stamped with the perfect number.” (Six — the engineer's little joke: 6 = 1+2+3.)\n• “The lead rod bears the loneliest number.”\n• “Iron carries the one that's left: five.”\n\n• “Copper shorts out in any socket but the leftmost.”\n• “Iron holds only when seated somewhere left of lead.”\n\nAnd below, urgent: “REMEMBER THE DISH HEADING. YOU WILL NEED IT AGAIN.”",
+      desc:"Three control rods — COPPER, IRON and LEAD — have to be seated into the LEFT, CENTRE and RIGHT sockets, and the readout reads their stamped numbers off left to right.\n\nThe engineer's parts list is still clipped to the housing:\n\n   COPPER ROD ..... stamped 6\n   IRON ROD ....... stamped 5\n   LEAD ROD ....... stamped 1\n\nAnd under it, in his own hand, the two things the manual does not tell you:\n\n   “Copper shorts out in anything but the leftmost socket. Found that out the hard way.”\n\n   “Iron only holds if it is seated somewhere to the left of lead.”",
       puzzle:{
         type:'keypad',
-        prompt:"Seat the rods, then type the readout — the three rod numbers, left socket to right.", answers:['651'],
+        prompt:"Seat the rods, then type the readout — the three stamped numbers, left socket to right.", answers:['651'],
         hints:[
-          "Two jobs: first match each metal to its number (copper 6, lead 1, iron 5), then place them using the socket rules.",
-          "Copper (6) can only sit leftmost. That leaves center and right for iron (5) and lead (1) — and iron must be left of lead.",
-          "Left socket 6, center 5, right 1 — type 651."
+          "The numbers are given to you outright. The whole puzzle is where the three rods are allowed to sit.",
+          "Copper can only go in the left socket, so that is settled. Iron and lead take the centre and the right, in some order.",
+          "Iron must be left of lead, so iron takes the centre and lead the right. Left to right that reads 6, 5, 1 — enter 651."
         ],
-        solvedText:"6-5-1. The reactor spools from a whisper to a heartbeat. Power flows aft — through Hydroponics. The deck the crew welded shut from the OUTSIDE.",
+        solvedText:"6-5-1. The reactor spools up from a whisper to a heartbeat, and power flows aft — through Hydroponics. The deck the crew welded shut from the outside.",
         solveBeat:"Deep below, something answers the reactor's new heartbeat with three slow blows against a bulkhead. Not random. Rhythmic. Like a knock learned from watching you.",
         beatSound:'knock'
       }
@@ -583,16 +583,16 @@ const ROOMS=[
       }
     },
     { id:'pumps', icon:'⚙️', name:'Nutrient Pumps', pos:{x:4,y:68,w:13,h:20},
-      desc:"The pump manifold is padlocked — a 3-digit dial, one digit per pump down the line. The priming instructions are stencilled on the intake:\n\n“PRIMING SEQUENCE —\nPump one draws half a dozen litres a stroke.\nEach pump down the line draws two litres less than the one before it.\nDial the three stroke-counts in line order.”",
+      desc:"The pump manifold is padlocked with a 3-digit dial, one digit per pump down the line. The priming instructions are stencilled across the intake, where a maintenance hand would read them:\n\n   PRIMING SEQUENCE —\n   Pump one draws half a dozen litres a stroke.\n   Every pump down the line draws two litres less than the one before it.\n   Dial the three stroke-counts in line order.",
       puzzle:{
         type:'keypad',
         prompt:"Work out each pump's litres-per-stroke and type the three numbers in order.", answers:['642'],
         hints:[
-          "Start with pump one: how many is half a dozen?",
-          "Pump one draws 6. Each pump after it draws two less: 6, then 4, then…",
+          "Three pumps in a line, and the first one's figure is written out in words rather than digits. Start there.",
+          "Half a dozen is six, and each pump after it draws two less: six, then four, then…",
           "6, 4, 2 — enter 642."
         ],
-        solvedText:"6-4-2. The pumps shudder to life, flooding the rows — and the aft airlock's speaker wakes at the far end, knocking a pattern into the mist. Not a fault alarm. A count."
+        solvedText:"6-4-2. The pumps shudder to life and flood the rows — and down at the far end the aft airlock's speaker wakes, knocking a pattern into the mist. Not a fault alarm. A count."
       }
     },
     { id:'airlock', icon:'🚪', name:'Aft Airlock', pos:{x:82,y:20,w:15,h:48}, hiddenUntil:'pumps',
@@ -624,36 +624,36 @@ const ROOMS=[
   entryBeat:"The pod bay's dust is untouched except for one path — a wide, smooth track circling the pod itself. Around and around. Years of it. Something has been guarding your way out, or coveting it.",
   entrySound:'hiss',
   completeText:"Clamps clear, fuel green, the bay doors standing open on the dark. The pod is ready to go the moment somebody says so.",
-  chain:"Launch drill tags with positional constraints → unique order E-B-D-A-C → fuel lock: “the emergency channel sits at TWICE the dish” = 47.15×2 = 94.30 → 9430 → orbital pass table: only the 5:20 pass is reachable; minus 45 min = 4:35 → docking clamps: shutdown code reversed = 2496 → thruster ignition in the old pattern (SOS) → LAUNCH.",
+  chain:"Five launch tags, each carrying its own reason: the hatch is sealed before anything loads, priming throws sparks so the cells come before the oxygen, the guidance ring is trued only once she is loaded, and the clamps are last — EBDAC → the fuelling protocol lists line pressures by pod type and the cradle is stencilled TYPE C: 9430 → the launch table rules out the 2:40 pass (needs 11 units of 9) and the 8:45 (after the reactor dies at 7:00), leaving 5:20 less 45 minutes of ignition = 4:35 → the clamps carry their own release sequence, cryo-water-power-reactor, read off the digits stencilled on each housing: 2496 → the board is set the way the drill leaves her: guidance LOCKED, fuel at PRESSURE, clamps to RELEASE.",
   objects:[
     { id:'scratches', icon:'🪟', name:'Viewport Scratches', pos:{x:8,y:14,w:14,h:20},
       desc:"A small viewport, the beacon's star pulsing coldly in the corner. The inside of the glass — the inside — carries three long scratches, wiped clean of dust.\n\nBeyond them, the last stars you'll ever see from this ship. If you're quick." },
     { id:'checklist', icon:'📋', name:'Launch Drill', pos:{x:13,y:52,w:9,h:20},
-      desc:"The pod's launch drill, five steps, each on a numbered tag — but the tags have been torn off their ring and scattered. They read like the flight officer knew someone else would fly this drill someday:\n\nTAG A — “Align the guidance ring. Exactly one task must pass between priming the cells and aligning the ring.”\n\nTAG B — “Prime the fuel cells before the oxygen goes aboard.”\n\nTAG C — “Release the docking clamps only once the hatch is sealed.”\n\nTAG D — “Load the oxygen third.”\n\nTAG E — “Seal the hatch — never right before or right after loading the oxygen.”",
+      desc:"The pod's launch drill, five steps, each on its own numbered tag — and the tags have been torn off their ring and scattered. The flight officer wrote them the way flight officers do: every instruction carrying the reason it exists.\n\n   TAG A — “Align the guidance ring. Not until she is loaded: her mass moves where she points, and a ring trued on an empty pod is a ring trued for nothing.”\n\n   TAG B — “Prime the fuel cells. Priming throws sparks, so get it done before there is oxygen aboard.”\n\n   TAG C — “Release the docking clamps. They are the last thing between you and the dark.”\n\n   TAG D — “Load the oxygen.”\n\n   TAG E — “Seal the hatch first, before anything at all goes aboard. The bay will not hold pressure; everything after this loads through the transfer port.”",
       puzzle:{
         type:'order', order:{labels:{"A": "Align the guidance ring", "B": "Prime the fuel cells", "C": "Release the docking clamps", "D": "Load the oxygen", "E": "Seal the hatch"}},
         prompt:"Enter the five tag letters in launch order.", placeholder:"FIVE LETTERS", answers:['EBDAC'],
         hints:[
-          "One tag names an exact slot — pin the oxygen down first, then see what must precede it.",
-          "Oxygen is 3rd; the cells must come before it, and exactly one task sits between cells and ring — so cells 2nd, ring 4th. Now place the hatch.",
-          "The hatch can't touch slot 2 or 4 (both adjacent to the oxygen in slot 3)… slot 1. Clamps come after the hatch: last. E-B-D-A-C."
+          "Every tag says why. Two of them name their own position outright — one is explicitly first, one is explicitly last.",
+          "The hatch is sealed first (E) and the clamps are released last (C). In between: sparks before oxygen, so cells before loading.",
+          "Hatch, cells, oxygen, then the ring once she is loaded, then the clamps: enter EBDAC."
         ],
-        solvedText:"Hatch, cells, oxygen, ring, clamps. The drill checks out and the pod's boards go green, one by one, like a small constellation coming home.",
+        solvedText:"Hatch, cells, oxygen, ring, clamps. The drill checks out and the pod's boards go green one by one, like a small constellation coming home.",
         solveBeat:"From inside the bay's walls — all four at once — comes a single coordinated shudder. It knows the boards went green too.",
         beatSound:'clank'
       }
     },
     { id:'fuelpanel', onSolve:{el:'rx-podbay',op:.2,fx:'surge'}, icon:'⛽', name:'Fuel Lock', pos:{x:25,y:40,w:11,h:14},
-      desc:"The fuel line is locked behind a 4-digit panel. The engineer's plate reads:\n\n“PROSPERO FUELING PROTOCOL.\nAN OFFICER NEVER FORGETS THE DISH HEADING —\nAND THE EMERGENCY CHANNEL SITS AT TWICE IT.”",
+      desc:"The fuel line is locked behind a 4-digit panel, and the fuelling protocol is riveted to the gantry beside it:\n\n   LINE PRESSURES BY POD TYPE — SET IN LINE ORDER\n     TYPE A ....... 6 1 2 0\n     TYPE B ....... 7 7 1 5\n     TYPE C ....... 9 4 3 0\n     TYPE D ....... 8 2 2 4\n\nWhich type you are fuelling is stencilled on the cradle, not the pod — the pods were interchangeable and the cradles were not.\n\nYour cradle is stencilled, in paint a foot high: TYPE C. The five empty cradles down the bay read A, A, B, D and C.",
       puzzle:{
         type:'keypad',
         prompt:"Enter the 4-digit code.", answers:['9430'],
         hints:[
-          "You set the dish heading yourself, back on the bridge. The plate wants twice it.",
-          "The heading was 47.15. Double it.",
-          "47.15 × 2 = 94.30 → enter 9430."
+          "This is a lookup, not a calculation. Find which row of the protocol applies to the pod you are actually standing next to.",
+          "The type is stencilled on the cradle rather than the pod. Yours reads TYPE C.",
+          "Type C is 9 4 3 0. Enter 9430."
         ],
-        solvedText:"94.30 — the emergency channel. Fuel hisses into the pod's cells, and a launch-window table lights up on the gantry screen."
+        solvedText:"9-4-3-0. Fuel hisses into the cells, and a launch-window table lights up on the gantry screen."
       }
     },
     { id:'window', icon:'🛰️', name:'Launch Window Table', pos:{x:72,y:22,w:16,h:20},
@@ -669,16 +669,16 @@ const ROOMS=[
       }
     },
     { id:'clamps', icon:'🗜️', name:'Docking Clamps', pos:{x:72,y:56,w:16,h:22}, hiddenUntil:'window',
-      desc:"Four heavy clamps pin the pod to its cradle, released by four glyph tumblers — the same system glyphs from the cryo bay locker, in the same order:\n\n⚡   ❄   ☢   💧\n\nA single line is stamped beneath them:\n\n“SHUTDOWN RUNS FORWARD.\nRELEASE RUNS BACKWARD.”",
+      desc:"Four heavy clamps pin the pod to its cradle, each released by its own glyph tumbler. The glyphs are the ship's system marks and each one is stencilled with its digit right there on the clamp housing:\n\n   ⚡ 9        ❄ 2        ☢ 6        💧 4\n\nBolted above them, the release plate — the bay's own procedure, which is not the same as the shutdown order and was never meant to be:\n\n   CLAMP RELEASE SEQUENCE\n     1. CRYO      2. WATER      3. POWER      4. REACTOR",
       puzzle:{
         type:'keypad',
         prompt:"Enter the 4-digit release code.", answers:['2496'],
         hints:[
-          "You've used these glyphs before — the locker in the cryo bay opened on the shutdown order.",
-          "The shutdown code was 6942. Release runs backward.",
-          "6942 reversed is 2496. Enter 2496."
+          "Everything you need is on the clamps themselves: the four digits, and the order the release plate puts them in.",
+          "Release runs cryo, water, power, reactor. Read each one's digit off its housing.",
+          "❄ is 2, 💧 is 4, ⚡ is 9, ☢ is 6. Enter 2496."
         ],
-        solvedText:"2-4-9-6 — the cryo bay code, coming back to you the way everything on this ship comes back. The clamps release with four echoing CLACKS. Only the ignition pattern remains.",
+        solvedText:"2-4-9-6. The clamps release with four echoing CLACKS, and the pod settles a half-inch onto its own weight for the first time in forty years. Only the ignition board remains.",
         solveBeat:"The vent above the bay door bows outward and holds — bent metal creaking under a patient, constant weight. It is done hiding. It is simply too late.",
         beatSound:'growl'
       }
