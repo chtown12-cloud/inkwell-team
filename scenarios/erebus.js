@@ -587,7 +587,7 @@ const ROOMS=[
   entryBeat:"The tower's guy-wires are thrumming — all of them, evenly. Not the wind. Something at the far anchor point is testing, very gently, whether the tower would fall.",
   entrySound:'clank',
   completeText:"The generator is running, the runway flares are laid, and the set is warm. There is a plane out there in the dark, waiting to be told.",
-  chain:"Five cold-start tags, each with its reason: fuel first because nothing else matters without it, plugs with fuel already in the line, crank while the plugs are hot, choke only once she has caught, breaker last — DEBAC → the approach plate gives the skiway's three channels and the lockbox lid says it holds the approach crystal, coded with the point omitted: 1764 → the weather fax rules out the 4:50 window (under the 1500 m minimum) and the 9:30 (after the aircraft's fuel is gone), leaving 6:10 less the forty minutes the drum line needs = 5:30 → the depot cache's stock card gives this season's issue read straight down: 1486 → put the beacon on the approach channel, 176.4, and transmit.",
+  chain:"Five cold-start tags, each with its reason: fuel first because nothing else matters without it, plugs with fuel already in the line, crank while the plugs are hot, choke only once she has caught, breaker last — DEBAC → the approach plate gives the skiway's three channels and the lockbox lid says it holds the approach crystal, coded with the point omitted: 1764 → the weather fax rules out the 4:50 window (under the 1500 m minimum) and the 9:30 (after the aircraft's fuel is gone), leaving 6:10 less the forty minutes the drum line needs = 5:30 → the depot cache's bins are numbered on the door and the quartermaster's stock card gives the quantities in a different order: 1486 → put the beacon on the approach channel, 176.4, and transmit.",
   objects:[
     { id:'genstart', icon:'⚙️', name:'The Generator Sled', pos:{x:11,y:66,w:18,h:18},
       desc:"The tower generator's cold-start drill, five steps on five tags that nine days of wind have shuffled across the floor. The engineer wrote each one with the reason attached, the way you do when you expect to be read by somebody with cold hands and no time:\n\n   TAG A — “Close the choke, and not until she has actually caught. Choking a cold engine only floods it.”\n\n   TAG B — “Crank the flywheel while the plugs are still hot. You get about twenty seconds of hot.”\n\n   TAG C — “Throw the breaker last, once she is running steady. Put a load on her before that and she stalls.”\n\n   TAG D — “Open the fuel line first. Nothing else on this list matters if she has nothing to burn.”\n\n   TAG E — “Warm the glow plugs — with fuel already in the line, or you are just heating air.”",
@@ -630,14 +630,14 @@ const ROOMS=[
       }
     },
     { id:'flarebox', icon:'🧨', name:'The Flare Cache', pos:{x:74,y:69,w:11,h:15}, hiddenUntil:'weather',
-      desc:"The outer depot cache, four-digit lock, everything the station keeps for the dark months stacked behind it — flares included.\n\nThe quartermaster's stock card is wired to the handle, and the line across the top has been gone over twice in pencil:\n\n   “CODE IS THIS SEASON'S ISSUE, READ DOWN THE CARD.”\n\n   ▲ FLARES ........... 1 case\n   ✚ MEDICAL .......... 4 cases\n   ● FUEL ............. 8 drums\n   ■ FOOD ............. 6 crates",
+      desc:"The outer depot cache, four-digit lock, everything the station keeps for the dark months stacked behind it — flares included.\n\nThe door is stencilled into four bins, numbered the way the quartermaster had them loaded:\n\n   BIN 1 ▲        BIN 2 ✚        BIN 3 ●        BIN 4 ■\n\nHis stock card is wired to the handle, written up in whatever order he happened to count things:\n\n   ● FUEL ............. 8 drums\n   ■ FOOD ............. 6 crates\n   ▲ FLARES ........... 1 case\n   ✚ MEDICAL .......... 4 cases\n\n   “CODE IS THIS SEASON'S ISSUE, BIN BY BIN.”",
       puzzle:{
         type:'keypad',
         prompt:"Enter the 4-digit code.", answers:['1486'],
         hints:[
-          "Nothing to carry in from anywhere else — the card on the handle has both the numbers and the order.",
-          "Read the card straight down: flares, medical, fuel, food.",
-          "1, 4, 8, 6. Enter 1486."
+          "The card has the quantities and the door has the bins, and the two are not in the same order. You need both.",
+          "Work along the bins, one to four, and look up what the card says is in each.",
+          "Bin 1 is flares (1), bin 2 medical (4), bin 3 fuel (8), bin 4 food (6). Enter 1486."
         ],
         solvedText:"1-4-8-6 and the cache opens on flares. Dozens of them. Enough to write on the dark with.",
         solveBeat:"At the base of the tower, unhurried, something begins to climb. The ladder rungs ring one at a time — patient as a metronome, far apart as a tall man's reach. Taller.",

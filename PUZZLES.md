@@ -67,19 +67,23 @@ mechanic to one scenario means checking it isn't already another's signature.
 
 | Slot | Eldermoor (wreck) | Prospero (ship) | Vorstag (castle) | Erebus (ice) | Midnight (train) |
 |---|---|---|---|---|---|
-| R1 opener | nailed letters + davit order | pod-bay acrostic | shield anagram | flag channel numbers | book cipher |
-| R1 lock | compass bearings | shutdown procedure | mason's marks | resupply manifest | fare classes |
-| R1 word | knot board | quarantine placard | chapel Latin | drill-log dates | conductor's punch |
-| R1 number | ship's articles | crew roster | household accounts | supply ledger | waybill |
-| R2 tuning | morse band | dish bearing | organ stop | radio log | gramophone speed |
-| R2 cipher | morse | tap code | pigpen | braille | Cyrillic |
-| R2 second | Caesar wheel | 5-bit binary | Atbash | Vigenère | rail fence |
-| R2 deduction | lamp mastermind | rod logic grid | numeral weighing | halving chain | boarding order |
-| R3 filter | sides vs moss | contamination log | seal intact | drill date range | covers laid vs paid |
-| R3 number | linked relations | countdown | factor riddle | multiples of three | money addition |
-| R4 order | lifeboat drill | launch drill | ignition drill | generator drill | fire drill |
-| R4 callbacks | sounding line | pass table | storm glass | fuel burn | timetable |
-| Finale | flare morse | thruster panel | lightning hold | runway dial | whistle duet |
+| R1 opener | tacked letters + davit list | phosphor burn-in down the pod plates | shield anagram + well-house plaque | flag channel numbers (A=1) | book cipher + the porter's own working |
+| R1 code lock | compass rose + the sail's wind marks | evacuation shutdown order | seasons tapestry + well rim | resupply notice + drum glyphs | fare card + punch chart |
+| R1 word lock | jetty posts + a rising tide | quarantine tag + contamination scale | canonical hours + the gatekeeper's card | polar signpost + re-keying notice | nightly seal register + tag date |
+| R1 number | ship's articles: signatures vs marks | watch bill: duty vs relief | ledger: departed vs not | sitrep + winter-over sheet | waybill: crates short, sacks aboard |
+| R2 tuning | band plan narrowed by the dial's range | beacon register, one marked SILENT | hymn board + psalter verse | sked card matched on its hours | diary: speed and track |
+| R2 code | morse | tap code | pigpen | braille | Cyrillic |
+| R2 second | Caesar disc, ring spun | 5-bit binary | Atbash | Vigenère | rail fence |
+| R2 deduction | lamps per correct dial | rod seating logic | numeral weights | halving chain | boarding order |
+| R3 filter | **threshold** — sides beat moss | **number property** — prime seed counts | **provenance** — the Baron's own wax | **date range** — drilled before the store failed | **cross-reference** — covers that settled |
+| R3 number | linked packing relations | countdown sequence | even factors of 48 on named ways | multiples of three | money addition |
+| R4 order | the boatbuilder's reasons | the flight officer's reasons | the Baron's reasons | the engineer's reasons | the fireman's reasons |
+| R4 locks | shelf count · lead-line soundings | pod-type table · release sequence | fuse chart · counterweight chain | approach plate · bins vs stock card | builder's plate · consist order |
+| Finale | flare morse | thruster panel | lightning hold | runway dial | whistle and lamp together |
+
+The R3 filters are deliberately five different *kinds* of test, not five
+different number properties. That was the old failure mode: prime, odd, even
+and perfect-square are the same puzzle wearing four hats.
 
 ## Writing a replacement
 
