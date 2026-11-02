@@ -168,6 +168,18 @@ button{font-family:'Inter',sans-serif;cursor:pointer}
 .hint-cost{color:var(--dim);font-size:.75rem;margin-left:8px}
 .how{margin-top:9px;font-size:.78rem;color:#7d8a84;font-style:italic;line-height:1.45}
 .symbols{font-size:1.7rem;letter-spacing:12px;color:var(--sand);text-align:center;margin:8px 0}
+/* ---------- figures ----------
+   A figure is the clue itself, not decoration. It scales to whatever width the
+   modal has, and on a phone it is capped so it can never push the answer box
+   off the bottom of the screen — the drawing is no use if you cannot reach the
+   thing you type into. */
+.obj-fig{margin:14px 0 2px;padding:10px;background:rgba(0,0,0,.26);
+  border:1px solid #2c4144;border-radius:10px}
+.obj-fig svg{display:block;width:100%;height:auto;max-height:54vh}
+.obj-fig figcaption{margin-top:8px;font-size:.76rem;color:#7d8a84;font-style:italic;text-align:center}
+body.phone .obj-fig{padding:7px}
+body.phone .obj-fig svg{max-height:40vh}
+@media (max-width:640px){ .obj-fig svg{max-height:40vh} }
 .morse{font-family:'Special Elite',serif;font-size:1.4rem;letter-spacing:4px;color:var(--teal-hi);text-align:center;margin:8px 0;word-break:break-all}
 .morse .lit{color:#ffe9b8;text-shadow:0 0 10px #ffda8c}
 .morse-btn{display:inline-block;margin:6px 4px 2px;font-size:.9rem;padding:9px 20px}
@@ -183,6 +195,17 @@ button{font-family:'Inter',sans-serif;cursor:pointer}
 .dial-row{display:flex;align-items:center;gap:10px;margin:16px 4px 4px}
 .dial-row input[type=range]{flex:1;accent-color:#7fae6a;height:34px;cursor:ew-resize}
 .dial-fine{background:#243a3e;border:1px solid #3a565c;color:var(--sand);border-radius:6px;font-size:1.15rem;width:44px;height:38px}
+/* ---------- the cipher disc ----------
+   Two alphabet rings, the inner one turned by hand. Reading it is the puzzle,
+   so the decoded line is big and the ring is big enough to read on a phone. */
+.disc-wrap{margin:6px 0 2px}
+.disc-wrap svg{display:block;width:100%;max-width:296px;height:auto;margin:0 auto}
+.disc-read{margin:12px 2px 2px;padding:12px 10px;background:#06130a;border:2px solid #1f4a2c;border-radius:8px;
+  font-family:'Special Elite',serif;font-size:1.25rem;letter-spacing:3px;color:#9df0b4;text-align:center;
+  word-break:break-word;min-height:1.6em}
+.disc-read.near{text-shadow:0 0 16px rgba(120,255,160,.55)}
+.disc-off{text-align:center;color:var(--dim);font-size:.8rem;margin-top:4px}
+@media (max-width:640px){ .disc-read{font-size:1.05rem;letter-spacing:2px} }
 .sig-meter{height:10px;border-radius:6px;background:#0b1619;border:1px solid #2c4144;margin:12px auto 4px;max-width:420px;overflow:hidden}
 .sig-meter i{display:block;height:100%;width:0%;background:linear-gradient(90deg,#3f6b3a,#9df0b4);transition:width .15s}
 .sig-label{font-size:.72rem;color:var(--dim);letter-spacing:2px}
@@ -569,6 +592,8 @@ body.phone #credits{display:none}
 .sel-chip:hover{border-color:#6dc0b8}
 .sel-chip.on{border-color:var(--teal-hi);background:rgba(79,163,155,.22);transform:translateY(-2px)}
 .sel-chip.on .sel-letter{color:var(--teal-hi)}
+.sel-art{display:block;width:100%;max-width:120px;margin:0 auto 2px}
+.sel-art svg{display:block;width:100%;height:auto}
 .sel-letter{font-family:'Special Elite',serif;font-size:1.5rem;color:var(--sand);line-height:1}
 .sel-val{font-size:.74rem;font-family:Inter,sans-serif;letter-spacing:.3px;text-align:center}
 .sel-readout{text-align:center;color:var(--dim);font-size:.85rem;margin-bottom:4px}
@@ -1383,6 +1408,7 @@ window.FIREBASE_CONFIG = {
 <script src="lib/qr.js"></script>
 <script src="lib/session.js"></script>
 <script src="lib/net.js"></script>
+<script src="lib/figures.js"></script>
 <script>
 /* ============================================================
    ENGINE — state, timer, hub, title screen, rooms, puzzles
@@ -1688,6 +1714,11 @@ function objDesc(o){
   if(o.revealedBy && S.solved.has(o.revealedBy) && o.revealDesc) return o.revealDesc;
   return o.desc;
 }
+/** The drawing an object shows. Same reveal rule as the description. */
+function objFigure(o){
+  if(o.revealedBy && S.solved.has(o.revealedBy) && o.revealFigure) return o.revealFigure;
+  return o.figure || '';
+}
 function renderScene(){
   const room=currentRoom();
   $('scene').innerHTML = ACTIVE.scenes[room.scene]();
@@ -1769,6 +1800,10 @@ function openModal(objId){
   let html=`<button class="close-x" onclick="closeModal()">✕</button>
     <h3>${o.icon} ${o.name}</h3>
     <div class="obj-desc">${objDesc(o)}${(o.revealSymbols&&(!o.revealedBy||S.solved.has(o.revealedBy)))?`<div class="symbols">${o.revealSymbols}</div>`:''}</div>`;
+  // The picture goes between what you are looking at and what you type: the
+  // prose sets the scene, the figure carries the clue.
+  const fig=objFigure(o);
+  if(fig) html+=`<figure class="obj-fig">${fig}</figure>`;
   if(o.puzzle){
     const p=o.puzzle;
     const codeReady=(p.morse||p.taps)&&(!p.morseLocked||S.solved.has(p.morseLocked));
@@ -1799,6 +1834,8 @@ function openModal(objId){
       html+=renderOrder(o)+renderHints(o);
     } else if(p.type==='signal'){
       html+=renderSignalPad(o)+renderHints(o);
+    } else if(p.type==='disc'){
+      html+=renderDisc(o)+renderHints(o);
     } else if(p.type==='dial'){
       html+=renderDial(o)+renderHints(o);
     } else {
@@ -1825,6 +1862,7 @@ function openModal(objId){
     MP.openObj=o.id; mpSend('sit',{objId:o.id});
   }
   if(o.puzzle&&o.puzzle.type==='dial'&&!solved) dialInit(o);
+  if(o.puzzle&&o.puzzle.type==='disc'&&!solved) discInit(o);
   if(o.puzzle&&o.puzzle.type==='order'&&!solved) orderInit(o);
   if(o.puzzle&&o.puzzle.type==='select'&&!solved) selectInit(o);
   if(o.puzzle&&o.puzzle.type==='keypad'&&!solved) keypadInit(o);
@@ -1997,6 +2035,91 @@ function solvePuzzle(o){
   renderHotspots();
   reactTo(o);
   refreshRelays();
+}
+
+/* ---------- the cipher disc (config via puzzle.disc) ----------
+   A shift cipher used to be a paragraph explaining that there was a brass
+   disc and that the ring had been moved. Now there is a brass disc and the
+   ring has been moved, and you turn it. The readout decodes live, so the
+   moment the gibberish turns into English is something the room does rather
+   than something the text announces. */
+const DISC_AZ='ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+let discOff=0;
+function discRings(){
+  const R=132, r=96, cx=150, cy=150;
+  let outer='', inner='';
+  for(let i=0;i<26;i++){
+    const a=(Math.PI*2/26)*i - Math.PI/2;
+    const ox=cx+Math.cos(a)*R, oy=cy+Math.sin(a)*R;
+    const ix=cx+Math.cos(a)*r,  iy=cy+Math.sin(a)*r;
+    const deg=(360/26)*i;
+    outer+=`<text x="${ox.toFixed(1)}" y="${(oy+5).toFixed(1)}" text-anchor="middle" font-family="'Special Elite',serif" font-size="15" fill="#d8c39a" transform="rotate(${deg} ${ox.toFixed(1)} ${oy.toFixed(1)})">${DISC_AZ[i]}</text>`;
+    inner+=`<text x="${ix.toFixed(1)}" y="${(iy+5).toFixed(1)}" text-anchor="middle" font-family="'Special Elite',serif" font-size="15" fill="#9df0b4" transform="rotate(${deg} ${ix.toFixed(1)} ${iy.toFixed(1)})">${DISC_AZ[i]}</text>`;
+  }
+  return {outer,inner};
+}
+function renderDisc(o){
+  const p=o.puzzle, d=p.disc||{};
+  const {outer,inner}=discRings();
+  const start=d.start!=null?d.start:9;
+  return `<div class="puzzle-box">
+    <div class="prompt">${p.prompt}</div>
+    <div class="disc-wrap">
+      <svg viewBox="0 0 300 300" preserveAspectRatio="xMidYMid meet" role="img">
+        <circle cx="150" cy="150" r="146" fill="#10201f" stroke="#c9a24a" stroke-width="3"/>
+        <circle cx="150" cy="150" r="114" fill="none" stroke="#c9a24a" stroke-width="1.5" opacity=".55"/>
+        <g>${outer}</g>
+        <g id="disc-inner" style="transform-origin:150px 150px">
+          <circle cx="150" cy="150" r="112" fill="#0a1a18" stroke="#4fa39b" stroke-width="2"/>
+          ${inner}
+        </g>
+        <circle cx="150" cy="150" r="9" fill="#c9a24a"/>
+        <path d="M150 8 l 9 16 h -18 z" fill="#ffe9b8"/>
+      </svg>
+      <div class="dial-row">
+        <button class="dial-fine" onclick="discTurn(-1)">↺</button>
+        <input type="range" id="disc-slider" min="0" max="25" step="1" value="${start}">
+        <button class="dial-fine" onclick="discTurn(1)">↻</button>
+      </div>
+      <div class="disc-off" id="disc-off">ring offset ${start}</div>
+      <div class="disc-read" id="disc-read">&nbsp;</div>
+      <div class="how">${d.how||'Turn the inner ring. The scratched line is decoded below it as you go — stop when it stops being nonsense, then set the dials to what it asks for.'}</div>
+    </div>
+    <div class="answer-row">
+      <input id="answer-input" placeholder="${p.placeholder||''}" autocomplete="off"
+             onkeydown="if(event.key==='Enter')submitAnswer('${o.id}')">
+      <button onclick="submitAnswer('${o.id}')">Try It</button>
+    </div>
+    <div class="feedback" id="feedback"></div>
+  </div>`;
+}
+function discShift(text,k){
+  return String(text).replace(/[A-Z]/g, c =>
+    DISC_AZ[(DISC_AZ.indexOf(c) - k + 26) % 26]);
+}
+function discPaint(o){
+  const d=o.puzzle.disc||{};
+  const ring=$('disc-inner'); if(!ring) return;
+  ring.style.transform=`rotate(${(360/26)*discOff}deg)`;
+  const off=$('disc-off'); if(off) off.textContent='ring offset '+discOff;
+  const read=$('disc-read');
+  if(read){
+    read.textContent=discShift(d.cipher||'', discOff);
+    read.classList.toggle('near', discOff===(d.shift||0));
+  }
+}
+function discTurn(step){
+  const sl=$('disc-slider'); if(!sl) return;
+  discOff=(discOff+step+26)%26; sl.value=discOff;
+  sfxThud();
+  const o=currentRoom().objects.find(x=>x.puzzle&&x.puzzle.type==='disc'&&!S.solved.has(x.id));
+  if(o) discPaint(o);
+}
+function discInit(o){
+  const sl=$('disc-slider'); if(!sl) return;
+  discOff=+sl.value||0;
+  sl.oninput=()=>{ discOff=+sl.value||0; discPaint(o); };
+  discPaint(o);
 }
 
 /* ---------- tuning dial (config via puzzle.dial) ---------- */
@@ -2279,6 +2402,7 @@ function renderSelect(o){
   S.selectState=S.selectState||{}; S.selectState[o.id]=picked;
   const chips=cfg.items.map((it,i)=>`
     <button class="sel-chip${picked.includes(i)?' on':''}" data-i="${i}">
+      ${it.art?`<span class="sel-art">${it.art}</span>`:''}
       <span class="sel-letter">${esc(it.letter)}</span>
       <span class="sel-val">${esc(it.value)}</span>
     </button>`).join('');
@@ -2816,6 +2940,7 @@ function buildGmPanel(){
                  o.puzzle.type==='panel'?`set ${(o.puzzle.panel.controls||[]).map((c,i)=>c.label+' → '+(o.puzzle.answers[0].split('|')[i])).join(', ')}, then commit`:
                  o.puzzle.type==='hold'?`hold until the gauge reads ${o.puzzle.hold.target}${o.puzzle.hold.unit||''}, then let go (±${o.puzzle.hold.tolerance||0.45})`:
                  o.puzzle.type==='order'?`${(o.puzzle.answers||['—'])[0]} — drag the tags into that order`:
+                 o.puzzle.type==='disc'?`${(o.puzzle.answers||['—'])[0]} — ring offset ${(o.puzzle.disc||{}).shift}`:
                  o.puzzle.type==='select'?`${(o.puzzle.answers||['—'])[0]} — tap those, in rack order`:
                  o.puzzle.type==='keypad'?`${(o.puzzle.answers||['—'])[0]} — key it in`:
                  (o.puzzle.answers||['—'])[0];

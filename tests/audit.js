@@ -24,6 +24,8 @@ const root = path.join(__dirname, '..');
 
 const loaded = [];
 globalThis.registerScenario = (s) => loaded.push(s);
+// the scenarios build their drawings at load, so the primitives come first
+vm.runInThisContext(fs.readFileSync(path.join(root, 'lib', 'figures.js'), 'utf8'), { filename: 'figures' });
 for (const id of SCENARIOS) {
   vm.runInThisContext(fs.readFileSync(path.join(root, 'scenarios', id + '.js'), 'utf8'), { filename: id });
 }
@@ -81,6 +83,24 @@ for (const s of loaded) {
       scanText(`${at} desc`, o.desc);
       scanText(`${at} revealDesc`, o.revealDesc);
 
+      /* 5 ── a drawing has to scale, and has to be the only place its own
+         contents are written down. A figure under a paragraph that already
+         lists what it shows is decoration, not a puzzle. */
+      for (const key of ['figure', 'revealFigure']) {
+        const fig = o[key];
+        if (!fig) continue;
+        const tag = (/<svg[^>]*>/.exec(fig) || [''])[0];
+        if (!/viewBox=/.test(tag)) fail(at, `${key} has no viewBox, so it cannot scale`);
+        if (/\swidth=|\sheight=/.test(tag)) fail(at, `${key} sets a fixed size on its root svg`);
+      }
+      if (o.figure || o.revealFigure) {
+        const lines = String(o.desc || '').split('\n')
+          .filter(l => /\.{4,}/.test(l) || /^\s*\S.{0,40}\s{3,}\S{1,8}\s*$/.test(l));
+        if (lines.length >= 3) {
+          fail(at, `has a drawing but still lists its contents in prose (${lines.length} label/value lines)`);
+        }
+      }
+
       /* 3 ── gating points somewhere real */
       for (const key of ['hiddenUntil', 'revealedBy']) {
         if (o[key] && !here.has(o[key])) fail(at, `${key}:'${o[key]}' is not an object in this room`);
@@ -105,6 +125,22 @@ for (const s of loaded) {
       const isFinale = room === s.rooms[s.rooms.length - 1]
         && room.objects[room.objects.length - 1].id === o.id;
       if (!isFinale && !p.solvedText) fail(at, 'has no solved text');
+
+      /* 6 ── an object that carries a drawing must not also spell its answer
+         out in prose. Scoped to figures on purpose: plenty of honest puzzles
+         are a lookup whose document has to contain the digits — the fuelling
+         protocol, the approach plate, the release sequence. The failure this
+         catches is the one that started the rewrite, a picture with a
+         paragraph above it already saying what the picture shows. */
+      if (o.figure || o.revealFigure) {
+        const plain = squash(o.desc || '');
+        for (const part of String((p.answers || [])[0] || '').split('|')) {
+          const want = squash(part);
+          if (want.length >= 3 && plain.includes(want)) {
+            fail(at, `has a drawing, but the answer ${part} is also sitting in its description`);
+          }
+        }
+      }
 
       /* 4 ── the answer appears in the room's chain.
          A control panel's answer is several settings rather than one word,
