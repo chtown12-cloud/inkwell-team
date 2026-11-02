@@ -391,7 +391,7 @@ ${[0,1,2,3,4].map(i=>`<line x1="${i*380-60}" y1="660" x2="${i*400-120}" y2="900"
   <circle cx="1460" cy="720" r="34" fill="#171126" stroke="#5c4a74" stroke-width="6"/>
   ${[0,1,2,3].map(i=>`<line x1="1460" y1="720" x2="${Math.round(1460+40*Math.cos(i*Math.PI/2+0.6))}" y2="${Math.round(720+40*Math.sin(i*Math.PI/2+0.6))}" stroke="#5c4a74" stroke-width="6"/>`).join('')}
   <text x="1460" y="790" text-anchor="middle" font-size="16" fill="#e0cfa2">☾ ✠ ⚘ ♜</text>
-  <text x="1460" y="816" text-anchor="middle" font-family="Special Elite" font-size="10" fill="#8f7fa8">THE GATE WINDS BACK</text>
+  <text x="1460" y="816" text-anchor="middle" font-family="Special Elite" font-size="10" fill="#8f7fa8">FOLLOW THE CHAIN</text>
 </g>
 <!-- valley below, tiny village lights -->
 <g class="plx" data-depth="5">
@@ -440,32 +440,32 @@ const ROOMS=[
   entryBeat:"As the portcullis seats itself into the stone, every window in the keep goes dark at once — except one, high in the tower, which comes on.",
   entrySound:'thunder',
   completeText:"The sealed doors accept the old word and swing inward on a hall of cold candles. Behind you in the court, the well rope creaks — paying out, slowly, though no one is drawing water.",
-  chain:"Gatehouse shields: anagram of the four scattered letters spells WELL → well rim pairs symbols with digits; the tapestry pairs symbols with seasons; read the year from spring → 9357 → sealed doors riddle (NIGHT) answered in the old tongue = NOCTIS (the mirrored key) → gatekeeper's ledger cross-references the portrait's guests, the wolves, and the chandelier → 56.",
+  chain:"The four gatehouse shields were rehung in the wrong order and the plaque under them says what they hold between them — the court drinks from the WELL → the well rim pairs four symbols with digits and the crossbeam says wind the year from spring; the tapestry names spring, summer and autumn, and its cut-out winter panel leaves the moon nowhere else to be: 9357 → the bucket brings up the gatekeeper's duty card, which says the keep is barred at the dead hours, and the doorframe gives that hour its Latin name: NOCTIS → the ledger's feast-night page has five names marked departed and six not, and the lectern sets the wheel to those who left then those who did not: 56.",
   objects:[
     { id:'crests', icon:'🛡️', name:'Family Crests', pos:{x:3,y:42,w:19,h:28},
-      desc:"Four blank shields hang on the gatehouse wall — the family names chiselled off long ago, each now bearing a single carved letter. Left to right:\n\nL   ·   W   ·   L   ·   E\n\nBeneath them, in iron letters: “THE MASON SCATTERED WHAT THE SPRING GIVES. SET IT RIGHT.”",
+      desc:"Four blank shields hang on the gatehouse wall, the family names chiselled off them long ago. Each carries one carved letter now, and nothing else. Left to right:\n\n   L   ·   W   ·   L   ·   E\n\nThey were taken down for cleaning at some point and put back by somebody who could not read, because the iron plaque beneath them has not moved in three hundred years:\n\n   “WHAT THESE FOUR HOLD BETWEEN THEM, THE COURT DRINKS.”",
       puzzle:{
-        prompt:"Rearrange the four letters. Where should you look next?",
+        prompt:"Four letters, hung wrong. What do the shields hold between them?",
         placeholder:"FOUR LETTERS", answers:['WELL'],
         hints:[
-          "Four letters — L, W, L, E — scrambled. Rearrange them into a single word.",
-          "“What the spring gives” is water, drawn from one thing in this courtyard.",
-          "W, E, L, L — the WELL in the middle of the court."
+          "The plaque tells you what kind of word you are looking for: something in this courtyard that the household drinks from.",
+          "Four letters — L, W, L, E — and only one four-letter word about water can be built from them.",
+          "W, E, L, L. It is the well in the middle of the court."
         ],
-        solvedText:"W-E-L-L. The courtyard well — its crank is locked with a 4-digit mechanism, and its rim is carved with symbols."
+        solvedText:"W-E-L-L. The courtyard well: its crank bound by a four-digit mechanism, and its rim carved all the way round with symbols."
       }
     },
     { id:'well', onSolve:{el:'rx-gatehouse',op:.2,fx:'surge'}, icon:'⛲', name:'The Courtyard Well', pos:{x:34,y:66,w:18,h:18},
-      desc:"The well crank is bound by a 4-digit lock. Four symbols are chiselled around the rim, each with a digit — in no particular order:\n\n☾ 7      ✠ 3      ⚘ 9      ♜ 5\n\nAnd on the crossbeam, one line of the household's motto:\n\n“WIND THE YEAR FROM SPRING.”",
+      desc:"The well crank is bound by a four-digit lock. Four symbols are chiselled around the rim, each with a digit against it, cut wherever the stone allowed:\n\n   ☾ 7        ✠ 3        ⚘ 9        ♜ 5\n\nAnd on the crossbeam above, the line the household cut there when the well was dug:\n\n   “WIND THE YEAR FROM SPRING.”",
       puzzle:{
         type:'keypad',
         prompt:"Enter the 4-digit crank code.", answers:['9357'],
         hints:[
-          "You need the symbols in a seasonal order — something else in this court pairs symbols with seasons.",
-          "The tapestry: ⚘ SPRING, ✠ SUMMER, ♜ AUTUMN. The moon ☾ can only be winter. Wind the year from spring.",
-          "⚘9 ✠3 ♜5 ☾7 → enter 9357."
+          "The rim gives you four symbols and four digits but no order. The order is a year — so you need something that says which symbol belongs to which season.",
+          "The seasons tapestry pairs three of them: ⚘ spring, ✠ summer, ♜ autumn. Its winter panel has been cut out, which leaves the moon ☾ with nowhere else to be.",
+          "Winding from spring: ⚘ 9, ✠ 3, ♜ 5, ☾ 7. Enter 9357."
         ],
-        solvedText:"The crank turns on 9-3-5-7 and hauls up the bucket. Inside, dry as bone: an iron key stamped NOCTIS — the stamp mirrored, meant to be read by something on the other side of a door.",
+        solvedText:"The crank turns on 9-3-5-7 and hauls the bucket up. Inside, dry as bone and weighted with a stone: the gatekeeper's duty card, lettered in a careful hand — THE KEEP IS BARRED AT THE DEAD HOURS AND OPENED AT PRIME. NO EXCEPTIONS. NOT FOR THE BARON HIMSELF.",
         solveBeat:"Far below, the well answers the crank with a sound. Wells echo. They do not clear their throats.",
         beatSound:'growl'
       }
@@ -473,27 +473,27 @@ const ROOMS=[
     { id:'tapestry', icon:'🧵', name:'The Seasons Tapestry', pos:{x:26,y:32,w:12,h:26},
       desc:"A moth-eaten tapestry of the Vorstag lands through the year, symbols woven beside each panel:\n\n⚘ — the SPRING planting\n✠ — the SUMMER pilgrimage\n♜ — the AUTUMN levy\n\nThe winter panel has been cut out of the cloth entirely. Whatever symbol winter carried, someone did not want it hanging here after dark." },
     { id:'doors', icon:'🚪', name:'The Sealed Doors', pos:{x:63,y:42,w:13,h:28},
-      desc:"The keep's doors carry a letter-lock and an engraved riddle:\n\n“I am always coming, yet I never arrive.\nLamps are lit against me, and still I win.\nThe Baron did his great work while I watched.\nWhat am I?”\n\nAnd below, smaller:\n\n“ANSWER IN THE OLD TONGUE, AS THE KEY REMEMBERS.”",
+      desc:"The keep's doors are shut, and the letter-lock set into them takes six.\n\nCarved around the doorframe, the way a household that lived by bells would carve them, the canonical hours with their Latin names:\n\n   PRIMA ....... first light\n   TERTIA ...... the working morning\n   SEXTA ....... midday\n   VESPERA ..... evening\n   NOCTIS ...... the dead hours\n\nAnd on the lock plate itself, worn almost smooth:\n\n   “THE HOUR THIS DOOR IS BARRED.”",
       puzzle:{
-        prompt:"Set the letter dials.", placeholder:"SIX LETTERS", answers:['NOCTIS'],
+        prompt:"Set the six letter dials.", placeholder:"SIX LETTERS", answers:['NOCTIS'],
         hints:[
-          "Solve the riddle first — something that always approaches, that lamps hold back, that watched the Baron work.",
-          "The riddle's answer is NIGHT. Now say it in the old tongue — the word stamped on the mirrored key.",
-          "The key says it: NOCTIS. Latin for 'of the night'. Enter NOCTIS."
+          "The doorframe gives you five hours by name. All you need is which of them this door is barred at — and that is written down somewhere in this court.",
+          "The gatekeeper's duty card from the well: barred at the dead hours, opened at prime.",
+          "The dead hours are NOCTIS on the frame. Enter NOCTIS."
         ],
-        solvedText:"N-O-C-T-I-S. The lock's tumblers fall like a sigh, and the doors to the keep stand open. Inside, a great chandelier hangs over the hall — eight candles, three of them long dead under fossilized wax. The living five are cold… but the wax is soft."
+        solvedText:"N-O-C-T-I-S. The tumblers fall like a sigh and the doors to the keep stand open. Inside, a great chandelier hangs over the hall — eight candles, three long dead under fossilised wax. The living five are cold. The wax is soft."
       }
     },
     { id:'ledger', icon:'📒', name:"Gatekeeper's Ledger", pos:{x:53,y:64,w:10,h:14}, hiddenUntil:'doors',
-      desc:"Inside the doors, a lectern and the gatekeeper's ledger, open to the night of the last feast. A 2-digit wheel bars the inner hall, and the final entry reads:\n\n“INNER HALL — first figure: the guests at the Baron's table, less the wolves the hounds counted that night. Second figure: the chandelier's dead candles, doubled.”\n\nHis marginalia: “eleven sat down to dine. the hounds counted six. they would not stop counting.”",
+      desc:"Inside the doors, a lectern, and the gatekeeper's ledger open at the night of the last feast. A two-digit wheel bars the inner hall, and the instruction above it is printed into the lectern itself, because the gatekeeper set this wheel every night of his working life:\n\n   “INNER HALL — SET TO THOSE WHO LEFT, THEN THOSE WHO DID NOT.”\n\nThe page lists everyone admitted at the gate that night. Five of the names have “dep. dawn” written beside them in the gatekeeper's hand. The rest have nothing written beside them at all.\n\n   Hollar        Brettin — dep. dawn      Vásáry\n   Maros — dep. dawn                      Emrich\n   Széll — dep. dawn                      Dănilă\n   Orbán — dep. dawn                      Keszler\n   Lukács — dep. dawn                     Tarnow\n\nEleven came in. The gatekeeper never finished the page.",
       puzzle:{
         prompt:"Enter the 2-digit code.", placeholder:"TWO DIGITS", answers:['56'],
         hints:[
-          "The guests and wolves are in the ledger's own margin. The candles are hanging above you in the hall.",
-          "Eleven guests minus six wolves is 5. The hall chandelier you saw when the doors opened: eight candles, three long dead — 3 doubled is 6.",
-          "5 then 6 — enter 56."
+          "Two counts off this one page, and the lectern tells you which order the wheel wants them in. Split the names between you and count twice.",
+          "Count the names marked “dep. dawn”, then count the names that are not marked at all.",
+          "Five left. Six did not. Enter 56."
         ],
-        solvedText:"5-6. The inner hall opens toward the library — and the chandelier overhead sways once, gently, as though something crossed the floor above it.",
+        solvedText:"5-6. The wheel turns and the inner hall opens toward the library. Six people walked into this house and never walked out of it, and the chandelier overhead sways once, gently, as though something crossed the floor above.",
         solveBeat:"From the top of the stair, unhurried: a footstep. Then the long, soft drag of something that has learned to walk but not yet to lift its feet.",
         beatSound:'knock'
       }
@@ -586,7 +586,7 @@ const ROOMS=[
   entryBeat:"On the slab, the leather straps lie neatly unbuckled — not torn. It took its time. It folded them.",
   entrySound:'clank',
   completeText:"The dumbwaiter's word hangs in the air as you climb the tower stair. Below you, in the dark of the cellar, something begins — slowly, tunelessly, in a voice like wet gravel — to hum the Baron's hymn.",
-  chain:"The slab's chalked riddle = LIGHTNING → Leyden jar rack: keep only ODD charges; survivors spell RISEN → galvanic switchboard fuse riddle (even digits, product 48) = 624 → the dumbwaiter sends up a card in the same pigpen = ALIVE.",
+  chain:"The slab's chalked riddle names the Baron's oldest servant: LIGHTNING → the jar rack holds only under the Baron's own seal, which rules out one cracked, one resealed and one carrying a mark nobody knows, leaving RISEN → the switchboard wants three even figures multiplying to forty-eight, placed on the ways as the Baron assigns them — heaviest to the coil, lightest to the earth: 624 → the dumbwaiter brings up a mourning card in the same masons' cipher as the vellum: ALIVE.",
   objects:[
     { id:'slab', icon:'⛓️', name:'The Empty Slab', pos:{x:33,y:47,w:34,h:22},
       desc:"The slab itself — scorched, strapped, and empty. A riddle is chalked along its edge in the Baron's hand — one he wrote for his own machinery:\n\n“I am the Baron's oldest servant.\nI climb the tower without legs.\nI speak exactly once,\nand the sky breaks when I do.\nWhat am I?”",
@@ -601,33 +601,33 @@ const ROOMS=[
       }
     },
     { id:'jars', onSolve:{el:'rx-laboratory',op:.2,fx:'surge'}, icon:'⚡', name:'Leyden Jar Rack', pos:{x:6,y:24,w:38,h:16}, hiddenUntil:'slab',
-      desc:"Eight Leyden jars on the rack, each chalked with a letter and a charge reading. Left to right:\n\nAn even charge has already earthed itself and is dead. Trust only the odd.",
+      desc:"Eight Leyden jars stand in the rack, each chalked with a letter and each stoppered under wax. The Baron's own notice is nailed above them, and he was not a man who wrote twice:\n\n   “A JAR HOLDS ONLY UNDER MY OWN SEAL. ANYTHING RESEALED HAS BEEN OPENED,\n    ANYTHING OPENED HAS EARTHED ITSELF, AND ANYTHING EARTHED WILL KILL\n    THE COIL AND NOT THE THING.”\n\nLeft to right along the rack:",
       puzzle:{
         type:'select',
-        select:{commit:"\u26a1 THESE JARS HOLD CHARGE", wrong:"The rack stays dead.",
-          items:[{letter:"R",value:"charge 5"},{letter:"M",value:"charge 2"},{letter:"I",value:"charge 3"},{letter:"U",value:"charge 4"},{letter:"S",value:"charge 7"},{letter:"E",value:"charge 1"},{letter:"D",value:"charge 6"},{letter:"N",value:"charge 9"}]},
-        prompt:"Which jars can be trusted? Tap the ones still sound.", answers:['RISEN'],
+        select:{commit:"⚡ THESE JARS HOLD CHARGE", wrong:"The rack stays dead.",
+          items:[{letter:"R",value:"wax whole · the Baron's mark"},{letter:"M",value:"wax cracked clean through"},{letter:"I",value:"wax whole · the Baron's mark"},{letter:"U",value:"resealed in plain candle wax"},{letter:"S",value:"wax whole · the Baron's mark"},{letter:"E",value:"wax whole · the Baron's mark"},{letter:"D",value:"wax whole · a mark you do not know"},{letter:"N",value:"wax whole · the Baron's mark"}]},
+        prompt:"Which jars still hold? Tap the ones under the Baron's own seal.", answers:['RISEN'],
         hints:[
-          "Odd numbers end in 1, 3, 5, 7, 9. Check each jar's charge; split the rack among the crew.",
-          "Drop the even charges — M(2), U(4), D(6). Read the odd ones left to right.",
-          "R(5) I(3) S(7) E(1) N(9) are odd — the rack spells RISEN."
+          "Go jar by jar and read the wax, not the letter. Eight of them, so split the rack between you.",
+          "Cracked is out and resealed is out — but look harder at the whole ones too. One of them is sealed with a mark that is not his.",
+          "R, I, S, E and N are under the Baron's own mark. M is cracked, U is resealed, and D carries a mark you do not know. The rack spells RISEN."
         ],
-        solvedText:"R-I-S-E-N. Nobody says it twice. The trusted jars still hold their charge — enough to wake the switchboard, if you can find its combination.",
+        solvedText:"R-I-S-E-N. Nobody says it twice. Five jars still hold their charge — enough to wake the switchboard, if you can find what it wants.",
         solveBeat:"The chains overhead swing, all four at once, in a room with no wind. Then they still themselves — carefully — as if embarrassed.",
         beatSound:'clank'
       }
     },
     { id:'switchboard', icon:'🎛️', name:'Galvanic Switchboard', pos:{x:76,y:28,w:18,h:38},
-      desc:"The master switchboard is locked behind three fuse dials, 0–9 each. The Baron's tag swings from the lever:\n\n“THREE EVEN FIGURES WAKE THE BOARD.\nMULTIPLIED TOGETHER THEY MAKE FORTY-EIGHT.\nSET THEM: LARGEST, THEN SMALLEST, THEN MIDDLE.”",
+      desc:"The master switchboard is locked behind three fuse dials, 0–9 each. The three fuse-ways are stamped with the circuits they feed, left to right across the board:\n\n   COIL          EARTH          BANK\n\nAnd the Baron's tag swings from the lever below them:\n\n   “THREE EVEN FIGURES WAKE THE BOARD, AND MULTIPLIED TOGETHER THEY MAKE\n    FORTY-EIGHT. THE COIL TAKES THE HEAVIEST OF THEM. THE EARTH TAKES THE\n    LIGHTEST. THE BANK TAKES WHAT IS LEFT.”",
       puzzle:{
         type:'keypad',
-        prompt:"Find the three even digits whose product is 48, then dial them largest, smallest, middle.", answers:['624'],
+        prompt:"Work out the three fuses, then dial them in the order the ways are stamped.", answers:['624'],
         hints:[
-          "You need three even digits (2, 4, 6 or 8) that multiply to exactly 48. Try factor pairs as a team.",
-          "48 = 2 × 4 × 6 — and no other trio of even digits works.",
-          "Largest, smallest, middle: 6, 2, 4 — enter 624."
+          "Two jobs. First find three even digits that multiply to forty-eight; then put each one on the way the Baron assigns it.",
+          "48 is 2 × 4 × 6, and no other three even digits will do it.",
+          "Coil takes the heaviest (6), earth the lightest (2), bank what is left (4). The ways run COIL, EARTH, BANK: enter 624."
         ],
-        solvedText:"6-2-4. The board wakes with a rising whine, needles climbing — and at the back of the laboratory, the dumbwaiter begins to climb. Slowly. Unbidden. From the cellar. Where the rope is cut."
+        solvedText:"6-2-4. The board wakes with a rising whine and the needles climb — and at the back of the laboratory the dumbwaiter begins to climb too. Slowly. Unbidden. From the cellar. Where the rope is cut."
       }
     },
     { id:'dumbwaiter', icon:'🛎️', name:'The Dumbwaiter Card', pos:{x:54,y:70,w:12,h:24}, hiddenUntil:'switchboard',
@@ -658,34 +658,34 @@ const ROOMS=[
   entryBeat:"The tower door was barred from this side — and the bar now leans against the battlement, set aside as gently as a sleeping child. It wanted you to reach the top. It's the gate it never learned to open.",
   entrySound:'thunder',
   completeText:"The rig is wound, the fuses hold, and the portcullis is up. The storm is directly overhead — the next strike is yours to take.",
-  chain:"Five ignition tags with positional constraints → unique order E-A-D-C-B → chapel fuse box: “father sang it twice when the storm came close” = hymn 119.3 doubled = 2386 → storm-glass table: only the 11:30 front carries 9kV+ before the bell tolls one; minus 50 min = 10:40 → portcullis glyphs: the well code reversed = 7539 → signal the village with the tower lamp (SOS) → THROW THE SWITCH.",
+  chain:"Five ritual tags, each carrying its reason: the chains are grounded first because everything after puts charge in the room, the capacitor is cranked while the rod is still down, the coil can only be coupled once the rod is up, and the master switch is last — EADCB → the fuse box's chart gives each way its rating and the ways are numbered: 2386 → the storm table rules out the six-thousand-volt front and the one that strikes after the bell tolls one, leaving 11:30, less the fifty minutes the charge takes = 10:40 → the portcullis rings are stamped with their own figures and the counterweight chain passes them moon, tower, cross, flower: 7539 → hold the master switch closed and let go on a nine-kilovolt arc.",
   objects:[
     { id:'rig', icon:'🔩', name:'The Ignition Rig', pos:{x:45,y:12,w:12,h:56},
-      desc:"The Baron's launch ritual, five steps on five scattered vellum tags:\n\nTAG A — “Crank the capacitor second. The chains must already hang.”\n\nTAG B — “Throw the master switch only once the coil is coupled.”\n\nTAG C — “Couple the coil — never right before or right after cranking the capacitor.”\n\nTAG D — “Raise the rod. Exactly one task passes between grounding the chains and raising the rod.”\n\nTAG E — “Ground the chains before the capacitor is cranked.”",
+      desc:"The Baron's ignition ritual, five steps on five scattered vellum tags. He wrote every one of them with its reason attached, because he expected to be doing this alone and frightened:\n\n   TAG A — “Crank the capacitor, and crank it while the rod is still down. I will not have a raised rod standing over a charging bank.”\n\n   TAG B — “Throw the master switch. Last. It is the last thing anyone does in this tower, one way or the other.”\n\n   TAG C — “Couple the coil — and not until the rod is up, because the coupling runs through the rod's own collar and cannot be reached from the floor.”\n\n   TAG D — “Raise the rod.”\n\n   TAG E — “Ground the chains first, before anything else whatever. Everything after this puts charge in the room, and the chains are the only reason it goes into the earth and not into you.”",
       puzzle:{
         type:'order', order:{labels:{"A": "Crank the capacitor", "B": "Throw the master switch", "C": "Couple the coil", "D": "Raise the rod", "E": "Ground the chains"}},
         prompt:"Enter the five tag letters in ritual order.", placeholder:"FIVE LETTERS", answers:['EADCB'],
         hints:[
-          "One tag names an exact position. Fix the capacitor's slot, then see what must come before it.",
-          "Capacitor is 2nd; the chains come before it — 1st. 'Exactly one task between chains and rod' puts the rod 3rd. Where can the coil legally sit?",
-          "The coil can't touch slot 1 or 3 (adjacent to the capacitor in slot 2)… slot 4. The switch follows it: 5th. E-A-D-C-B."
+          "Every tag carries its reason. Two of them name their own place outright — one insists on being first, one on being last.",
+          "Chains first (E), master switch last (B). The capacitor is cranked while the rod is still down, so the capacitor comes before the rod.",
+          "Chains, capacitor, rod, then the coil once the rod is up, then the switch: enter EADCB."
         ],
-        solvedText:"Chains, capacitor, rod, coil, switch. The rig assents, piece by piece, the whole tower humming like a struck bell in slow motion.",
+        solvedText:"Chains, capacitor, rod, coil, switch. The rig assents piece by piece, and the whole tower starts to hum like a struck bell in very slow motion.",
         solveBeat:"Lightning walks the ridge across the valley — one, two, three strikes in a line, closing on the castle like footsteps.",
         beatSound:'thunder'
       }
     },
     { id:'fusebox', onSolve:{el:'rx-tower',op:.2,fx:'surge'}, icon:'🕯️', name:'Chapel Fuse Box', pos:{x:13,y:50,w:9,h:20},
-      desc:"The chapel mains feed the tower through a 4-digit fuse box. On its door, in the Baron's hand:\n\n“FATHER SANG IT TWICE\nWHEN THE STORM CAME CLOSE.”",
+      desc:"The chapel mains feed the tower through a four-digit fuse box. Four ways, four dials, and the chart pasted inside the door tells you what each way is allowed to carry:\n\n   WAY 1 — CHAPEL LAMPS ....... 2\n   WAY 2 — TOWER STAIR ........ 3\n   WAY 3 — THE COIL ........... 8\n   WAY 4 — GROUND CHAINS ...... 6\n\nUnderneath, in the Baron's hand:\n\n   “The coil takes eight and nothing under it. It has cost me two fuses\n    and one man who thought he knew better.”",
       puzzle:{
         type:'keypad',
         prompt:"Enter the 4-digit code.", answers:['2386'],
         hints:[
-          "You've already 'sung it' once tonight — on the organ, downstairs.",
-          "The stop was 119.3. Sing it twice: double it.",
-          "119.3 × 2 = 238.6 → enter 2386."
+          "No arithmetic here. The chart gives the rating for each way, and the ways are numbered.",
+          "Dial them in way order: chapel lamps, tower stair, coil, ground chains.",
+          "2, 3, 8, 6. Enter 2386."
         ],
-        solvedText:"238.6 — the hymn, sung twice, as the storm demands. The chapel mains close and the tower's veins fill with potential."
+        solvedText:"2-3-8-6. The chapel mains close with a thud you feel through the stone, and the tower's veins fill with potential."
       }
     },
     { id:'barometer', icon:'⛈️', name:'The Storm-Glass Table', pos:{x:37,y:72,w:12,h:18},
@@ -701,16 +701,16 @@ const ROOMS=[
       }
     },
     { id:'portcullis', icon:'⚙️', name:'Portcullis Winch', pos:{x:85,y:70,w:12,h:22}, hiddenUntil:'barometer',
-      desc:"The portcullis winch answers to four glyph rings — the same four symbols from the courtyard well, in the same seasonal order:\n\n☾   ✠   ⚘   ♜\n\nAnd chiselled beneath, the Vorstag motto's other half:\n\n“THE YEAR WINDS FORWARD.\nTHE GATE WINDS BACK.”",
+      desc:"The portcullis winch answers to four glyph rings, and each ring is stamped with its own figure beside the glyph, so that nobody winding this gate in the dark has to remember anything:\n\n   ☾ 7        ♜ 5        ✠ 3        ⚘ 9\n\nThe rings do not turn independently. The counterweight chain runs from the drum and passes them one after another, and you can follow it with your eye the whole way: the moon first, then the tower, then the cross, and the flower last of all, where the chain goes down into the floor.",
       puzzle:{
         type:'keypad',
         prompt:"Enter the 4-digit release.", answers:['7539'],
         hints:[
-          "You wound the year forward at the well. The gate winds back.",
-          "The well code was 9357. Reverse it.",
-          "9357 backward is 7539. Enter 7539."
+          "You do not need anything from the rest of the castle. The figures are stamped on the rings and the chain itself gives the order.",
+          "Follow the chain from the drum: moon, tower, cross, flower.",
+          "☾ 7, ♜ 5, ✠ 3, ⚘ 9. Enter 7539."
         ],
-        solvedText:"7-5-3-9 — the year run backward, the way this whole house runs. The winch pawl lifts. All that remains is to bring the lightning and signal the village to open the valley gate.",
+        solvedText:"7-5-3-9, and the winch pawl lifts. The portcullis is free. All that remains is to bring the lightning down and signal the village to open the valley gate.",
         solveBeat:"On the battlement behind you — patient, unhurried, close — something sets down its weight. It has climbed the outside of the tower. It always could.",
         beatSound:'growl'
       }
