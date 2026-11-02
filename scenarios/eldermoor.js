@@ -803,10 +803,14 @@ FIGS.transmitter = (function(){
 FIGS.locker = FIG.plate(720, 372,
   `<rect x="24" y="14" width="672" height="344" rx="8" fill="#1b2a2e" stroke="#49555b" stroke-width="3"/>`
   + `<rect x="24" y="14" width="672" height="8" fill="#6a7a80" opacity=".4"/>`
-  + FIG.shelf({x:150, y:34,  w:520, items:['rocket','rocket'],                 label:'SHELF 1 — ROCKETS, PARACHUTE'})
-  + FIG.shelf({x:150, y:116, w:520, items:['flare','flare','flare','flare'],   label:'SHELF 2 — HAND FLARES'})
-  + FIG.shelf({x:150, y:198, w:520, items:['smoke','smoke','smoke'],           label:'SHELF 3 — SMOKE FLOATS'})
-  + FIG.shelf({x:150, y:280, w:520, items:[],                                  label:'SHELF 4 — LINE-THROWING CARTRIDGES'})
+  + FIG.shelf({x:150, y:34,  w:520, label:'SHELF 1 — ROCKETS, PARACHUTE',
+      items:['rocket','rocket*','rocket','rocket*','rocket']})
+  + FIG.shelf({x:150, y:116, w:520, label:'SHELF 2 — HAND FLARES',
+      items:['flare','flare*','flare','flare*','flare','flare*','flare']})
+  + FIG.shelf({x:150, y:198, w:520, label:'SHELF 3 — SMOKE FLOATS',
+      items:['smoke*','smoke*']})
+  + FIG.shelf({x:150, y:280, w:520, label:'SHELF 4 — LINE-THROWING CARTRIDGES',
+      items:['cartridge','cartridge','cartridge','cartridge','cartridge','cartridge']})
 );
 
 /* The three high waters, the depth the bar needs, and the hour it gets dark. */
@@ -1123,7 +1127,7 @@ const ROOMS = [
   entryBeat:"Fresh prints circle the raft materials — the same long, dragging prints from the beach where you started. It has been here. It has been waiting to see if you'd make it this far.",
   entrySound:'knock',
   completeText:"The raft is rigged, the winch is free, and the tide is going out under you. Nothing holds it to this island now but the hand on the line.",
-  chain:"Five build tags, each giving its own reason, force one order: logs first because nothing floats before them, deck second because nothing is stood on her before it, mast before rudder because the mast lashing runs under the rudder head, sail last because canvas ends the work — BDAEC → the flare locker's dials are reset each week to the stock standing on the shelves, counted top down: 2 rockets, 4 hand flares, 3 smoke floats, nothing at all on the bottom shelf = 2430 → the tide card's three high waters lose one to the nine-foot bar and one to the dark, leaving 6:40, less the ninety minutes the winch takes = 5:10 → the lead line coiled on the drum carries four numbered soundings out through the channel, read off its fathom scale: 3-1-5-8 → fire the flares in the international distress pattern, SOS.",
+  chain:"Five build tags, each giving its own reason, force one order: logs first because nothing floats before them, deck second because nothing is stood on her before it, mast before rudder because the mast lashing runs under the rudder head, sail last because canvas ends the work — BDAEC → the flare locker's dials are reset each week to the live stock on the shelves, counted top down, and a case that has already been fired is not stock: 3 rockets of the 5, 4 hand flares of the 7, not one of the 2 smoke floats, all 6 line-throwing cartridges = 3406 → the tide card's three high waters lose one to the nine-foot bar and one to the dark, leaving 6:40, less the ninety minutes the winch takes = 5:10 → the lead line coiled on the drum carries four numbered soundings out through the channel, read off its fathom scale: 3-1-5-8 → fire the flares in the international distress pattern, SOS.",
   objects:[
     { id:'dragmarks', icon:'👣', name:'Drag-Marks in the Sand', pos:{x:24,y:87,w:16,h:9},
       desc:"Long furrows circle the cove, the same as the beach at dawn — but here they're layered dozens deep, old over older, like a patrol route walked for years.\n\nAt the center of the pattern, planted upright in the sand: the operator's other boot.\n\nBuild fast." },
@@ -1143,16 +1147,16 @@ const ROOMS = [
       }
     },
     { id:'locker', onSolve:{el:'rx-cove',op:.2,fx:'surge'}, icon:'🧨', name:'Flare Locker', pos:{x:66,y:73,w:12,h:14},
-      desc:"A steel flare locker in fading emergency stripes, four dials on the door, the stock just visible through a cracked inspection window.\n\nTaped inside the glass, the station's standing order in the operator's hand:\n\n   “DIALS ARE RESET EACH WEEK TO THE COUNT ON THE SHELVES,\n    TOP SHELF FIRST. IF YOU CANNOT COUNT IT, YOU DO NOT HAVE IT.”", figure:FIGS.locker,
+      desc:"A steel flare locker in fading emergency stripes, four dials on the door, the stock just visible through a cracked inspection window.\n\nTaped inside the glass, the station's standing order in the operator's hand:\n\n   “DIALS ARE RESET EACH WEEK TO THE LIVE COUNT, TOP SHELF FIRST.\n    A FIRED CASE IS NOT A FLARE. IF YOU CANNOT FIRE IT,\n    YOU DO NOT HAVE IT.”\n\nNobody on this station threw anything away. They put it back.", figure:FIGS.locker,
       puzzle:{
         type:'keypad',
-        prompt:"Enter the 4-digit code.", answers:['2430'],
+        prompt:"Enter the 4-digit code.", answers:['3406'],
         hints:[
-          "You are not being asked to work anything out. You are being asked to count what is actually on the shelves, in the order the standing order gives.",
-          "Top shelf first and work down. One of them will not take long.",
-          "Two rockets, four hand flares, three smoke floats, and nothing at all on the bottom shelf. Enter 2430."
+          "The order counts what you could fire tonight, shelf by shelf from the top. So look at each case on a shelf before you add it to the count.",
+          "A fired case keeps its shape and its place on the shelf; what it loses is its cap, and it is charred black where the cap was. One shelf has nothing live left on it at all.",
+          "Three live rockets, four live hand flares, not one of the smoke floats, six cartridges. Enter 3406."
         ],
-        solvedText:"2-4-3-0, and the door swings. The flares come out dry and intact — and underneath them, a laminated tide card for the cove.",
+        solvedText:"3-4-0-6, and the door swings. The live stock comes out dry and intact — and underneath it, a laminated tide card for the cove.",
         solveBeat:null
       }
     },

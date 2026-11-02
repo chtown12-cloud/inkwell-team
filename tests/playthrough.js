@@ -16,7 +16,7 @@ const SOLUTIONS = {
       [['driftwood', 'SAIL'], ['crate', '8513'], ['box', 'SALT'], ['chart', '54']],
       [['radio', 'DIAL:1215'], ['broadcast', 'LOOK UNDER'], ['hatch', 'STORM'], ['transmitter', '394']],
       [['tree', 'RIVER'], ['stones', 'DROWN'], ['pack', '693'], ['gate', 'SIMUL']],
-      [['raftkit', 'ORDER:BDAEC'], ['locker', '2430'], ['tide', '510'], ['winch', '3158']],
+      [['raftkit', 'ORDER:BDAEC'], ['locker', '3406'], ['tide', '510'], ['winch', '3158']],
     ],
   },
   prospero: {
