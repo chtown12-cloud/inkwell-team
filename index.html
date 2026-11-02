@@ -37,6 +37,10 @@ button{font-family:'Inter',sans-serif;cursor:pointer}
 #stage-wrap{position:fixed;inset:0;overflow:hidden;background:#000}
 #stage{position:absolute;left:50%;top:50%;width:1600px;height:900px;transform:translate(-50%,-50%) scale(1);transform-origin:center}
 #stage.shake{animation:shakeS .45s}
+/* Leaned in on one thing, the other rings are noise — and at 2.8x they are
+   the size of dinner plates. */
+#stage.zoomed .hotspot .ring{opacity:.18;transition:opacity .4s}
+#stage.zoomed .hotspot .tag{opacity:0}
 @keyframes shakeS{0%,100%{margin-left:0}20%{margin-left:-14px}40%{margin-left:12px}60%{margin-left:-9px}80%{margin-left:7px}}
 #scene, #scene svg{position:absolute;inset:0;width:100%;height:100%}
 #fx{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:5}
@@ -141,14 +145,72 @@ button{font-family:'Inter',sans-serif;cursor:pointer}
 #beat::before{content:"· · ·";display:block;color:#5c4f74;letter-spacing:9px;font-style:normal;margin-bottom:5px}
 
 /* ---------- modal ---------- */
-#overlay{position:fixed;inset:0;background:rgba(2,6,7,.72);z-index:60;display:flex;align-items:flex-start;justify-content:center;padding:5vh 16px;overflow-y:auto;backdrop-filter:blur(2px)}
+/* ---------- what each place is made of ----------
+   --surf is the shadow the writing lies in, --glow the light the room casts
+   back onto it, --rule the colour of a hairline. Three numbers per scenario
+   and nothing else: salt-bleached timber on the beach, cold steel on the
+   ship, candle and stone in the castle, blue ice at the pole, walnut and
+   brass on the train. */
+body[data-scenario="eldermoor"]{--surf:6 16 18;  --glow:255 196 130; --rule:120 170 168; --card:30 50 55}
+body[data-scenario="prospero"] {--surf:8 13 20;  --glow:150 200 255; --rule:110 142 172; --card:24 38 56}
+body[data-scenario="vorstag"]  {--surf:14 10 18; --glow:255 198 140; --rule:162 140 186; --card:38 30 50}
+body[data-scenario="erebus"]   {--surf:6 14 22;  --glow:190 225 255; --rule:132 172 200; --card:26 44 60}
+body[data-scenario="midnight"] {--surf:18 12 8;  --glow:255 205 130; --rule:182 150 110; --card:48 34 24}
+
+/* ---------- examining something ----------
+   Not a window over the room. The camera has already pushed in on the thing
+   (see THE CAMERA); what happens here is that the light closes down around
+   it and the clue comes up into the hand. No borders, no corners, no card —
+   the only thing separating the writing from the scene is shadow.
+
+   All of this is gated to the shared screen. A phone has no room to be in,
+   so it keeps the card it already had. */
+#overlay{position:fixed;inset:0;z-index:60;display:flex;align-items:flex-start;
+  justify-content:center;padding:5vh 16px;overflow-y:auto;
+  background:rgba(2,6,7,.72);backdrop-filter:blur(2px)}
 #modal{width:min(700px,100%);background:linear-gradient(165deg,#1e3237,#111f23);border:1px solid #3d5a60;border-radius:14px;padding:26px 30px 24px;position:relative;box-shadow:0 22px 60px rgba(0,0,0,.8);animation:modalin .22s ease-out}
 @keyframes modalin{from{transform:translateY(14px) scale(.98);opacity:0}to{transform:none;opacity:1}}
+
+body:not(.phone) #overlay{
+  backdrop-filter:none;
+  /* a pool of darkness closing in on the spot, not a sheet over everything */
+  background:radial-gradient(circle at var(--fx,50%) var(--fy,42%),
+    rgba(2,6,7,.10) 0%, rgba(2,6,7,.46) 15%, rgba(2,6,7,.80) 38%,
+    rgba(2,6,7,.92) 62%, rgba(2,6,7,.96) 100%);
+}
+body:not(.phone) #modal{
+  border:none;border-radius:0;box-shadow:none;padding:40px 54px 34px;
+  width:min(720px,100%);margin:auto 0;
+  background:
+    /* the light this thing is being held in */
+    radial-gradient(64% 46% at 50% 24%, rgba(var(--glow,255 210 150),.055) 0%, rgba(0,0,0,0) 100%),
+    /* and the shadow it is lying in, feathered away to nothing at the corners */
+    radial-gradient(96% 96% at 50% 48%,
+      rgba(var(--surf,5 14 16),.985) 0%, rgba(var(--surf,5 14 16),.975) 62%,
+      rgba(var(--surf,5 14 16),.90) 80%, rgba(var(--surf,5 14 16),.54) 92%,
+      rgba(var(--surf,5 14 16),0) 100%);
+  animation:liftin .34s cubic-bezier(.22,.61,.36,1);
+}
+/* it comes up off the spot rather than sliding in from nowhere */
+@keyframes liftin{from{transform:translateY(22px) scale(.955);opacity:0}to{transform:none;opacity:1}}
+@media (prefers-reduced-motion: reduce){ body:not(.phone) #modal{animation:none} }
+
+body:not(.phone) #modal h3{font-size:1.34rem;letter-spacing:1.5px;
+  text-shadow:0 2px 14px rgba(0,0,0,.9)}
+body:not(.phone) #modal .obj-desc{text-shadow:0 1px 10px rgba(0,0,0,.95)}
+body:not(.phone) #modal .close-x{top:2px;right:0;font-size:1.25rem;opacity:.55}
+body:not(.phone) #modal .close-x:hover{opacity:1}
 #modal h3{color:var(--sand);font-size:1.55rem;margin-bottom:4px}
 #modal .obj-desc{margin:12px 0;white-space:pre-line}
 #modal .close-x{position:absolute;top:10px;right:12px;background:none;border:none;color:var(--dim);font-size:1.5rem;line-height:1;padding:6px}
 #modal .close-x:hover{color:var(--ink)}
 .puzzle-box{margin-top:16px;padding:16px;background:rgba(0,0,0,.32);border:1px solid #2c4144;border-radius:10px}
+body:not(.phone) .puzzle-box{border:none;background:none;border-radius:0;padding:14px 0 0;
+  margin-top:18px;border-top:1px solid rgba(var(--rule,120 160 160),.16)}
+body:not(.phone) .solved-note{border:none;background:none;border-left:2px solid var(--ok);
+  border-radius:0;padding:4px 0 4px 16px;margin-top:18px}
+body:not(.phone) .hints{border-top:1px solid rgba(var(--rule,120 160 160),.14)}
+body:not(.phone) .hint-text{background:rgba(216,195,154,.07)}
 .puzzle-box .prompt{font-family:'Special Elite',serif;color:var(--teal-hi);margin-bottom:10px}
 .answer-row{display:flex;gap:10px;flex-wrap:wrap}
 .answer-row input{flex:1;min-width:170px;padding:12px 14px;font-size:1.2rem;letter-spacing:3px;background:#0b1619;color:var(--sand);border:1px solid #3a565c;border-radius:8px;font-family:'Special Elite',serif;text-transform:uppercase}
@@ -175,6 +237,14 @@ button{font-family:'Inter',sans-serif;cursor:pointer}
    thing you type into. */
 .obj-fig{margin:14px 0 2px;padding:10px;background:rgba(0,0,0,.26);
   border:1px solid #2c4144;border-radius:10px}
+body:not(.phone) .obj-fig{border:none;border-radius:0;padding:20px 26px;margin:20px -16px 10px;
+  transform:rotate(-.5deg);
+  background:radial-gradient(58% 64% at 50% 50%,
+    rgba(2,7,9,.95) 0%, rgba(2,7,9,.93) 46%, rgba(2,7,9,.74) 70%,
+    rgba(2,7,9,.3) 88%, rgba(2,7,9,0) 100%)}
+/* the shadow belongs to the drawing, not to the pool it is lying in */
+body:not(.phone) .obj-fig svg{filter:drop-shadow(0 14px 18px rgba(0,0,0,.6))}
+body:not(.phone) .obj-fig figcaption{transform:rotate(.5deg)}
 .obj-fig svg{display:block;width:100%;height:auto;max-height:54vh}
 .obj-fig figcaption{margin-top:8px;font-size:.76rem;color:#7d8a84;font-style:italic;text-align:center}
 body.phone .obj-fig{padding:7px}
@@ -744,7 +814,9 @@ body:not(.phone) #phone-scene{display:none}
 .ph-tag{font-size:.7rem;color:var(--dim);font-family:Inter,sans-serif;letter-spacing:1px}
 body.phone #stage-wrap,body.phone #vignette,body.phone #grain,body.phone #objective,body.phone #hub-screen{display:none}
 body.phone #hud{font-size:.85rem}
-body.phone #modal{max-height:86vh}
+body.phone #modal{max-height:86vh;
+  background:linear-gradient(165deg, rgba(var(--card,30 50 55),1), rgba(0,0,0,.45));
+  border-color:rgba(var(--rule,61 90 96),.45)}
 @media (max-width:640px){
   .qr-code{font-size:1.9rem;letter-spacing:7px}
   #crew-bar{display:none}
@@ -905,6 +977,11 @@ body.phone #modal{max-height:86vh}
 const SCENARIOS=[];
 function registerScenario(s){ SCENARIOS.push(s); }
 let ACTIVE=null;
+/* Each place has its own light and its own materials. This is the only hook
+   that varies styling by scenario; everything below it is CSS. */
+function wearScenario(){
+  if(ACTIVE && ACTIVE.id) document.body.dataset.scenario = ACTIVE.id;
+}
 const $ = id => document.getElementById(id);
 function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
 </script>
@@ -1440,10 +1517,86 @@ const S = {
 };
 
 /* ---------- stage scaling & parallax ---------- */
-function fitStage(){
-  const s = Math.min(innerWidth/1600, innerHeight/900);
-  $('stage').style.transform = `translate(-50%,-50%) scale(${s})`;
+/* ============================================================
+   THE CAMERA
+
+   Examining something used to open a window over the room. Now the room
+   comes to you: the stage pushes in on the thing you clicked and you work
+   on it there.
+
+   The stage is one 1600x900 element at left/top 50% with
+   transform:translate(-50%,-50%) scale(z) and transform-origin:center, so a
+   stage point p lands on screen at
+
+       vw/2 + dx + z*(p.x - 800),  vh/2 + dy + z*(p.y - 450)
+
+   which is all the maths this needs. dx and dy are clamped so the stage can
+   never pull away from an edge and show the black behind it.
+   ============================================================ */
+let camFocus = null;         // {x,y} in stage coords, plus the zoom, or null for the wide shot
+
+function stageScale(){ return Math.min(innerWidth/1600, innerHeight/900); }
+
+/** Where a stage point is sitting on screen right now. */
+function stageToScreen(sx, sy){
+  const z = camFocus ? stageScale()*camFocus.k : stageScale();
+  const d = camOffset(z);
+  return { x: innerWidth/2 + d.x + z*(sx-800), y: innerHeight/2 + d.y + z*(sy-450) };
 }
+
+/** The translation that puts the focus where we want it, clamped to the edges. */
+function camOffset(z){
+  if(!camFocus) return {x:0, y:0};
+  // aim the focus a little above centre: the drawing is lifted over it, and
+  // the eye wants the object high in frame rather than behind the words
+  const tx = innerWidth*0.5, ty = innerHeight*0.42;
+  let dx = tx - innerWidth/2  - z*(camFocus.x-800);
+  let dy = ty - innerHeight/2 - z*(camFocus.y-450);
+  const mx = Math.max(0, 800*z - innerWidth/2), my = Math.max(0, 450*z - innerHeight/2);
+  return { x: Math.max(-mx, Math.min(mx, dx)), y: Math.max(-my, Math.min(my, dy)) };
+}
+
+function applyCamera(animate){
+  const st = $('stage'); if(!st) return;
+  st.style.transition = (animate && !CALM) ? 'transform .62s cubic-bezier(.22,.61,.36,1)' : 'none';
+  const z = camFocus ? stageScale()*camFocus.k : stageScale();
+  const d = camOffset(z);
+  st.style.transform = `translate(calc(-50% + ${d.x.toFixed(1)}px), calc(-50% + ${d.y.toFixed(1)}px)) scale(${z.toFixed(4)})`;
+  st.classList.toggle('zoomed', !!camFocus);
+}
+
+/**
+ * Push in on an object. Small things get a harder push than big ones, so a
+ * chart fragment and a line of stepping stones end up filling a similar share
+ * of the frame rather than one being a postage stamp.
+ */
+function cameraOn(o, animate){
+  if(S.isPhone || !o || !o.pos) return;
+  camFocus = {
+    x: (o.pos.x + o.pos.w/2)/100*1600,
+    y: (o.pos.y + o.pos.h/2)/100*900,
+    k: Math.max(1.5, Math.min(2.8, 38/Math.max(6, o.pos.w))),
+  };
+  applyCamera(animate !== false);
+  markFocus();
+}
+function cameraWide(){
+  if(!camFocus) return;
+  camFocus = null;
+  applyCamera(true);
+  document.documentElement.style.removeProperty('--fx');
+  document.documentElement.style.removeProperty('--fy');
+}
+/** Point the spotlight at wherever the focus actually ended up after clamping. */
+function markFocus(){
+  if(!camFocus) return;
+  const p = stageToScreen(camFocus.x, camFocus.y);
+  const r = document.documentElement.style;
+  r.setProperty('--fx', (p.x/innerWidth*100).toFixed(2)+'%');
+  r.setProperty('--fy', (p.y/innerHeight*100).toFixed(2)+'%');
+}
+
+function fitStage(){ applyCamera(false); markFocus(); }
 addEventListener('resize', fitStage); fitStage();
 addEventListener('mousemove', e=>{
   const dx=(e.clientX/innerWidth-0.5), dy=(e.clientY/innerHeight-0.5);
@@ -1797,6 +1950,7 @@ function renderHotspots(){
 function openModal(objId){
   const o=currentRoom().objects.find(x=>x.id===objId);
   const solved=S.solved.has(o.id);
+  cameraOn(o);          // lean in before anything is drawn over the room
   let html=`<button class="close-x" onclick="closeModal()">✕</button>
     <h3>${o.icon} ${o.name}</h3>
     <div class="obj-desc">${objDesc(o)}${(o.revealSymbols&&(!o.revealedBy||S.solved.has(o.revealedBy)))?`<div class="symbols">${o.revealSymbols}</div>`:''}</div>`;
@@ -1872,6 +2026,7 @@ function openModal(objId){
 }
 function closeModal(){
   $('overlay').classList.add('hidden'); S.signalPattern=''; dialTeardown(); holdTeardown();
+  cameraWide();
   if(MP.openObj){ mpSend('stand',{objId:MP.openObj}); MP.openObj=null; }
   if(S.isPhone) renderPhone();
 }
@@ -2640,6 +2795,7 @@ function buildHub(){
 }
 function openTitle(id){
   ACTIVE=SCENARIOS.find(s=>s.id===id); if(!ACTIVE) return;
+  wearScenario();
   $('hub-screen').classList.add('hidden');
   $('start-screen').classList.remove('hidden');
   $('title-h1').textContent=ACTIVE.title.toUpperCase();
@@ -3306,6 +3462,7 @@ async function bootPhone(code){
     return;
   }
   ACTIVE = SCENARIOS.find(x=>x.id===room.scenario) || SCENARIOS[0];
+  wearScenario();
   setDifficulty(room.difficulty);
   sub.textContent = ACTIVE.title;
   note.textContent = 'Pick a puzzle, work it with whoever joins you, and anything you solve lands for the whole team.';
@@ -3361,6 +3518,7 @@ async function bootHost(code){
   const room = await NET.attach(code, 'host');
   if(!room){ $('hub-screen').classList.remove('hidden'); return; }
   ACTIVE = SCENARIOS.find(x=>x.id===room.scenario) || SCENARIOS[0];
+  wearScenario();
   setDifficulty(room.difficulty);
   S.code=code; S.started=true; S.isPhone=false;
   S.roomIndex=room.roomIndex||0;
