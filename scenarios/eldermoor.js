@@ -857,7 +857,17 @@ FIGS.winch = (function(){
     scale += `<line x1="${x0-10}" y1="${y}" x2="${x0}" y2="${y}" stroke="#8a9a95" stroke-width="${f%5===0?2:1}"/>`;
     if(f%1===0) scale += FIG.words(x0-16, y+4, String(f), {anchor:'end', size:11, fill:'#8a9a95'});
   }
-  return FIG.plate(720, 310,
+  const drumY=surf+10*fmPx+34;
+  let drum=`<rect x="${x0-6}" y="${drumY}" width="${706-x0}" height="66" rx="7"
+      fill="#2a2119" stroke="#8d7450" stroke-width="2"/>`;
+  sound.forEach(([x],i)=>{
+    drum += `<rect x="${x-24}" y="${drumY+11}" width="48" height="44" rx="4"
+        fill="#14100c" stroke="#c9a24a" stroke-width="2"/>`;
+    drum += FIG.words(x, drumY+42, '?', {size:24, fill:'#5e5445'});
+    drum += FIG.words(x, drumY+74, String(i+1), {size:12, fill:'#c9a24a'});
+  });
+
+  return FIG.plate(720, 432,
     FIG.water({x1:x0, x2:700, y:surf, h:10*fmPx})
     + `<path d="${bed}" fill="#5c4a30" stroke="#8d7450" stroke-width="2"/>`
     + `<rect x="0" y="${surf}" width="${x0}" height="${10*fmPx}" fill="#5c4a30" opacity=".85"/>`
@@ -865,6 +875,8 @@ FIGS.winch = (function(){
     + scale + marks
     + FIG.words(x0-16, surf-16, 'fathoms', {anchor:'end', size:11, fill:'#8a9a95'})
     + FIG.words(660, surf+200, 'OPEN WATER', {size:12, fill:'#9fd4cf'})
+    + drum
+    + FIG.words(x0-14, drumY+44, 'WHEEL', {anchor:'end', size:11, fill:'#8a9a95'})
   );
 })();
 

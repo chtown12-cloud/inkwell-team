@@ -173,14 +173,20 @@ body[data-scenario="midnight"] {--surf:18 12 8;  --glow:255 205 130; --rule:182 
 
 body:not(.phone) #overlay{
   backdrop-filter:none;
+  /* nothing here is allowed to run off the bottom: the layout fits, and
+     fitExamine() shrinks the pane if it ever does not */
+  align-items:center;padding:3vh 22px;overflow:hidden;
   /* a pool of darkness closing in on the spot, not a sheet over everything */
   background:radial-gradient(circle at var(--fx,50%) var(--fy,42%),
     rgba(2,6,7,.10) 0%, rgba(2,6,7,.46) 15%, rgba(2,6,7,.80) 38%,
     rgba(2,6,7,.92) 62%, rgba(2,6,7,.96) 100%);
 }
 body:not(.phone) #modal{
-  border:none;border-radius:0;box-shadow:none;padding:40px 54px 34px;
-  width:min(720px,100%);margin:auto 0;
+  border:none;border-radius:0;box-shadow:none;padding:30px 44px 26px;
+  /* What you are looking at, and what you do about it — side by side, so a
+     keypad never ends up under a drawing under three paragraphs. */
+  display:grid;grid-template-columns:minmax(0,1fr);column-gap:46px;
+  width:min(760px,100%);
   background:
     /* the light this thing is being held in */
     radial-gradient(64% 46% at 50% 24%, rgba(var(--glow,255 210 150),.055) 0%, rgba(0,0,0,0) 100%),
@@ -190,6 +196,32 @@ body:not(.phone) #modal{
       rgba(var(--surf,5 14 16),.90) 80%, rgba(var(--surf,5 14 16),.54) 92%,
       rgba(var(--surf,5 14 16),0) 100%);
   animation:liftin .34s cubic-bezier(.22,.61,.36,1);
+}
+/* Which pane gets the width depends on where the clue lives. A drawing is
+   the clue, so it takes the room and the keypad beside it is capped at the
+   width of a keypad. A rack of picture-tiles is both clue and control and
+   lives in the work pane, so there the balance tips the other way. */
+body:not(.phone) #modal.two{grid-template-columns:minmax(0,.92fr) minmax(0,1.08fr);
+  width:min(1260px,100%);padding-left:36px;padding-right:36px;column-gap:40px}
+body:not(.phone) #modal.two.fig{grid-template-columns:minmax(0,1fr) minmax(300px,440px);
+  width:min(1400px,100%)}
+body:not(.phone) .ex-look{min-width:0;align-self:center}
+body:not(.phone) .ex-work{min-width:0;align-self:center}
+/* with a column of its own the drawing has the height, not the width */
+body:not(.phone) #modal.two .obj-fig{margin:16px 0 6px;padding:16px 18px}
+body:not(.phone) #modal.two .obj-fig svg{max-height:52vh}
+body:not(.phone) #modal.two .ex-work>.puzzle-box:first-child,
+body:not(.phone) #modal.two .ex-work>.solved-note:first-child{margin-top:0;border-top:none;padding-top:0}
+/* A narrow window has no room for two columns, and a shared screen is not
+   always a projector — somebody always has the browser half the width of the
+   desk. Stack the panes and let the card scroll there, the way a phone does.
+   Shrinking two columns to fit 400px gives you a clue nobody can read. */
+@media (max-width:1040px){
+  body:not(.phone) #overlay{align-items:flex-start;overflow-y:auto;padding:4vh 14px}
+  body:not(.phone) #modal,
+  body:not(.phone) #modal.two,
+  body:not(.phone) #modal.two.fig{grid-template-columns:minmax(0,1fr);
+    width:min(760px,100%);padding:26px 20px 22px}
 }
 /* it comes up off the spot rather than sliding in from nowhere */
 @keyframes liftin{from{transform:translateY(22px) scale(.955);opacity:0}to{transform:none;opacity:1}}
@@ -656,13 +688,13 @@ body.phone #credits{display:none}
 
 /* ---------- pick the ones that qualify ---------- */
 .sel-grid{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 10px;justify-content:center}
-.sel-chip{display:flex;flex-direction:column;align-items:center;gap:3px;min-width:92px;
+.sel-chip{display:flex;flex-direction:column;align-items:center;gap:3px;min-width:min(92px,11vh);
   padding:10px 12px;border:1px solid #3a565c;border-radius:10px;background:#0b1619;
   color:var(--dim);cursor:pointer;transition:border-color .15s,background .15s,transform .1s}
 .sel-chip:hover{border-color:#6dc0b8}
 .sel-chip.on{border-color:var(--teal-hi);background:rgba(79,163,155,.22);transform:translateY(-2px)}
 .sel-chip.on .sel-letter{color:var(--teal-hi)}
-.sel-art{display:block;width:100%;max-width:120px;margin:0 auto 2px}
+.sel-art{display:block;width:100%;max-width:min(120px,13vh);margin:0 auto 2px}
 .sel-art svg{display:block;width:100%;height:auto}
 .sel-letter{font-family:'Special Elite',serif;font-size:1.5rem;color:var(--sand);line-height:1}
 .sel-val{font-size:.74rem;font-family:Inter,sans-serif;letter-spacing:.3px;text-align:center}
@@ -1596,7 +1628,7 @@ function markFocus(){
   r.setProperty('--fy', (p.y/innerHeight*100).toFixed(2)+'%');
 }
 
-function fitStage(){ applyCamera(false); markFocus(); }
+function fitStage(){ applyCamera(false); markFocus(); fitExamine(); }
 addEventListener('resize', fitStage); fitStage();
 addEventListener('mousemove', e=>{
   const dx=(e.clientX/innerWidth-0.5), dy=(e.clientY/innerHeight-0.5);
@@ -1737,8 +1769,14 @@ let beatShowing=false;
 function showBeat(text,sound){
   if(!text) return;
   beatQueue.push({text,sound});
+  // A beat raised while somebody is reading a clue lands on top of the clue —
+  // which is how a team ends up staring at a puzzle whose first line is
+  // behind a story card. Hold it; it plays the moment they look up.
+  if(examining()) return;
   if(!beatShowing) nextBeat();
 }
+/** Is somebody mid-puzzle right now? */
+function examining(){ const o=$('overlay'); return !!o && !o.classList.contains('hidden'); }
 function nextBeat(){
   const b=$('beat'), veil=$('beatveil');
   const item=beatQueue.shift();
@@ -1951,23 +1989,25 @@ function openModal(objId){
   const o=currentRoom().objects.find(x=>x.id===objId);
   const solved=S.solved.has(o.id);
   cameraOn(o);          // lean in before anything is drawn over the room
-  let html=`<button class="close-x" onclick="closeModal()">✕</button>
-    <h3>${o.icon} ${o.name}</h3>
+  /* Two panes: what you are looking at, and what you do about it. Side by
+     side on a shared screen, stacked on a phone. This is what keeps the
+     whole thing on one screen — a keypad under a drawing under three
+     paragraphs was always going to run off the bottom. */
+  let look=`<h3>${o.icon} ${o.name}</h3>
     <div class="obj-desc">${objDesc(o)}${(o.revealSymbols&&(!o.revealedBy||S.solved.has(o.revealedBy)))?`<div class="symbols">${o.revealSymbols}</div>`:''}</div>`;
-  // The picture goes between what you are looking at and what you type: the
-  // prose sets the scene, the figure carries the clue.
+  let html='';
   const fig=objFigure(o);
-  if(fig) html+=`<figure class="obj-fig">${fig}</figure>`;
+  if(fig) look+=`<figure class="obj-fig">${fig}</figure>`;
   if(o.puzzle){
     const p=o.puzzle;
     const codeReady=(p.morse||p.taps)&&(!p.morseLocked||S.solved.has(p.morseLocked));
     if(codeReady&&!solved){
       if(p.morse){
-        html+=`<div class="morse" id="morse-view">${p.morse.replaceAll('.','·').replaceAll('-','−')}</div>
+        look+=`<div class="morse" id="morse-view">${p.morse.replaceAll('.','·').replaceAll('-','−')}</div>
           <div style="text-align:center"><button class="morse-btn" onclick="playMorseUI('${o.id}')">▶ &nbsp;PLAY THE SIGNAL</button></div>
           <div class="how">▶ plays the signal out loud. It's international morse code — look the alphabet up, match each dot-dash group to a letter in order, and type only the decoded word(s) below.</div>`;
       } else {
-        html+=`<div class="morse" id="taps-view">${tapsDisplay(p.taps)}</div>
+        look+=`<div class="morse" id="taps-view">${tapsDisplay(p.taps)}</div>
           <div style="text-align:center"><button class="morse-btn" onclick="playTapsUI('${o.id}')">▶ &nbsp;PLAY THE KNOCKS</button></div>
           <div class="how">▶ plays the knocking out loud. Each letter is TWO counts — a count, a small pause, a count — with a longer pause between letters. It's a famous code with a 5×5 letter grid; look it up, turn each pair of counts into a letter, and type only the decoded word(s) below.</div>`;
       }
@@ -2005,7 +2045,11 @@ function openModal(objId){
       </div>`+renderHints(o);
     }
   }
-  $('modal').innerHTML=html;
+  const m=$('modal');
+  m.className = (html ? 'two' : '') + (fig ? ' fig' : '');
+  m.innerHTML = `<button class="close-x" onclick="closeModal()">✕</button>`
+    + `<div class="ex-look">${look}</div>`
+    + (html ? `<div class="ex-work">${html}</div>` : '');
   $('overlay').classList.remove('hidden');
   // Opening anything puts you there, so the crew can see where everyone is —
   // a clue with no puzzle and a puzzle already solved both count, because this
@@ -2023,12 +2067,43 @@ function openModal(objId){
   if(o.puzzle&&o.puzzle.type==='panel'&&!solved) panelInit(o);
   if(o.puzzle&&o.puzzle.type==='hold'&&!solved) holdInit(o);
   const inp=$('answer-input'); if(inp) inp.focus();
+  fitExamine();
 }
+/**
+ * Nothing in the examine view may run off the bottom of the screen. Lay it
+ * out, measure it, and if it still does not fit, shrink the whole pane until
+ * it does. Two columns do most of the work; this is the guarantee.
+ */
+function fitExamine(){
+  const m=$('modal'), ov=$('overlay');
+  if(!m || !ov || ov.classList.contains('hidden')) return;
+  m.style.zoom='';                                     // measure at full size
+  /* Where the card is meant to scroll — a phone in a hand, a narrow window —
+     it scrolls. Shrinking those to fit is how you end up pinching to read a
+     clue. The stylesheet decides which world this is; read it off the layer
+     rather than guessing from the width here as well. */
+  if(getComputedStyle(ov).overflowY!=='hidden') return;
+  const pad=2*(parseFloat(getComputedStyle(ov).paddingTop)||0);
+  const avail=innerHeight-pad-4;                        // 4px of daylight
+  let need=m.scrollHeight;
+  if(need<=avail || !need) return;
+  /* Shrinking re-wraps the text, so the first guess can come up a few pixels
+     short. Take it twice rather than trusting the arithmetic. */
+  let z=Math.max(.6, avail/need);
+  for(let i=0;i<3 && z>.6; i++){
+    m.style.zoom=z.toFixed(3);
+    if(ov.scrollHeight<=ov.clientHeight+1) return;
+    z=Math.max(.6, z*0.97);
+  }
+  m.style.zoom=z.toFixed(3);
+}
+
 function closeModal(){
   $('overlay').classList.add('hidden'); S.signalPattern=''; dialTeardown(); holdTeardown();
   cameraWide();
   if(MP.openObj){ mpSend('stand',{objId:MP.openObj}); MP.openObj=null; }
   if(S.isPhone) renderPhone();
+  if(!beatShowing) nextBeat();      // anything held back while they were reading
 }
 $('overlay').addEventListener('click',e=>{ if(e.target.id==='overlay') closeModal(); });
 
@@ -2831,6 +2906,13 @@ function enterRoom(idx){
   S.roomIndex=idx;
   S.urged=null;
   clearBeats();
+  /* At most one room card, ever. A card is only removed by the hand that
+     presses ENTER on it, so a card nobody pressed — the crew solved the room
+     from their phones while the screen still showed the gate, or two rooms
+     landed close together — used to sit there under the next one and reappear
+     the moment that one was dismissed. That is the "room 3 flashes before
+     room 2" everyone saw. */
+  $('card-root').innerHTML='';
   const room=currentRoom();
   const card=document.createElement('div');
   card.id='room-card';
