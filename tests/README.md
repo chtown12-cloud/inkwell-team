@@ -1,6 +1,6 @@
 # Tests
 
-Four checks, all run straight from the repo with no build step.
+Five checks, all run straight from the repo with no build step.
 
 ```sh
 node tests/audit.js                 # static: the puzzle standard, enforced
@@ -9,6 +9,7 @@ node tests/playthrough.js           # live: all five scenarios, start to victory
 node tests/playthrough.js vorstag   # …or just one
 node tests/figures.js eldermoor     # live: the drawings, and the disc turned by hand
 node tests/camera.js eldermoor      # live: the examine camera, at three window shapes
+node tests/onescreen.js             # live: nothing scrolls, at three window shapes
 ```
 
 **`audit.js`** loads the five scenario files and checks what PUZZLES.md can
@@ -38,6 +39,16 @@ spotlight lands on the object *after* clamping rather than where the camera was
 aimed, that a small object is pushed in on harder than a big one, that nobody
 who asked for less motion gets a camera move, and that a phone gets no camera
 at all and keeps the card it already had.
+
+**`onescreen.js`** opens every object in every scenario at three window shapes
+and checks that the card fits inside the window, that neither the examine
+layer nor the document scrolls, and that it never has to be shrunk to manage
+it — a room of six reads what is on the screen and nobody scrolls a screen
+they are not holding. It also checks the two cases that broke it in play: a
+puzzle with all three hints revealed, which is the tallest a puzzle ever gets,
+and a story beat raised mid-puzzle, which has to wait rather than land on top
+of the clue. One check there is not about scrolling but about the same layer:
+two rooms arriving together must leave one gate card, not a stack.
 
 The live suites solve the interaction puzzles the way a player must rather
 than by driving state directly — they drag the order tags into place, hold the
