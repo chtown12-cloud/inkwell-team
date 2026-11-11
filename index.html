@@ -847,7 +847,7 @@ svg.glyph{display:block}
 .lv-knob{position:absolute;left:50%;top:46px;width:36px;height:26px;margin-left:-18px;border-radius:7px;
   background:linear-gradient(180deg,#b9c2c7,#6d777d);transition:top .12s;box-shadow:0 3px 6px rgba(0,0,0,.6)}
 .lk-lever.on .lv-knob{top:4px;background:linear-gradient(180deg,#ffe9ad,#d79b2c);box-shadow:0 0 14px rgba(255,200,90,.65)}
-.lv-cap{font-family:var(--font-display);font-size:1.05rem;line-height:1}
+.lv-cap{font-family:var(--font-num);font-variant-numeric:lining-nums;font-weight:700;font-size:1.1rem;line-height:1}
 .lv-cap svg.glyph{width:24px;height:24px}
 
 /* a lock that is a drawing */
@@ -2146,13 +2146,16 @@ function objFigure(o){
    already hides and shows — so a thing that is not there yet is not drawn
    yet, and its picture and its ring cannot drift apart. A sprite can be a
    function of state, for a crate that is shut and then is not. */
+function objLive(o){ return !o.needs || S.solved.has(o.needs); }
+function spriteState(o){ return (S.solved.has(o.id)?'1':'0')+(objLive(o)?'1':'0'); }
 function spriteOf(o){
-  return typeof o.sprite==='function' ? o.sprite({solved:S.solved.has(o.id)}) : (o.sprite||'');
+  return typeof o.sprite==='function'
+    ? o.sprite({solved:S.solved.has(o.id), live:objLive(o)}) : (o.sprite||'');
 }
 function sceneSvg(room){
   const svg=ACTIVE.scenes[room.scene]();
   const sp=room.objects.filter(o=>o.sprite)
-    .map(o=>`<g id="el-${o.id}" class="sprite" data-s="${S.solved.has(o.id)?1:0}">${spriteOf(o)}</g>`).join('');
+    .map(o=>`<g id="el-${o.id}" class="sprite" data-s="${spriteState(o)}">${spriteOf(o)}</g>`).join('');
   if(!sp) return svg;
   return svg.includes('<!--SPRITES-->') ? svg.replace('<!--SPRITES-->',sp) : svg.replace(/<\/svg>\s*$/, sp+'</svg>');
 }
@@ -2209,7 +2212,7 @@ function renderHotspots(){
     if(el) el.style.display = objVisible(o)?'':'none';
     // a prop that changes when it is opened is redrawn the moment it is
     if(el && typeof o.sprite==='function'){
-      const now=S.solved.has(o.id)?'1':'0';
+      const now=spriteState(o);
       if(el.dataset.s!==now){ el.dataset.s=now; el.innerHTML=spriteOf(o); }
     }
     if(!objVisible(o)) return;
@@ -2334,7 +2337,10 @@ function openSolo(o){
   cameraOn(o);
   const reopen=()=>openSolo(o);
   let h=`<h3>${o.icon} ${esc(o.name)}${p&&solved?' <span class="opened">\u2713</span>':''}</h3>`;
-  if(p&&solved){
+  const dead=!objLive(o);        // there, but nothing will happen until something else has
+  if(dead){
+    h+=`<div class="obj-desc">${o.deadDesc||objDesc(o)}</div>`+(o.deadFigure?`<figure class="obj-fig">${o.deadFigure}</figure>`:'');
+  } else if(p&&solved){
     h+=`<div class="obj-desc won">${p.solvedText||'Open.'}</div>`+LOCKS.inside(o);
   } else {
     h+=`<div class="obj-desc">${objDesc(o)}</div>`;
@@ -2351,12 +2357,12 @@ function openSolo(o){
   if((!p || p.type!=='simul') && MP.openObj!==o.id){
     MP.openObj=o.id; mpSend('sit',{objId:o.id});
   }
-  if(p&&!solved){
+  if(p&&!solved&&!dead){
     if(LOCKS.has(p.type)) LOCKS.init(o);
     else if(p.type==='keypad') keypadInit(o);
     else if(p.type==='hold') holdInit(o);
   }
-  if(!p) LOCKS.wireClue(o,m,reopen);
+  if(!p&&!dead) LOCKS.wireClue(o,m,reopen);
   if(p&&solved) LOCKS.wireInside(o,m,reopen);
   fitExamine();
 }
