@@ -121,7 +121,15 @@ const look = (p) => p.evaluate(() => {
         !lightOff.length, lightOff.slice(0, 4).join(', '));
       ok(`${shape.name}: every object gets a push-in`, !noZoom.length, noZoom.join(', '));
 
-      // and it comes back
+      // and it comes back — once the pull-out has actually finished. The move
+      // takes .62s and the loop above only waits .65s, which is a coin toss on
+      // a busy machine; this is a check on where the camera ends up, not on
+      // how quickly the test can look.
+      await p.waitForFunction(() => {
+        const st = document.getElementById('stage').getBoundingClientRect();
+        return Math.abs((st.left + st.right) / 2 - innerWidth / 2) < 1.5
+          && Math.abs(st.width / 1600 - Math.min(innerWidth / 1600, innerHeight / 900)) < 0.002;
+      }, null, { timeout: 4000 }).catch(() => {});
       const back = await look(p);
       ok(`${shape.name}: closing returns to the wide shot`,
         !back.zoomed && back.centred && back.worstEdge <= wide.worstEdge + 0.6,
