@@ -1,15 +1,12 @@
 /* ============================================================
    SCENARIO: THE WRECK OF THE ELDERMOOR — shipwreck island
-   Data contract (all scenarios follow this shape):
-     registerScenario({ id, title, sub, tagline, icon, card,
-       titleFx, titleLightning, titleArt, story[], begin,
-       finalButton, emojis[], ratings[5], shareTitle,
-       victoryTitle, victoryProse, gameOverProse,
-       flare:{x,y,hue}, ambience[4], fx[4], events[4],
-       wrongBeats[], wrongSounds[], scenes:{...}, rooms:[4] });
-   Rooms/puzzles use: hiddenUntil / revealedBy / revealSymbols,
-   puzzle.type text|dial|signal, dial config, morse strings,
-   room.relay for blinking scene lamps. Answers normalized A-Z0-9.
+
+   Built on the reset grammar (see PUZZLES.md): locks that look like locks,
+   and whatever opens them somewhere else in the room. An object is either a
+   clue (a drawing, sometimes with something you can do to it) or a lock
+   (puzzle.type: combo | dirpad | clock | toggle | press | tiles | tune |
+   simul). Each object carries its own art into the room as `sprite`; the
+   backdrops below are only the place.
    ============================================================ */
 (function(){
 const SCENES={};
@@ -73,8 +70,6 @@ SCENES.beach=()=>`
 <g id="art-hull">
   <path d="M1010 668 q40 -150 140 -185 l290 -68 q36 66 24 140 l-34 100 q-190 46 -420 13 z" fill="#221710"/>
   ${[0,1,2,3,4].map(i=>`<path d="M${1105+i*72} ${640-i*10} q10 -90 46 -128" stroke="#171008" stroke-width="9" fill="none"/>`).join('')}
-  <rect x="1252" y="332" width="13" height="230" fill="#2a1d12" transform="rotate(16 1258 440)"/>
-  <path class="flag" d="M1290 344 l58 14 -58 18 z" fill="#3c2a20"/>
   <ellipse cx="1210" cy="702" rx="240" ry="16" fill="#000" opacity=".28"/>
 </g>
 <!-- a gull crossing the bay, and a crab working the tideline -->
@@ -105,13 +100,6 @@ SCENES.beach=()=>`
   <rect x="640" y="700" width="60" height="9" rx="4" fill="#6a4f30" transform="rotate(-7 670 704)"/>
   <rect x="1330" y="702" width="52" height="8" rx="4" fill="#5b452c" transform="rotate(9 1356 706)"/>
 </g>
-<!-- fallen rigging from the wreck -->
-<path d="M1262 352 Q1180 480 1110 566 M1264 362 Q1330 470 1358 566" stroke="#171008" stroke-width="3" fill="none" opacity=".75"/>
-<!-- driftwood planks with carved letters -->
-<g id="art-driftwood">
-  ${[['CASTAWAY','III',96,742,-8],['GALE','II',172,760,5],['ADRIFT','IIII',132,792,-3],['SALVAGE','III',214,788,10]].map(([w,t,x,y,r])=>
-   `<g transform="rotate(${r} ${x} ${y})"><rect x="${x-40}" y="${y-11}" width="80" height="22" rx="5" fill="#6a4f30"/><rect x="${x-40}" y="${y-11}" width="80" height="7" rx="4" fill="#7d6040"/><text x="${x}" y="${y+2}" text-anchor="middle" font-family="Special Elite" font-size="9" fill="#2c1e0f">${w}</text><text x="${x}" y="${y+9}" text-anchor="middle" font-size="7" letter-spacing="1" fill="#2c1e0f">${t}</text></g>`).join('')}
-</g>
 <!-- torn sail on a rock -->
 <g id="art-sail">
   <ellipse cx="430" cy="560" rx="90" ry="34" fill="#3a3128"/>
@@ -119,25 +107,7 @@ SCENES.beach=()=>`
   <path d="M420 470 l16 30 -30 4 z" fill="#8d7f62"/>
   <path d="M470 420 L520 556" stroke="#8d7f62" stroke-width="3" fill="none"/>
 </g>
-<!-- cargo crate with stencils -->
-<g id="art-crate">
-  <rect x="770" y="632" width="128" height="96" fill="#5b452c"/>
-  <rect x="770" y="632" width="128" height="20" fill="#6d5436"/>
-  <rect x="770" y="632" width="10" height="96" fill="#48371f"/><rect x="888" y="632" width="10" height="96" fill="#48371f"/>
-  <text x="800" y="694" font-size="22" fill="#2c2010">■5</text><text x="852" y="694" font-size="22" fill="#2c2010">◆1</text>
-  <text x="800" y="720" font-size="22" fill="#2c2010">▲8</text><text x="852" y="720" font-size="22" fill="#2c2010">●3</text>
-</g>
-<!-- weatherproof box -->
-<g id="art-box">
-  <rect x="1236" y="748" width="104" height="66" rx="8" fill="#4a2b25"/>
-  <rect x="1236" y="748" width="104" height="18" rx="8" fill="#5c362d"/>
-  <rect x="1276" y="760" width="24" height="20" fill="#a8862a"/>
-</g>
-<!-- chart (appears when box is opened) -->
-<g id="el-chart">
-  <rect x="672" y="788" width="96" height="40" rx="14" fill="#d9cba6" transform="rotate(-8 720 808)"/>
-  <path d="M680 802 q40 -8 78 2" stroke="#7a5c34" stroke-width="2" fill="none"/>
-</g>
+<!--SPRITES-->
 <g class="atmo">
 <!-- something in here is still running -->
 <circle id="rl-beach" cx="230" cy="210" r="6" fill="#ffdf9c" opacity=".12"/>
@@ -638,328 +608,272 @@ const WRONG_BEATS = [
 const WRONG_SOUNDS = ['knock','knock','growl','growl','knock'];
 
 /* ============================================================
-   THE DRAWINGS
+   THE DRAWINGS, AND THE ROOMS THEY STAND IN
 
-   Each of these replaces a paragraph that listed what you would have seen.
-   A paragraph saying "the tack is through the A" hands over the answer; a
-   drawing of a tack driven through a letter does not. Built from the shared
-   primitives in lib/figures.js so a plank here matches a plank anywhere.
+   Every prop is drawn once and used twice: large in the close-up, and small
+   standing in the room, so what you can see from across the beach is exactly
+   what you count when you lean in.
    ============================================================ */
-const FIGS = {};
+const C = ART.COL, I = ART.INK, W = ART.words, GL = ART.glyph;
 
-/* The articles, posted at the mainmast as the law requires, and the boat
-   list painted along the rail. Ten men came aboard; one line was never
-   filled in at all. */
-FIGS.hull = (function(){
-  let rows='', y=104;
-  // s = signed his own name, x = made his mark, b = never filled in
-  ['s','x','s','x','s','s','x','b','x','s'].forEach((kind,i)=>{
-    rows += `<line x1="48" y1="${y+7}" x2="358" y2="${y+7}" stroke="#9a8b68" stroke-width="1" opacity=".55"/>`;
-    if(kind==='s') rows += FIG.signature(56, y, i+3, 168);
-    if(kind==='x') rows += FIG.cross(104, y-3);
-    y += 21;
+/* ============================================================
+   ROOM 1 — THE BEACH
+   Count the floats to open the crate; the page in the crate reads the flags
+   on the mast, which opens the chest; the chart in the chest is in six
+   pieces; pieced together, it is a course for the binnacle — on a chart
+   whose north is not at the top.
+   ============================================================ */
+
+/* Ten signal flags. Each is a different *kind* of pattern — a disc, a cross,
+   quarters, a border — so no two are told apart by colour alone. */
+const FLAG = {
+  A: `<rect width="96" height="64" fill="${C.yellow}"/><circle cx="48" cy="32" r="17" fill="${C.black}"/>`,
+  C: `<rect width="96" height="64" fill="${C.red}"/><rect x="38" width="20" height="64" fill="${C.white}"/><rect y="22" width="96" height="20" fill="${C.white}"/>`,
+  E: `<rect width="96" height="64" fill="${C.white}"/><path d="M0 0L96 64M96 0L0 64" stroke="${C.red}" stroke-width="13"/>`,
+  L: `<rect width="96" height="64" fill="${C.yellow}"/><rect x="48" width="48" height="32" fill="${C.blue}"/><rect y="32" width="48" height="32" fill="${C.blue}"/>`,
+  N: `<rect width="96" height="64" fill="${C.white}"/>` + [0, 1, 2, 3].map(r => [0, 1, 2, 3].filter(c => (r + c) % 2 === 0)
+        .map(c => `<rect x="${c * 24}" y="${r * 16}" width="24" height="16" fill="${C.blue}"/>`).join('')).join(''),
+  O: `<rect width="96" height="64" fill="${C.yellow}"/><path d="M0 0H96L0 64Z" fill="${C.red}"/>`,
+  R: `<rect width="96" height="64" fill="${C.blue}"/><rect x="16" y="13" width="64" height="38" fill="${C.white}"/>`,
+  S: `<rect width="96" height="64" fill="${C.blue}"/><rect x="32" width="32" height="64" fill="${C.white}"/>`,
+  T: `<rect width="96" height="64" fill="${C.red}"/><rect y="21.5" width="96" height="21" fill="${C.white}"/>`,
+  W: `<rect width="96" height="64" fill="${C.blue}"/><polygon points="48,7 86,32 48,57 10,32" fill="${C.yellow}"/>`,
+};
+function flag(letter, x, y, w = 96, h = 64) {
+  return `<svg x="${x}" y="${y}" width="${w}" height="${h}" viewBox="0 0 96 64" preserveAspectRatio="none" style="overflow:hidden">${FLAG[letter]}`
+    + `<rect width="96" height="64" fill="none" stroke="#1b1410" stroke-width="3"/></svg>`;
+}
+
+/* The hoist: what is still flying from the mast, top to bottom. */
+const HOIST = 'CORAL';
+const hoistArt = { w: 360, h: 780, body: (() => {
+  let b = `<rect x="58" y="24" width="18" height="756" fill="${I.woodDark}"/><rect x="58" y="24" width="6" height="756" fill="${I.wood}" opacity=".75"/>`;
+  b += `<circle cx="67" cy="20" r="13" fill="${I.wood}" stroke="${I.woodDark}" stroke-width="3"/>`;
+  b += `<path d="M16 168L150 132" stroke="${I.woodDark}" stroke-width="13" stroke-linecap="round"/>`;
+  b += `<path d="M67 30L122 54V770" fill="none" stroke="${I.rope}" stroke-width="3.5"/>`;
+  HOIST.split('').forEach((ch, i) => {
+    const y = 66 + i * 140;
+    b += `<path d="M122 ${y + 8}h8M122 ${y + 118}h8" stroke="${I.rope}" stroke-width="5" stroke-linecap="round"/>`;
+    b += flag(ch, 130, y, 196, 128);
   });
-  return FIG.plate(720, 336,
-    FIG.defs
-    + FIG.paper({x:14,y:14,w:384,h:308})
-    + FIG.words(206, 48, 'ARTICLES OF AGREEMENT', {size:15, fill:'#2a2418', spacing:1})
-    + FIG.words(206, 70, 'of the barque ELDERMOOR', {size:11, fill:'#5a4f38'})
-    + FIG.words(90, 92, 'SIGNED  /  HIS MARK', {size:10, fill:'#5a4f38', anchor:'start', spacing:1})
-    + rows
-    + FIG.board({x:424, y:92, w:280, title:'BOAT DAVITS — PORT BOW AFT',
-        rows:[['No.1','SALVAGE'],['No.2','GALE'],['No.3','ADRIFT'],['No.4','PETREL']]})
-  );
-})();
+  return b;
+})() };
 
-/* Five name-boards face up in the sand. Four tacks belong to this ship.
-   One board does not. */
-FIGS.driftwood = FIG.plate(720, 352,
-  FIG.sand({x1:0,x2:720,y:0,h:352})
-  + FIG.plank({x:22,  y:20,  rot:-4, label:'PETREL',  tack:5})
-  + FIG.plank({x:372, y:10,  rot:3,  label:'SALVAGE', tack:0})
-  + FIG.plank({x:44,  y:118, rot:2,  label:'GALE',    tack:1})
-  + FIG.plank({x:300, y:132, rot:-3, label:'MARINER', tack:4})
-  + FIG.plank({x:96,  y:246, rot:5,  label:'ADRIFT',  tack:3})
-);
+/* The net: glass floats in five colours, and only four of them are on the lock. */
+const FLOAT_ROWS = ['yrwygwy', 'wbyrygr', 'ywrgybw'];
+const FLOAT_COL = { y: 'yellow', r: 'red', w: 'white', g: 'green', b: 'blue' };
+function glassFloat(x, y, r, color) {
+  return `<circle cx="${x + 2}" cy="${y + 4}" r="${r}" fill="#000" opacity=".32"/>`
+    + `<circle cx="${x}" cy="${y}" r="${r}" fill="${C[color]}" stroke="#14100c" stroke-width="2.5"/>`
+    + `<path d="M${x - r} ${y}h${2 * r}M${x} ${y - r}v${2 * r}" stroke="#14100c" stroke-opacity=".28" stroke-width="2"/>`
+    + `<path d="M${(x - r * .58).toFixed(1)} ${(y - r * .3).toFixed(1)}a${(r * .7).toFixed(1)} ${(r * .7).toFixed(1)} 0 0 1 ${(r * .5).toFixed(1)} ${(-r * .42).toFixed(1)}" fill="none" stroke="#fff" stroke-opacity=".75" stroke-width="${(r * .17).toFixed(1)}" stroke-linecap="round"/>`;
+}
+const floatsArt = { w: 720, h: 440, body: (() => {
+  let b = `<defs><clipPath id="eldNet"><path d="M14 52Q360 104 706 46L654 404Q360 446 68 408Z"/></clipPath></defs>`;
+  let mesh = '';
+  for (let i = -8; i <= 14; i++) mesh += `<path d="M${i * 56} 40L${i * 56 + 250} 440M${i * 56 + 250} 40L${i * 56} 440"/>`;
+  b += `<g clip-path="url(#eldNet)" stroke="${I.rope}" stroke-width="2.2" opacity=".5" fill="none">${mesh}</g>`;
+  b += `<path d="M8 48Q360 104 712 42" fill="none" stroke="${I.rope}" stroke-width="8" stroke-linecap="round"/>`;
+  b += `<path d="M68 408Q360 446 654 404" fill="none" stroke="${I.rope}" stroke-width="5" stroke-linecap="round" opacity=".8"/>`;
+  FLOAT_ROWS.forEach((row, r) => row.split('').forEach((k, c) => {
+    const x = 100 + c * 87 + ((r * 7 + c * 13) % 17 - 8), y = 146 + r * 96 + ((r * 11 + c * 5) % 15 - 7);
+    b += glassFloat(x, y, 30, FLOAT_COL[k]);
+  }));
+  return b;
+})() };
 
-/* The mainsail hauled flat: the sailmaker's wind marks, stitched wherever
-   there was room. */
-FIGS.sail = FIG.plate(700, 300,
-  `<path d="M28 44 L664 18 L692 248 L56 276 Z" fill="#cfc3a2" stroke="#9a8b68" stroke-width="3" opacity=".93"/>`
-  + `<path d="M150 30 L176 266" stroke="#9a8b68" stroke-width="1.4" fill="none" opacity=".45"/>`
-  + `<path d="M380 24 L398 258" stroke="#9a8b68" stroke-width="1.4" fill="none" opacity=".45"/>`
-  + `<path d="M40 160 L686 142" stroke="#9a8b68" stroke-width="1.4" fill="none" opacity=".4"/>`
-  + FIG.paintedMark({x:96,  y:104, glyph:'●', num:'W', rot:-8, fill:'#2e2a22'})
-  + FIG.paintedMark({x:470, y:80,  glyph:'▲', num:'N', rot:5,  fill:'#2e2a22'})
-  + FIG.paintedMark({x:214, y:226, glyph:'◆', num:'S', rot:-3, fill:'#2e2a22'})
-  + FIG.paintedMark({x:548, y:206, glyph:'■', num:'E', rot:7,  fill:'#2e2a22'})
-);
-
-/* The crate, and the brass rose on its lock face. Nobody has to be told to
-   read a compass round from the top. */
-FIGS.crate = FIG.plate(720, 350,
-  `<rect x="30" y="34" width="420" height="284" rx="5" fill="#7a5f3c" stroke="#4e3c26" stroke-width="4"/>`
-  + `<rect x="30" y="34" width="420" height="7" fill="#9c7c4e" opacity=".55"/>`
-  + `<rect x="30" y="86" width="420" height="16" fill="#49555b" opacity=".85"/>`
-  + `<rect x="30" y="252" width="420" height="16" fill="#49555b" opacity=".85"/>`
-  + FIG.words(240, 72, 'MANIFEST — ONE OF SEVEN', {size:15, fill:'#e8d6ae', spacing:2, opacity:.85})
-  + FIG.paintedMark({x:96,  y:150, glyph:'■', num:5, rot:-9})
-  + FIG.paintedMark({x:300, y:134, glyph:'◆', num:1, rot:6})
-  + FIG.paintedMark({x:124, y:228, glyph:'▲', num:8, rot:4})
-  + FIG.paintedMark({x:318, y:236, glyph:'●', num:3, rot:-5})
-  + FIG.rose({cx:592, cy:176, r:92})
-);
-
-/* What is left of the jetty, and the mark the sea comes up to. */
-FIGS.box = (function(){
-  const base = 258, hw = 112, line = base - hw;
-  const posts = [['L',72,120],['R',132,206],['S',26,292],['T',96,378],['E',150,464],['A',48,550]];
-  let p = '';
-  posts.forEach(([letter,h,x]) => { p += FIG.post({x, base, h, letter}); });
-  return FIG.plate(720, 320,
-    FIG.water({x1:0,x2:720,y:base+6,h:56})
-    + FIG.sand({x1:0,x2:720,y:base-2,h:30})
-    + p
-    + FIG.level({x1:30,x2:690,y:line,label:'HIGH WATER'})
-    // the document box, bolted to the stump of the shore end
-    + `<rect x="18" y="176" width="74" height="60" rx="5" fill="#2b3f44" stroke="#c9a24a" stroke-width="2.5"/>`
-    + `<circle cx="36" cy="206" r="5" fill="#c9a24a"/><circle cx="54" cy="206" r="5" fill="#c9a24a"/>`
-    + `<circle cx="72" cy="206" r="5" fill="#c9a24a"/><circle cx="90" cy="206" r="5" fill="#c9a24a"/>`
-  );
-})();
-
-/* The chart itself. The sums are written on it in the operator's hand; the
-   numbers they refer to are out on the wreck. */
-FIGS.chart = FIG.plate(700, 310,
-  FIG.defs + FIG.paper({x:12,y:12,w:676,h:286})
-  + `<path d="M150 90 q 90 -44 190 -14 q 96 28 128 96 q 24 76 -58 104 q -112 36 -212 4 q -82 -28 -76 -96 q 6 -64 28 -94 z" fill="#b7a97f" stroke="#7d6f4e" stroke-width="2.5"/>`
-  + `<path d="M150 90 q 90 -44 190 -14" stroke="#6c7f6a" stroke-width="5" fill="none" opacity=".5"/>`
-  + `<circle cx="372" cy="150" r="22" fill="none" stroke="#8a3a2a" stroke-width="2.5"/>`
-  + `<circle cx="372" cy="150" r="30" fill="none" stroke="#8a3a2a" stroke-width="1.6" opacity=".7"/>`
-  + FIG.words(372, 196, 'RADIO STN', {size:12, fill:'#8a3a2a', spacing:1})
-  + `<path d="M232 236 l 0 -34 l 56 0 l 0 -34" stroke="#2a2418" stroke-width="2" fill="none" stroke-dasharray="6 5"/>`
-  + `<path d="M226 244 l 6 -12 l 6 12 z" fill="#2a2418"/>`
-  + FIG.words(232, 262, 'the tallest palm', {size:11, fill:'#3f3828'})
-  + FIG.words(560, 92, 'N', {size:16, fill:'#2a2418'})
-  + `<path d="M560 104 l 0 40 M560 104 l -7 10 M560 104 l 7 10" stroke="#2a2418" stroke-width="2" fill="none"/>`
-);
-
-/* The licensed bands, and the only stretch of them this set can reach. */
-FIGS.radio = FIG.plate(720, 330,
-  FIG.board({x:20, y:16, w:420, title:'STATION 7 — LICENSED BANDS', rh:30, rows:[
-    ['CALLING & DISTRESS (W/T)','500 kc/s'],
-    ['DISTRESS (R/T)','121.5 Mc/s'],
-    ['HARBOUR & PORT OPS','156.8 Mc/s'],
-    ['WEATHER BROADCAST','162.4 Mc/s']]})
-  + `<rect x="470" y="16" width="230" height="186" rx="6" fill="#122025" stroke="#3a565c" stroke-width="2"/>`
-  + FIG.words(585, 44, 'MAIN TUNING SCALE', {size:12, fill:'#4fa39b', spacing:1})
-  + `<line x1="498" y1="120" x2="672" y2="120" stroke="#d8c39a" stroke-width="2.5"/>`
-  + (function(){
-      let t=''; for(let i=0;i<=10;i++){ const x=498+i*17.4; const big=(i%5===0);
-        t+=`<line x1="${x.toFixed(1)}" y1="120" x2="${x.toFixed(1)}" y2="${big?106:112}" stroke="#d8c39a" stroke-width="${big?2:1}"/>`; }
-      return t; })()
-  + FIG.words(498, 146, '88', {size:15, fill:'#ffe9b8'})
-  + FIG.words(672, 146, '135', {size:15, fill:'#ffe9b8'})
-  + FIG.words(585, 174, 'Mc/s — and nothing outside it', {size:11, fill:'#8a9a95'})
-  + `<path d="M585 96 l 0 -16 l -7 0 l 7 -12 l 7 12 l -7 0" fill="#ffe9b8"/>`
-  + FIG.words(360, 296, 'the set reaches what the scale reaches', {size:12, fill:'#8a9a95'})
-);
-
-/* Scratched into the steel beside the hatch. */
-FIGS.hatch = FIG.plate(700, 170,
-  `<rect x="20" y="20" width="660" height="130" rx="8" fill="#2b3338" stroke="#4a585e" stroke-width="3"/>`
-  + `<rect x="20" y="20" width="660" height="9" fill="#67767d" opacity=".4"/>`
-  + (function(){ let r=''; [46,634].forEach(x=>{ [46,124].forEach(y=>{
-      r+=`<circle cx="${x}" cy="${y}" r="7" fill="#1b2227" stroke="#67767d" stroke-width="2"/>`; }); }); return r; })()
-  + FIG.words(350, 96, 'ZKDW NHHSV LW RXW LV WKH VWRUP',
-      {size:26, fill:'#cfd8dc', spacing:2, opacity:.92})
-  + `<path d="M96 108 l 500 -4" stroke="#8d9aa0" stroke-width="1" opacity=".35" fill="none"/>`
-);
-
-/* The calibration log. The lamps say how many dials were right, never which. */
-FIGS.transmitter = (function(){
-  const log = [[[1,2,3],0],[[3,9,1],2],[[2,9,4],2],[[3,8,4],2]];
-  let rows='', y=92;
-  log.forEach(([dials,lit])=>{
-    dials.forEach((d,i)=>{
-      const x=150+i*76;
-      rows += `<rect x="${x-26}" y="${y-30}" width="52" height="46" rx="4" fill="#06130a" stroke="#1f4a2c" stroke-width="2"/>`;
-      rows += FIG.words(x, y+4, String(d), {size:26, fill:'#9df0b4'});
-    });
-    for(let i=0;i<3;i++) rows += FIG.lamp({x:452+i*46, y:y-8, on:i<lit});
-    rows += FIG.words(620, y+2, lit?`${lit} lit`:'none lit', {anchor:'start', size:13, fill:'#8a9a95'});
-    y += 62;
+/* The page from the signal book: the legend the hoist is read with. */
+const bookArt = { w: 720, h: 430, body: (() => {
+  let b = ART.paper(20, 14, 680, 402);
+  b += W(360, 60, 'Signals', { size: 30, spacing: 6 });
+  b += `<path d="M236 74H484" stroke="${I.inkSoft}" stroke-width="1.5"/>`;
+  'ACELNORSTW'.split('').forEach((ch, i) => {
+    const x = 60 + (i % 5) * 126, y = 98 + Math.floor(i / 5) * 156;
+    b += flag(ch, x, y, 104, 69) + W(x + 52, y + 69 + 38, ch, { size: 32 });
   });
-  return FIG.plate(720, 340,
-    `<rect x="20" y="16" width="680" height="308" rx="8" fill="#122025" stroke="#3a565c" stroke-width="2"/>`
-    + FIG.words(360, 46, 'CALIBRATION LOG — ONE LAMP PER DIAL CORRECTLY SET',
-        {size:13, fill:'#4fa39b', spacing:1})
-    + rows
-    + FIG.words(150, 330, '—', {size:13, fill:'#8a9a95'})
-  );
-})();
+  return b;
+})() };
 
-/* What is actually left on the shelves. */
-FIGS.locker = FIG.plate(720, 372,
-  `<rect x="24" y="14" width="672" height="344" rx="8" fill="#1b2a2e" stroke="#49555b" stroke-width="3"/>`
-  + `<rect x="24" y="14" width="672" height="8" fill="#6a7a80" opacity=".4"/>`
-  + FIG.shelf({x:150, y:34,  w:520, label:'SHELF 1 — ROCKETS, PARACHUTE',
-      items:['rocket','rocket*','rocket','rocket*','rocket']})
-  + FIG.shelf({x:150, y:116, w:520, label:'SHELF 2 — HAND FLARES',
-      items:['flare','flare*','flare','flare*','flare','flare*','flare']})
-  + FIG.shelf({x:150, y:198, w:520, label:'SHELF 3 — SMOKE FLOATS',
-      items:['smoke*','smoke*']})
-  + FIG.shelf({x:150, y:280, w:520, label:'SHELF 4 — LINE-THROWING CARTRIDGES',
-      items:['cartridge','cartridge','cartridge','cartridge','cartridge','cartridge']})
-);
-
-/* The three high waters, the depth the bar needs, and the hour it gets dark. */
-FIGS.tide = (function(){
-  const base=250, ftPx=17, x0=120;
-  const highs=[['2:10',7,190],['6:40',11,370],['9:55',9,560]];
-  let bars='';
-  highs.forEach(([t,ft,x])=>{
-    const h=ft*ftPx;
-    bars += `<rect x="${x-34}" y="${base-h}" width="68" height="${h}" rx="3" fill="#2d5d63" stroke="#7fc6c0" stroke-width="2"/>`;
-    bars += FIG.words(x, base-h-10, ft+' ft', {size:14, fill:'#ffe9b8'});
-    bars += FIG.words(x, base+22, t, {size:15, fill:'#d8c39a'});
+/* The chart. Its course runs from the wreck to the station in seven legs —
+   and its compass rose has north on the right-hand side of the sheet. */
+const ROUTE = [[120, 420], [120, 300], [300, 300], [300, 180], [180, 180], [180, 70], [420, 70], [610, 70]];
+const chartArt = { w: 720, h: 480, body: (() => {
+  const sea = '#aebfb4', land = '#d9c99d', ink = '#4a3a22', red = '#8a2b1f';
+  let b = `<rect width="720" height="480" fill="${sea}"/>`;
+  // faint soundings in the water so the sea pieces are not blank
+  for (let i = 0; i < 26; i++) b += `<path d="M${(i * 97) % 700 + 8} ${(i * 61) % 460 + 12}q8 -5 16 0" fill="none" stroke="#6f8a82" stroke-width="1.5" opacity=".55"/>`;
+  b += `<path d="M64 452Q30 380 58 300Q20 220 74 150Q60 60 150 34Q260 8 380 26Q520 6 640 30Q700 60 690 150Q712 240 684 330Q700 420 630 450Q500 470 380 452Q230 474 64 452Z" fill="${land}" stroke="${ink}" stroke-width="3"/>`;
+  b += `<path d="M64 452Q30 380 58 300Q20 220 74 150Q60 60 150 34Q260 8 380 26Q520 6 640 30Q700 60 690 150Q712 240 684 330Q700 420 630 450Q500 470 380 452Q230 474 64 452Z" fill="none" stroke="${ink}" stroke-width="9" stroke-opacity=".12"/>`;
+  // high ground
+  [[430, 215, 96, 52], [430, 215, 62, 32], [430, 215, 30, 14], [560, 150, 44, 26], [220, 380, 50, 22]].forEach(([cx, cy, rx, ry]) => {
+    b += `<ellipse cx="${cx}" cy="${cy}" rx="${rx}" ry="${ry}" fill="none" stroke="${ink}" stroke-opacity=".35" stroke-width="1.5" stroke-dasharray="3 5"/>`;
   });
-  let ticks='';
-  for(let f=0; f<=12; f+=3){
-    const y=base-f*ftPx;
-    ticks += `<line x1="${x0-8}" y1="${y}" x2="${x0}" y2="${y}" stroke="#8a9a95" stroke-width="1.5"/>`;
-    ticks += FIG.words(x0-16, y+5, String(f), {anchor:'end', size:12, fill:'#8a9a95'});
+  // palms, as a chartmaker marks them
+  [[90, 250], [250, 120], [520, 260], [350, 395], [640, 250], [495, 395]].forEach(([x, y]) => {
+    b += `<path d="M${x} ${y}v-14M${x} ${y - 14}q-9 -6 -14 1M${x} ${y - 14}q9 -6 14 1M${x} ${y - 14}q-2 -10 -10 -11M${x} ${y - 14}q2 -10 10 -11" fill="none" stroke="${ink}" stroke-opacity=".55" stroke-width="1.8" stroke-linecap="round"/>`;
+  });
+  // the course
+  b += `<path d="M${ROUTE.map(p => p.join(' ')).join('L')}" fill="none" stroke="${red}" stroke-width="4.5" stroke-dasharray="11 8" stroke-linejoin="round"/>`;
+  ROUTE.forEach(([x, y], i) => {
+    if (i) {
+      const [px, py] = ROUTE[i - 1], mx = (x + px) / 2, my = (y + py) / 2;
+      const ang = Math.atan2(y - py, x - px) * 180 / Math.PI;
+      b += `<path d="M-9 -8L9 0L-9 8Z" transform="translate(${mx} ${my}) rotate(${ang})" fill="${red}"/>`;
+    }
+    b += `<circle cx="${x}" cy="${y}" r="8" fill="${land}" stroke="${red}" stroke-width="4"/>`;
+  });
+  b += GL('anchor', 120 - 22, 420 + 12, 44, ink);
+  b += GL('antenna', 610 + 14, 70 - 26, 50, ink);
+  // the rose: north is to the right of the sheet
+  const rx = 585, ry = 330;
+  b += `<circle cx="${rx}" cy="${ry}" r="66" fill="${land}" stroke="${ink}" stroke-width="2.5"/><circle cx="${rx}" cy="${ry}" r="52" fill="none" stroke="${ink}" stroke-width="1" stroke-opacity=".6"/>`;
+  [45, 135, 225, 315].forEach(a => b += `<path d="M0 -40L7 0L0 40L-7 0Z" transform="translate(${rx} ${ry}) rotate(${a})" fill="${ink}" opacity=".35"/>`);
+  [90, 180, 270].forEach(a => b += `<path d="M0 -62L10 0L-10 0Z" transform="translate(${rx} ${ry}) rotate(${a + 90})" fill="none" stroke="${ink}" stroke-width="2"/>`);
+  b += `<path d="M0 -84L13 0L-13 0Z" transform="translate(${rx} ${ry}) rotate(90)" fill="${ink}"/>`;
+  b += `<circle cx="${rx}" cy="${ry}" r="6" fill="${land}" stroke="${ink}" stroke-width="2"/>`;
+  b += W(rx + 100, ry + 12, 'N', { size: 34, fill: ink });
+  // cartouche
+  b += `<rect x="288" y="396" width="184" height="50" fill="${land}" stroke="${ink}" stroke-width="2"/><rect x="293" y="401" width="174" height="40" fill="none" stroke="${ink}" stroke-width="1"/>`;
+  b += W(380, 428, 'Eldermoor I.', { size: 20, fill: ink });
+  b += `<rect x="6" y="6" width="708" height="468" fill="none" stroke="${ink}" stroke-width="4"/>`;
+  return b;
+})() };
+
+/* ---- what stands on the sand ---- */
+function crateBody(open) {
+  let b = `<ellipse cx="80" cy="128" rx="78" ry="7" fill="#000" opacity=".28"/>`;
+  b += `<rect x="12" y="36" width="136" height="90" fill="#6b5233"/>`;
+  [0, 1, 2].forEach(i => b += `<path d="M12 ${58 + i * 23}H148" stroke="#3f2f1b" stroke-width="2"/>`);
+  b += `<rect x="26" y="36" width="13" height="90" fill="#3a3f44"/><rect x="121" y="36" width="13" height="90" fill="#3a3f44"/>`;
+  if (!open) {
+    b += `<rect x="6" y="24" width="148" height="16" rx="2" fill="#7d6240"/><rect x="6" y="24" width="148" height="5" rx="2" fill="#9a7c52"/>`;
+    b += `<path d="M70 64v-8a10 10 0 0 1 20 0v8" fill="none" stroke="#9aa3a7" stroke-width="4.5"/>`
+      + `<rect x="60" y="62" width="40" height="27" rx="4" fill="${I.brass}" stroke="${I.brassDark}" stroke-width="2"/>`;
+    ['blue', 'red', 'white', 'yellow'].forEach((c, i) => b += `<circle cx="${67 + i * 8.6}" cy="75.5" r="3.4" fill="${C[c]}" stroke="#000" stroke-opacity=".5" stroke-width=".8"/>`);
+  } else {
+    b += `<rect x="12" y="36" width="136" height="16" fill="#17100a"/>`;
+    b += `<g transform="rotate(-26 8 34)"><rect x="6" y="14" width="148" height="16" rx="2" fill="#7d6240"/><rect x="6" y="14" width="148" height="5" rx="2" fill="#9a7c52"/></g>`;
+    b += `<rect x="62" y="22" width="44" height="30" fill="${I.paper}" stroke="${I.paperDark}" transform="rotate(8 84 37)"/>`;
   }
-  return FIG.plate(720, 310,
-    `<rect x="470" y="30" width="230" height="240" fill="#05090c" opacity=".62"/>`
-    + FIG.words(585, 54, 'DARK FROM 7:00', {size:13, fill:'#8aa3b5', spacing:1})
-    + `<line x1="${x0}" y1="${base}" x2="700" y2="${base}" stroke="#8a9a95" stroke-width="2"/>`
-    + `<line x1="${x0}" y1="30" x2="${x0}" y2="${base}" stroke="#8a9a95" stroke-width="2"/>`
-    + ticks + bars
-    + FIG.level({x1:x0, x2:700, y:base-9*ftPx, label:'THE BAR — 9 FT', stroke:'#e0a86a'})
-    + FIG.words(42, base-6*ftPx, 'feet', {size:12, fill:'#8a9a95', rot:-90})
-  );
-})();
-
-/* The channel out, as the lead line found it. */
-FIGS.winch = (function(){
-  const surf=74, fmPx=21, x0=116;
-  const sound=[[200,3],[330,1],[460,5],[590,8]];
-  let bed='M'+x0+' '+(surf+10);
-  sound.forEach(([x,d])=>{ bed += ` L${x} ${surf+d*fmPx}`; });
-  bed += ` L700 ${surf+9*fmPx} L700 ${surf+10*fmPx} L${x0} ${surf+10*fmPx} Z`;
-  let marks='';
-  sound.forEach(([x,d],i)=>{
-    marks += `<line x1="${x}" y1="${surf}" x2="${x}" y2="${surf+d*fmPx}" stroke="#ffe9b8" stroke-width="2" stroke-dasharray="4 4"/>`;
-    marks += `<circle cx="${x}" cy="${surf+d*fmPx}" r="5" fill="#ffe9b8"/>`;
-    marks += `<circle cx="${x}" cy="${surf-14}" r="13" fill="#122025" stroke="#c9a24a" stroke-width="2"/>`;
-    marks += FIG.words(x, surf-9, String(i+1), {size:14, fill:'#ffe9b8'});
-  });
-  let scale='';
-  for(let f=0; f<=10; f++){
-    const y=surf+f*fmPx;
-    scale += `<line x1="${x0-10}" y1="${y}" x2="${x0}" y2="${y}" stroke="#8a9a95" stroke-width="${f%5===0?2:1}"/>`;
-    if(f%1===0) scale += FIG.words(x0-16, y+4, String(f), {anchor:'end', size:11, fill:'#8a9a95'});
+  return b;
+}
+function chestBody(open) {
+  let b = `<ellipse cx="84" cy="105" rx="80" ry="6.5" fill="#000" opacity=".28"/>`;
+  if (open) b += `<path d="M18 52Q84 -14 150 52Z" fill="#3a1f1a" stroke="#241310" stroke-width="2"/><path d="M30 50Q84 2 138 50" fill="none" stroke="${I.brass}" stroke-width="3" opacity=".7"/>`;
+  b += `<rect x="14" y="50" width="140" height="52" rx="3" fill="#5a2e26" stroke="#2c1612" stroke-width="2"/>`;
+  b += `<rect x="14" y="50" width="16" height="52" fill="${I.brass}" opacity=".85"/><rect x="138" y="50" width="16" height="52" fill="${I.brass}" opacity=".85"/>`;
+  if (!open) {
+    b += `<path d="M14 54V40Q84 6 154 40V54Z" fill="#6b3a30" stroke="#2c1612" stroke-width="2"/><path d="M30 44Q84 16 138 44" fill="none" stroke="${I.brass}" stroke-width="3" opacity=".8"/>`;
+    b += `<rect x="60" y="46" width="48" height="22" rx="3" fill="${I.brass}" stroke="${I.brassDark}" stroke-width="2"/>`;
+    [0, 1, 2, 3, 4].forEach(i => b += `<rect x="${64.500 + i * 8.200}" y="51" width="6" height="12" rx="1" fill="#17100a"/>`);
+  } else {
+    b += `<rect x="30" y="50" width="108" height="12" fill="#150c0a"/>`;
+    b += `<rect x="52" y="40" width="30" height="22" fill="${I.paper}" stroke="${I.paperDark}" transform="rotate(-12 67 51)"/><rect x="84" y="42" width="30" height="20" fill="${I.paper}" stroke="${I.paperDark}" transform="rotate(9 99 52)"/>`;
   }
-  const drumY=surf+10*fmPx+34;
-  let drum=`<rect x="${x0-6}" y="${drumY}" width="${706-x0}" height="66" rx="7"
-      fill="#2a2119" stroke="#8d7450" stroke-width="2"/>`;
-  sound.forEach(([x],i)=>{
-    drum += `<rect x="${x-24}" y="${drumY+11}" width="48" height="44" rx="4"
-        fill="#14100c" stroke="#c9a24a" stroke-width="2"/>`;
-    drum += FIG.words(x, drumY+42, '?', {size:24, fill:'#5e5445'});
-    drum += FIG.words(x, drumY+74, String(i+1), {size:12, fill:'#c9a24a'});
+  return b;
+}
+function binnacleBody(open) {
+  let b = `<ellipse cx="64" cy="190" rx="52" ry="7" fill="#000" opacity=".28"/>`;
+  b += `<path d="M44 96H84L94 190H34Z" fill="#6b4a2c" stroke="#2f2012" stroke-width="2"/><path d="M40 138H88" stroke="#2f2012" stroke-width="2" opacity=".6"/>`;
+  b += `<path d="M22 86h84" stroke="#3a3f44" stroke-width="7" stroke-linecap="round"/><circle cx="18" cy="84" r="12" fill="#8c2f27" stroke="#2a1512" stroke-width="2"/><circle cx="110" cy="84" r="12" fill="#2f6b48" stroke="#12261b" stroke-width="2"/>`;
+  b += `<path d="M30 98Q30 38 64 38Q98 38 98 98Z" fill="${I.brass}" stroke="${I.brassDark}" stroke-width="2.5"/><path d="M40 92Q40 50 60 46" fill="none" stroke="#fff" stroke-opacity=".35" stroke-width="4" stroke-linecap="round"/>`;
+  b += `<circle cx="64" cy="70" r="15" fill="${open ? '#f3e7c2' : '#16242a'}" stroke="${I.brassDark}" stroke-width="3"/>`;
+  if (open) b += `<path d="M64 58L68 70L64 82L60 70Z" fill="#8a2b1f"/>`;
+  b += `<rect x="54" y="30" width="20" height="10" rx="3" fill="${I.brassDark}"/>`;
+  return b;
+}
+function scrapsBody(whole) {
+  if (whole) {
+    return `<ellipse cx="88" cy="74" rx="80" ry="6" fill="#000" opacity=".22"/><g transform="rotate(-5 88 40)"><rect x="18" y="8" width="140" height="62" fill="#d9c99d" stroke="#4a3a22" stroke-width="2"/>`
+      + `<path d="M40 58V44H76V30H56V18H130" fill="none" stroke="#8a2b1f" stroke-width="2.5" stroke-dasharray="5 4"/><circle cx="128" cy="50" r="9" fill="none" stroke="#4a3a22" stroke-width="1.5"/></g>`;
+  }
+  let b = `<ellipse cx="88" cy="74" rx="80" ry="6" fill="#000" opacity=".2"/>`;
+  [[10, 30, -14], [52, 10, 9], [98, 22, -6], [34, 44, 16], [80, 46, -20], [124, 44, 11]].forEach(([x, y, r], i) => {
+    b += `<g transform="rotate(${r} ${x + 22} ${y + 14})"><rect x="${x}" y="${y}" width="44" height="29" fill="${i % 2 ? '#d9c99d' : '#aebfb4'}" stroke="#4a3a22" stroke-width="1.5"/><path d="M${x + 6} ${y + 18}h${14 + i * 3}" stroke="#8a2b1f" stroke-width="2" stroke-dasharray="4 3"/></g>`;
   });
+  return b;
+}
 
-  return FIG.plate(720, 432,
-    FIG.water({x1:x0, x2:700, y:surf, h:10*fmPx})
-    + `<path d="${bed}" fill="#5c4a30" stroke="#8d7450" stroke-width="2"/>`
-    + `<rect x="0" y="${surf}" width="${x0}" height="${10*fmPx}" fill="#5c4a30" opacity=".85"/>`
-    + FIG.words(56, surf+70, 'BEACH', {size:12, fill:'#cbb68e', rot:-90})
-    + scale + marks
-    + FIG.words(x0-16, surf-16, 'fathoms', {anchor:'end', size:11, fill:'#8a9a95'})
-    + FIG.words(660, surf+200, 'OPEN WATER', {size:12, fill:'#9fd4cf'})
-    + drum
-    + FIG.words(x0-14, drumY+44, 'WHEEL', {anchor:'end', size:11, fill:'#8a9a95'})
-  );
-})();
+const POS1 = {
+  floats:   { x: 67.8, y: 56.7, w: 13.4, h: 14.5 },
+  hoist:    { x: 75.4, y: 15.6, w: 9.5,  h: 36.7 },
+  crate:    { x: 46,   y: 70,   w: 10,   h: 15 },
+  chest:    { x: 75,   y: 80.5, w: 10.5, h: 12.4 },
+  chart:    { x: 31,   y: 86,   w: 11,   h: 9 },
+  binnacle: { x: 17.5, y: 68,   w: 8,    h: 22 },
+};
 
-const ROOMS = [
-/* ================= ROOM 1 — THE BEACH ================= */
-{
+const ROOM1 = {
   id:'beach', name:'Room 1 — The Beach', scene:'beach', fx:'mist',
   stageFx:'swell',
   relays:[{el:'rl-beach',mode:'pulse',period:3.4}],
   wrongSound:'wave',
   intro:"Dawn. A graveyard of cargo and canvas. Find a way off this beach.",
-  objective:"Explore the wreckage — <b>glowing rings</b> mark what you can examine. Nothing here explains itself: the clues live in different pieces of wreckage.",
+  objective:"<b>Glowing rings</b> mark what is worth a closer look. A lock shows you the kind of answer it wants — the answer itself is always somewhere else on the beach.",
   entryBeat:"As you take your first steps up the beach, the treeline goes quiet all at once — the way a room goes quiet when something walks in.",
   entrySound:null,
-  completeText:"Chart in hand, you leave the wreck behind. Five paces north, four east, and a trail opens in the vines like a mouth.",
-  chain:"Five lifeboat boards lie in the sand with a copper tack driven through one letter of each, and the hull's rail lists the Eldermoor's own four boats in davit order — MARINER is not among them — which gives SAIL → the mainsail's wind marks pair each shipper's symbol with a compass point, and the crate's lock face is a compass rose, so the marks read round from north: 8513 → six jetty posts are branded with letters and the high-water mark rules out the two that never get covered, leaving four the flood takes shortest first: SALT → the chart asks one pace north per man who signed the articles and one east per man who made his mark: 5 and 4 = 54.",
+  completeText:"The compass swings once and settles. A course to follow and a needle to follow it by — you leave the wreck behind, and a trail opens in the vines like a mouth.",
+  chain:"The crate's padlock has four coloured rings, and the net along the hull is full of glass floats in the same colours: 2 blue, 4 red, 5 white, 7 yellow = 2457 → the page in the crate is cut from the signal book, and reads the five flags still flying from the mast, top to bottom, as CORAL → the chest gives up a chart torn into six, which goes back together → its course runs in seven legs from the wreck to the station, and its compass rose points north to the right of the sheet, so up the page is west: W N W S W N N opens the binnacle.",
   objects:[
-    { id:'hull', icon:'🚢', name:"Shattered Hull", pos:{x:69,y:52,w:22,h:24},
-      desc:"What is left of the Eldermoor lies on her side, ribs open to the sky. Inside, the dark holds its breath. You call out. Your echo comes back half a second late, and slightly… wrong.\n\nTwo documents survive on her, both still bolted where the law says they must be: the articles of agreement at the stump of the mainmast, and the boat list painted along the rail.", figure:FIGS.hull },
-    { id:'driftwood', icon:'🪵', name:'Driftwood Planks', pos:{x:4,y:78,w:12,h:14},
-      desc:"Five lifeboat name-boards lie where the surf left them, face up in the sand and in no order at all — the sea saw to that.\n\nThrough one letter of each board somebody has driven a copper tack and hammered it flat. That is deliberate work, and it is not storm damage.\n\nOne of these boats was never hers.", figure:FIGS.driftwood,
-      puzzle:{
-        prompt:"Read the tacked letters. What word did they leave you?",
-        placeholder:"FOUR LETTERS", answers:['SAIL'],
+    { id:'floats', icon:'🪢', name:'Net of Glass Floats', pos:POS1.floats,
+      desc:"A fishing net snagged along the hull, still heavy with the glass floats that held it up.",
+      figure:ART.svg(floatsArt.w, floatsArt.h, floatsArt.body),
+      sprite:ART.sprite(POS1.floats, floatsArt.w, floatsArt.h, floatsArt.body) },
+    { id:'hoist', icon:'🚩', name:'Signal Hoist', pos:POS1.hoist,
+      desc:"Five flags still flying from the broken mast, exactly as somebody left them.",
+      figure:ART.svg(hoistArt.w, hoistArt.h, hoistArt.body),
+      sprite:ART.sprite(POS1.hoist, hoistArt.w, hoistArt.h, hoistArt.body, { rot: 5 }) },
+    { id:'crate', icon:'📦', name:'Cargo Crate', pos:POS1.crate,
+      desc:"Iron-banded, salt-swollen, and still shut.",
+      sprite:st=>ART.sprite(POS1.crate, 160, 135, crateBody(st.solved)),
+      puzzle:{ type:'combo', from:['floats'],
+        wheels:[{mark:{color:'blue'}},{mark:{color:'red'}},{mark:{color:'white'}},{mark:{color:'yellow'}}],
+        faces:'0123456789', answer:'2457',
         hints:[
-          "Go along the boards and find the tack on each one. Then count what you have — there are more tacked letters here than the lock has dials.",
-          "The hull's rail carries the Eldermoor's boat list in davit order, and one of these boards is not on it: that one came off some other wreck. Take the tacked letter from each of her four, in davit order.",
-          "SALVAGE gives S, GALE gives A, ADRIFT gives I, PETREL gives L. MARINER is not one of hers. The answer is SAIL."
+          "Four wheels, four coloured rings. Something else on this beach comes in those same colours.",
+          "The glass floats in the net along the hull. Count how many there are of each ring colour — green is on no ring, so leave it out.",
+          "Two blue, four red, five white, seven yellow, in the order the rings run: 2457."
         ],
-        solvedText:"S… A… I… L. Up the beach the Eldermoor's mainsail lies snagged across a rock, folded over on itself and half-buried. Salvage-marked canvas is never blank."
-      }
-    },
-    { id:'sail', icon:'⛵', name:'Torn Sail', pos:{x:23,y:53,w:12,h:16}, revealedBy:'driftwood',
-      desc:"A great sheet of salt-stiff canvas, snagged on the rocks and folded over on itself. You cannot make anything of it while it lies like this — and nothing on this beach has told you yet why it should matter.",
-      revealDesc:"You haul the canvas flat and walk the length of it.\n\nAlong the foot run the Eldermoor's wind marks, still bright in tar — the sailmaker's shorthand, one shipper's symbol against the quarter of the compass it belongs to. He stitched them wherever there was room, in no order whatever:", revealFigure:FIGS.sail,
-      revealSymbols:"● W &nbsp;&nbsp;▲ N &nbsp;&nbsp;◆ S &nbsp;&nbsp;■ E" },
-    { id:'crate', onSolve:{el:'rx-beach',op:.2,fx:'surge'}, icon:'📦', name:'Cargo Crate', pos:{x:46,y:72,w:11,h:14},
-      desc:"A heavy cargo crate, iron-banded and stencilled MANIFEST — ONE OF SEVEN. Five sister crates lie burst open on the rocks around it. This one is still shut.\n\nThe shipper's marks are painted along its side wherever the boards gave a flat face, each with a number against it and nothing at all to say which comes first.\n\nThe lock is a four-digit dial, and its face is a brass compass rose.", figure:FIGS.crate,
-      puzzle:{
-        type:'keypad',
-        prompt:"Enter the four-digit combination.", answers:['8513'],
+        solvedText:"The shackle drops. Inside, wrapped in oilcloth, is a page cut from the ship's signal book.",
+        inside:{ name:'From the signal book', figure:ART.svg(bookArt.w, bookArt.h, bookArt.body) } } },
+    { id:'chest', icon:'🧰', name:"Captain's Sea Chest", pos:POS1.chest,
+      desc:"Brass-bound, with five lettered wheels where a keyhole should be.",
+      sprite:st=>ART.sprite(POS1.chest, 168, 112, chestBody(st.solved)),
+      puzzle:{ type:'combo', from:['hoist','crate'], skin:'plate',
+        wheels:5, faces:'ACELNORSTW', answer:'CORAL',
         hints:[
-          "Four numbers and no order. The marks mean nothing by themselves — something else on this beach says which wind each one belongs to.",
-          "The mainsail's wind marks do the pairing. The lock face is a compass rose, so it is read round from the top the way any compass is read.",
-          "North is 8, east is 5, south is 1, west is 3. Enter 8513."
+          "The lock wants five letters, and the only thing on this wreck still saying anything is flying from the mast.",
+          "The page in the crate gives a letter for every flag. Read the hoist from the top flag down.",
+          "Cross, diagonal halves, white panel in a border, black disc, quarters: C, O, R, A, L."
         ],
-        solvedText:"8-5-1-3, and the lid comes up. Inside, bone dry in oilcloth: three signal flares and a tin of matches, packed by somebody who expected them to be needed.",
-        solveBeat:"As the crate lid creaks open, something big shifts its weight in the treeline. One branch snaps. Then the silence resumes, heavier than before.",
-        beatSound:'knock'
-      }
-    },
-    { id:'box', icon:'🧰', name:'Weatherproof Box', pos:{x:75,y:82,w:10,h:10},
-      desc:"A ship's weatherproof document box, bolted to the shore end of the old jetty and locked with four lettered dials.\n\nThe jetty is six mooring posts now, every one snapped off at a different height, every one branded with a single letter by whoever drove them.\n\nThe tide is making. The mark cut across the rock is where the water will stand by noon, and between now and then it will take the posts beneath it one after another.", figure:FIGS.box,
-      puzzle:{
-        prompt:"Set the four lettered dials.", placeholder:"FOUR LETTERS", answers:['SALT'],
+        solvedText:"The wheels line up and the lid lifts. Inside is a chart — torn, deliberately, into six.",
+        inside:{ name:'Six scraps of one chart', figure:ART.svg(176, 81, scrapsBody(false)) } } },
+    { id:'chart', icon:'🗺️', name:'Torn Chart', pos:POS1.chart, hiddenUntil:'chest',
+      desc:"Six scraps of the same chart, laid out on the sand. Somebody did not want this read.",
+      sprite:st=>ART.sprite(POS1.chart, 176, 81, scrapsBody(st.solved)),
+      puzzle:{ type:'tiles', cols:3, rows:2, picture:chartArt, start:[4,0,5,2,1,3],
         hints:[
-          "Six posts and only four dials, so the first question is which posts the water is actually going to reach.",
-          "The two that stand above the high-water mark never get covered at all. The flood takes the rest of them shortest first.",
-          "Below the mark, shortest to tallest: S, then A, then L, then T. Enter SALT."
+          "Tap one scrap, then another, and they change places.",
+          "The heavy border runs round the outside of the sheet, and the coastline and the dashed course have to carry on from scrap to scrap.",
+          "The anchor is bottom left, the compass rose bottom right, the mast top right."
         ],
-        solvedText:"S-A-L-T. The lid lifts on a wad of oilcloth, and folded small inside it, kept dry through everything: a chart of this island, marked up in a hurried hand."
-      }
-    },
-    { id:'chart', icon:'🗺️', name:'Chart Fragment', pos:{x:41,y:88,w:9,h:8}, hiddenUntil:'box',
-      desc:"The chart shows the whole island, and inland, ringed twice in pencil and underlined: RADIO STN.\n\nThe walk to it starts at the tallest palm. The operator wrote the distance the way a purser writes everything — against the crew who walked it:\n\n   “NORTH — one pace for every hand that signed its own name.\n    EAST  — one pace for every hand that could only make its mark.”\n\nThe articles are still bolted to the mainmast stump, out on the wreck.", figure:FIGS.chart,
-      puzzle:{
-        prompt:"Enter the paces: north first, then east.", placeholder:"TWO DIGITS", answers:['54'],
+        solvedText:"The scraps meet. A course runs from the wreck, across the island, to a mast on the far side.",
+        inside:{ name:'The chart, whole', figure:ART.svg(chartArt.w, chartArt.h, chartArt.body) } } },
+    { id:'binnacle', icon:'🧭', name:"Ship's Binnacle", pos:POS1.binnacle,
+      desc:"The compass housing, thrown clear of the wreck. Its hood is held shut by a lock you steer rather than turn.",
+      sprite:st=>ART.sprite(POS1.binnacle, 128, 198, binnacleBody(st.solved), { rot: -7 }),
+      puzzle:{ type:'dirpad', from:['chart'], slots:7, answer:'WNWSWNN',
         hints:[
-          "Two counts, and both of them are on the ship's articles out at the hull. Send somebody to count while the rest of you hold the chart.",
-          "Go down the articles a line at a time: some men wrote their own names and some could only put a cross. Count each. One line was never filled in at all — it is neither.",
-          "Five signed and four made their mark. Five north, four east: enter 54."
+          "Seven presses. The chart from the chest marks a course in seven legs, from the anchor to the mast.",
+          "Before you call any leg north, find the compass rose on that chart. Its N is not at the top of the sheet.",
+          "North is to the right, so up the page is west: W, N, W, S, W, N, N."
         ],
-        solvedText:"Five paces north, four east from the tallest palm, and there it is: a trail cut into the jungle wall, and far up the ridge, the dull glint of an antenna.",
-        solveBeat:"You count your paces aloud. On “four,” something in the undergrowth counts one pace with you. On “five,” it doesn't.",
-        beatSound:'growl'
-      }
-    }
+        solvedText:"The hood swings back on a compass still alive in its bowl, already pointing the way inland." } },
   ]
-},
+};
+
+const FIGS = {};
+const OLD_ROOMS = [
 /* ================= ROOM 2 — THE RADIO STATION ================= */
 {
   id:'radio', name:'Room 2 — The Radio Station', scene:'radio', fx:'motes',
@@ -1206,9 +1120,10 @@ const ROOMS = [
   ]
 }
 ];
+const ROOMS = [ROOM1, ...OLD_ROOMS];
 
 registerScenario({
-  id:'eldermoor',
+  id:'eldermoor', classic:true,
   title:'The Wreck of the Eldermoor',
   sub:'shipwrecked · an island that appears on no chart',
   tagline:'Survive the wreck, raise the dead radio station, and launch the raft before dark.',

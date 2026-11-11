@@ -237,16 +237,13 @@ body:not(.phone) #modal{
      keypad never ends up under a drawing under three paragraphs. */
   display:grid;grid-template-columns:minmax(0,1fr);column-gap:46px;
   width:min(760px,100%);
-  background:
-    /* the light this thing is being held in */
-    radial-gradient(64% 46% at 50% 24%, rgba(var(--glow,255 210 150),.055) 0%, rgba(0,0,0,0) 100%),
-    /* and the shadow it is lying in, feathered away to nothing at the corners */
-    radial-gradient(96% 96% at 50% 48%,
-      rgba(var(--surf,5 14 16),.985) 0%, rgba(var(--surf,5 14 16),.975) 62%,
-      rgba(var(--surf,5 14 16),.90) 80%, rgba(var(--surf,5 14 16),.54) 92%,
-      rgba(var(--surf,5 14 16),0) 100%);
+  background:none;
   animation:liftin .34s cubic-bezier(.22,.61,.36,1);
 }
+/* The shadow the thing is lying in. A slab of the place's own dark, blurred
+   until it has no edge: a box with corners is a window, and this is not one. */
+body:not(.phone) #modal::before{content:"";position:absolute;inset:-6px -10px;border-radius:70px;z-index:-1;
+  background:rgb(var(--surf,5 14 16) / .97);filter:blur(30px);pointer-events:none}
 /* Which pane gets the width depends on where the clue lives. A drawing is
    the clue, so it takes the room and the keypad beside it is capped at the
    width of a keypad. A rack of picture-tiles is both clue and control and
@@ -288,10 +285,10 @@ body:not(.phone) #modal .close-x:hover{opacity:1}
 #modal .close-x:hover{color:var(--ink)}
 .puzzle-box{margin-top:16px;padding:16px;background:rgba(0,0,0,.32);border:1px solid #2c4144;border-radius:10px}
 body:not(.phone) .puzzle-box{border:none;background:none;border-radius:0;padding:14px 0 0;
-  margin-top:18px;border-top:1px solid rgba(var(--rule,120 160 160),.16)}
+  margin-top:18px;border-top:1px solid rgb(var(--rule,120 160 160) / .16)}
 body:not(.phone) .solved-note{border:none;background:none;border-left:2px solid var(--ok);
   border-radius:0;padding:4px 0 4px 16px;margin-top:18px}
-body:not(.phone) .hints{border-top:1px solid rgba(var(--rule,120 160 160),.14)}
+body:not(.phone) .hints{border-top:1px solid rgb(var(--rule,120 160 160) / .14)}
 body:not(.phone) .hint-text{background:rgba(216,195,154,.07)}
 .puzzle-box .prompt{font-family:var(--font-label);color:var(--teal-hi);margin-bottom:10px}
 .answer-row{display:flex;gap:10px;flex-wrap:wrap}
@@ -800,7 +797,7 @@ svg.glyph{display:block}
 .lk-step:hover{background:rgba(0,0,0,.38)}
 .lk-face{width:58px;height:70px;border:none;border-radius:9px;display:flex;align-items:center;justify-content:center;padding:0;
   background:linear-gradient(180deg,#07090a 0%,#22292d 44%,#22292d 56%,#07090a 100%);color:#f3e9cc;
-  font-family:var(--font-display);font-size:2.1rem;line-height:1;
+  font-family:var(--font-num);font-variant-numeric:lining-nums tabular-nums;font-weight:700;font-size:2.1rem;line-height:1;
   box-shadow:inset 0 0 0 2px rgba(0,0,0,.7),0 1px 0 rgba(255,255,255,.22)}
 .lk-wheel.ringed .lk-face{box-shadow:inset 0 0 0 2px rgba(0,0,0,.7),0 0 0 4px var(--ring),0 0 0 5.5px rgba(0,0,0,.5)}
 .lk-wheel.ringed{gap:8px}
@@ -813,10 +810,10 @@ svg.glyph{display:block}
 /* slots: the shape of an answer you enter one piece at a time */
 .lk-slots{display:flex;gap:7px;justify-content:center;flex-wrap:wrap}
 .lk-slots i{width:34px;height:34px;border-radius:7px;background:rgba(0,0,0,.5);font-style:normal;
-  box-shadow:inset 0 0 0 1.5px rgba(var(--rule,120 160 160),.4);display:flex;align-items:center;justify-content:center;
+  box-shadow:inset 0 0 0 1.5px rgb(var(--rule,120 160 160) / .4);display:flex;align-items:center;justify-content:center;
   color:var(--sand);font-family:var(--font-display);font-size:1.2rem;line-height:1}
 .lk-slots i svg{width:20px;height:20px}
-.lk-slots i.set{background:rgba(var(--glow,255 210 150),.18);box-shadow:inset 0 0 0 1.5px rgba(var(--glow,255 210 150),.6)}
+.lk-slots i.set{background:rgb(var(--glow,255 210 150) / .18);box-shadow:inset 0 0 0 1.5px rgb(var(--glow,255 210 150) / .6)}
 .lk-slots.pips i{width:26px;height:26px;border-radius:50%}
 
 /* a compass you press */
@@ -896,7 +893,7 @@ svg.glyph{display:block}
 .tn-scale{display:flex;justify-content:space-between;font-size:.7rem;color:var(--dim);letter-spacing:1px}
 
 .tool-row{display:flex;gap:10px;justify-content:center;margin-top:10px;flex-wrap:wrap}
-.tool-btn{padding:8px 16px;border-radius:8px;border:1px solid rgba(var(--rule,120 160 160),.45);background:rgba(0,0,0,.4);
+.tool-btn{padding:8px 16px;border-radius:8px;border:1px solid rgb(var(--rule,120 160 160) / .45);background:rgba(0,0,0,.4);
   color:var(--sand);font-size:.84rem;letter-spacing:.5px}
 .tool-btn:hover{background:rgba(0,0,0,.6)}
 @media (max-width:520px){
@@ -1068,8 +1065,8 @@ body:not(.phone) #phone-scene{display:none}
 body.phone #stage-wrap,body.phone #vignette,body.phone #grain,body.phone #objective,body.phone #hub-screen{display:none}
 body.phone #hud{font-size:.85rem}
 body.phone #modal{max-height:86vh;
-  background:linear-gradient(165deg, rgba(var(--card,30 50 55),1), rgba(0,0,0,.45));
-  border-color:rgba(var(--rule,61 90 96),.45)}
+  background:linear-gradient(165deg, rgb(var(--card,30 50 55) / 1), rgba(0,0,0,.45));
+  border-color:rgb(var(--rule,61 90 96) / .45)}
 @media (max-width:640px){
   .qr-code{font-size:1.9rem;letter-spacing:7px}
   #crew-bar{display:none}
