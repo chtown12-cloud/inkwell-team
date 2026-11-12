@@ -2,11 +2,6 @@
    SCENARIO: DERELICT — THE PROSPERO (haunted space ship)
    Wake from cryo forty years off course. The crew is gone.
    Something lives in the vents. Reach the escape pod.
-
-   Built on the reset grammar (see PUZZLES.md): locks that look like locks,
-   and whatever opens them somewhere else in the room. Each object carries
-   its own art into the room as `sprite`; the backdrops below are only the
-   place.
    ============================================================ */
 (function(){
 const SCENES={};
@@ -45,15 +40,56 @@ ${[0,1,2,3].map(i=>`<circle cx="${260+i*380}" cy="84" r="9" fill="#223140"/>`).j
   <circle cx="1102" cy="52" r="4" fill="#3a4856"/><circle cx="1238" cy="126" r="4" fill="#3a4856"/>
   <path d="M1150 138 l14 26 M1188 138 l-8 22" stroke="#0a0e14" stroke-width="5"/>
 </g>
+<!-- cryo pods: six, one open -->
+<g id="art-pods">
+${[0,1,2,3,4,5].map(i=>{
+  const x=120+i*172, open=i===3;
+  return `<g>
+   <rect x="${x}" y="330" width="132" height="290" rx="34" fill="url(#pPod)" stroke="#31465c" stroke-width="5"/>
+   ${open
+     ?`<rect x="${x+14}" y="356" width="104" height="180" rx="22" fill="#05080d"/>
+       <ellipse class="flick" cx="${x+66}" cy="560" rx="70" ry="16" fill="url(#pGlow)"/>`
+     :`<rect x="${x+14}" y="356" width="104" height="180" rx="22" fill="#0d1622"/>
+       <circle class="slowblink" cx="${x+66}" cy="600" r="6" fill="#7fd4ff"/>
+       <path d="M${x+24} 380 q40 26 84 120" stroke="#2a4258" stroke-width="8" fill="none" opacity=".6"/>`}
+   <rect x="${x+30}" y="600" width="72" height="10" rx="4" fill="#26313e"/>
+   <text x="${x+66}" y="348" text-anchor="middle" font-family="Special Elite" font-size="13" fill="#7f97ab">POD ${i+1}</text>
+  </g>`;}).join('')}
+</g>
 <!-- cryo vapor bleeding out of the open pod -->
-<ellipse class="steam" cx="560" cy="560" rx="26" ry="11" fill="#7fd4ff" opacity=".18"/>
-<ellipse class="steam" cx="592" cy="540" rx="18" ry="8" fill="#7fd4ff" opacity=".14" style="animation-delay:1.7s"/>
-<ellipse class="steam" cx="540" cy="520" rx="14" ry="7" fill="#c8ecff" opacity=".12" style="animation-delay:3.1s"/>
+<ellipse class="steam" cx="620" cy="560" rx="26" ry="11" fill="#7fd4ff" opacity=".18"/>
+<ellipse class="steam" cx="652" cy="540" rx="18" ry="8" fill="#7fd4ff" opacity=".14" style="animation-delay:1.7s"/>
+<ellipse class="steam" cx="596" cy="520" rx="14" ry="7" fill="#c8ecff" opacity=".12" style="animation-delay:3.1s"/>
+<!-- maintenance locker -->
+<g id="art-locker">
+  <rect x="1300" y="380" width="120" height="250" rx="8" fill="#1c2836" stroke="#31465c" stroke-width="5"/>
+  <line x1="1360" y1="380" x2="1360" y2="630" stroke="#31465c" stroke-width="4"/>
+  <circle cx="1348" cy="505" r="7" fill="#0a0e14" stroke="#5a7a94" stroke-width="3"/>
+  <text x="1360" y="368" text-anchor="middle" font-size="20" fill="#5a7a94">⚡9 ❄2 ☢6 💧4</text>
+</g>
+<!-- med terminal -->
+<g id="art-terminal">
+  <rect x="920" y="420" width="150" height="110" rx="8" fill="#0a141c" stroke="#2a4258" stroke-width="5"/>
+  <rect class="flick" x="934" y="434" width="122" height="66" rx="4" fill="#06130c"/>
+  ${[0,1,2].map(i=>`<line class="flick" x1="944" y1="${450+i*16}" x2="${1010+i*12}" y2="${450+i*16}" stroke="#3fd68c" stroke-width="3"/>`).join('')}
+  <rect x="960" y="530" width="70" height="70" fill="#141e2a"/>
+</g>
+<!-- evac placard -->
+<g id="art-placard">
+  <rect x="1450" y="330" width="98" height="128" rx="4" fill="#c2cad2" transform="rotate(2 1499 394)"/>
+  <text x="1499" y="356" text-anchor="middle" font-family="Special Elite" font-size="11" fill="#7a2a1a">EVACUATION</text>
+  ${[0,1,2,3].map(i=>`<line x1="1462" y1="${372+i*18}" x2="1536" y2="${372+i*18}" stroke="#4a5560" stroke-width="3"/>`).join('')}
+</g>
+<!-- cargo crate + manifest clipboard -->
+<g id="el-manifest">
+  <rect x="430" y="700" width="150" height="110" fill="#1c2836" stroke="#31465c" stroke-width="4"/>
+  <rect x="470" y="676" width="86" height="110" rx="6" fill="#c2cad2" transform="rotate(-7 513 731)"/>
+  ${[0,1,2,3].map(i=>`<line x1="486" y1="${706+i*18}" x2="${540}" y2="${702+i*18}" stroke="#4a5560" stroke-width="3" transform="rotate(-7 513 731)"/>`).join('')}
+</g>
 <!-- dead crew light + drag streak -->
 <path d="M700 760 q160 20 340 -8" stroke="#0a0e14" stroke-width="26" fill="none" opacity=".5"/>
 <circle class="slowblink" cx="60" cy="200" r="8" fill="#c94a3d"/>
 <text x="84" y="206" font-family="Special Elite" font-size="15" fill="#7f5a5a">LIFE SUPPORT: RESERVE</text>
-<!--SPRITES-->
 <g class="atmo">
 <!-- something in here is still running -->
 <circle id="rl-cryobay" cx="190" cy="170" r="6" fill="#7fd4ff" opacity=".12"/>
@@ -87,6 +123,13 @@ SCENES.bridge=()=>`
 <!-- the great viewport -->
 <g>
   <path d="M180 80 H1420 L1360 420 H240 Z" fill="#02040a" stroke="#26313e" stroke-width="14"/>
+  ${Array.from({length:60},(_,i)=>`<circle class="tw" cx="${(i*167+90)%1180+220}" cy="${(i*61)%300+100}" r="${.8+(i%3)*.7}" fill="#dfe8ff" style="animation-delay:${(i*.53)%4}s"/>`).join('')}
+  <g class="drift">
+    <path d="M480 200 l60 -12 20 26 -70 14 z" fill="#0e1622"/>
+    <path d="M980 150 l40 8 -8 22 -44 -8 z" fill="#0c141e"/>
+  </g>
+  <circle class="slowblink" cx="1180" cy="170" r="5" fill="#ffb45e"/>
+  <line x1="800" y1="80" x2="800" y2="420" stroke="#26313e" stroke-width="10"/>
 </g>
 <!-- corridor door where something passes -->
 <g>
@@ -97,7 +140,53 @@ SCENES.bridge=()=>`
 <!-- console bank -->
 <rect x="240" y="560" width="1140" height="34" rx="8" fill="#26313e"/>
 <rect x="260" y="594" width="1100" height="150" rx="10" fill="url(#pCon)"/>
-<!--SPRITES-->
+<!-- captain's chair, turned away -->
+<g opacity=".95">
+  <rect x="740" y="470" width="130" height="150" rx="20" fill="#0c121a"/>
+  <rect x="760" y="600" width="90" height="16" rx="6" fill="#1a2530"/>
+  <rect x="790" y="616" width="26" height="60" fill="#0c121a"/>
+</g>
+<!-- antenna / radar console -->
+<g id="art-antenna">
+  <rect x="600" y="430" width="200" height="120" rx="10" fill="#121c28" stroke="#31465c" stroke-width="5"/>
+  <circle cx="700" cy="490" r="44" fill="#06130c" stroke="#2a4258" stroke-width="4"/>
+  <g class="radarsweep" style="transform-origin:700px 490px"><line x1="700" y1="490" x2="700" y2="450" stroke="#3fd68c" stroke-width="3"/><line x1="700" y1="490" x2="700" y2="452" stroke="#3fd68c" stroke-width="7" opacity=".25"/></g>
+  <circle class="slowblink" cx="722" cy="472" r="2.5" fill="#3fd68c"/>
+  ${[16,30].map(r=>`<circle cx="700" cy="490" r="${r}" fill="none" stroke="#1c3a2a" stroke-width="2"/>`).join('')}
+  <text class="flick" x="700" y="426" text-anchor="middle" font-family="Special Elite" font-size="17" fill="#3fd68c">DISH: --.--</text>
+</g>
+<!-- captain's log -->
+<g id="art-log">
+  <rect x="330" y="620" width="120" height="80" rx="6" fill="#0a141c" stroke="#2a4258" stroke-width="4"/>
+  <rect class="flick" x="342" y="632" width="96" height="44" fill="#06130c"/>
+  ${[0,1].map(i=>`<line x1="352" y1="${648+i*14}" x2="${420-i*20}" y2="${648+i*14}" stroke="#3fd68c" stroke-width="2.5"/>`).join('')}
+</g>
+<!-- star chart with gouges -->
+<g id="art-starchart">
+  <rect x="1080" y="260" width="220" height="150" rx="6" fill="#0c1420" stroke="#31465c" stroke-width="5"/>
+  ${Array.from({length:14},(_,i)=>`<circle cx="${1100+(i*47)%180}" cy="${280+(i*31)%110}" r="1.6" fill="#8fa8c8"/>`).join('')}
+  <path d="M1110 390 h130" stroke="#c9a04a" stroke-width="2" stroke-dasharray="4 4"/>
+  ${[0,1,2].map(r=>[0,1,2,3,4].map(c=>`<line x1="${1118+c*18}" y1="${352+r*10}" x2="${1126+c*18}" y2="${360+r*10}" stroke="#c97b5a" stroke-width="2.5"/>`).join('')).join('')}
+</g>
+<!-- comms speaker (the beacon loop) -->
+<g id="el-beacon">
+  <circle cx="480" cy="480" r="52" fill="#0c121a" stroke="#31465c" stroke-width="7"/>
+  ${[36,24,12].map(r=>`<circle cx="480" cy="480" r="${r}" fill="none" stroke="#060a10" stroke-width="5"/>`).join('')}
+  <circle class="flick" cx="480" cy="480" r="6" fill="#3fd68c"/>
+</g>
+<!-- nav console (cipher plate) -->
+<g id="el-console">
+  <rect x="900" y="620" width="180" height="86" rx="8" fill="#121c28" stroke="#31465c" stroke-width="5"/>
+  <rect x="916" y="636" width="148" height="30" fill="#0a141c"/>
+  <text x="990" y="657" text-anchor="middle" font-family="Special Elite" font-size="14" fill="#7f97ab">YMJ HTZWXJ...</text>
+  ${[0,1,2,3].map(i=>`<circle cx="${930+i*36}" cy="686" r="8" fill="#1a2530"/>`).join('')}
+</g>
+<!-- reactor pillar -->
+<g id="el-reactor">
+  <rect x="1440" y="380" width="120" height="360" rx="14" fill="#141e2a" stroke="#31465c" stroke-width="6"/>
+  ${[0,1,2,3,4].map(i=>`<rect class="flick" x="1458" y="${408+i*62}" width="84" height="30" rx="4" fill="#0a141c" stroke="#2a4258" stroke-width="2"/>`).join('')}
+  <circle class="slowblink" cx="1500" cy="360" r="9" fill="#c94a3d"/>
+</g>
 <g class="atmo">
 <!-- something in here is still running -->
 <circle id="rl-bridge" cx="230" cy="210" r="6" fill="#7fd4ff" opacity=".12"/>
@@ -107,8 +196,9 @@ SCENES.bridge=()=>`
 <!-- wreckage tumbling past the viewport, and something enormous rising -->
 <g class="drift" style="animation-delay:3s"><path d="M300 250 l34 -8 l10 16 l-38 10z" fill="#12202c" opacity=".8"/></g>
 <g class="drift" style="animation-delay:14s"><path d="M700 150 l22 6 l-6 16 l-24 -6z" fill="#101c26" opacity=".7"/></g>
-<circle class="riseslow" cx="320" cy="300" r="64" fill="#02040a" opacity=".93" style="animation-duration:70s"/>
-<circle class="riseslow" cx="320" cy="300" r="64" fill="none" stroke="#1b2f45" stroke-width="2" opacity=".6" style="animation-duration:70s"/>
+<circle class="riseslow" cx="320" cy="290" r="80" fill="#1b2f45" opacity=".5" style="animation-duration:70s"/>
+<circle class="riseslow" cx="320" cy="290" r="80" fill="none" stroke="#33597e" stroke-width="2" opacity=".4" style="animation-duration:70s"/>
+<circle class="tw" cx="300" cy="110" r="1.6" fill="#dfe8ff" style="animation-delay:0.0s"/><circle class="tw" cx="460" cy="157" r="1.6" fill="#dfe8ff" style="animation-delay:0.5s"/><circle class="tw" cx="620" cy="114" r="1.6" fill="#dfe8ff" style="animation-delay:1.0s"/><circle class="tw" cx="780" cy="161" r="1.6" fill="#dfe8ff" style="animation-delay:1.5s"/><circle class="tw" cx="940" cy="118" r="1.6" fill="#dfe8ff" style="animation-delay:2.0s"/><circle class="tw" cx="1100" cy="165" r="1.6" fill="#dfe8ff" style="animation-delay:2.5s"/>
 <g class="flick" style="animation-delay:4s"><rect x="200" y="470" width="200" height="4" fill="#7fd4ff" opacity=".13"/></g>
 
 <g class="flick" style="animation-delay:7s"><rect x="1000" y="500" width="160" height="4" fill="#7fd4ff" opacity=".11"/></g>
@@ -292,636 +382,161 @@ const WRONG_BEATS=[
 ];
 const WRONG_SOUNDS=['clank','hiss','clank','growl','hiss'];
 
-/* ============================================================
-   THE DRAWINGS, AND THE ROOMS THEY STAND IN
-
-   Every prop is drawn once and used twice: large in the close-up, and small
-   standing in the room, so what you can see from across the bay is exactly
-   what you read when you lean in.
-   ============================================================ */
-const C = ART.COL, I = ART.INK, W = ART.words, GL = ART.glyph;
-
-/* ============================================================
-   ROOM 1 — THE CRYO BAY
-   The locker's wheels wear four pictograms; the pipe run gives each a colour
-   and the cargo crate's diamond gives each colour a number. The evacuation
-   plan is a maze of welded hatches with one way through it, walked on the
-   terminal's keys. And the lift wants five digits that are written twice in
-   this bay — frosted over on the pods, cracked across on the terminal —
-   and whole in neither place.
-   ============================================================ */
-const P = { hull: '#1c2836', edge: '#31465c', dark: '#0a0e14', deep: '#05080d', plate: '#c2cad2', plateInk: '#27313a',
-            steel: '#3d4d5b', amber: '#ffb45e', crt: '#3fd68c', ice: '#cfeeff', cyan: '#7fd4ff', warn: '#c94a3d' };
-
-/* ---- the pipe run: a colour for every pictogram (and one pipe that is on no wheel) ---- */
-const PIPE_CODE = [['blue', 'snowflake'], ['white', 'fan'], ['yellow', 'bolt'], ['green', 'droplet'], ['red', 'trefoil']];
-const pipesArt = { w: 720, h: 284, body: (() => {
-  let b = '';
-  [96, 624].forEach(x => b += `<rect x="${x - 9}" y="4" width="18" height="276" rx="4" fill="#141c26" stroke="${P.dark}" stroke-width="2"/>`);
-  PIPE_CODE.forEach(([col, glyph], i) => {
-    const y = 16 + i * 54;
-    b += `<rect x="0" y="${y}" width="720" height="36" fill="${P.steel}"/><rect x="0" y="${y + 4}" width="720" height="7" fill="#6f8494" opacity=".55"/><rect x="0" y="${y + 28}" width="720" height="8" fill="#1a232d" opacity=".7"/>`;
-    [40, 680].forEach(x => b += `<rect x="${x - 7}" y="${y - 4}" width="14" height="44" rx="3" fill="#2a3642" stroke="#141c26" stroke-width="2"/>`);
-    b += `<rect x="150" y="${y}" width="118" height="36" fill="${C[col]}"/><rect x="150" y="${y + 4}" width="118" height="7" fill="#fff" opacity=".28"/><rect x="150" y="${y + 28}" width="118" height="8" fill="#000" opacity=".25"/>`;
-    b += `<path d="M150 ${y}v36M268 ${y}v36" stroke="${P.dark}" stroke-width="2.5"/>`;
-    b += `<rect x="330" y="${y - 6}" width="64" height="48" rx="6" fill="${P.plate}" stroke="#56626e" stroke-width="2.5"/>` + GL(glyph, 345, y + 1, 34, P.plateInk);
-    b += `<circle cx="337" cy="${y + 1}" r="2" fill="#56626e"/><circle cx="387" cy="${y + 1}" r="2" fill="#56626e"/>`;
-  });
-  return b;
-})() };
-
-/* ---- the crate: a number for every colour ---- */
-const DIAMOND = { top: ['red', 8], left: ['blue', 3], right: ['yellow', 7], bottom: ['green', 5] };
-const crateArt = { w: 420, h: 330, body: (() => {
-  let b = `<ellipse cx="210" cy="318" rx="204" ry="10" fill="#000" opacity=".35"/>`;
-  b += `<rect x="10" y="34" width="400" height="282" rx="6" fill="#243240" stroke="${P.dark}" stroke-width="4"/>`;
-  [0, 1, 2, 3, 4].forEach(i => b += `<path d="M10 ${78 + i * 52}H410" stroke="${P.dark}" stroke-width="2.5" opacity=".55"/>`);
-  [[10, 34], [386, 34], [10, 292], [386, 292]].forEach(([x, y]) => b += `<rect x="${x}" y="${y}" width="24" height="24" fill="#3a4a59" stroke="${P.dark}" stroke-width="2"/>`);
-  const cx = 210, cy = 176, r = 112, q = r / 2;
-  const quad = { top: [cx, cy - q], right: [cx + q, cy], bottom: [cx, cy + q], left: [cx - q, cy] };
-  const ink = { red: '#fff4e0', blue: '#f1f6ff', yellow: '#2a1e0c', green: '#0e2414' };
-  b += `<path d="M${cx} ${cy - r - 9}L${cx + r + 9} ${cy}L${cx} ${cy + r + 9}L${cx - r - 9} ${cy}Z" fill="${P.plate}" stroke="${P.dark}" stroke-width="3"/>`;
-  Object.keys(quad).forEach(k => {
-    const [x, y] = quad[k], [col, n] = DIAMOND[k];
-    b += `<path d="M${x} ${y - q}L${x + q} ${y}L${x} ${y + q}L${x - q} ${y}Z" fill="${C[col]}" stroke="${P.dark}" stroke-width="3"/>`;
-    b += W(x, y + 17, String(n), { size: 50, face: 'num', weight: 700, fill: ink[col] });
-  });
-  return b;
-})() };
-
-/* ---- the locker ---- */
-const LOCKER_WHEELS = ['bolt', 'snowflake', 'trefoil', 'droplet'];
-const LOCKER_CODE = LOCKER_WHEELS.map(g => {
-  const col = PIPE_CODE.find(p => p[1] === g)[0];
-  return Object.values(DIAMOND).find(d => d[0] === col)[1];
-}).join('');
-function lockerBody(open) {
-  let b = `<ellipse cx="61" cy="270" rx="64" ry="6" fill="#000" opacity=".4"/><rect x="2" y="6" width="118" height="262" rx="7" fill="${P.hull}" stroke="${P.edge}" stroke-width="5"/>`;
-  b += `<rect x="2" y="246" width="118" height="22" fill="#4a4420" opacity=".8"/>` + [0, 1, 2, 3].map(i => `<path d="M${8 + i * 30} 268l14 -22h12l-14 22z" fill="${P.dark}" opacity=".7"/>`).join('');
-  [0, 1, 2].forEach(i => b += `<path d="M14 ${26 + i * 10}h34" stroke="${P.dark}" stroke-width="4" stroke-linecap="round"/>`);
-  if (!open) {
-    b += `<path d="M61 8V246" stroke="${P.edge}" stroke-width="4"/>`;
-    [0, 1, 2].forEach(i => b += `<path d="M74 ${26 + i * 10}h34" stroke="${P.dark}" stroke-width="4" stroke-linecap="round"/>`);
-    b += `<rect x="66" y="118" width="48" height="26" rx="4" fill="#8f7a3c" stroke="#3a2f12" stroke-width="2"/>`;
-    [0, 1, 2, 3].forEach(i => b += `<rect x="${70 + i * 10.6}" y="123" width="7.6" height="16" rx="1.5" fill="#141008"/>`);
-  } else {
-    b += `<rect x="62" y="10" width="55" height="234" fill="${P.deep}"/><path d="M62 150H117" stroke="${P.edge}" stroke-width="4"/>`;
-    b += `<circle cx="90" cy="134" r="26" fill="${P.amber}" opacity=".16"/><rect x="74" y="126" width="32" height="20" rx="6" fill="#30404e" stroke="${P.dark}" stroke-width="2"/><rect x="80" y="131" width="20" height="10" rx="2" fill="${P.amber}"/>`;
-    b += `<path d="M117 8l14 10v228l-14 -6z" fill="#263444" stroke="${P.edge}" stroke-width="3" stroke-linejoin="round"/>`;
-  }
-  return b;
-}
-const cellFig = ART.svg(460, 240, (() => {
-  let b = `<path d="M20 196H440" stroke="${P.edge}" stroke-width="6"/><ellipse cx="230" cy="196" rx="170" ry="9" fill="#000" opacity=".4"/>`;
-  b += `<rect x="74" y="84" width="312" height="106" rx="26" fill="#30404e" stroke="${P.dark}" stroke-width="5"/><rect x="74" y="96" width="312" height="16" fill="#6f8494" opacity=".4"/>`;
-  b += `<rect x="50" y="110" width="30" height="54" rx="6" fill="#56626e" stroke="${P.dark}" stroke-width="4"/><rect x="380" y="110" width="30" height="54" rx="6" fill="#56626e" stroke="${P.dark}" stroke-width="4"/>`;
-  b += `<rect x="150" y="112" width="160" height="50" rx="8" fill="${P.deep}" stroke="${P.dark}" stroke-width="3"/>`;
-  [0, 1, 2, 3].forEach(i => b += `<rect x="${162 + i * 36}" y="122" width="26" height="30" rx="3" fill="${P.amber}" opacity="${i < 3 ? 1 : .22}"/>`);
-  b += `<circle cx="230" cy="137" r="120" fill="${P.amber}" opacity=".06"/>` + GL('bolt', 100, 118, 40, P.amber);
-  return b;
-})());
-
-/* ---- the evacuation plan: nine compartments, and most of the hatches between them welded ---- */
-const PLAN = [['antenna', 'bulb', 'lift'], ['leaf', 'kettle', 'fan'], ['snowflake', 'medic', 'pump']];
-const OPEN = ['2,0|2,1', '2,1|1,1', '1,1|1,0', '1,0|0,0', '0,0|0,1', '0,1|0,2'];
-const isOpen = (r1, c1, r2, c2) => OPEN.includes(`${r1},${c1}|${r2},${c2}`) || OPEN.includes(`${r2},${c2}|${r1},${c1}`);
-/** The one way through: walked out here rather than typed, so the plan and the lock cannot disagree. */
-const ROUTE = (() => {
-  const walk = (r, c, seen) => {
-    if (PLAN[r][c] === 'lift') return [[r, c]];
-    for (const [dr, dc] of [[-1, 0], [1, 0], [0, -1], [0, 1]]) {
-      const nr = r + dr, nc = c + dc;
-      if (nr < 0 || nc < 0 || nr > 2 || nc > 2 || seen.has(nr + ',' + nc) || !isOpen(r, c, nr, nc)) continue;
-      const rest = walk(nr, nc, new Set([...seen, nr + ',' + nc]));
-      if (rest) return [[r, c], ...rest];
-    }
-    return null;
-  };
-  return walk(2, 0, new Set(['2,0'])).map(([r, c]) => PLAN[r][c]);
-})();
-const placardArt = { w: 560, h: 610, body: (() => {
-  const X0 = 40, Y0 = 92, S = 160, wall = '#27313a';
-  let b = `<rect x="6" y="8" width="548" height="596" rx="10" fill="#000" opacity=".3"/><rect x="2" y="2" width="548" height="596" rx="10" fill="${P.plate}" stroke="#7d8892" stroke-width="3"/>`;
-  b += `<rect x="2" y="2" width="548" height="62" rx="10" fill="#a13a2e"/><rect x="2" y="44" width="548" height="20" fill="#a13a2e"/>`;
-  b += GL('lift', 252, 10, 46, '#f6ead0') + `<path d="M150 33h70M162 21l-14 12l14 12" fill="none" stroke="#f6ead0" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" transform="rotate(180 185 33)"/>`
-    + `<path d="M330 33h70M342 21l-14 12l14 12" fill="none" stroke="#f6ead0" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>`;
-  for (let r = 0; r < 3; r++) for (let c = 0; c < 3; c++) {
-    const x = X0 + c * S, y = Y0 + r * S, g = PLAN[r][c];
-    b += `<rect x="${x}" y="${y}" width="${S}" height="${S}" fill="#d9dfe5"/>` + GL(g, x + 44, y + 44, 72, P.plateInk);
-    if (g === 'snowflake') b += `<rect x="${x + 12}" y="${y + 12}" width="${S - 24}" height="${S - 24}" rx="8" fill="none" stroke="#a13a2e" stroke-width="5" stroke-dasharray="14 8"/>` + ART.pin(x + 30, y + 30);
-    if (g === 'lift') b += `<rect x="${x + 12}" y="${y + 12}" width="${S - 24}" height="${S - 24}" rx="8" fill="none" stroke="#2f7d45" stroke-width="6"/>`;
-  }
-  b += `<rect x="${X0}" y="${Y0}" width="${3 * S}" height="${3 * S}" fill="none" stroke="${wall}" stroke-width="10"/>`;
-  const hatch = (x, y, vert, open) => {
-    // a wall between two compartments, with a doorway in the middle of it: clear, or welded shut
-    const len = S, door = 58, a = (len - door) / 2;
-    const seg = (s, e) => vert ? `<path d="M${x} ${y + s}V${y + e}" stroke="${wall}" stroke-width="10"/>` : `<path d="M${x + s} ${y}H${x + e}" stroke="${wall}" stroke-width="10"/>`;
-    let h = seg(0, a) + seg(a + door, len);
-    const mx = vert ? x : x + len / 2, my = vert ? y + len / 2 : y;
-    if (open) h += vert ? `<path d="M${x - 9} ${y + a}h18M${x - 9} ${y + a + door}h18" stroke="${wall}" stroke-width="5"/>` : `<path d="M${x + a} ${y - 9}v18M${x + a + door} ${y - 9}v18" stroke="${wall}" stroke-width="5"/>`;
-    else {
-      h += vert ? `<rect x="${x - 9}" y="${y + a}" width="18" height="${door}" fill="#7d8892" stroke="${wall}" stroke-width="3"/>` : `<rect x="${x + a}" y="${y - 9}" width="${door}" height="18" fill="#7d8892" stroke="${wall}" stroke-width="3"/>`;
-      h += `<path d="M${mx - 13} ${my - 13}L${mx + 13} ${my + 13}M${mx + 13} ${my - 13}L${mx - 13} ${my + 13}" stroke="#a13a2e" stroke-width="6" stroke-linecap="round"/>`;
-    }
-    return h;
-  };
-  for (let r = 0; r < 3; r++) for (let c = 0; c < 2; c++) b += hatch(X0 + (c + 1) * S, Y0 + r * S, true, isOpen(r, c, r, c + 1));
-  for (let r = 0; r < 2; r++) for (let c = 0; c < 3; c++) b += hatch(X0 + c * S, Y0 + (r + 1) * S, false, isOpen(r, c, r + 1, c));
-  return b;
-})() };
-
-/* ---- the terminal: the same nine pictures, on keys that are laid out some other way ---- */
-const PAD = [['fan', 'medic', 'bulb'], ['lift', 'pump', 'snowflake'], ['leaf', 'antenna', 'kettle']];
-const padFig = ART.svg(440, 440, (() => {
-  let b = `<rect x="4" y="4" width="432" height="432" rx="26" fill="#131d27" stroke="${P.edge}" stroke-width="6"/><rect x="26" y="26" width="388" height="388" rx="14" fill="#06130c" stroke="${P.dark}" stroke-width="4"/>`;
-  for (let y = 40; y < 410; y += 8) b += `<path d="M30 ${y}H410" stroke="${P.crt}" stroke-width="1" opacity=".05"/>`;
-  PAD.forEach((row, r) => row.forEach((g, c) => {
-    const x = 110 + c * 110, y = 110 + r * 110;
-    b += `<g data-key="${g}" data-x="${x}" data-y="${y}"><circle cx="${x}" cy="${y}" r="42" fill="#0c2217" stroke="${P.crt}" stroke-width="3"/>`
-      + GL(g, x - 25, y - 25, 50, P.crt) + `<circle class="hit-show" cx="${x}" cy="${y}" r="48" fill="none" stroke="${P.amber}" stroke-width="5"/></g>`;
-  }));
-  return b;
-})());
-function terminalBody(open) {
-  let b = `<rect x="52" y="112" width="46" height="62" fill="#141e2a"/><rect x="30" y="170" width="90" height="10" rx="4" fill="${P.edge}"/>`;
-  b += `<rect x="2" y="2" width="146" height="112" rx="9" fill="#0a141c" stroke="#2a4258" stroke-width="5"/><rect class="flick" x="14" y="14" width="122" height="88" rx="4" fill="#06130c"/>`;
-  if (!open) [0, 1, 2].forEach(r => [0, 1, 2].forEach(c => b += `<circle cx="${47 + c * 28}" cy="${32 + r * 26}" r="7" fill="none" stroke="${P.crt}" stroke-width="2.5" opacity=".85"/>`));
-  else {
-    [0, 1, 2, 3, 4].forEach(i => b += `<rect x="${24 + i * 22}" y="34" width="12" height="3.5" fill="${P.crt}"/><rect x="${24 + i * 22 + (i % 2 ? 0 : 8.5)}" y="38" width="3.5" height="13" fill="${P.crt}"/>`);
-    b += `<path d="M14 58l22 -5l18 7l26 -6l20 6l36 -4V102H14Z" fill="#020604"/><path d="M14 58l22 -5l18 7l26 -6l20 6l36 -4" fill="none" stroke="#8fb8a2" stroke-width="1.5" opacity=".7"/>`;
-  }
-  return b;
-}
-
-/* ---- seven-segment digits, and the five that matter ---- */
-const SEG = { 0: 'abcdef', 1: 'bc', 2: 'abged', 3: 'abgcd', 4: 'fgbc', 5: 'afgcd', 6: 'afgedc', 7: 'abc', 8: 'abcdefg', 9: 'abcdfg' };
-function seg7(x, y, w, h, digit, on, ghost) {
-  const t = w * .2, hh = h / 2;
-  const bar = { a: [x + t * .7, y, w - t * 1.4, t], g: [x + t * .7, y + hh - t / 2, w - t * 1.4, t], d: [x + t * .7, y + h - t, w - t * 1.4, t],
-                f: [x, y + t * .7, t, hh - t * 1.05], b: [x + w - t, y + t * .7, t, hh - t * 1.05],
-                e: [x, y + hh + t * .35, t, hh - t * 1.05], c: [x + w - t, y + hh + t * .35, t, hh - t * 1.05] };
-  return Object.keys(bar).map(k => {
-    const [bx, by, bw, bh] = bar[k], lit = digit != null && SEG[digit].includes(k);
-    return `<rect x="${bx.toFixed(1)}" y="${by.toFixed(1)}" width="${bw.toFixed(1)}" height="${bh.toFixed(1)}" rx="${(t * .4).toFixed(1)}" fill="${on}" opacity="${lit ? 1 : ghost}"/>`;
-  }).join('');
-}
-const POD_READS = { 1: 3, 2: 9, 3: 5, 5: 6, 6: 7 };          // pod number -> what its readout says (pod 4 is yours, and dark)
-const LIFT_CODE = Object.keys(POD_READS).map(k => POD_READS[k]).join('');
-
-/* what the terminal shows once it is in: the readouts' upper halves, and dead glass below the crack */
-const telemetryFig = ART.svg(680, 330, (() => {
-  let b = `<rect x="4" y="4" width="672" height="322" rx="20" fill="#131d27" stroke="${P.edge}" stroke-width="6"/><rect x="24" y="24" width="632" height="282" rx="10" fill="#06130c"/>`;
-  for (let y = 30; y < 304; y += 7) b += `<path d="M26 ${y}H654" stroke="${P.crt}" stroke-width="1" opacity=".05"/>`;
-  const top = 96, dw = 52, dh = 150, t = dw * .2;
-  [1, 2, 3, 4, 5, 6].forEach((n, i) => {
-    const x = 62 + i * 100;
-    b += GL('snowflake', x - 6, 38, 22, P.crt) + W(x + 34, 58, String(n), { size: 26, face: 'num', weight: 700, fill: P.crt });
-    b += POD_READS[n] != null ? seg7(x, top, dw, dh, POD_READS[n], P.crt, .1)
-      : `<path d="M${x + 6} ${top + 40}h${dw - 12}" stroke="${P.crt}" stroke-width="6" opacity=".35" stroke-linecap="round"/>`;
-  });
-  // everything from just above the middle bars down is lost
-  const cy = top + dh / 2 - t / 2 - 12;
-  const crack = `M24 ${cy + 4}l58 -9l44 11l70 -12l52 13l84 -10l60 9l76 -12l64 10l58 -8l66 7`;
-  b += `<path d="${crack}V306H24Z" fill="#020604"/><path d="${crack}" fill="none" stroke="#9cc4ae" stroke-width="2" opacity=".75"/>`;
-  b += `<path d="M196 ${cy - 8}l30 60l-18 44M452 ${cy - 6}l-26 52l22 70M82 ${cy - 5}l-20 90" fill="none" stroke="#9cc4ae" stroke-width="1.5" opacity=".4"/>`;
-  [0, 1, 2].forEach(i => b += `<rect x="${90 + i * 190}" y="${cy + 40 + i * 28}" width="${120 - i * 26}" height="3" fill="${P.crt}" opacity=".12"/>`);
-  return b;
-})());
-
-/* the pods themselves: each readout iced over from the top down to just above its middle bar */
-const podsArt = { w: 870, h: 304, body: (() => {
-  let b = '';
-  [1, 2, 3, 4, 5, 6].forEach((n, i) => {
-    const x = i * 150, open = n === 4;
-    b += `<rect x="${x + 30}" y="290" width="60" height="10" rx="4" fill="#26313e"/>`;
-    b += `<rect x="${x}" y="6" width="120" height="290" rx="34" fill="#22303e" stroke="${P.edge}" stroke-width="5"/><path d="M${x + 16} 52q-6 -34 28 -38" fill="none" stroke="#5b7289" stroke-width="4" opacity=".6" stroke-linecap="round"/>`;
-    b += `<rect x="${x + 14}" y="30" width="92" height="150" rx="22" fill="${open ? P.deep : '#0d1622'}" stroke="${P.dark}" stroke-width="3"/>`;
-    if (open) b += `<ellipse class="flick" cx="${x + 60}" cy="170" rx="40" ry="12" fill="${P.cyan}" opacity=".14"/><path d="M${x + 14} 60l-16 -10v120l16 10" fill="#1a2632" stroke="${P.edge}" stroke-width="3" stroke-linejoin="round"/>`;
-    else b += `<path d="M${x + 24} 52q36 22 74 104" stroke="#2a4258" stroke-width="8" fill="none" opacity=".6"/><path d="M${x + 22} 166q20 -14 36 -4t40 -8" stroke="${P.ice}" stroke-width="3" fill="none" opacity=".25"/>`;
-    b += W(x + 60, 208, String(n), { size: 24, face: 'num', weight: 700, fill: '#8fa6ba' });
-    // the readout
-    const rx = x + 24, ry = 218, rw = 72, rh = 66, dw = 30, dh = 50, t = dw * .2;
-    b += `<rect x="${rx}" y="${ry}" width="${rw}" height="${rh}" rx="6" fill="${P.deep}" stroke="${P.dark}" stroke-width="3"/>`;
-    if (open) { b += `<path d="M${rx + 24} ${ry + rh / 2}h${rw - 48}" stroke="${P.amber}" stroke-width="5" opacity=".3" stroke-linecap="round"/>`; return; }
-    const dx = rx + (rw - dw) / 2, dy = ry + 8;
-    b += seg7(dx, dy, dw, dh, POD_READS[n], P.amber, .1);
-    // Frost comes down to just past the ends of the upper bars, so nothing of the top half shows —
-    // and the icicles hang either side of the digit, never across what is left of it.
-    const fy = dy + dh / 2 - t * .35 + 1.5;
-    b += `<path d="M${rx - 5} ${ry - 7}h${rw + 10}V${fy}h-4l-5 13l-6 -13H${dx + dw + 2}H${dx - 2}h-5l-5 16l-6 -16H${rx - 5}Z" fill="${P.ice}" stroke="#8fb4cc" stroke-width="1.5" stroke-linejoin="round"/>`
-      + `<path d="M${rx + 8} ${ry - 1}q16 6 30 0t26 2" fill="none" stroke="#fff" stroke-width="2" opacity=".7"/>`;
-  });
-  return b;
-})() };
-
-/* ---- the lift ---- */
-function liftBody(st) {
-  const lamp = st.solved ? '#5fd08a' : st.live ? P.amber : '#1a222b';
-  let b = `<rect x="16" y="2" width="68" height="30" rx="5" fill="#1c2836" stroke="#5b7289" stroke-width="3"/>` + GL('lift', 38, 5, 24, st.live ? P.amber : '#5b7289');
-  b += `<rect x="2" y="40" width="96" height="308" rx="6" fill="#0c121a" stroke="#5b7289" stroke-width="6"/>`
-    + [0, 1, 2, 3].map(i => `<path d="M${6 + i * 24} 348l12 -14h10l-12 14z" fill="#4a4420"/>`).join('');
-  if (st.solved) b += `<rect x="10" y="48" width="80" height="284" fill="#e9d9a8" opacity=".9"/><rect x="10" y="48" width="14" height="284" fill="#121a24"/><rect x="76" y="48" width="14" height="284" fill="#121a24"/>`;
-  else b += `<rect x="10" y="48" width="39" height="284" fill="#18232f"/><rect x="51" y="48" width="39" height="284" fill="#18232f"/><path d="M50 48V332" stroke="${P.dark}" stroke-width="3"/><path d="M22 60v260M78 60v260" stroke="#2a3a4a" stroke-width="2"/>`;
-  b += `<rect x="102" y="150" width="22" height="46" rx="4" fill="#1c2836" stroke="${P.edge}" stroke-width="3"/><circle cx="113" cy="161" r="4.5" fill="${lamp}"/>`;
-  [0, 1, 2].forEach(r => [0, 1].forEach(c => b += `<rect x="${106 + c * 8}" y="${170 + r * 8}" width="5.5" height="5.5" rx="1" fill="${st.live ? '#56626e' : '#141c26'}"/>`));
-  if (st.live && !st.solved) b += `<circle cx="113" cy="161" r="12" fill="${P.amber}" opacity=".2"/>`;
-  return b;
-}
-
-const POS1 = {
-  pipes:    { x: 23.5, y: 17.4, w: 15.8, h: 10.9 },
-  pods:     { x: 3.75, y: 35.3, w: 54.4, h: 33.8 },
-  terminal: { x: 60.9, y: 46.7, w: 9.4,  h: 20 },
-  placard:  { x: 72.3, y: 35,   w: 6.6,  h: 12.8 },
-  locker:   { x: 80.6, y: 39.4, w: 7.6,  h: 30.6 },
-  lift:     { x: 90.4, y: 31.6, w: 7.75, h: 39.1 },
-  crate:    { x: 26.9, y: 76.4, w: 10.6, h: 14.8 },
-};
-
-const ROOM1 = {
+const ROOMS=[
+/* ============ ROOM 1 — THE CRYO BAY ============ */
+{
   id:'cryobay', name:'Room 1 — The Cryo Bay', scene:'cryobay',
   stageFx:'drift',
   relays:[{el:'rl-cryobay',mode:'pulse',period:3.8}],
   wrongSound:'clank',
   intro:"You wake choking on cryo-fluid, forty years past your wake date. The other pods are dark.",
-  objective:"<b>Glowing rings</b> mark what is worth a closer look. A lock shows you the kind of answer it wants — the answer itself is always somewhere else in the bay.",
+  objective:"Find out what happened — <b>glowing rings</b> mark what you can examine. Nothing on this deck explains itself.",
   entryBeat:"The bay's ceiling panels creak, one after another, in a slow line from the vent to the door — the sound of weight moving where no crew could walk.",
   entrySound:'clank',
-  completeText:"The lift takes the number and grinds upward toward the bridge. Behind you, in the bay, a pod lid whines open. You do not go back to check.",
-  chain:`The locker's four wheels wear a bolt, a snowflake, a trefoil and a drop; the pipe run gives each pictogram a colour and the diamond on the cargo crate gives each colour a number: ${LOCKER_CODE} → the evacuation plan shows nine compartments with most of the hatches between them welded; the one open way from the cryo bay to the lift runs ${ROUTE.join(', ')}, pressed in that order on the terminal → its cracked screen shows the top halves of the five pod readouts and the frosted pods show the bottom halves: ${LIFT_CODE}, keyed into the lift once the power cell from the locker is in it.`,
+  completeText:"The lift accepts the deck code and grinds upward toward the bridge. Behind you, in the bay, a pod lid whines open. You do not go back to check.",
+  chain:"Forty years of the same six status lines have burned the first character of each one into the pod plates, and read down the column they spell LOCKER → the locker's four glyphs carry digits but no order, and the evacuation placard supplies one: shut down REACTOR, POWER, WATER, CRYO = 6942 → the med terminal asks for the standing order at the level this deck is set to; the quarantine tag on the vent grille is wound to 4 and the placard says level 4 is BURN → the bridge lift's code is reset each watch to the duty count then the relief, and the watch bill shows three and four = 34.",
   objects:[
-    { id:'pipes', icon:'🧯', name:'Pipe Run', pos:POS1.pipes,
-      desc:"Five service pipes along the bulkhead, each with a band of paint and a tag riveted beside it.",
-      figure:ART.svg(pipesArt.w, pipesArt.h, pipesArt.body),
-      sprite:ART.sprite(POS1.pipes, pipesArt.w, pipesArt.h, pipesArt.body) },
-    { id:'crate', icon:'📦', name:'Cargo Crate', pos:POS1.crate,
-      desc:"Never unloaded. The hazard diamond on its side is the brightest thing in the bay.",
-      figure:ART.svg(crateArt.w, crateArt.h, crateArt.body),
-      sprite:ART.sprite(POS1.crate, crateArt.w, crateArt.h, crateArt.body) },
-    { id:'locker', icon:'🗄️', name:'Maintenance Locker', pos:POS1.locker,
-      desc:"Still shut, which is more than can be said for most things on this deck. Four wheels, a pictogram over each.",
-      sprite:st=>ART.sprite(POS1.locker, 134, 275, lockerBody(st.solved)),
-      puzzle:{ type:'combo', from:['pipes','crate'],
-        wheels:LOCKER_WHEELS.map(g=>({ mark:{ glyph:g } })), faces:'0123456789', answer:LOCKER_CODE,
+    { id:'vent', icon:'🌬️', name:'Vent Grille', pos:{x:66,y:2,w:12,h:14},
+      desc:"The maintenance vent over the pods hangs open on one hinge. Two of its screws lie on the deck below — placed side by side, dead parallel, like surgical tools.\n\nZip-tied to the grille is a quarantine tag, the kind with a brass pointer you wind round to whatever level the deck is running at.\n\nSomebody has wound this one all the way round to 4, and then snapped the stop off so that it cannot be wound back.\n\nThe shaft behind the grille is pitch dark and completely silent, which is wrong. Shafts hum. This one is holding still." },
+    { id:'pods', icon:'🧊', name:'Cryo Pods', pos:{x:6,y:36,w:52,h:34},
+      desc:"Six pods. Five dark, their occupants gone — not thawed, gone. Yours stands open, dripping.\n\nEach pod's status plate still shows the last line its system wrote. The plates are forty years old and the phosphor has burned in, so the first character of every line sits brighter than the rest of it, stacked down the column:\n\n   POD 1 — “Life-support nominal.”\n   POD 2 — “Occupant absent.”\n   POD 3 — “Cryo-seal breached.”\n   POD 4 — “Kelvin drift climbing.”\n   POD 5 — “Egress hatch open.”\n   POD 6 — “Return date overdue.”\n\nSix bright letters, burned into the glass by forty years of the same six lines.",
+      puzzle:{
+        prompt:"Six plates, six burned-in letters. What do they spell?",
+        placeholder:"SIX LETTERS", answers:['LOCKER'],
         hints:[
-          "Four wheels, and over each one a pictogram: a bolt, a snowflake, a trefoil, a drop. The same four pictures are riveted up somewhere else in this bay.",
-          "The tags on the pipe run give every pictogram a colour, and the diamond on the cargo crate gives every colour a number. The fan's pipe is on no wheel.",
-          `Bolt is yellow, snowflake is blue, trefoil is red, the drop is green: ${LOCKER_CODE.split('').join(', ')}.`
+          "You are not decoding anything. The burn-in has done the work — read what is bright, pod 1 down to pod 6.",
+          "Life… Occupant… Cryo… Kelvin… Egress… Return…",
+          "L, O, C, K, E, R. It is pointing at the maintenance locker across the bay."
         ],
-        solvedText:"The door comes open on a breath of cold. On the shelf, still showing charge: a power cell, with a keypad's fitting on one end.",
-        inside:{ name:'From the locker', figure:cellFig } } },
-    { id:'placard', icon:'🚪', name:'Evacuation Plan', pos:POS1.placard,
-      desc:"This deck, compartment by compartment. Somebody has been round it since with a welding torch and a red pen.",
-      figure:ART.svg(placardArt.w, placardArt.h, placardArt.body),
-      sprite:ART.sprite(POS1.placard, placardArt.w, placardArt.h, placardArt.body, { rot: 2 }) },
-    { id:'terminal', icon:'🖥️', name:'Medical Terminal', pos:POS1.terminal,
-      desc:"Locked to a pattern: nine keys, and it wants seven of them in the right order.",
-      sprite:st=>ART.sprite(POS1.terminal, 150, 180, terminalBody(st.solved)),
-      puzzle:{ type:'press', from:['placard'], figure:padFig, slots:ROUTE.length, trail:true, answer:ROUTE,
+        solvedText:"L-O-C-K-E-R. The maintenance locker by the bulkhead — tall, sealed, and stencilled with four system glyphs."
+      }
+    },
+    { id:'locker', onSolve:{el:'rx-cryobay',op:.2,fx:'surge'}, icon:'🗄️', name:'Maintenance Locker', pos:{x:79,y:40,w:10,h:30},
+      desc:"A tall maintenance locker sealed with a 4-digit mag-lock. Four system glyphs are stencilled above it, each with a digit, and they are stencilled in no order at all — whoever painted them worked round the door as the space allowed:\n\n   ⚡ POWER 9       ❄ CRYO 2       ☢ REACTOR 6       💧 WATER 4\n\nFour systems, four digits, and nothing here to say which comes first. But a ship this size does not leave the order of its systems to memory; it puts it on the wall.",
+      puzzle:{
+        type:'keypad',
+        prompt:"Enter the 4-digit code.", answers:['6942'],
         hints:[
-          "Nine keys with nine pictures on them — the same nine pictures as the compartments on the evacuation plan.",
-          "On the plan most of the hatches are welded. Only one way runs from the pin in the cryo bay to the lift: press the compartments in the order you would walk through them, starting where you are standing.",
-          `${ROUTE.map((g, i) => i ? g : g[0].toUpperCase() + g.slice(1)).join(', ')}.`
+          "The digits belong to systems, so what you need is an official order for those systems. This deck has one posted on it.",
+          "The evacuation placard: SHUT DOWN IN THIS ORDER — REACTOR, POWER, WATER, CRYO.",
+          "☢ is 6, ⚡ is 9, 💧 is 4, ❄ is 2. Enter 6942."
         ],
-        solvedText:"The screen wakes behind its crack: pod telemetry, six columns of it, and the lower half of every one lost in dead glass.",
-        inside:{ name:'Pod telemetry', figure:telemetryFig } } },
-    { id:'pods', icon:'🧊', name:'Cryo Pods', pos:POS1.pods,
-      desc:"Six pods. The fourth is yours, and open. The readouts on the other five are still lit under forty years of frost.",
-      figure:ART.svg(podsArt.w, podsArt.h, podsArt.body),
-      sprite:ART.sprite(POS1.pods, podsArt.w, podsArt.h, podsArt.body) },
-    { id:'lift', icon:'🛗', name:'Bridge Lift', pos:POS1.lift, needs:'locker',
-      desc:"The only way off this deck that has not been welded. Its keypad has a cell in it now, and five empty places on the display.",
-      deadDesc:"The only way off this deck that has not been welded. Its keypad is dark, and where a power cell should sit there is an empty cradle.",
-      sprite:st=>ART.sprite(POS1.lift, 126, 350, liftBody(st)),
-      puzzle:{ type:'keypad', from:['terminal','pods'], answer:LIFT_CODE,
+        solvedText:"The mag-lock releases on 6-9-4-2. Inside: a med-bay keycard, an empty tool rack with every cutting tool gone from it, and a dust-free rectangle where something long used to lie.",
+        solveBeat:"As the locker opens, the vent above the pods exhales a long, slow breath of cold air. Vents push air in pulses. They do not exhale.",
+        beatSound:'hiss'
+      }
+    },
+    { id:'placard', icon:'📋', name:'Evacuation Placard', pos:{x:88,y:35,w:9,h:16},
+      desc:"A laminated placard hangs on the wall, corporate-cheerful under forty years of dust. Two notices share it.\n\n   IN THE EVENT OF EVACUATION, SHUT DOWN SYSTEMS IN THIS ORDER:\n     1. REACTOR    2. POWER    3. WATER    4. CRYO\n\n   CONTAMINATION STANDING ORDERS — THE LEVEL IS SET ON EACH DECK:\n     LEVEL 1 — CLEAN\n     LEVEL 2 — WATCH\n     LEVEL 3 — SEAL\n     LEVEL 4 — BURN\n\nProspero carries twin reactor cores. Both must sleep before you do.\n\nSomeone has underlined the word “twin”. Twice. Someone else has gone over LEVEL 4 so hard the marker tore the laminate." },
+    { id:'terminal', icon:'🖥️', name:'Med Terminal', pos:{x:56,y:44,w:12,h:16},
+      desc:"The med terminal wants a password. Its lock screen has been showing the same prompt for four decades, and the cursor has burned a groove in the phosphor waiting for an answer:\n\n   CONTAMINATION CONTROL — RESTRICTED\n\n   ENTER THE STANDING ORDER FOR THE LEVEL THIS DECK IS SET TO.\n\nThe level is not set in software. On this ship it is set by hand, on the deck it applies to, and it is not the kind of thing anybody raises for a drill.",
+      puzzle:{
+        prompt:"Enter the password.", placeholder:"PASSWORD", answers:['BURN'],
         hints:[
-          "Five digits. There is one five-figure number in this bay, and it is written in two places — neither of which shows you all of it.",
-          "The readouts on the pods are frosted over on top. The same five readouts on the medical terminal are lost below the crack. Put the top half of each on its bottom half.",
-          `Pods 1, 2, 3, 5 and 6 read ${LIFT_CODE.split('').join(', ')}.`
+          "Two things to find and put together: what level this deck is actually set to, and what the standing order for that level is.",
+          "The quarantine tag on the vent grille has been wound round to 4 and the stop snapped off. The placard on the wall lists what each level means.",
+          "Level 4 on the placard reads BURN. Enter BURN."
         ],
-        solvedText:"The pad takes the number. Somewhere above you a motor that has not turned in forty years turns." } },
+        solvedText:"B-U-R-N. Somebody set this deck to burn and then did not get the chance. The terminal unlocks and brings up forty years of medical logs. The last entry is in the director's hand: “Crew of nine aboard at launch, and both reactor cores still burning. The scratching in the vents is not rats. Rats stop when you knock.”",
+        solveBeat:"Somewhere in the shaft above you, something knocks back. Three times. Patient.",
+        beatSound:'knock'
+      }
+    },
+    { id:'manifest', icon:'📄', name:'Deck Manifest', pos:{x:27,y:74,w:10,h:14}, hiddenUntil:'terminal',
+      desc:"The lift to the bridge is restricted, and its panel wants two digits.\n\nClipped beside it, the deck's watch bill — who was standing what when the ship went quiet. The instruction across the top is printed, not written:\n\n   BRIDGE LIFT — CODE IS RESET EVERY WATCH:\n   THE DUTY WATCH COUNT, THEN THE RELIEF.\n\n   DUTY WATCH ....... Okafor · Lindqvist · Barre\n   RELIEF WATCH ..... Yusuf · Marchetti · Osei · Hallgren\n   OFF WATCH ........ Reyes · Tanaka\n\nNine names. Nobody has crossed any of them off.",
+      puzzle:{
+        prompt:"Enter the 2-digit lift code.", placeholder:"TWO DIGITS", answers:['34'],
+        hints:[
+          "Nothing to work out here — only two lists to count, and the panel tells you which order it wants them in.",
+          "Count the duty watch, then count the relief watch. Ignore the off watch; the panel did not ask for it.",
+          "Three on duty, four on relief. Enter 34."
+        ],
+        solvedText:"3-4. The lift doors part on a corridor of dead lights — and one live one, far down, above the bridge hatch.",
+        solveBeat:"As the lift rises, something rises with you — inside the wall, matching your speed exactly, then passing you.",
+        beatSound:'clank'
+      }
+    }
   ]
-};
-
-/* ============================================================
-   ROOM 2 — THE BRIDGE
-   Five keys on the captain's armrest are worn to bare metal, and they spell
-   what opens his log. The sky in the viewport is read twice: against the
-   star chart, for the four figures he ringed on the glass; and through the
-   star wheel from his drawer, turned until its slot shows the same sky, for
-   the hour. With the dish on its heading the beacon comes through, a run of
-   coloured pulses to be sent back; engineering's scope wakes, and shows how
-   far each rod is to be drawn.
-   ============================================================ */
-
-/* ---- the sky ---- */
-const STARS = {
-  crown:  { pts: [[6, 64], [28, 28], [50, 60], [72, 28], [94, 64]], lines: [[0, 1], [1, 2], [2, 3], [3, 4]] },
-  fish:   { pts: [[8, 50], [38, 26], [66, 50], [38, 74], [94, 28], [94, 72]], lines: [[0, 1], [1, 2], [2, 3], [3, 0], [2, 4], [2, 5]] },
-  key:    { pts: [[8, 50], [24, 32], [40, 50], [24, 68], [68, 50], [94, 50], [68, 74]], lines: [[0, 1], [1, 2], [2, 3], [3, 0], [2, 4], [4, 5], [4, 6]] },
-  snake:  { pts: [[4, 74], [22, 44], [42, 68], [60, 38], [78, 62], [96, 30]], lines: [[0, 1], [1, 2], [2, 3], [3, 4], [4, 5]] },
-  bird:   { pts: [[5, 18], [27, 46], [50, 74], [73, 46], [95, 18], [50, 96]], lines: [[0, 1], [1, 2], [2, 3], [3, 4], [2, 5]] },
-  anchor: { pts: [[50, 6], [50, 42], [50, 90], [26, 36], [74, 36], [18, 66], [82, 66]], lines: [[0, 1], [1, 2], [3, 1], [1, 4], [5, 2], [2, 6]] },
-  crab:   { pts: [[30, 46], [50, 36], [70, 46], [70, 68], [50, 78], [30, 68], [10, 22], [90, 22]], lines: [[0, 1], [1, 2], [2, 3], [3, 4], [4, 5], [5, 0], [0, 6], [2, 7]] },
-  bell:   { pts: [[50, 8], [30, 40], [20, 74], [80, 74], [70, 40], [50, 94]], lines: [[0, 1], [1, 2], [2, 3], [3, 4], [4, 0], [2, 5], [5, 3]] },
-};
-/* Where everything lies on the star wheel when it is turned to match the window. The slot runs across
-   the wheel's middle: 380 wide, 72 tall. Five figures are in it; three are round the back. */
-const SKY = 60, SLOT = { w: 380, h: 72 };
-const IN_VIEW = [['fish', -150, 3], ['crown', -75, -3], ['bird', 0, 4], ['snake', 75, -2], ['key', 150, 2]];
-const ROUND_BACK = [['anchor', -96, -118], ['crab', 4, 128], ['bell', 104, -112]];
-const RINGED = ['crown', 'key', 'fish', 'snake'];                 // in the order the captain numbered them
-const skyStars = (() => {
-  const bright = [];
-  [...IN_VIEW, ...ROUND_BACK].forEach(([name, cx, cy]) => STARS[name].pts.forEach(([px, py]) =>
-    bright.push({ x: cx + (px - 50) * SKY / 100, y: cy + (py - 50) * SKY / 100, big: true })));
-  // the rest of the sky: faint, scattered, and the same every time
-  let seed = 20441; const rnd = () => (seed = (seed * 1103515245 + 12345) % 2147483648) / 2147483648;
-  const faint = [];
-  for (let n = 0; faint.length < 54 && n < 4000; n++) {
-    const a = rnd() * Math.PI * 2, r = Math.sqrt(rnd()) * 196, x = Math.cos(a) * r, y = Math.sin(a) * r;
-    if (bright.some(s => Math.hypot(s.x - x, s.y - y) < 9) || faint.some(s => Math.hypot(s.x - x, s.y - y) < 12)) continue;
-    faint.push({ x, y, big: false });
-  }
-  return [...bright, ...faint];
-})();
-const star = (x, y, r, big, halo = true) => big
-  ? (halo ? `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${(r * 2.3).toFixed(1)}" fill="#dfe8ff" opacity=".13"/>` : '') + `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${r.toFixed(1)}" fill="#f4f7ff"/>`
-  : `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${(r * .5).toFixed(1)}" fill="#9fb2d6" opacity=".8"/>`;
-
-/* the viewport: the slot's worth of sky, with four figures ringed and numbered in grease pencil */
-const VS = 880 / SLOT.w;
-const viewArt = { w: 880, h: +(SLOT.h * VS).toFixed(1), body: (() => {
-  const X = x => (x + SLOT.w / 2) * VS, Y = y => (y + SLOT.h / 2) * VS, H = SLOT.h * VS, wax = '#f1e3a4';
-  let b = `<rect width="880" height="${H.toFixed(1)}" fill="#02040a"/>`;
-  skyStars.filter(s => Math.abs(s.x) <= SLOT.w / 2 && Math.abs(s.y) <= SLOT.h / 2).forEach(s => b += star(X(s.x), Y(s.y), 4.6, s.big));
-  RINGED.forEach((name, i) => {
-    const [, cx, cy] = IN_VIEW.find(v => v[0] === name), x = X(cx), y = Y(cy);
-    b += `<ellipse cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" rx="80" ry="74" fill="none" stroke="${wax}" stroke-width="4" opacity=".62" transform="rotate(${[-8, 11, -5, 7][i]} ${x.toFixed(1)} ${y.toFixed(1)})" stroke-dasharray="330 9 120 6"/>`;
-    b += W(x - 62, y - 44, String(i + 1), { size: 44, face: 'hand', fill: wax, opacity: .9, weight: 700 });
-  });
-  return b;
-})() };
-
-/* the star chart: every figure with its lines drawn in, and its name as a picture */
-const CHART_ORDER = ['bell', 'snake', 'crab', 'crown', 'anchor', 'key', 'bird', 'fish'];
-const chartArt = { w: 430, h: 760, body: (() => {
-  let b = `<rect x="4" y="6" width="422" height="750" rx="8" fill="#000" opacity=".35"/><rect x="0" y="0" width="422" height="750" rx="8" fill="#0c1420" stroke="${P.edge}" stroke-width="5"/>`;
-  CHART_ORDER.forEach((name, i) => {
-    const x = 26 + (i % 2) * 196, y = 22 + Math.floor(i / 2) * 182, s = 1.18;
-    b += `<rect x="${x}" y="${y}" width="176" height="166" rx="6" fill="#111c2c" stroke="#22344a" stroke-width="2"/>`;
-    const px = (p) => x + 29 + p[0] * s, py = (p) => y + 8 + p[1] * s * .96;
-    STARS[name].lines.forEach(([m, n]) => { const A = STARS[name].pts[m], B = STARS[name].pts[n]; b += `<path d="M${px(A).toFixed(1)} ${py(A).toFixed(1)}L${px(B).toFixed(1)} ${py(B).toFixed(1)}" stroke="#5b7fb0" stroke-width="2"/>`; });
-    STARS[name].pts.forEach(p => b += star(px(p), py(p), 4.2, true));
-    b += GL(name, x + 70, y + 124, 36, '#e8d9a4');
-  });
-  return b;
-})() };
-
-/* the star wheel: the sky on a disc, a cover with a slot across it, hours round the outside */
-const AT_HOUR = 8, STEPS = 12, TURNS_TO_MATCH = 5;
-const wheelTurning = (() => {
-  // drawn as it lies when it matches, then wound back: the turn tool brings it round again
-  let g = `<circle cx="260" cy="260" r="212" fill="none" stroke="#8f7a3c" stroke-width="14"/>`;
-  for (let i = 0; i < 24; i++) g += `<path d="M260 ${260 - 219}v${i % 2 ? 6 : 12}" stroke="#3a2f12" stroke-width="2" transform="rotate(${i * 15} 260 260)"/>`;
-  g += `<path d="M260 ${260 - 232}l-11 17h22z" fill="#e8cf8c" stroke="#3a2f12" stroke-width="2" transform="rotate(${AT_HOUR * 30} 260 260)"/>`;
-  skyStars.forEach(s => g += star(260 + s.x, 260 + s.y, 3, s.big, false));
-  return `<g transform="rotate(${-TURNS_TO_MATCH * 360 / STEPS} 260 260)">${g}</g>`;
-})();
-const wheelFig = ART.svg(520, 520, (() => {
-  let b = `<circle cx="260" cy="266" r="252" fill="#000" opacity=".35"/><circle cx="260" cy="260" r="252" fill="#1c2836" stroke="${P.dark}" stroke-width="3"/>`;
-  for (let h = 1; h <= 12; h++) {
-    const a = h * 30 * Math.PI / 180, x = 260 + Math.sin(a) * 240, y = 260 - Math.cos(a) * 240;
-    b += W(x, y + 7, String(h), { size: 20, face: 'num', weight: 700, fill: '#c9d6e2' });
-  }
-  b += `<circle cx="260" cy="260" r="226" fill="#070c18" stroke="${P.dark}" stroke-width="2"/><!--TURN-->`;
-  // the cover: everything hidden but a slot across the middle
-  const sx = 260 - SLOT.w / 2, sy = 260 - SLOT.h / 2;
-  b += `<path fill-rule="evenodd" d="M260 55a205 205 0 1 0 0.01 0ZM${sx + 8} ${sy}h${SLOT.w - 16}a8 8 0 0 1 8 8v${SLOT.h - 16}a8 8 0 0 1 -8 8h-${SLOT.w - 16}a8 8 0 0 1 -8 -8v-${SLOT.h - 16}a8 8 0 0 1 8 -8Z" fill="#39485a" stroke="${P.dark}" stroke-width="3"/>`;
-  b += `<path d="M260 55a205 205 0 0 1 0 410" fill="none" stroke="#5f7388" stroke-width="2" opacity=".4" transform="rotate(-90 260 260)"/>`;
-  b += `<rect x="${sx}" y="${sy}" width="${SLOT.w}" height="${SLOT.h}" rx="8" fill="none" stroke="#8f7a3c" stroke-width="3"/>`;
-  [[260, 110], [260, 410], [150, 150], [370, 150], [150, 370], [370, 370]].forEach(([x, y]) => b += `<circle cx="${x}" cy="${y}" r="5" fill="#27313a" stroke="#5f7388" stroke-width="1.5"/>`);
-  b += GL('star', 236, 96, 48, '#5f7388') + GL('moon', 238, 380, 44, '#5f7388');
-  return b;
-})());
-
-/* ---- the captain's chair: twelve keys under his right hand, and five of them worn bare ---- */
-const ARM_KEYS = ['KOAU', 'BETL', 'RNIS'];
-const LOG_WORD = 'ORBIT';
-const chairArt = { w: 640, h: 400, body: (() => {
-  let b = `<path d="M30 80q290 -50 580 0v250q-290 40 -580 0z" fill="#10161f" stroke="${P.dark}" stroke-width="5"/><path d="M30 80q290 -50 580 0" fill="none" stroke="#2c3a4a" stroke-width="6"/>`;
-  // what something's grip did to the padding
-  [0, 1, 2, 3].forEach(i => b += `<path d="M${70 + i * 30} ${118 + i * 4}q10 80 -6 172" fill="none" stroke="#05080d" stroke-width="9" stroke-linecap="round"/><path d="M${74 + i * 30} ${120 + i * 4}q10 80 -6 168" fill="none" stroke="#3a4a5c" stroke-width="1.5" opacity=".6"/>`);
-  b += `<rect x="232" y="100" width="352" height="232" rx="14" fill="#1c2836" stroke="${P.edge}" stroke-width="5"/>`;
-  ARM_KEYS.forEach((row, r) => row.split('').forEach((ch, c) => {
-    const x = 252 + c * 80, y = 118 + r * 68, worn = LOG_WORD.includes(ch);
-    b += `<rect x="${x}" y="${y + 4}" width="68" height="56" rx="8" fill="#05080d"/>`;
-    b += worn ? `<rect x="${x}" y="${y}" width="68" height="56" rx="8" fill="#9fb0bd" stroke="#56626e" stroke-width="2"/><ellipse cx="${x + 34}" cy="${y + 26}" rx="24" ry="17" fill="#d5dfe6" opacity=".7"/>`
-              : `<rect x="${x}" y="${y}" width="68" height="56" rx="8" fill="#27313a" stroke="#141c26" stroke-width="2"/><rect x="${x + 4}" y="${y + 3}" width="60" height="8" rx="4" fill="#56626e" opacity=".35"/>`;
-    b += W(x + 34, y + 40, ch, { size: 34, face: 'label', weight: 700, fill: worn ? '#56626e' : '#c9d6e2', opacity: worn ? .75 : 1 });
-  }));
-  return b;
-})() };
-function chairBody() {
-  let b = `<ellipse cx="70" cy="222" rx="66" ry="8" fill="#000" opacity=".4"/><rect x="56" y="150" width="28" height="66" fill="#0c121a"/><rect x="24" y="210" width="92" height="12" rx="5" fill="#1a2530"/>`;
-  b += `<rect x="6" y="4" width="128" height="150" rx="22" fill="#0c121a" stroke="#1a2530" stroke-width="4"/>`;
-  b += `<rect x="96" y="96" width="42" height="34" rx="5" fill="#1c2836" stroke="${P.edge}" stroke-width="2"/>`;
-  [0, 1, 2].forEach(r => [0, 1, 2, 3].forEach(c => b += `<rect x="${100 + c * 9}" y="${101 + r * 9}" width="7" height="7" rx="1.5" fill="${LOG_WORD.includes(ARM_KEYS[r][c]) ? '#c9d6e2' : '#3a4856'}"/>`));
-  return b;
-}
-
-/* ---- consoles along the bank ---- */
-function logBody(open) {
-  let b = `<rect x="2" y="2" width="116" height="64" rx="6" fill="#0a141c" stroke="#2a4258" stroke-width="4"/><rect class="flick" x="12" y="11" width="96" height="40" fill="#06130c"/>`;
-  [0, 1, 2, 3, 4].forEach(i => b += `<rect x="${19 + i * 17}" y="22" width="13" height="18" rx="2" fill="none" stroke="${P.crt}" stroke-width="2" opacity="${open ? .9 : .5}"/>`);
-  b += open ? `<rect x="14" y="66" width="92" height="22" rx="3" fill="#141e2a" stroke="${P.edge}" stroke-width="2"/><circle cx="60" cy="77" r="9" fill="#8f7a3c" stroke="#3a2f12" stroke-width="2"/><circle cx="60" cy="77" r="3" fill="#e8cf8c"/>`
-            : `<rect x="14" y="66" width="92" height="12" rx="3" fill="#141e2a" stroke="${P.edge}" stroke-width="2"/><rect x="52" y="70" width="16" height="4" rx="2" fill="${P.edge}"/>`;
-  return b;
-}
-const PULSE = ['blue', 'yellow', 'red', 'blue', 'green', 'yellow'];
-const KEY_COLOURS = ['red', 'yellow', 'green', 'blue'];
-function commsBody(open) {
-  let b = `<rect x="2" y="2" width="176" height="90" rx="8" fill="#121c28" stroke="${P.edge}" stroke-width="4"/><rect x="14" y="12" width="152" height="24" rx="4" fill="#06130c"/>`;
-  for (let i = 0; i < 12; i++) b += `<rect x="${20 + i * 12}" y="${24 - (open ? [4, 8, 3, 9, 5, 2, 7, 4, 8, 3, 6, 4][i] : 1)}" width="6" height="${(open ? [4, 8, 3, 9, 5, 2, 7, 4, 8, 3, 6, 4][i] : 1) * 2}" fill="${P.crt}" opacity=".8"/>`;
-  KEY_COLOURS.forEach((c, i) => b += `<rect x="${18 + i * 38}" y="48" width="30" height="30" rx="6" fill="${C[c]}" stroke="${P.dark}" stroke-width="2.5"/><rect x="${21 + i * 38}" y="51" width="24" height="6" rx="3" fill="#fff" opacity=".3"/>`);
-  return b;
-}
-function navBody(open) {
-  let b = `<rect x="2" y="2" width="176" height="90" rx="8" fill="#121c28" stroke="${P.edge}" stroke-width="4"/>`;
-  [0, 1, 2, 3].forEach(i => {
-    b += `<rect x="${14 + i * 40}" y="16" width="32" height="44" rx="5" fill="#0a141c" stroke="#2a4258" stroke-width="2"/>`;
-    b += open ? GL(RINGED[i], 18 + i * 40, 26, 24, '#e8d9a4') : `<path d="M${22 + i * 40} 38h16" stroke="#2a4258" stroke-width="3" stroke-linecap="round"/>`;
-  });
-  b += `<rect x="14" y="68" width="152" height="12" rx="4" fill="${open ? P.crt : '#1a2530'}" opacity="${open ? .7 : 1}"/>`;
-  return b;
-}
-function chronoBody(open) {
-  return `<rect x="26" y="88" width="28" height="18" fill="#141e2a"/><circle cx="40" cy="48" r="38" fill="#8f7a3c" stroke="#3a2f12" stroke-width="4"/>`
-    + ART.clockFace(40, 48, 30, open ? AT_HOUR : 12, 0, { face: '#e9dfc3', ink: '#2a1e0c', rim: '#3a2f12' });
-}
-
-/* ---- the beacon: dead air, until the dish is on it ---- */
-const beaconArt = (live) => {
-  let b = `<rect x="14" y="14" width="392" height="392" rx="30" fill="#0c121a" stroke="${P.edge}" stroke-width="7"/>`;
-  [150, 118, 86, 54].forEach(r => b += `<circle cx="210" cy="250" r="${r}" fill="none" stroke="#05080d" stroke-width="13"/>`);
-  for (let i = 0; i < 9; i++) b += `<path d="M${62 + i * 37} 104V396" stroke="#1a2530" stroke-width="3" opacity=".5"/>`;
-  b += `<circle cx="210" cy="76" r="46" fill="#05080d" stroke="#2a3a4a" stroke-width="5"/><circle class="${live ? 'pulse-lamp' : ''}" cx="210" cy="76" r="36" fill="#0b1114"/><path d="M186 60q22 -18 46 -4" fill="none" stroke="#fff" stroke-width="4" opacity=".18" stroke-linecap="round"/>`;
-  return b;
-};
-function beaconBody(live) {
-  return `<circle cx="58" cy="62" r="52" fill="#0c121a" stroke="${P.edge}" stroke-width="7"/>` + [36, 24, 12].map(r => `<circle cx="58" cy="62" r="${r}" fill="none" stroke="#060a10" stroke-width="5"/>`).join('')
-    + `<circle cx="58" cy="14" r="9" fill="${live ? P.cyan : '#141c26'}" stroke="${P.dark}" stroke-width="2"${live ? ' class="slowblink"' : ''}/>` + (live ? `<circle cx="58" cy="14" r="20" fill="${P.cyan}" opacity=".18"/>` : '');
-}
-
-/* ---- engineering's scope, and the rods it is talking about ---- */
-const RODS = [['red', 4], ['yellow', 2], ['green', 5], ['blue', 1], ['white', 3]];        // left to right on the pillar
-const SPOKES = ['green', 'white', 'red', 'blue', 'yellow'];                             // clockwise from the top of the scope
-const ROD_SET = RODS.map(r => r[1]);
-const scopeArt = (live) => {
-  let b = `<rect x="6" y="6" width="448" height="448" rx="34" fill="#121c28" stroke="${P.edge}" stroke-width="7"/><circle cx="230" cy="230" r="196" fill="#06130c" stroke="${P.dark}" stroke-width="5"/>`;
-  if (!live) return b + `<path d="M120 230H340" stroke="${P.crt}" stroke-width="3" opacity=".25"/>`;
-  [1, 2, 3, 4, 5].forEach(n => b += `<circle cx="230" cy="230" r="${n * 31}" fill="none" stroke="${P.crt}" stroke-width="2" opacity=".4"/>` + W(230 + n * 31 * .588 + 11, 230 + n * 31 * .809 + 3, String(n), { size: 17, face: 'num', weight: 700, fill: P.crt, opacity: .8 }));
-  SPOKES.forEach((col, i) => {
-    const a = i * 72 * Math.PI / 180, dx = Math.sin(a), dy = -Math.cos(a), n = RODS.find(r => r[0] === col)[1];
-    b += `<path d="M230 230L${(230 + dx * 184).toFixed(1)} ${(230 + dy * 184).toFixed(1)}" stroke="${C[col]}" stroke-width="5" opacity=".8"/>`;
-    b += `<circle cx="${(230 + dx * 184).toFixed(1)}" cy="${(230 + dy * 184).toFixed(1)}" r="13" fill="${C[col]}" stroke="${P.dark}" stroke-width="3"/>`;
-    const bx = 230 + dx * n * 31, by = 230 + dy * n * 31;
-    b += `<circle cx="${bx.toFixed(1)}" cy="${by.toFixed(1)}" r="22" fill="#fff" opacity=".14"/><rect x="${(bx - 10).toFixed(1)}" y="${(by - 10).toFixed(1)}" width="20" height="20" fill="#fdfbe8" stroke="${P.dark}" stroke-width="2" transform="rotate(45 ${bx.toFixed(1)} ${by.toFixed(1)})"/>`;
-  });
-  return b + `<circle cx="230" cy="230" r="6" fill="${P.crt}"/>`;
-};
-function scopeBody(live) {
-  let b = `<rect x="2" y="2" width="116" height="116" rx="12" fill="#121c28" stroke="${P.edge}" stroke-width="4"/><circle cx="60" cy="60" r="46" fill="#06130c" stroke="${P.dark}" stroke-width="3"/>`;
-  if (!live) return b;
-  [16, 31, 46].forEach(r => b += `<circle cx="60" cy="60" r="${r}" fill="none" stroke="${P.crt}" stroke-width="1.2" opacity=".4"/>`);
-  SPOKES.forEach((col, i) => { const a = i * 72 * Math.PI / 180, n = RODS.find(r => r[0] === col)[1];
-    b += `<path d="M60 60L${(60 + Math.sin(a) * 44).toFixed(1)} ${(60 - Math.cos(a) * 44).toFixed(1)}" stroke="${C[col]}" stroke-width="2.5"/><circle cx="${(60 + Math.sin(a) * n * 8.6).toFixed(1)}" cy="${(60 - Math.cos(a) * n * 8.6).toFixed(1)}" r="3.6" fill="#fdfbe8"/>`; });
-  return b;
-}
-function reactorBody(st) {
-  let b = `<rect x="2" y="26" width="116" height="332" rx="14" fill="#141e2a" stroke="${P.edge}" stroke-width="6"/><circle cx="60" cy="12" r="9" fill="${st.solved ? '#5fd08a' : st.live ? P.amber : P.warn}"${st.solved ? '' : ' class="slowblink"'}/>`;
-  RODS.forEach(([col, n], i) => {
-    const x = 14 + i * 19.5, up = st.solved ? n : 0;
-    b += `<rect x="${x}" y="52" width="14" height="250" rx="4" fill="#06080a" stroke="#2a3a4a" stroke-width="1.5"/>`;
-    b += `<rect x="${x + 2}" y="${298 - 46 - up * 40}" width="10" height="${46 + up * 40}" rx="3" fill="${C[col]}" opacity="${st.solved ? 1 : .55}"/>`;
-  });
-  b += `<rect x="14" y="316" width="92" height="26" rx="5" fill="#0a141c" stroke="#2a4258" stroke-width="2"/>`;
-  return b;
-}
-
-const POS2 = {
-  viewport:  { x: 15.6,  y: 14.4, w: 68.75, h: 23.2 },
-  starchart: { x: 89.9,  y: 11,   w: 8.4,   h: 26.3 },
-  beacon:    { x: 3.6,   y: 16,   w: 7.3,   h: 13.6 },
-  log:       { x: 18.75, y: 67.4, w: 7.5,   h: 10 },
-  comms:     { x: 28.7,  y: 67.2, w: 11.25, h: 10.5 },
-  chair:     { x: 45.8,  y: 50.4, w: 8.9,   h: 25.2 },
-  chrono:    { x: 56.5,  y: 66.2, w: 5,     h: 12 },
-  nav:       { x: 62.9,  y: 67.2, w: 11.25, h: 10.5 },
-  scope:     { x: 75.8,  y: 65.8, w: 7.5,   h: 13.4 },
-  reactor:   { x: 90,    y: 40.6, w: 7.5,   h: 40 },
-};
-
-const ROOM2 = {
+},
+/* ============ ROOM 2 — THE BRIDGE ============ */
+{
   id:'bridge', name:'Room 2 — The Bridge', scene:'bridge',
   stageFx:'drift',
   relays:[{el:'rl-bridge',mode:'pulse',period:2.4}],
   wrongSound:'ping',
   wrongVfx:'sparks',
   intro:"The bridge is forty years of dust and one turned chair. The viewport is full of the wrong stars.",
-  objective:"The ship has been listening to something for decades. Put the dish back on it — then <b>listen</b> yourself.",
+  objective:"The ship has been listening to something for decades. Find the dish heading — then <b>listen</b> yourself.",
   entryBeat:"The captain's chair faces the viewport. The dust on the armrests is disturbed — four long furrows on each side, as if something sat here recently. And gripped.",
   entrySound:'clank',
-  completeText:"The reactor takes the setting and channels power aft. A service map blinks: ESCAPE POD — VIA HYDROPONICS. The green deck. The one the crew sealed first.",
-  chain:`Five of the twelve keys on the captain's armrest are worn to bare metal, and the five letters make one word: ${LOG_WORD}, which opens his log → on the glass of the viewport he ringed four star figures in grease pencil and numbered them; the star chart names each figure with a picture, so the helm takes ${RINGED.join(', ')} → with the dish on that heading the beacon comes through as a run of coloured pulses, sent back on the comms keys: ${PULSE.join(', ')} → the star wheel from the log's drawer is turned until its slot shows the sky exactly as the viewport does, and its pointer then stands at ${AT_HOUR}, so the chronometer is set to ${AT_HOUR}:00 → engineering's scope, awake once the beacon is answered, shows each coloured rod as a blip on one of five rings, and the rods are drawn to match: ${ROD_SET.join(', ')}.`,
+  completeText:"The reactor accepts the code and channels power aft. A service map blinks: ESCAPE POD — VIA HYDROPONICS. The green deck. The one the crew sealed first.",
+  chain:"The captain's log says he aimed the dish at the one beacon that had stopped talking; the chart's register lists four bearings and marks exactly one SILENT, so the dish swings to 47.15 → that channel is carrying a hand-knocked loop in prisoners' tap code: SEAL VENTS → the nav console's status line is five letters in 5-bit binary, and the legend is etched below it: GAMMA → the rods are stamped 6, 5 and 1, and the engineer's two notes (copper leftmost, iron left of lead) fix the seating: 651.",
   objects:[
-    { id:'chair', icon:'💺', name:"Captain's Chair", pos:POS2.chair,
-      desc:"Turned to the stars. There is a block of keys under where his right hand lay, and forty years of the same habit on them.",
-      figure:ART.svg(chairArt.w, chairArt.h, chairArt.body),
-      sprite:ART.sprite(POS2.chair, 142, 226, chairBody()) },
-    { id:'log', icon:'📓', name:"Captain's Log", pos:POS2.log,
-      desc:"His station, and the drawer under it. The log wants a word of five letters before it will show anybody anything.",
-      sprite:st=>ART.sprite(POS2.log, 120, 90, logBody(st.solved)),
-      puzzle:{ type:'combo', from:['chair'], skin:'plate',
-        wheels:5, faces:ARM_KEYS.join('').split('').sort().join(''), answer:LOG_WORD, tryLabel:'OPEN THE LOG',
+    { id:'log', icon:'📖', name:"Captain's Log", pos:{x:18,y:66,w:10,h:12},
+      desc:"The last entries, voice-to-text, the punctuation failing along with the speaker's nerve:\n\n“Day 44. Something answered our hail. Not on any channel we transmit on.”\n\n“Day 46. Crew hear it in the vents now. I have ordered the shafts welded.”\n\n“Day 47. I have aimed the dish at the one beacon out there that stopped talking, and I will not move it again. Its bearing is on the chart with all the others; I am not writing it in here, in case this log is read by something that is not you. Find it, listen, and then get off this ship.”" },
+    { id:'starchart', icon:'🗺️', name:'Star Chart', pos:{x:66,y:26,w:16,h:20},
+      desc:"A star chart of the sector, one course line burned in amber toward a dead beacon. Down the margin, the chart's beacon register:\n\n   BEACON ................ BEARING ...... STATUS\n   CASSIA RELAY .......... 31.08 ........ ACTIVE\n   ARDEN BUOY ............ 44.02 ........ ACTIVE\n   KEPLER MARK ........... 47.15 ........ SILENT — 40 YRS\n   TORVALD LIGHT ......... 52.60 ........ ACTIVE\n\nBeneath the chart's frame somebody has cut tally scratches into the console — small, neat, obsessive. You count them twice to be sure.\n\nNine.\n\nThere were nine of them aboard." },
+    { id:'antenna', icon:'📡', name:'Deep-Space Dish', pos:{x:38,y:44,w:14,h:16},
+      desc:"The dish control console: a great steel ear out on the hull, and a dial to swing it across the sky. The readout is waiting for a bearing, to two decimal places, the way the chart writes them.\n\nThe captain aimed this at one specific thing on Day 47 and left a log entry saying so, and a bearing register on the chart beside you listing every beacon in the sector.",
+      puzzle:{
+        type:'dial',
+        prompt:"Swing the dish to the captain's bearing, then coax the trim knobs until the carrier holds.",
+        answers:['4715'],
+        dial:{min:4000,max:5000,div:100,target:4715,pad:5,meter:'CARRIER STRENGTH',lock:'LOCK HEADING',miss:'nothing out there but hiss.',
+          knobs:[{label:'AZIMUTH TRIM',target:41},{label:'GAIN',target:73},{label:'POLARIZATION',target:18}]},
         hints:[
-          "Five letters, typed every watch for forty years by the same hand. A hand like that leaves a mark on what it touches.",
-          "On the armrest of the captain's chair, five keys are worn to bare metal. Those are the five letters; they make one word, and you know what kind of ship this is.",
-          "The bare keys are B, I, O, R and T, and there is only one word in them: O, R, B, I, T."
+          "The log says what he aimed at without giving you the number; the chart's register gives every number without saying which. Put the two together.",
+          "He aimed at the beacon that stopped talking. The register marks exactly one as SILENT — forty years silent, which is how long this ship has been out here.",
+          "KEPLER MARK, bearing 47.15. Set it there, then work the three knobs one at a time until the panel reads LOCKED IN."
         ],
-        solvedText:"The log opens on its last entry, which is not words. And the drawer under the station unlatches: a brass star wheel, the kind a navigator keeps for when the computers are wrong.",
-        inside:{ name:"From the captain's drawer", figure:wheelFig, tool:{ type:'turn', steps:STEPS, cx:260, cy:260, overlay:wheelTurning } } } },
-    { id:'viewport', icon:'🌌', name:'The Viewport', pos:POS2.viewport, ringAt:[50, 112],
-      desc:"Somebody stood here with a grease pencil and marked the glass, as if they did not trust the instruments to remember.",
-      figure:ART.svg(viewArt.w, viewArt.h, viewArt.body),
-      sprite:ART.sprite(POS2.viewport, viewArt.w, viewArt.h, viewArt.body) },
-    { id:'starchart', icon:'🗺️', name:'Star Chart', pos:POS2.starchart,
-      desc:"Eight figures somebody once saw in these stars, each with its lines drawn in and its name given as a picture.",
-      figure:ART.svg(chartArt.w, chartArt.h, chartArt.body),
-      sprite:ART.sprite(POS2.starchart, chartArt.w, chartArt.h, chartArt.body) },
-    { id:'nav', icon:'🧭', name:'Helm', pos:POS2.nav,
-      desc:"The dish follows the helm. Four windows, a picture in each, numbered one to four.",
-      sprite:st=>ART.sprite(POS2.nav, 180, 94, navBody(st.solved)),
-      puzzle:{ type:'combo', from:['viewport','starchart'], skin:'plate',
-        wheels:[1,2,3,4].map(n=>({ mark:{ text:String(n) } })), faces:{ glyphs:Object.keys(STARS).sort() }, answer:RINGED, tryLabel:'SET THE HEADING',
+        solvedText:"At 47.15 the hiss opens like a door — and underneath it, something is knocking. A repeating loop, forty years old, knocked out by hand. The comms speaker is carrying it now. Split the letters up; it is a long one."
+      }
+    },
+    { id:'beacon', onSolve:{el:'rx-bridge',op:.2,fx:'surge'}, icon:'🔊', name:'The Beacon Loop', pos:{x:25,y:44,w:10,h:14}, hiddenUntil:'antenna',
+      desc:"The loop repeats every few seconds. Not dots and dashes — knocks, in pairs: a count, a small pause, a second count. Nine pairs, two words, knocked out slowly by someone who wanted this understood.\n\nDivide the pairs among the crew and count them out.",
+      puzzle:{
+        prompt:"Decode the loop (two words).",
+        placeholder:"TWO WORDS", answers:['SEALVENTS'],
+        taps:'43 15 11 31|51 15 33 44 43',
         hints:[
-          "Four windows numbered one to four — and four rings on the glass of the viewport, numbered the same way in grease pencil.",
-          "The rings are round groups of stars with no lines between them. The star chart draws the lines in, and gives every figure a picture for a name. The group nobody ringed is not wanted.",
-          `One to four: ${RINGED.join(', ')}.`
+          "Knocks in pairs — that's the old prisoners' tap code. Look it up: the alphabet in a 5×5 grid, first count gives the row, second the column.",
+          "Row 4, column 3 is S. Row 1, column 5 is E. Split the pairs among the crew — and remember the grid drops K (it shares a cell with C).",
+          "4·3 S, 1·5 E, 1·1 A, 3·1 L — then 5·1 V, 1·5 E, 3·3 N, 4·4 T, 4·3 S. Enter SEALVENTS."
         ],
-        solvedText:"Somewhere on the hull forty years of seized bearings let go, and the dish comes round. The static on the bridge speaker changes.",
-        solveBeat:"For a moment, between pulses, the channel carries something else: a slow scrape, close to the microphone. It is coming from inside the ship.",
-        beatSound:'hiss' } },
-    { id:'beacon', icon:'📡', name:'Bridge Speaker', pos:POS2.beacon, needs:'nav',
-      desc:"The beacon the ship has been holding station on, coming through at last: the same run of pulses, over and over.",
-      deadDesc:"Static, flat and even. Whatever the dish is pointed at, it is not pointed at anything that is talking.",
-      figure:ART.svg(420, 420, beaconArt(true)), deadFigure:ART.svg(420, 420, beaconArt(false)),
-      tool:{ type:'pulse', seq:PULSE },
-      sprite:st=>ART.sprite(POS2.beacon, 116, 122, beaconBody(st.live)) },
-    { id:'comms', icon:'🎛️', name:'Comms Panel', pos:POS2.comms,
-      desc:"A transmit key for each of four tones, each under its own coloured cap.",
-      sprite:st=>ART.sprite(POS2.comms, 180, 94, commsBody(st.solved)),
-      puzzle:{ type:'press', from:['beacon'], repeat:true, slots:PULSE.length, answer:PULSE,
-        keys:{ colors:KEY_COLOURS },
-        miss:"The panel sends it. Nothing comes back but the same pulses as before.",
+        solvedText:"SEAL VENTS. Knocked out for forty years by the dead, to whoever came next. You look at the welded shafts. The welds on this deck… are intact. The ones below decks, the map says, are not.",
+        solveBeat:"The moment the last letter resolves, the speaker pops once and goes silent — as if something, somewhere, noticed you'd finally heard it.",
+        beatSound:'hiss'
+      }
+    },
+    { id:'console', icon:'🧭', name:'Nav Console', pos:{x:55,y:66,w:13,h:12},
+      desc:"The navigation console is locked. Its status line blinks five groups of machine bits — the ship talks in binary when it doesn't trust its crew:\n\n00111   00001   01101   01101   00001\n\nA legend is etched below: “A=00001 · B=00010 · C=00011 · … each letter is its place in the alphabet, in five bits.”",
+      puzzle:{
+        prompt:"Enter the unlock word.", placeholder:"FIVE LETTERS", answers:['GAMMA'],
         hints:[
-          "Four coloured keys and six places to fill. Something on this bridge is showing colours, once the dish is pointed the right way.",
-          "The lamp on the bridge speaker runs through six colours and then rests before it starts again. Wait for the rest, then send the same six back in the same order.",
-          `${PULSE.map((c, i) => i ? c : c[0].toUpperCase() + c.slice(1)).join(', ')}.`
+          "Each group is a number in binary (bit values 16-8-4-2-1). Convert it, then turn the number into a letter: 1=A, 2=B…",
+          "00111 = 4+2+1 = 7 = the 7th letter. Do the same for each group; split them among the crew.",
+          "7, 1, 13, 13, 1 → G, A, M, M, A. Enter GAMMA."
         ],
-        solvedText:"The pulses stop. One long tone answers, and all down the engineering side of the bridge dead screens begin to come up." } },
-    { id:'chrono', icon:'🕰️', name:"Ship's Chronometer", pos:POS2.chrono,
-      desc:"Stopped at the moment the bridge was abandoned. Nothing aft of here will take an order until the ship knows what time it is.",
-      sprite:st=>ART.sprite(POS2.chrono, 80, 108, chronoBody(st.solved)),
-      puzzle:{ type:'clock', from:['log','viewport'], start:{h:12,m:0}, answer:`${AT_HOUR}:00`, tryLabel:'START IT',
+        solvedText:"G-A-M-M-A. The console unlocks — the ship has been holding station against a dead beacon for decades, burning fuel to stay near something that stopped talking. Aft power routing now needs the reactor code."
+      }
+    },
+    { id:'reactor', icon:'☢️', name:'Reactor Calibration', pos:{x:88,y:40,w:9,h:42}, hiddenUntil:'console',
+      desc:"Three control rods — COPPER, IRON and LEAD — have to be seated into the LEFT, CENTRE and RIGHT sockets, and the readout reads their stamped numbers off left to right.\n\nThe engineer's parts list is still clipped to the housing:\n\n   COPPER ROD ..... stamped 6\n   IRON ROD ....... stamped 5\n   LEAD ROD ....... stamped 1\n\nAnd under it, in his own hand, the two things the manual does not tell you:\n\n   “Copper shorts out in anything but the leftmost socket. Found that out the hard way.”\n\n   “Iron only holds if it is seated somewhere to the left of lead.”",
+      puzzle:{
+        type:'keypad',
+        prompt:"Seat the rods, then type the readout — the three stamped numbers, left socket to right.", answers:['651'],
         hints:[
-          "A clock that has lost the time, on a ship that still has the stars. The captain kept something in his drawer for exactly this.",
-          "Turn the star wheel until its slot shows the sky as the viewport shows it — the same figures, the same way up, in the same order. Then read where the pointer on its rim has come to.",
-          `With the wheel matched, the pointer stands at ${AT_HOUR}. Set the chronometer to ${AT_HOUR}:00.`
+          "The numbers are given to you outright. The whole puzzle is where the three rods are allowed to sit.",
+          "Copper can only go in the left socket, so that is settled. Iron and lead take the centre and the right, in some order.",
+          "Iron must be left of lead, so iron takes the centre and lead the right. Left to right that reads 6, 5, 1 — enter 651."
         ],
-        solvedText:"It ticks. One by one, down the consoles, forty years of blinking zeroes become the time." } },
-    { id:'scope', icon:'🟢', name:'Core Scope', pos:POS2.scope, needs:'comms',
-      desc:"Engineering's picture of the core: five rods, five colours, each one a bright mark somewhere along its own line.",
-      deadDesc:"Engineering's scope. One flat line across the glass, and nothing behind it.",
-      figure:ART.svg(460, 460, scopeArt(true)), deadFigure:ART.svg(460, 460, scopeArt(false)),
-      sprite:st=>ART.sprite(POS2.scope, 120, 120, scopeBody(st.live)) },
-    { id:'reactor', icon:'☢️', name:'Reactor Pillar', pos:POS2.reactor, needs:'chrono',
-      desc:"Five control rods under five coloured caps, all of them driven home. Each can be drawn out as far as the fifth mark.",
-      deadDesc:"Five control rods, all driven home. The board is lit but takes no orders: its clock reads forty years of nothing.",
-      sprite:st=>ART.sprite(POS2.reactor, 120, 360, reactorBody(st)),
-      puzzle:{ type:'levels', from:['scope'], cols:RODS.map(r=>({ mark:{ color:r[0] } })), max:5, answer:ROD_SET, tryLabel:'ENGAGE',
-        hints:[
-          "Five rods, five colours, and five marks up each one. Engineering's scope has the same five colours on it, once the beacon has been answered.",
-          "On the scope each coloured line carries one bright mark, and the rings are numbered out from the middle. The ring a mark sits on is how far that colour's rod is drawn.",
-          `Red, yellow, green, blue, white: ${ROD_SET.join(', ')}.`
-        ],
-        solvedText:"The rods settle with a sound like a held breath let go, and the deck plates begin, very faintly, to hum.",
-        solveBeat:"Under the hum there is another sound, in the wall behind the pillar. Something moving away from the heat. Quickly.",
-        beatSound:'clank' } },
+        solvedText:"6-5-1. The reactor spools up from a whisper to a heartbeat, and power flows aft — through Hydroponics. The deck the crew welded shut from the outside.",
+        solveBeat:"Deep below, something answers the reactor's new heartbeat with three slow blows against a bulkhead. Not random. Rhythmic. Like a knock learned from watching you.",
+        beatSound:'knock'
+      }
+    }
   ]
-};
-
-const OLD_ROOMS = [
+},
 /* ============ ROOM 3 — HYDROPONICS ============ */
 {
   id:'hydro', name:'Room 3 — Hydroponics', scene:'hydro',
@@ -1096,10 +711,9 @@ const OLD_ROOMS = [
   ]
 }
 ];
-const ROOMS = [ROOM1, ROOM2, ...OLD_ROOMS];
 
 registerScenario({
-  id:'prospero', classic:true,
+  id:'prospero',
   title:'Derelict: The Prospero',
   sub:'deep space · forty years off course · something in the vents',
   tagline:'Wake from cryo on a dead ship, find out what emptied it, and reach the last escape pod.',
