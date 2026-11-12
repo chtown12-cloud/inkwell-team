@@ -2558,7 +2558,10 @@ function solvePuzzle(o){
   // the scenario files all along and had no code path that could show them,
   // because victory used to fire the instant the final puzzle fell.
   if(allDone && S.roomIndex===ACTIVE.rooms.length-1) armFinalLaunch();
-  openModal(o.id);
+  // A lock with nothing inside it and nothing to say steps out of the way:
+  // what it did is happening in the room, not in the close-up.
+  if(ACTIVE.classic && !o.puzzle.solvedText && !o.puzzle.inside) closeModal();
+  else openModal(o.id);
   renderHotspots();
   reactTo(o);
   refreshRelays();

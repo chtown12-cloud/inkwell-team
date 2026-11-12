@@ -403,9 +403,6 @@ ${Array.from({length:30},(_,i)=>`<circle class="tw" cx="${(i*127+40)%1560}" cy="
 <g class="shootstar"><line x1="1350" y1="80" x2="1394" y2="62" stroke="#ffe9c0" stroke-width="2.5" stroke-linecap="round"/></g>
 <!-- moon, horizon haze, bats -->
 <g class="plx" data-depth="3">
-  <circle cx="262" cy="148" r="60" fill="#f4e9c8" opacity=".07"/>
-  <circle cx="262" cy="148" r="44" fill="#f4e9c8" opacity=".88"/>
-  <circle cx="282" cy="138" r="38" fill="#1d112e"/>
   <ellipse cx="500" cy="400" rx="210" ry="6" fill="#2a1638" opacity=".38"/>
   <ellipse cx="1100" cy="422" rx="250" ry="5" fill="#2a1638" opacity=".34"/>
   <ellipse cx="820" cy="448" rx="320" ry="5" fill="#38203f" opacity=".38"/>
@@ -469,39 +466,7 @@ ${Array.from({length:30},(_,i)=>`<circle class="tw" cx="${(i*127+40)%1560}" cy="
   <path class="flame" d="M390 604 q-22 -34 0 -66 q22 32 0 66z" fill="#ffb45e"/>
   <path class="flame" d="M390 600 q-12 -22 0 -40 q12 18 0 40z" fill="#ffe9b0"/>
 </g>
-<!-- raft materials -->
-<g id="art-raftkit">
-  ${[0,1,2,3].map(i=>`<rect x="${620+i*10}" y="${640+i*22}" width="240" height="20" rx="10" fill="${i%2?'#4a3520':'#5b452c'}" transform="rotate(${i%2?-3:2} 740 ${650+i*22})"/>`).join('')}
-  <path d="M640 636 l180 -10 -20 -60 q-90 -14 -140 20 z" fill="#cfc0a0" opacity=".9"/>
-  ${['A','B','C','D','E'].map((ch,i)=>`<g transform="rotate(${(i-2)*9} ${660+i*46} 748)"><rect x="${644+i*46}" y="736" width="32" height="24" rx="4" fill="#d9cba6"/><text x="${660+i*46}" y="754" text-anchor="middle" font-family="Special Elite" font-size="15" fill="#4a3517">${ch}</text></g>`).join('')}
-</g>
-<!-- flare locker -->
-<g id="art-locker">
-  <rect x="1090" y="646" width="150" height="104" rx="8" fill="#5c1f1a"/>
-  <rect x="1090" y="646" width="150" height="26" rx="8" fill="#7a2a22"/>
-  ${[0,1,2].map(i=>`<rect x="${1102+i*48}" y="652" width="22" height="98" fill="#c9a04a" opacity=".8"/>`).join('')}
-  <rect x="1148" y="688" width="34" height="28" rx="4" fill="#20140f"/>
-  <circle cx="1165" cy="702" r="8" fill="#0d0a06" stroke="#c9a04a" stroke-width="2"/>
-</g>
-<!-- tide table on a rock (hidden until locker) -->
-<g id="el-tide">
-  <ellipse cx="1300" cy="560" rx="70" ry="34" fill="#241d20"/>
-  <rect x="1258" y="516" width="86" height="58" rx="4" fill="#d9cba6" transform="rotate(-7 1300 545)"/>
-  ${[0,1,2].map(i=>`<line x1="1268" y1="${532+i*13}" x2="1330" y2="${528+i*13}" stroke="#7a5c34" stroke-width="2.5"/>`).join('')}
-</g>
-<!-- launch winch (hidden until tide) -->
-<g id="el-winch">
-  <rect x="1404" y="640" width="16" height="130" fill="#241a10"/>
-  <circle cx="1412" cy="640" r="42" fill="#3a3d38" stroke="#20241f" stroke-width="6"/>
-  ${[0,1,2,3,4,5,6,7].map(i=>`<line x1="1412" y1="640" x2="${Math.round(1412+52*Math.cos(i*Math.PI/4))}" y2="${Math.round(640+52*Math.sin(i*Math.PI/4))}" stroke="#20241f" stroke-width="7"/>`).join('')}
-  <circle cx="1412" cy="640" r="12" fill="#c9a04a"/>
-  <text x="1412" y="596" text-anchor="middle" font-size="20" fill="#e0cfa2">▲■◆●</text>
-</g>
-<!-- flare rack (hidden until winch) -->
-<g id="el-signal">
-  <path d="M820 470 l64 0 12 60 -88 0 z" fill="#241a10"/>
-  ${[0,1,2].map(i=>`<g transform="rotate(${(i-1)*10} ${838+i*14} 470)"><rect x="${832+i*14}" y="418" width="12" height="54" rx="4" fill="#a83a28"/><rect x="${832+i*14}" y="412" width="12" height="10" rx="3" fill="#e0cfa2"/></g>`).join('')}
-</g>
+<!--SPRITES-->
 <g class="atmo">
 <!-- something in here is still running -->
 <circle id="rl-cove" cx="230" cy="210" r="6" fill="#ffdf9c" opacity=".12"/>
@@ -560,8 +525,8 @@ const FLAG = {
   W: `<rect width="96" height="64" fill="${C.blue}"/><polygon points="48,7 86,32 48,57 10,32" fill="${C.yellow}"/>`,
 };
 function flag(letter, x, y, w = 96, h = 64) {
-  return `<svg x="${x}" y="${y}" width="${w}" height="${h}" viewBox="0 0 96 64" preserveAspectRatio="none" style="overflow:hidden">${FLAG[letter]}`
-    + `<rect width="96" height="64" fill="none" stroke="#1b1410" stroke-width="3"/></svg>`;
+  return ART.inset(x, y, w, h, 96, 64, FLAG[letter], { clip: true })
+    + `<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="none" stroke="#1b1410" stroke-width="${(3 * w / 96).toFixed(2)}"/>`;
 }
 
 /* The hoist: what is still flying from the mast, top to bottom. */
@@ -1296,10 +1261,192 @@ const ROOM3 = {
   ]
 };
 
-const FIGS = {};
-const OLD_ROOMS = [
-/* ================= ROOM 4 — THE ESCAPE RAFT ================= */
-{
+/* ============================================================
+   ROOM 4 — THE ESCAPE RAFT
+   The operator photographed his raft as he built it and wrote a number on
+   every print; in the order he took them, the numbers open the flare locker.
+   The same prints show how the logs lie. The locker holds a tide card with
+   three seas on it, one for each kind of moon — and tonight's moon is over
+   the western head. Then the flares, and the oldest signal there is.
+   ============================================================ */
+
+/* five logs, by length. The raft is lashed in this order, left to right. */
+const LOGS = { a: 150, b: 110, c: 170, d: 90, e: 130 };
+const LASHED = ['e', 'c', 'd', 'a', 'b'];
+function logShape(x, base, len, w) {
+  return `<rect x="${x}" y="${base - len}" width="${w}" height="${len}" rx="${w / 2}" fill="#7a5a3a" stroke="#3a2815" stroke-width="2.5"/>`
+    + `<path d="M${x + w * .3} ${base - len + 12}v${len - 24}" stroke="#3a2815" stroke-opacity=".45" stroke-width="2"/>`
+    + `<ellipse cx="${x + w / 2}" cy="${base - len + w * .32}" rx="${w * .34}" ry="${w * .2}" fill="#a98558" stroke="#3a2815" stroke-width="1.5"/>`;
+}
+/** The raft at one stage of the build, drawn into a 190x120 picture. */
+function raftStage(stage) {
+  let b = `<rect width="190" height="120" fill="#2b3550"/><rect y="78" width="190" height="42" fill="#6a5237"/>`;
+  b += `<path d="M0 78q48 -8 95 0t95 0" fill="none" stroke="#8fa3c8" stroke-width="2" opacity=".5"/>`;
+  const base = 106, w = 15;
+  if (stage === 1) {
+    // loose, any old how
+    [['b', 22, -24], ['d', 58, 12], ['a', 92, -6], ['e', 128, 28], ['c', 160, -14]].forEach(([id, x, r]) =>
+      b += `<g transform="rotate(${r} ${x + w / 2} ${base - 20})">${logShape(x, base, LOGS[id] * .42, w)}</g>`);
+    return b;
+  }
+  LASHED.forEach((id, i) => b += logShape(52 + i * (w + 3), base, LOGS[id] * .42, w));
+  b += `<path d="M48 ${base - 10}h96M48 ${base - 30}h96" stroke="#e3d6b0" stroke-width="3"/>`;
+  if (stage >= 3) b += `<rect x="50" y="${base - 26}" width="92" height="13" fill="#b08f5e" stroke="#3a2815" stroke-width="1.5"/><path d="M73 ${base - 26}v13M96 ${base - 26}v13M119 ${base - 26}v13" stroke="#3a2815" stroke-width="1.2"/>`;
+  if (stage >= 4) b += `<path d="M96 ${base - 20}V10" stroke="#3a2815" stroke-width="5" stroke-linecap="round"/><circle cx="96" cy="${base - 20}" r="5" fill="#3a2815"/>`;
+  if (stage >= 5) b += `<path d="M99 14L150 62H99Z" fill="#e9e1c9" stroke="#3a2815" stroke-width="2"/>`;
+  return b;
+}
+const SHOTS = [[4, '3'], [1, '6'], [5, '5'], [2, '1'], [3, '8']];      // as pinned: [stage, number on it]
+const BUILD_CODE = SHOTS.slice().sort((x, y) => x[0] - y[0]).map(x => x[1]).join('');
+const photosArt = { w: 720, h: 440, body: (() => {
+  let b = `<rect x="6" y="6" width="708" height="428" rx="6" fill="#5b452c" stroke="#2b1f12" stroke-width="4"/>`;
+  for (let i = 1; i < 5; i++) b += `<path d="M6 ${6 + i * 86}H714" stroke="#2b1f12" stroke-width="2" opacity=".5"/>`;
+  const at = [[34, 26, -4], [264, 18, 3], [494, 30, -2], [146, 228, 5], [392, 224, -5]];
+  SHOTS.forEach(([stage, num], i) => {
+    const [x, y, r] = at[i];
+    b += `<g transform="rotate(${r} ${x + 105} ${y + 90})"><rect x="${x + 4}" y="${y + 6}" width="210" height="182" fill="#000" opacity=".3"/>`
+      + `<rect x="${x}" y="${y}" width="210" height="182" fill="#efe9da" stroke="#b9ad90" stroke-width="1.5"/>`
+      + ART.inset(x + 10, y + 10, 190, 120, 190, 120, raftStage(stage), { clip: true })
+      + W(x + 178, y + 170, num, { size: 44, face: 'hand', fill: '#1d2a4a', weight: 700 }) + ART.pin(x + 105, y + 4) + `</g>`;
+  });
+  return b;
+})() };
+
+/* the moon, three ways. One drawing for the sky and for the card, so the match is there to see. */
+function moonShape(phase, cx, cy, r, fill) {
+  if (phase === 'full') return `<circle cx="${cx}" cy="${cy}" r="${r}" fill="${fill}"/>`;
+  const lit = phase === 'half'
+    ? `M${cx} ${cy - r}A${r} ${r} 0 0 0 ${cx} ${cy + r}Z`
+    : `M${cx} ${cy - r}A${r} ${r} 0 0 0 ${cx} ${cy + r}A${(r * .7).toFixed(1)} ${r} 0 0 1 ${cx} ${cy - r}Z`;
+  return `<g transform="rotate(-24 ${cx} ${cy})"><circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="${fill}" stroke-width="${Math.max(1.2, r * .07).toFixed(1)}" opacity=".5"/>`
+    + `<path d="${lit}" fill="${fill}"/></g>`;
+}
+const TONIGHT = 'crescent';
+const skyArt = { w: 128, h: 128, body: `<circle cx="64" cy="64" r="62" fill="#f4e9c8" opacity=".07"/>` + moonShape(TONIGHT, 64, 64, 40, '#f4e9c8') };
+const moonFig = ART.svg(420, 380, (() => {
+  let b = `<defs><radialGradient id="mnSky"><stop offset="0" stop-color="#2a1c4a"/><stop offset=".7" stop-color="#1a1030"/><stop offset="1" stop-color="#1a1030" stop-opacity="0"/></radialGradient></defs>`;
+  b += `<ellipse cx="210" cy="190" rx="208" ry="188" fill="url(#mnSky)"/><circle cx="210" cy="186" r="150" fill="#f4e9c8" opacity=".05"/>`;
+  [[62, 96, 2.6], [118, 300, 2], [330, 78, 2.2], [352, 262, 2.8], [282, 330, 1.8], [90, 196, 1.6], [316, 172, 1.5], [172, 52, 2]].forEach(([x, y, r]) => b += `<circle cx="${x}" cy="${y}" r="${r}" fill="#ffe9c0" opacity=".85"/>`);
+  b += moonShape(TONIGHT, 210, 186, 96, '#f4e9c8');
+  b += `<path d="M0 372q70 -44 132 -26t96 22q60 -22 110 -10t82 14V380H0Z" fill="#0a0812"/>`;      // the western head, under it
+  return b;
+})());
+
+/* the tide card: the sea against the hours, three times over — one sea for each moon —
+   and the reef standing in it. Every sea tops the reef for half an hour either side of its peak. */
+const TIDES = [
+  { moon: 'half',     at: 3.5, w: 2.4, ink: '#2f7d6a' },
+  { moon: 'crescent', at: 6,   w: 1.9, ink: '#1f4f8f' },
+  { moon: 'full',     at: 8.5, w: 1.5, ink: '#7a3a6a' },
+];
+const LOW_U = .08, REEF_U = .62;
+function tideU(c, t) {
+  const d = Math.abs(t - c.at);
+  if (d >= c.w) return LOW_U;
+  const amp = (REEF_U - LOW_U) / Math.cos(Math.PI * .5 / (2 * c.w)) ** 2;
+  return LOW_U + amp * Math.cos(Math.PI * d / (2 * c.w)) ** 2;
+}
+const clockAt = t => `${Math.floor(t + 1e-9)}:${String(Math.round(((t + 1e-9) % 1) * 60)).padStart(2, '0')}`;
+const HIGH = TIDES.find(c => c.moon === TONIGHT);
+const TIDE_AT = clockAt(HIGH.at), TIDE_OPEN = [clockAt(HIGH.at - .5 - 5 / 60), clockAt(HIGH.at + .5 + 5 / 60)];
+const tideArt = { w: 720, h: 400, body: (() => {
+  const X = t => 130 + (t - 2) * 70, Y = u => 318 - u * 262, reef = Y(REEF_U);
+  let b = ART.paper(8, 8, 704, 384);
+  for (let t = 2; t <= 10; t += .5) {
+    b += `<path d="M${X(t)} 40V318" stroke="${I.inkSoft}" stroke-width="${t % 1 ? 1 : 1.8}" opacity="${t % 1 ? .28 : .55}"/>`;
+    if (t % 1 === 0) b += W(X(t), 356, String(t), { size: 27, face: 'num', weight: 700 });
+  }
+  // the three seas
+  b += `<rect x="${X(2)}" y="${Y(LOW_U).toFixed(1)}" width="${X(10) - X(2)}" height="${(318 - Y(LOW_U)).toFixed(1)}" fill="#3d6f9a" opacity=".3"/>`;
+  TIDES.forEach(c => {
+    const t0 = Math.max(2, c.at - c.w), t1 = Math.min(10, c.at + c.w);
+    let d = '';
+    for (let i = 0, n = Math.round((t1 - t0) / .05); i <= n; i++) { const t = t0 + (t1 - t0) * i / n; d += `${d ? 'L' : 'M'}${X(t).toFixed(1)} ${Y(tideU(c, t)).toFixed(1)}`; }
+    b += `<path d="${d}L${X(t1).toFixed(1)} ${Y(LOW_U).toFixed(1)}L${X(t0).toFixed(1)} ${Y(LOW_U).toFixed(1)}Z" fill="${c.ink}" opacity=".14"/><path d="${d}" fill="none" stroke="${c.ink}" stroke-width="4.5" stroke-linejoin="round" stroke-linecap="round"/>`;
+    b += moonShape(c.moon, X(c.at), Y(tideU(c, c.at)) - 36, 18, c.ink);
+  });
+  b += `<path d="M96 318H694" stroke="${I.ink}" stroke-width="3"/><path d="M${X(2)} 40V318" stroke="${I.ink}" stroke-width="3"/>`;
+  // the reef, in section, and the line of its top carried across
+  b += `<path d="M58 318l8 -62l14 -20l2 -52l16 -12V${reef.toFixed(1)}H128V318Z" fill="#5a5148" stroke="#2f2a25" stroke-width="2" stroke-linejoin="round"/>`;
+  b += `<path d="M84 250l10 -8M70 292l12 -6M104 214l12 -10M100 286l14 -4" stroke="#2f2a25" stroke-width="1.6" opacity=".6"/>`;
+  b += `<path d="M98 ${reef.toFixed(1)}H692" stroke="#7a2a1e" stroke-width="3.5" stroke-dasharray="12 8"/>`;
+  // she floats over it, or she does not
+  const raft = (x, y) => `<path d="M${x - 22} ${y}h44l-6 10h-32z" fill="#7a5a3a" stroke="#3a2815" stroke-width="2"/><path d="M${x} ${y}v-26l19 21z" fill="#e9e1c9" stroke="#3a2815" stroke-width="2"/>`;
+  b += `<path d="M40 ${reef - 22}q9 -6 18 0t18 0t18 0t18 0" fill="none" stroke="#1f4f8f" stroke-width="2.5" opacity=".7"/>`;
+  b += raft(84, reef - 30) + GL('tick', 30, reef - 62, 28, '#2f7d45');
+  return b;
+})() };
+
+/* a piece torn off the code chart from the station wall, kept in the lid of the flare locker */
+const STRIP = ['O', 'P', 'Q', 'R', 'S', 'T'];
+const stripArt = { w: 600, h: 150, body: (() => {
+  const torn = 'M22 8L584 12L590 30L578 48L592 70L580 92L594 116L582 142L16 140L26 118L12 96L24 72L10 50L22 30Z';
+  let b = `<path d="${torn}" fill="#000" opacity=".28" transform="translate(3 4)"/><path d="${torn}" fill="#e7dcc0" stroke="${I.paperDark}" stroke-width="1.5"/>`;
+  STRIP.forEach((ch, i) => {
+    const x = 48 + (i % 3) * 180, y = 52 + Math.floor(i / 3) * 54;
+    b += W(x, y + 11, ch, { size: 30 }) + morseMarks(MORSE[ch], x + 40, y, 10, I.ink).svg;
+  });
+  return b;
+})() };
+const lockerInside = ART.svg(720, 566, tideArt.body + ART.inset(60, 410, 600, 150, 600, 150, stripArt.body));
+
+function flareArt(long) {
+  return `<svg viewBox="0 0 60 ${long ? 110 : 80}" class="glyph" style="width:${long ? 40 : 34}px;height:${long ? 74 : 54}px">`
+    + `<rect x="20" y="${long ? 34 : 30}" width="20" height="${long ? 72 : 46}" rx="5" fill="#a83a28" stroke="#3a120d" stroke-width="3"/>`
+    + `<rect x="20" y="${long ? 34 : 30}" width="20" height="12" rx="4" fill="#f1d9a0"/>`
+    + (long ? `<path d="M30 30V4M18 26L8 8M42 26L52 8" stroke="#ffc46b" stroke-width="5" stroke-linecap="round"/>`
+            : `<path d="M30 26V14" stroke="#ffc46b" stroke-width="5" stroke-linecap="round"/>`) + `</svg>`;
+}
+
+/* ---- what stands in the cove ---- */
+function lockerBody(open) {
+  let b = `<ellipse cx="78" cy="106" rx="76" ry="6" fill="#000" opacity=".3"/><rect x="4" y="${open ? 26 : 6}" width="150" height="${open ? 78 : 98}" rx="8" fill="#5c1f1a"/>`;
+  [0, 1, 2].forEach(i => b += `<rect x="${16 + i * 48}" y="${open ? 26 : 12}" width="22" height="${open ? 78 : 92}" fill="#c9a04a" opacity=".8"/>`);
+  if (!open) {
+    b += `<rect x="4" y="6" width="150" height="22" rx="8" fill="#7a2a22"/><rect x="46" y="46" width="66" height="26" rx="4" fill="${I.brass}" stroke="${I.brassDark}" stroke-width="2"/>`;
+    [0, 1, 2, 3, 4].forEach(i => b += `<rect x="${51 + i * 11.6}" y="51" width="8" height="16" rx="1.5" fill="#17100a"/>`);
+  } else {
+    // the lid thrown back: you are looking at the inside of it, standing up behind the box
+    b += `<path d="M8 27L20 1H138L150 27Z" fill="#431714" stroke="#22090a" stroke-width="2" stroke-linejoin="round"/><rect x="4" y="26" width="150" height="12" fill="#160807"/>`;
+    [0, 1, 2].forEach(i => b += `<rect x="${58 + i * 16}" y="8" width="10" height="30" rx="3" fill="#a83a28" stroke="#3a120d"/><rect x="${58 + i * 16}" y="8" width="10" height="7" rx="3" fill="#e0cfa2"/>`);
+  }
+  return b;
+}
+function raftBody(built) {
+  let b = `<ellipse cx="128" cy="118" rx="120" ry="8" fill="#000" opacity=".28"/>`;
+  if (!built) {
+    [['a', 14, 10], ['b', 64, -8], ['c', 110, 6], ['d', 160, -12], ['e', 206, 9]].forEach(([id, x, r]) =>
+      b += `<g transform="rotate(${90 + r} ${x + 9} 96)">${logShape(x, 104, LOGS[id] * .58, 18)}</g>`);
+    return b;
+  }
+  LASHED.forEach((id, i) => b += logShape(72 + i * 22, 112, LOGS[id] * .56, 19));
+  b += `<path d="M68 100h118M68 74h118" stroke="#e3d6b0" stroke-width="3.5"/><rect x="70" y="80" width="114" height="15" fill="#b08f5e" stroke="#3a2815" stroke-width="1.5"/>`;
+  b += `<path d="M127 88V6" stroke="#3a2815" stroke-width="6" stroke-linecap="round"/><path d="M131 10L190 70H131Z" fill="#e9e1c9" stroke="#3a2815" stroke-width="2"/>`;
+  return b;
+}
+function winchBody(free) {
+  let b = `<rect x="46" y="60" width="16" height="140" fill="#241a10"/>`;
+  [0, 1, 2, 3].forEach(i => b += `<path d="M10 62H98" stroke="#20241f" stroke-width="7" stroke-linecap="round" transform="rotate(${i * 45 + (free ? 20 : 0)} 54 62)"/>`);
+  b += `<circle cx="54" cy="62" r="40" fill="#3a3d38" stroke="#20241f" stroke-width="6"/>`;
+  b += ART.clockFace(54, 62, 27, free ? 5 : 12, free ? 30 : 0, { face: '#e9dfc3', ink: '#2a1e0c', rim: I.brassDark });
+  return b;
+}
+function rackBody(fired) {
+  let b = `<path d="M22 70h88l12 64H10z" fill="#241a10"/>`;
+  [0, 1, 2].forEach(i => b += `<g transform="rotate(${(i - 1) * 10} ${48 + i * 18} 76)"><rect x="${42 + i * 18}" y="18" width="13" height="58" rx="4" fill="${fired ? '#3b3530' : '#a83a28'}"/><rect x="${42 + i * 18}" y="12" width="13" height="10" rx="3" fill="${fired ? '#17140f' : '#e0cfa2'}"/></g>`);
+  return b;
+}
+
+const POS4 = {
+  photos:    { x: 26.5, y: 57,   w: 13.2, h: 14.4 },
+  moon:      { x: 22.4, y: 7.6,  w: 8,    h: 14.2 },
+  locker:    { x: 68,   y: 71.4, w: 9.9,  h: 12.5 },
+  raft:      { x: 43,   y: 72.5, w: 16,   h: 14.2 },
+  tideclock: { x: 85.2, y: 61,   w: 6.8,  h: 22.6 },
+  flares:    { x: 13.4, y: 66.6, w: 8.3,  h: 15.4 },
+};
+
+const ROOM4 = {
   id:'raft', name:'Room 4 — The Escape Raft', scene:'cove', fx:'mist',
   stageFx:'swell',
   relays:[{el:'rl-cove',mode:'pulse',period:3.0}],
@@ -1309,86 +1456,71 @@ const OLD_ROOMS = [
   entryBeat:"Fresh prints circle the raft materials — the same long, dragging prints from the beach where you started. It has been here. It has been waiting to see if you'd make it this far.",
   entrySound:'knock',
   completeText:"The raft is rigged, the winch is free, and the tide is going out under you. Nothing holds it to this island now but the hand on the line.",
-  chain:"Five build tags, each giving its own reason, force one order: logs first because nothing floats before them, deck second because nothing is stood on her before it, mast before rudder because the mast lashing runs under the rudder head, sail last because canvas ends the work — BDAEC → the flare locker's dials are reset each week to the live stock on the shelves, counted top down, and a case that has already been fired is not stock: 3 rockets of the 5, 4 hand flares of the 7, not one of the 2 smoke floats, all 6 line-throwing cartridges = 3406 → the tide card's three high waters lose one to the nine-foot bar and one to the dark, leaving 6:40, less the ninety minutes the winch takes = 5:10 → the lead line coiled on the drum carries four numbered soundings out through the channel, read off its fathom scale: 3-1-5-8 → fire the flares in the international distress pattern, SOS.",
+  chain:`The operator photographed the raft as he built it and wrote a number on each print; put in the order he must have taken them — loose logs, lashed, decked, mast, sail — the numbers read ${BUILD_CODE}, which opens the flare locker → the same prints show how the five logs lie, by their lengths, so the raft goes together to match → the tide card in the locker draws three seas against the hours, each marked with a moon, and the reef as a line across them; tonight's moon is a crescent, and the crescent's sea is over the reef for half an hour either side of ${TIDE_AT}, which the tide clock on the winch is set to → the torn strip in the locker lid is a piece of the code chart, O to T, and nine flares is exactly S, O, S: three short, three long, three short (...---...).`,
   objects:[
-    { id:'dragmarks', icon:'👣', name:'Drag-Marks in the Sand', pos:{x:24,y:87,w:16,h:9},
-      desc:"Long furrows circle the cove, the same as the beach at dawn — but here they're layered dozens deep, old over older, like a patrol route walked for years.\n\nAt the center of the pattern, planted upright in the sand: the operator's other boot.\n\nBuild fast." },
-    { id:'raftkit', icon:'🛶', name:'Raft Materials', pos:{x:39,y:75,w:18,h:16},
-      desc:"The operator staged every piece of it and tagged each step. The wind has scattered the tags, and he wrote them the way a boatbuilder thinks — each one a reason, not an order:\n\n   TAG A — “Raise the mast.”\n\n   TAG B — “Lash the logs. Nothing sits on the water until the logs are lashed.”\n\n   TAG C — “Rig the sail. Last of all: the moment there is canvas up she takes charge, and whoever is still working goes swimming.”\n\n   TAG D — “Lay the deck. Before anything is stood up on her or fixed to her.”\n\n   TAG E — “Fix the rudder — but step the mast first. The mast lashing runs aft under the rudder head, and you will never thread it afterwards.”",
-      puzzle:{
-        type:'order', order:{labels:{"A": "Raise the mast", "B": "Lash the logs", "C": "Rig the sail", "D": "Lay the deck", "E": "Fix the rudder"}},
-        prompt:"Enter the five tag letters in build order.", placeholder:"FIVE LETTERS", answers:['BDAEC'],
+    { id:'photos', icon:'🖼️', name:'Pinned Photographs', pos:POS4.photos,
+      desc:"Five prints pinned to a board, out of any order, each with a number in the corner in his hand.",
+      figure:ART.svg(photosArt.w, photosArt.h, photosArt.body),
+      sprite:ART.sprite(POS4.photos, photosArt.w, photosArt.h, photosArt.body, { rot: -3 }) },
+    { id:'moon', icon:'🌙', name:"Tonight's Moon", pos:POS4.moon,
+      desc:"Low over the western head: a thin, bright sliver, with the rest of the disc only just there.",
+      figure:moonFig,
+      sprite:ART.sprite(POS4.moon, skyArt.w, skyArt.h, skyArt.body) },
+    { id:'locker', icon:'🧨', name:'Flare Locker', pos:POS4.locker,
+      desc:"Steel, in emergency stripes, with five numbered wheels on the hasp.",
+      sprite:st=>ART.sprite(POS4.locker, 158, 112, lockerBody(st.solved)),
+      puzzle:{ type:'combo', from:['photos'],
+        wheels:5, faces:'0123456789', answer:BUILD_CODE,
         hints:[
-          "Nothing here is arbitrary — every tag says why. Start at the ends: one task has to be first because nothing floats without it, and one has to be last because it ends the work.",
-          "Logs first (B), and the deck goes down before anything is stood on or fixed to her, so that is second (D). The sail is last (C).",
-          "That leaves the mast and the rudder in the middle, and tag E says step the mast first. Logs, deck, mast, rudder, sail: enter BDAEC."
+          "Five wheels, and five photographs with a number written on each. The numbers are not in a useful order — but the photographs can be.",
+          "They are pictures of one raft being built. Put them in the order they must have been taken, from loose logs to a raft under sail, and read the numbers off in that order.",
+          `Loose logs, lashed, decked, mast up, sail on: ${BUILD_CODE.split('').join(', ')}.`
         ],
-        solvedText:"Logs, deck, mast, rudder, sail. It comes together fast under ten hands — an ugly, beautiful, seaworthy-enough raft. Now you need the flares and you need the tide.",
-        solveBeat:"As the mast goes up, from the clifftop above the cove comes a sound like slow applause — two heavy limbs striking together. Once. Twice. Then nothing.",
-        beatSound:'knock'
-      }
-    },
-    { id:'locker', onSolve:{el:'rx-cove',op:.2,fx:'surge'}, icon:'🧨', name:'Flare Locker', pos:{x:66,y:73,w:12,h:14},
-      desc:"A steel flare locker in fading emergency stripes, four dials on the door, the stock just visible through a cracked inspection window.\n\nTaped inside the glass, the station's standing order in the operator's hand:\n\n   “DIALS ARE RESET EACH WEEK TO THE LIVE COUNT, TOP SHELF FIRST.\n    A FIRED CASE IS NOT A FLARE. IF YOU CANNOT FIRE IT,\n    YOU DO NOT HAVE IT.”\n\nNobody on this station threw anything away. They put it back.", figure:FIGS.locker,
-      puzzle:{
-        type:'keypad',
-        prompt:"Enter the 4-digit code.", answers:['3406'],
+        solvedText:"The hasp comes away. Flares, dry and intact — and under them a tide card for the cove, with a torn strip of paper tucked in the lid.",
+        inside:{ name:'From the locker', figure:lockerInside } } },
+    { id:'raft', icon:'🪵', name:'Raft Timbers', pos:POS4.raft,
+      desc:"Five logs, cut to five lengths on purpose, lying wherever they were dropped.",
+      sprite:st=>ART.sprite(POS4.raft, 256, 128, raftBody(st.solved)),
+      puzzle:{ type:'tiles', from:['photos'], cols:5, skin:'logs',
+        pieces:Object.keys(LOGS).map(id=>({ id, w:70, h:210, body:`<rect width="70" height="210" fill="#6a5237"/>${logShape(18, 200, LOGS[id], 34)}` })),
+        start:['a','b','c','d','e'], answer:LASHED,
         hints:[
-          "The order counts what you could fire tonight, shelf by shelf from the top. So look at each case on a shelf before you add it to the count.",
-          "A fired case keeps its shape and its place on the shelf; what it loses is its cap, and it is charred black where the cap was. One shelf has nothing live left on it at all.",
-          "Three live rockets, four live hand flares, not one of the smoke floats, six cartridges. Enter 3406."
+          "Tap one log, then another, to swap them. He built this raft once already, and he took pictures.",
+          "Every photograph after the first shows the raft lashed up, and the logs are different lengths. Lay these out so the far ends make the same outline.",
+          "Left to right: middling, longest, shortest, second longest, second shortest."
         ],
-        solvedText:"3-4-0-6, and the door swings. The live stock comes out dry and intact — and underneath it, a laminated tide card for the cove.",
-        solveBeat:null
-      }
-    },
-    { id:'tide', icon:'🌊', name:'Tide Table & Winch Notes', pos:{x:77,y:56,w:9,h:11},
-      desc:"The laminated card, in the operator's neat hand: the day's high waters, the rock on the bar across the mouth of this cove, and the hour it gets dark.\n\nUnderneath it, the launch note —\n\n   “Allow an hour and a half on the winch to run her down the ways,\n    so start that much before the water is at its height.”", figure:FIGS.tide,
-      puzzle:{
-        prompt:"Set the launch time (hour then minutes, e.g. 730).", placeholder:"H:MM", answers:['510','0510'],
+        solvedText:"The lashings bite and the five logs become one thing. The deck goes on; the mast goes up.",
+        inside:{ name:'Lashed', figure:ART.svg(256, 128, raftBody(true)) } } },
+    { id:'tideclock', icon:'⚙️', name:'Launch Winch', pos:POS4.tideclock, needs:'raft',
+      desc:"The winch that pays the raft out over the reef. Its brake is a tide clock: it lets go at the time it is set to, and not before.",
+      deadDesc:"A winch with a clock for a brake, and a line that runs down the sand to nothing. There is no raft to launch yet.",
+      sprite:st=>ART.sprite(POS4.tideclock, 108, 204, winchBody(st.solved)),
+      puzzle:{ type:'clock', from:['locker','moon'], start:{h:12,m:0}, answer:TIDE_AT, window:TIDE_OPEN, tryLabel:'RELEASE THE BRAKE',
+        miss:"The brake lets go and the raft slides out — and grounds hard on the reef. You haul her back up the sand.",
         hints:[
-          "Three high waters, and two things to put them through: the bar needs more water over it than the card allows, and you must not still be out there after dark.",
-          "Only one of the three clears the bar and happens in daylight. Once you have it, the launch note tells you how long the winch takes.",
-          "An hour and a half before 6:40 is 5:10. Enter 510."
+          "A clock on a winch wants a time, and the card in the flare locker is all times: the hours along the bottom, and the sea rising and falling across them. Three seas, though, not one.",
+          "Each sea on the card has a moon drawn over it, and the dashed line is the top of the reef. Only one of those moons is in the sky tonight.",
+          `Tonight's moon is the thin crescent. The crescent's sea is over the reef from half past five to half past six, and highest at six: set the clock to ${TIDE_AT}.`
         ],
-        solvedText:"5:10. The timer arms with a clunk you feel through the sand, and somewhere under the ways the winch drum takes up its slack and waits."
-      }
-    },
-    { id:'winch', icon:'⚙️', name:'Launch Winch Tumblers', pos:{x:85,y:67,w:10,h:16}, hiddenUntil:'tide',
-      desc:"The launch winch: four brass tumbler wheels set into the drum housing, and cut into the housing beside them so it can never be lost —\n\n   “SET HER TO THE CHANNEL.”\n\nThe operator's lead line is coiled on the drum, marked at every fathom in the old way. He sounded a way out through the reef and numbered his soundings in the order he took them, working from the beach out to open water.", figure:FIGS.winch,
-      puzzle:{
-        type:'keypad',
-        prompt:"Enter the 4-digit release code.", answers:['3158'],
-        hints:[
-          "The lead line is a record of the way out. Read the depth at each numbered sounding off the fathom scale beside it.",
-          "Station one to station four, beach to open water. One of them is alarmingly shallow; that is the bar.",
-          "Three, one, five, eight. Enter 3158."
-        ],
-        solvedText:"3-1-5-8 — the depth of the water you are about to take her over, dialled into the machine that is going to put her there. The release lever frees with a heavy CLACK. All that is left is to bring that ship: fire the flares in a signal no sailor alive can ignore.",
+        solvedText:"The brake lets go with a heavy CLACK and the line runs free. All that is left is to bring that ship.",
         solveBeat:"From the treeline at the cove's edge, for the first time, you hear it breathe. It is very close now. It has stopped hiding.",
-        beatSound:'growl'
-      }
-    },
-    { id:'signal', icon:'🔥', name:'Fire the Signal Flares', pos:{x:49,y:47,w:11,h:14}, hiddenUntil:'winch',
-      desc:"The rack holds nine flares. Nine is exactly enough for one message and nothing left over for a second attempt.\n\nShort bursts and long burns — the oldest distress call there is, and the one the morse poster back at the station still had its heading for even after the alphabet was torn away.\n\nGet it right and that ship turns. Get it wrong and you have simply lit yourself up for something that is not a ship.",
-      puzzle:{
-        type:'signal',
-        labels:{short:'🔥 SHORT BURST ·',long:'🔥 LONG BURN −',reset:'RESET RACK',send:'📡 SEND SIGNAL'},
-        missText:'The flares sputter into the wrong pattern. The ship sails on.',
-        prompt:"Fire the flares in the international distress pattern, then hit SEND SIGNAL. (Watch the sky behind this panel.)",
-        answers:['...---...'],
+        beatSound:'growl' } },
+    { id:'flares', icon:'🔥', name:'Signal Flares', pos:POS4.flares, hiddenUntil:'tideclock',
+      desc:"Nine flares in the rack — enough for one message and nothing left over for a second try.",
+      sprite:st=>ART.sprite(POS4.flares, 132, 138, rackBody(st.solved)),
+      puzzle:{ type:'press', from:['locker'], repeat:true, slots:9, answer:'...---...',
+        keys:[{ id:'.', art:flareArt(false), cap:'short burst' }, { id:'-', art:flareArt(true), cap:'long burn' }],
+        echo:{ '.':'·', '-':'–' }, miss:'The flares gutter into the wrong pattern. The ship sails on.',
         hints:[
-          "Three letters every sailor on Earth knows.",
-          "S is three shorts. O is three longs. Spell the distress call.",
-          "Fire: short short short, long long long, short short short — SOS."
+          "Nine flares, and two ways to fire each one: a short burst or a long burn. Short and long — this island has spoken to you that way before.",
+          "The torn strip from the locker lid is a piece of the code chart: a dot is a short burst, a dash is a long burn. Six letters on it. What does anyone send when they need a ship to stop?",
+          "S, O, S: three short, three long, three short."
         ],
-        solvedText:""
-      }
-    }
+        solvedText:"" } },
   ]
-}
-];
-const ROOMS = [ROOM1, ROOM2, ROOM3, ...OLD_ROOMS];
+};
+
+const ROOMS = [ROOM1, ROOM2, ROOM3, ROOM4];
 
 registerScenario({
   id:'eldermoor', classic:true,
@@ -1436,7 +1568,7 @@ registerScenario({
     On the beach where you started, at the very edge of the flare-light, something tall stands motionless at the waterline, watching you go. It does not follow. It has never needed to follow anyone before.<br><br>
     You don't look away until the island is gone.`,
   gameOverProse:`The sun slips below the horizon. The treeline is very quiet now — the patient kind of quiet.<br><br>The ship's lights are still out there. Barely.`,
-  flare:{x:852,y:470,hue:[255,120,90]},
+  flare:{x:281,y:612,hue:[255,120,90]},
   ambience:[
     {surf:.40, wind:.08, drone:.012},
     {drone:.03, hum:.045, wind:.015},
@@ -1465,9 +1597,6 @@ registerScenario({
     arrival:'Something long moves between you and the water, slow, and is gone before anyone can put a name to it.',
     midroom:'Behind you, something you had already worked out shifts in the wind. It is not where you left it.'
   },
-  // One wording for every lock in this fiction: a salt-seized crate and a
-  // frozen hut safe do not fail the same way.
-  padMiss:'The salt-swollen tumblers refuse to turn.', padHow:'Key in the combination. The dial is stiff with salt — a wrong four only costs 5 seconds.',
   wrongBeats:WRONG_BEATS, wrongSounds:WRONG_SOUNDS,
   scenes:SCENES, rooms:ROOMS
 });
