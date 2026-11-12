@@ -66,7 +66,7 @@ async function face(p, room, id, state = 'live') {
     objs.forEach(x => S.solved.delete(x.id));
     LOCKS.reset();
     if (o.hiddenUntil) S.solved.add(o.hiddenUntil);
-    if (o.needs && state !== 'dead') S.solved.add(o.needs);
+    if (state !== 'dead') [].concat(o.needs || []).forEach(d => S.solved.add(d));
     // a lantern or a card comes out of some other lock: have it, unless told not to
     const gear = [o.lens, o.tool, o.puzzle && o.puzzle.lens].filter(g => g && g.needs).map(g => g.needs);
     if (state !== 'bare') gear.forEach(g => S.solved.add(g));
@@ -251,7 +251,7 @@ const KINDS = {
     await start(p, scenario);
 
     const all = await p.evaluate(() => ACTIVE.rooms.flatMap((r, room) => r.objects.map(o => {
-      const pz = o.puzzle || null, base = { room, id: o.id, pos: o.pos, lock: !!pz, type: pz && pz.type, needs: o.needs || null, hiddenUntil: o.hiddenUntil || null };
+      const pz = o.puzzle || null, base = { room, id: o.id, pos: o.pos, lock: !!pz, type: pz && pz.type, needs: o.needs ? [].concat(o.needs).join(' and ') : null, hiddenUntil: o.hiddenUntil || null };
       base.fnSprite = typeof o.sprite === 'function';
       base.lens = (o.lens || (pz && pz.lens)) ? { needs: (o.lens || pz.lens).needs || null } : null;
       base.tool = o.tool ? { type: o.tool.type, needs: o.tool.needs || null } : null;
@@ -415,7 +415,7 @@ const KINDS = {
           S.roomIndex = o.room;
           const objs = ACTIVE.rooms[o.room].objects, ob = objs.find(x => x.id === o.id);
           objs.forEach(x => S.solved.delete(x.id));
-          if (ob.needs) S.solved.add(ob.needs);
+          [].concat(ob.needs || []).forEach(d => S.solved.add(d));
           if (state === 'open') S.solved.add(o.id);
           openModal(o.id);
         }, { o, state });

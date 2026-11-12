@@ -148,7 +148,7 @@ const nextLock = (page) => page.evaluate(() => {
       : String(p.answer),
     slots: p.slots, repeat: !!p.repeat, inside: !!p.inside, says: !!p.solvedText,
     // what must not be workable until this lock is open
-    waitsOnThis: room.objects.filter(x => x.needs === o.id).map(x => x.id),
+    waitsOnThis: room.objects.filter(x => [].concat(x.needs || []).includes(o.id)).map(x => x.id),
     hiddenByThis: room.objects.filter(x => x.hiddenUntil === o.id).map(x => x.id),
   };
 });

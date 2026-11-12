@@ -199,10 +199,11 @@ function auditClassic(s) {
 
       /* gating points somewhere real */
       for (const key of ['hiddenUntil', 'needs']) {
-        if (!o[key]) continue;
-        if (o[key] === o.id) fail(at, `${key} points at itself`);
-        else if (!byId.has(o[key])) fail(at, `${key}:'${o[key]}' is not an object in this room`);
-        else if (!byId.get(o[key]).puzzle) fail(at, `${key}:'${o[key]}' is not a lock, so it can never be satisfied`);
+        for (const dep of [].concat(o[key] || [])) {
+          if (dep === o.id) fail(at, `${key} points at itself`);
+          else if (!byId.has(dep)) fail(at, `${key}:'${dep}' is not an object in this room`);
+          else if (!byId.get(dep).puzzle) fail(at, `${key}:'${dep}' is not a lock, so it can never be satisfied`);
+        }
       }
       if (o.needs && !o.deadDesc) fail(at, 'can stand dead in the room but has nothing to say while it does (deadDesc)');
 
@@ -260,7 +261,7 @@ function auditClassic(s) {
     /* 4 ── the room can be won, working only from what is in hand */
     const solved = new Set();
     const seen = (o) => !o.hiddenUntil || solved.has(o.hiddenUntil);
-    const live = (o) => !o.needs || solved.has(o.needs);
+    const live = (o) => [].concat(o.needs || []).every(d => solved.has(d));
     const inHand = (f) => { const src = byId.get(f); return !!src && seen(src) && (src.puzzle ? solved.has(f) : live(src)); };
     const todo = room.objects.filter(o => o.puzzle);
     const waves = [];
