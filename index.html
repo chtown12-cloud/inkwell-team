@@ -237,16 +237,13 @@ body:not(.phone) #modal{
      keypad never ends up under a drawing under three paragraphs. */
   display:grid;grid-template-columns:minmax(0,1fr);column-gap:46px;
   width:min(760px,100%);
-  background:
-    /* the light this thing is being held in */
-    radial-gradient(64% 46% at 50% 24%, rgba(var(--glow,255 210 150),.055) 0%, rgba(0,0,0,0) 100%),
-    /* and the shadow it is lying in, feathered away to nothing at the corners */
-    radial-gradient(96% 96% at 50% 48%,
-      rgba(var(--surf,5 14 16),.985) 0%, rgba(var(--surf,5 14 16),.975) 62%,
-      rgba(var(--surf,5 14 16),.90) 80%, rgba(var(--surf,5 14 16),.54) 92%,
-      rgba(var(--surf,5 14 16),0) 100%);
+  background:none;
   animation:liftin .34s cubic-bezier(.22,.61,.36,1);
 }
+/* The shadow the thing is lying in. A slab of the place's own dark, blurred
+   until it has no edge: a box with corners is a window, and this is not one. */
+body:not(.phone) #modal::before{content:"";position:absolute;inset:-6px -10px;border-radius:70px;z-index:-1;
+  background:rgb(var(--surf,5 14 16) / .97);filter:blur(30px);pointer-events:none}
 /* Which pane gets the width depends on where the clue lives. A drawing is
    the clue, so it takes the room and the keypad beside it is capped at the
    width of a keypad. A rack of picture-tiles is both clue and control and
@@ -288,10 +285,10 @@ body:not(.phone) #modal .close-x:hover{opacity:1}
 #modal .close-x:hover{color:var(--ink)}
 .puzzle-box{margin-top:16px;padding:16px;background:rgba(0,0,0,.32);border:1px solid #2c4144;border-radius:10px}
 body:not(.phone) .puzzle-box{border:none;background:none;border-radius:0;padding:14px 0 0;
-  margin-top:18px;border-top:1px solid rgba(var(--rule,120 160 160),.16)}
+  margin-top:18px;border-top:1px solid rgb(var(--rule,120 160 160) / .16)}
 body:not(.phone) .solved-note{border:none;background:none;border-left:2px solid var(--ok);
   border-radius:0;padding:4px 0 4px 16px;margin-top:18px}
-body:not(.phone) .hints{border-top:1px solid rgba(var(--rule,120 160 160),.14)}
+body:not(.phone) .hints{border-top:1px solid rgb(var(--rule,120 160 160) / .14)}
 body:not(.phone) .hint-text{background:rgba(216,195,154,.07)}
 .puzzle-box .prompt{font-family:var(--font-label);color:var(--teal-hi);margin-bottom:10px}
 .answer-row{display:flex;gap:10px;flex-wrap:wrap}
@@ -800,7 +797,7 @@ svg.glyph{display:block}
 .lk-step:hover{background:rgba(0,0,0,.38)}
 .lk-face{width:58px;height:70px;border:none;border-radius:9px;display:flex;align-items:center;justify-content:center;padding:0;
   background:linear-gradient(180deg,#07090a 0%,#22292d 44%,#22292d 56%,#07090a 100%);color:#f3e9cc;
-  font-family:var(--font-display);font-size:2.1rem;line-height:1;
+  font-family:var(--font-num);font-variant-numeric:lining-nums tabular-nums;font-weight:700;font-size:2.1rem;line-height:1;
   box-shadow:inset 0 0 0 2px rgba(0,0,0,.7),0 1px 0 rgba(255,255,255,.22)}
 .lk-wheel.ringed .lk-face{box-shadow:inset 0 0 0 2px rgba(0,0,0,.7),0 0 0 4px var(--ring),0 0 0 5.5px rgba(0,0,0,.5)}
 .lk-wheel.ringed{gap:8px}
@@ -813,10 +810,10 @@ svg.glyph{display:block}
 /* slots: the shape of an answer you enter one piece at a time */
 .lk-slots{display:flex;gap:7px;justify-content:center;flex-wrap:wrap}
 .lk-slots i{width:34px;height:34px;border-radius:7px;background:rgba(0,0,0,.5);font-style:normal;
-  box-shadow:inset 0 0 0 1.5px rgba(var(--rule,120 160 160),.4);display:flex;align-items:center;justify-content:center;
+  box-shadow:inset 0 0 0 1.5px rgb(var(--rule,120 160 160) / .4);display:flex;align-items:center;justify-content:center;
   color:var(--sand);font-family:var(--font-display);font-size:1.2rem;line-height:1}
 .lk-slots i svg{width:20px;height:20px}
-.lk-slots i.set{background:rgba(var(--glow,255 210 150),.18);box-shadow:inset 0 0 0 1.5px rgba(var(--glow,255 210 150),.6)}
+.lk-slots i.set{background:rgb(var(--glow,255 210 150) / .18);box-shadow:inset 0 0 0 1.5px rgb(var(--glow,255 210 150) / .6)}
 .lk-slots.pips i{width:26px;height:26px;border-radius:50%}
 
 /* a compass you press */
@@ -843,14 +840,15 @@ svg.glyph{display:block}
   background:linear-gradient(180deg,var(--lk-hi),var(--lk-metal));color:var(--lk-ink);font-size:.86rem}
 
 /* levers */
-.lk-levers{display:flex;gap:14px;padding:16px 22px 12px;border-radius:12px;flex-wrap:wrap;justify-content:center;
+.lk-levers{display:flex;gap:8px;padding:16px 18px 12px;border-radius:12px;flex-wrap:wrap;justify-content:center;
   background:linear-gradient(180deg,#2c3539,#141a1d);box-shadow:0 16px 34px rgba(0,0,0,.6),inset 0 0 0 2px #3c474c}
-.lk-lever{background:none;border:none;display:flex;flex-direction:column;align-items:center;gap:7px;color:var(--sand);padding:0}
+/* each lever owns a column wider than its knob, so two knobs side by side never read as one bar */
+.lk-lever{background:none;border:none;display:flex;flex-direction:column;align-items:center;gap:7px;color:var(--sand);padding:0;min-width:46px}
 .lv-slot{position:relative;display:block;width:24px;height:76px;border-radius:12px;background:#06080a;box-shadow:inset 0 0 0 2px #3a4449}
 .lv-knob{position:absolute;left:50%;top:46px;width:36px;height:26px;margin-left:-18px;border-radius:7px;
   background:linear-gradient(180deg,#b9c2c7,#6d777d);transition:top .12s;box-shadow:0 3px 6px rgba(0,0,0,.6)}
 .lk-lever.on .lv-knob{top:4px;background:linear-gradient(180deg,#ffe9ad,#d79b2c);box-shadow:0 0 14px rgba(255,200,90,.65)}
-.lv-cap{font-family:var(--font-display);font-size:1.05rem;line-height:1}
+.lv-cap{font-family:var(--font-num);font-variant-numeric:lining-nums;font-weight:700;font-size:1.1rem;line-height:1}
 .lv-cap svg.glyph{width:24px;height:24px}
 
 /* a lock that is a drawing */
@@ -874,7 +872,9 @@ svg.glyph{display:block}
 .lk-key small{font-family:var(--font-label);font-size:.66rem;letter-spacing:1.5px;text-transform:uppercase;opacity:.8}
 
 /* a picture in pieces */
-.lk-tiles{display:grid;grid-template-columns:repeat(var(--cols),1fr);gap:5px;width:100%}
+.lk-tiles{display:grid;grid-template-columns:repeat(var(--cols),1fr);gap:5px;width:100%;margin:0 auto}
+/* a shared screen never scrolls, so the picture is as big as the height left over allows and no bigger */
+body:not(.phone) .lk-tiles{width:min(100%,calc((100vh - 300px) * var(--whole,1.6)))}
 .lk-tile{padding:0;border:none;background:#0b1114;border-radius:4px;overflow:hidden;aspect-ratio:var(--ar);
   box-shadow:0 3px 8px rgba(0,0,0,.55);transition:transform .1s}
 .lk-tile svg{display:block;width:100%;height:100%}
@@ -896,14 +896,16 @@ svg.glyph{display:block}
 .tn-scale{display:flex;justify-content:space-between;font-size:.7rem;color:var(--dim);letter-spacing:1px}
 
 .tool-row{display:flex;gap:10px;justify-content:center;margin-top:10px;flex-wrap:wrap}
-.tool-btn{padding:8px 16px;border-radius:8px;border:1px solid rgba(var(--rule,120 160 160),.45);background:rgba(0,0,0,.4);
+.tool-btn{padding:8px 16px;border-radius:8px;border:1px solid rgb(var(--rule,120 160 160) / .45);background:rgba(0,0,0,.4);
   color:var(--sand);font-size:.84rem;letter-spacing:.5px}
 .tool-btn:hover{background:rgba(0,0,0,.6)}
 @media (max-width:520px){
   .lk-face{width:46px;height:58px;font-size:1.7rem}.lk-step{width:46px}
   .lk-combo{gap:7px;padding:14px 14px 12px}
   .lk-dir{grid-template-columns:repeat(3,60px);grid-template-rows:repeat(3,60px)}
-  .lk-levers{gap:9px;padding:14px 12px 10px}
+  .lk-levers{gap:5px;padding:14px 6px 10px}
+  .lk-lever{min-width:36px}
+  .lv-knob{width:30px;margin-left:-15px}
 }
 @media (prefers-reduced-motion: reduce){ .lk-face.tick{animation:none} .lv-knob{transition:none} }
 
@@ -1068,8 +1070,8 @@ body:not(.phone) #phone-scene{display:none}
 body.phone #stage-wrap,body.phone #vignette,body.phone #grain,body.phone #objective,body.phone #hub-screen{display:none}
 body.phone #hud{font-size:.85rem}
 body.phone #modal{max-height:86vh;
-  background:linear-gradient(165deg, rgba(var(--card,30 50 55),1), rgba(0,0,0,.45));
-  border-color:rgba(var(--rule,61 90 96),.45)}
+  background:linear-gradient(165deg, rgb(var(--card,30 50 55) / 1), rgba(0,0,0,.45));
+  border-color:rgb(var(--rule,61 90 96) / .45)}
 @media (max-width:640px){
   .qr-code{font-size:1.9rem;letter-spacing:7px}
   #crew-bar{display:none}
@@ -2149,13 +2151,16 @@ function objFigure(o){
    already hides and shows — so a thing that is not there yet is not drawn
    yet, and its picture and its ring cannot drift apart. A sprite can be a
    function of state, for a crate that is shut and then is not. */
+function objLive(o){ return !o.needs || S.solved.has(o.needs); }
+function spriteState(o){ return (S.solved.has(o.id)?'1':'0')+(objLive(o)?'1':'0'); }
 function spriteOf(o){
-  return typeof o.sprite==='function' ? o.sprite({solved:S.solved.has(o.id)}) : (o.sprite||'');
+  return typeof o.sprite==='function'
+    ? o.sprite({solved:S.solved.has(o.id), live:objLive(o)}) : (o.sprite||'');
 }
 function sceneSvg(room){
   const svg=ACTIVE.scenes[room.scene]();
   const sp=room.objects.filter(o=>o.sprite)
-    .map(o=>`<g id="el-${o.id}" class="sprite" data-s="${S.solved.has(o.id)?1:0}">${spriteOf(o)}</g>`).join('');
+    .map(o=>`<g id="el-${o.id}" class="sprite" data-s="${spriteState(o)}">${spriteOf(o)}</g>`).join('');
   if(!sp) return svg;
   return svg.includes('<!--SPRITES-->') ? svg.replace('<!--SPRITES-->',sp) : svg.replace(/<\/svg>\s*$/, sp+'</svg>');
 }
@@ -2212,7 +2217,7 @@ function renderHotspots(){
     if(el) el.style.display = objVisible(o)?'':'none';
     // a prop that changes when it is opened is redrawn the moment it is
     if(el && typeof o.sprite==='function'){
-      const now=S.solved.has(o.id)?'1':'0';
+      const now=spriteState(o);
       if(el.dataset.s!==now){ el.dataset.s=now; el.innerHTML=spriteOf(o); }
     }
     if(!objVisible(o)) return;
@@ -2337,7 +2342,10 @@ function openSolo(o){
   cameraOn(o);
   const reopen=()=>openSolo(o);
   let h=`<h3>${o.icon} ${esc(o.name)}${p&&solved?' <span class="opened">\u2713</span>':''}</h3>`;
-  if(p&&solved){
+  const dead=!objLive(o);        // there, but nothing will happen until something else has
+  if(dead){
+    h+=`<div class="obj-desc">${o.deadDesc||objDesc(o)}</div>`+(o.deadFigure?`<figure class="obj-fig">${o.deadFigure}</figure>`:'');
+  } else if(p&&solved){
     h+=`<div class="obj-desc won">${p.solvedText||'Open.'}</div>`+LOCKS.inside(o);
   } else {
     h+=`<div class="obj-desc">${objDesc(o)}</div>`;
@@ -2354,12 +2362,12 @@ function openSolo(o){
   if((!p || p.type!=='simul') && MP.openObj!==o.id){
     MP.openObj=o.id; mpSend('sit',{objId:o.id});
   }
-  if(p&&!solved){
+  if(p&&!solved&&!dead){
     if(LOCKS.has(p.type)) LOCKS.init(o);
     else if(p.type==='keypad') keypadInit(o);
     else if(p.type==='hold') holdInit(o);
   }
-  if(!p) LOCKS.wireClue(o,m,reopen);
+  if(!p&&!dead) LOCKS.wireClue(o,m,reopen);
   if(p&&solved) LOCKS.wireInside(o,m,reopen);
   fitExamine();
 }
@@ -2555,7 +2563,10 @@ function solvePuzzle(o){
   // the scenario files all along and had no code path that could show them,
   // because victory used to fire the instant the final puzzle fell.
   if(allDone && S.roomIndex===ACTIVE.rooms.length-1) armFinalLaunch();
-  openModal(o.id);
+  // A lock with nothing inside it and nothing to say steps out of the way:
+  // what it did is happening in the room, not in the close-up.
+  if(ACTIVE.classic && !o.puzzle.solvedText && !o.puzzle.inside) closeModal();
+  else openModal(o.id);
   renderHotspots();
   reactTo(o);
   refreshRelays();
@@ -3468,6 +3479,24 @@ $('gm-btn').onclick=()=>{
   p.classList.toggle('hidden');
   if(!p.classList.contains('hidden')) p.scrollIntoView({behavior:'smooth'});
 };
+/** How a hands-on lock's answer reads to a facilitator: as what to do, not as the data. */
+function gmLock(p){
+  if(p.gm) return p.gm;                 // where the answer is plumbing (stone ids), the scenario says it in words
+  const li=a=>LOCKS.asList(a);
+  if(p.type==='combo'){
+    const a=li(p.answer); return a.every(x=>x.length===1)?a.join(''):a.join(' · ');
+  }
+  if(p.type==='dirpad') return li(p.answer).join(' ');
+  if(p.type==='clock')  return p.answer+(p.window?` (anything from ${p.window[0]} to ${p.window[1]} opens it)`:'');
+  if(p.type==='toggle') return 'only these on: '+li(p.answer).join(', ');
+  if(p.type==='press'){
+    const a=li(p.answer);
+    return p.echo ? a.map(k=>p.echo[k]||k).join(' ') : a.join(' → ');
+  }
+  if(p.type==='tiles')  return p.pieces ? 'in this order: '+li(p.answer).join(', ') : 'put the picture back together';
+  if(p.type==='tune')   return `hold the dial at ${p.at}${p.unit?' '+p.unit:''}`;
+  return null;
+}
 function buildGmPanel(){
   let html=`<h2>🔑 Game Master Answer Key — ${ACTIVE.title}</h2>
   <p style="color:var(--dim)">Facilitator eyes only. Unreachable once the game starts.
@@ -3475,7 +3504,8 @@ function buildGmPanel(){
   ACTIVE.rooms.forEach(room=>{
     html+=`<h3>${room.name}</h3><div class="chain">CHAIN: ${room.chain}</div>`;
     room.objects.filter(o=>o.puzzle).forEach(o=>{
-      const disp=o.puzzle.type==='signal'?'··· −−− ··· (short×3, long×3, short×3)':
+      const disp=(window.LOCKS&&LOCKS.has(o.puzzle.type))?gmLock(o.puzzle):
+                 o.puzzle.type==='signal'?'··· −−− ··· (short×3, long×3, short×3)':
                  o.puzzle.type==='dial'?`tune to ${(o.puzzle.dial.target/o.puzzle.dial.div).toFixed(o.puzzle.dial.div>=100?2:1)}, then lock in`:
                  o.puzzle.type==='simul'?`man all ${(o.puzzle.stations||[]).length} stations at once (${(o.puzzle.stations||[]).map(x=>x.label).join(' + ')}), then haul`:
                  o.puzzle.type==='panel'?`set ${(o.puzzle.panel.controls||[]).map((c,i)=>c.label+' → '+(o.puzzle.answers[0].split('|')[i])).join(', ')}, then commit`:

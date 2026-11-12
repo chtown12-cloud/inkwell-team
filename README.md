@@ -21,38 +21,40 @@ soundscape with a distinct signature per room (surf and gulls; reactor hum and
 sonar pings; thunder and organ; blizzard and generator chug; rail clack and far
 whistles). No image or audio files — everything is generated in the browser.
 
-**Difficulty (all five tuned for a crew of ~5):** no answer is readable from a
-single object. Every puzzle combines two or three clue sources, hides its rule
-until someone induces it, or carries enough workload that the crew should split
-it up and compare notes.
+**How the puzzles work.** *The Wreck of the Eldermoor* is built the way a
+physical escape room is: locks that look like locks, and whatever opens each
+one somewhere else in the room. A padlock with four wheels ringed in four
+colours — and, along the hull, a net of glass floats in the same four colours.
+A compass you steer through seven legs — and a torn chart whose course has
+seven. Nothing is typed. Wheels are turned, scraps swapped, clock hands set,
+breakers thrown, a lantern swept across dark water; no lock carries
+instructions, and no clue says which lock it belongs to. Expect to be properly
+stuck now and then: a hint or two per room is normal.
 
-**Distinct puzzle palettes.** The scenarios deliberately *don't* share solve
-patterns — each has its own signature mechanics so playing a second scenario
-feels fresh rather than repeating the first:
+The other four scenarios are being rebuilt the same way, one at a time. Until
+each is, it plays as before — clue documents, ciphers and deductions — with
+its own palette, so a second scenario does not repeat the first:
 
-| Slot | Eldermoor | Prospero | Vorstag | Erebus | Midnight |
-|------|-----------|----------|---------|--------|----------|
-| Room-1 opener | tacked letters + davit list | **acrostic** (phosphor burn-in) | **anagram** | **A1Z26** (№→letter) | **book cipher** (line·word) |
-| Room-2 cipher | Caesar (disc, ring spun) | **binary** (5-bit) | **Atbash** (mirror) | **Vigenère** (key ICE) | **rail fence** (zigzag) |
-| Room-2 deduction | lamps per correct dial | **logic-grid** rod seating | **Roman-numeral** weighing | **halving-chain** rule | **boarding-order** logic |
-| Room-3 filter | **threshold** (sides beat moss) | **number property** (primes) | **provenance** (the Baron's wax) | **date range** (before the store failed) | **cross-reference** (covers that settled) |
-| Room-3 number lock | linked relations | **countdown sequence** | **factor puzzle** (×48) | **multiples-of-three** | **money addition** |
-| Co-op set piece | **simultaneity lock** (two winches) | — | — | — | **whistle and lamp** together |
-| Signal code | **morse** (its home turf) | **tap code** (knock pairs) | **pigpen** (masons' cipher) | **braille** (embossed dots) | **Cyrillic** (émigré's hand) |
+| Slot | Prospero | Vorstag | Erebus | Midnight |
+|------|----------|---------|--------|----------|
+| Room-1 opener | **acrostic** (phosphor burn-in) | **anagram** | **A1Z26** (№→letter) | **book cipher** (line·word) |
+| Room-2 cipher | **binary** (5-bit) | **Atbash** (mirror) | **Vigenère** (key ICE) | **rail fence** (zigzag) |
+| Room-2 deduction | **logic-grid** rod seating | **Roman-numeral** weighing | **halving-chain** rule | **boarding-order** logic |
+| Room-3 filter | **number property** (primes) | **provenance** (the Baron's wax) | **date range** (before the store failed) | **cross-reference** (covers that settled) |
+| Room-3 number lock | **countdown sequence** | **factor puzzle** (×48) | **multiples-of-three** | **money addition** |
+| Signal code | **tap code** (knock pairs) | **pigpen** (masons' cipher) | **braille** (embossed dots) | **Cyrillic** (émigré's hand) |
+| Co-op set piece | — | — | — | **whistle and lamp** together |
 
-Each scenario's two mid-game signal decodes use its own real-world code —
-morse, prisoners' tap code, pigpen, braille, or phonetic Cyrillic — and teams
-look the alphabet up themselves. The one mechanic deliberately shared by all
-five, because it's the game's signature co-op moment, is the two-stage tuning
+Each of those four uses its own real-world code for its two mid-game signal
+decodes — prisoners' tap code, pigpen, braille, or phonetic Cyrillic — and
+teams look the alphabet up themselves. The one mechanic they deliberately
+share, because it is their signature co-op moment, is the two-stage tuning
 **console**: the exact frequency comes from clues, then three trim knobs are
 coaxed by watching the meter until the panel reads LOCKED IN.
 
-**No puzzle tells you what to do to it.** Every clue is carried by something
-that exists in the world for its own reasons — a compass rose on a lock face,
-a rising tide, a quarantine tag wound to 4, a seal register, a builder's
-plate. Nothing is reversed or doubled because a prop said so. The rules are
-written down in [PUZZLES.md](PUZZLES.md) and the checkable ones are enforced
-by `node tests/audit.js`.
+The rules for both kinds of puzzle are written down in
+[PUZZLES.md](PUZZLES.md), and the ones a machine can check are enforced by
+`node tests/audit.js`.
 
 ## How to run it
 
@@ -206,10 +208,10 @@ Answers per scenario, in solve order. (Full chains and all hint text: in-game GM
 
 | Room | Answers |
 |------|---------|
-| 1 · The Beach | SAIL → **8513** (winds N,E,S,W: hull rule + sail pairs) → EDIT (TIDE backward) → **54** |
-| 2 · The Radio Station | tune **121.5** (day 121 + 5 sill gouges) → LOOK UNDER (morse) → STORM (Caesar 3) → **394** (lamp deduction) |
-| 3 · The Jungle Path | two parallel threads: RIVER → DROWN (sides > moss), and **693** (algebra) → Gorge Gate = **simultaneity lock** (man both winches, then haul) |
-| 4 · The Escape Raft | BDAEC (scheduling) → **2430** (121.5 × 2) → **510** (6:40 tide − 90 min) → **3158** (8513 reversed) → SOS flares |
+| 1 · The Beach | crate **2457** (glass floats, counted by ring colour: blue, red, white, yellow) → chest **CORAL** (the flags on the mast, read with the signal-book page) → the torn chart, pieced together → binnacle **W N W S W N N** (the chart's course; its rose puts north to the right) |
+| 2 · The Radio Station | breakers **2, 5, 6** up (antenna, receiver, lamp — followed along the cables) → receiver tuned to **103.7** → drawer **RAVEN** (morse off the tape) → hatch clock **9:40** (the logbook) → plugs **blue, yellow, red, green** (the photograph is a reflection) |
+| 3 · The Jungle Path | pack: **cairn, flower, branch** left up (what is still standing in the second trail-camera frame) → stones **1st, 3rd, 4th, 6th, 8th** (numbered, in the lantern's light) → gate box **snake, frog, moon, fish** (cut card on the carvings, missing corner to the nail) → Gorge Gate = **both winches at once** |
+| 4 · The Escape Raft | flare locker **61835** (the photographs in the order they were taken) → logs: middling, longest, shortest, second longest, second shortest → winch clock **6:00** (the crescent moon's tide; anything from 5:30 to 6:30 opens it) → flares **· · · — — — · · ·** |
 
 ## 🚀 Derelict: The Prospero
 
@@ -247,9 +249,10 @@ Answers per scenario, in solve order. (Full chains and all hint text: in-game GM
 | 3 · The Dining Car | MIRROR → HUNGRY (perfect-square covers) → **385** (chits total $3.85) → AGAIN (Cyrillic ticket) |
 | 4 · The Locomotive | CBEDA (scheduling, feed 2nd) → **1568** (78.4 × 2) → **340** (4:45 junction − 65 min) → **3528** (8253 reversed) → SOS whistle |
 
-Every deduction and number-lock puzzle above has a solver-verified unique
-solution, and all five scheduling drills have verified unique orders. Room
-transitions now hold on a title card until the team clicks ENTER.
+Every deduction and number-lock puzzle in the four scenarios not yet rebuilt
+has a solver-verified unique solution, and their scheduling drills have
+verified unique orders. Room transitions hold on a title card until the team
+clicks ENTER.
 
 ## Scoring / ratings
 
@@ -272,8 +275,19 @@ Line):
 - **`index.html`** — the scenario-agnostic engine: shared styles, WebAudio
   synth (beds + one-shot library), canvas FX (mist/motes/fireflies/snow/embers,
   flares, film grain, title backdrops: rain/stars/snow/rails), and the game
-  logic (hub, hotspots, modal, puzzle types `text`/`dial`/`signal`, timer,
-  beats, relay lamps, endings, GM panel).
+  logic (hub, hotspots, the examine view and its camera, timer, beats, relay
+  lamps, endings, GM panel). It also still carries the typed puzzle kinds
+  (`text`/`dial`/`order`/`panel`…) for the scenarios not yet rebuilt.
+- **`lib/locks.js`** — the locks you work with your hands: wheels, a compass
+  pad, clock hands, levers, things pressed in order, a picture in pieces, a
+  dial swept through static — plus what a clue can let you do to it (a lantern,
+  a cut card you turn, something to play). Each keeps its working state, so a
+  half-set lock is as you left it.
+- **`lib/art.js`** — the drawing kit the rebuilt scenarios draw their props
+  with: one drawing serves as the close-up (`ART.svg`) and as the object
+  standing in the room (`ART.sprite`), plus a shared picture alphabet
+  (`ART.glyph`) so a lock's wheel and the carving it matches are the same
+  shape.
 - **`lib/qr.js`** — a self-contained QR encoder (byte mode, ECC level M,
   versions 1-10) used for the join code. No CDN, and no QR *image API* either,
   which would have meant sending your game URL to a third party.
@@ -295,7 +309,10 @@ Line):
   victory/game-over prose, ambience presets, ambient sound events, wrong-answer
   beats, four SVG scene builders, and the `rooms` array (puzzles, hints,
   hotspot coordinates in % of the 1600×900 stage). Chaining uses `hiddenUntil`
-  / `revealedBy`; answers are normalized to A–Z0–9.
+  (not in the room yet), `needs` (there, but dead until something else is
+  open) and, in the older scenarios, `revealedBy`. A rebuilt scenario sets
+  `classic:true` and gives each object its own `sprite`; see
+  [PUZZLES.md](PUZZLES.md) for the shape of a clue and a lock.
 
 Adding a sixth scenario = one new file in `scenarios/` plus one `<script>` tag
 in `index.html`.
