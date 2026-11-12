@@ -1,105 +1,199 @@
 # How these puzzles are built
 
-Written after a pass that threw out every puzzle in the game and rebuilt them.
-The old ones worked — teams solved them — but they read wrong, in a way worth
-naming so it doesn't creep back.
+This is the third standard this game has had. The first two each fixed what
+was wrong with the one before and each still produced puzzles nobody loved, so
+the reasons are written down here along with the rules.
 
-## What went wrong the first time
+## What went wrong, three times
 
-A lock in Room 1 of the shipwreck was engraved:
+**First, the props told you what to do.** A lock on the beach was engraved
+*NAME ME AS THE EBB WOULD SPEAK IT — BACKWARD.* Solve the riddle, get TIDE,
+type EDIT. The reversal was not deduced, it was announced — the designer
+reaching through the scenery.
 
-> NAME ME AS THE EBB WOULD SPEAK IT — BACKWARD.
+**Second, it was one game in five costumes.** Every scenario's first room was
+*word-index → 4-digit code → riddle → sum*, and every last room was *order
+five tags → double a number → subtract minutes → reverse a code*.
 
-Solve the riddle, get TIDE, type EDIT. The reversal isn't deduced, it's
-*announced* — the designer reaching through the scenery to tell you what to
-type. Four of the five scenarios carried the same instruction in a different
-accent ("on this train it runs backward", "the sea returns all things
-reversed"), and every scenario reversed a second code in Room 4 as well. The
-same went for doubling: five different props each said "twice the band".
+**Third — after both of those were fixed — every puzzle was still a riddle
+sealed inside one pop-up.** An inscription stated a rule made up for the
+occasion (*a stone bears you only while its sides outnumber its moss*) and you
+applied it to a picture in the same view, then typed what came out. There was
+nothing to find and nothing to connect, and a rule that exists only because a
+plaque says so feels arbitrary however fairly it is worded. Worse, it had no
+difficulty dial: state the rule and the puzzle is a chore, leave it out and it
+is a guess.
 
-Underneath that, all five scenarios were one game in five costumes. Room 1 was
-always *word-index → symbol-paired 4-digit code → riddle answered backward →
-cross-reference sum*. Room 4 was always *order five tags → double a number →
-subtract minutes from a timetable → reverse an old code*. Playing a second
-scenario meant solving the first one again in different clothes.
+What all three have in common is that the puzzle lived in *text*. So now it
+doesn't.
 
-## The rules now
+## The grammar
 
-**1. The rule lives in the world.** Every transformation is carried by a prop
-that would plausibly carry it: a conversion table, a legend, a procedure card,
-a signature block, a key stamped with its own cut. If the prop can't exist for
-its own reasons, the puzzle is wrong.
+**1. A lock looks like a lock.** Its face shows the shape of its answer — four
+wheels ringed in four colours, seven empty slots on a compass, two clock
+hands, a row of levers — and nothing else. A lock never carries a prompt.
 
-**2. No prop ever states the method.** Nothing says "reverse this", "double
-this", "take the third letter". A mirror reverses. A tide table read from the
-bottom runs backward because that's how an ebb reads. A reciprocal gear doubles
-because that's what the gear does. If the only way to know the method is to be
-told it, there is no puzzle.
+**2. The key is somewhere else.** No lock holds its own solution. Whatever
+goes on the wheels is on another object in the room (`puzzle.from` names
+which), and noticing that the two belong together *is* the puzzle.
 
-**3. The clue names its own referents.** A sum that needs "the number of
-crates" says *crates*, and the crates are countable in one place. No clue
-relies on the team agreeing what a phrase means — "how many of us the sea
-spared" is a judgement call, not a deduction.
+**3. The match is something you can see.** Lock and clue share a signature:
+the same four colours, the same six little pictures, the same number of slots.
+No sentence says they go together.
 
-**4. You can tell when you're right.** The answer clicks: it spells a word, it
-matches a label somewhere else, it completes a pattern, it lands on a value the
-prop itself confirms. Answers that are only "a number you computed and must
-trust" get reworked.
+**4. Almost no text.** A name and a line of description — what the thing is,
+never what to do with it. Lettering on a prop is fine (a tag, a dial legend, a
+number in the corner of a photograph). A table written out in prose is a
+drawing that was never drawn.
 
-**5. One new idea per puzzle.** No stacking a cipher on an index on an
-arithmetic step. If a puzzle needs three moves, two of them are familiar.
+**5. Obvious in hindsight.** Every solution is one sentence a player would say
+out loud: *"the floats are the same colours as the rings — count them."* If
+explaining it takes a paragraph, it is two puzzles or it is wrong.
 
-**6. The split is natural.** Half the crew is on a phone. Each puzzle
-decomposes into parts people can claim out loud — "you read the manifest, I'll
-count the drums" — rather than one person reading everything to everyone.
+**6. Harder by layering, never by hiding.** A later lock needs two steps: a
+clue read through a second prop (a legend, a mirror, a cut card, a compass
+rose that does not point up the page), or two clues that only mean something
+together. The premise is never the hidden part.
 
-**7. Hints narrow, never leap.** Hint 1 says where to look and what to pair.
-Hint 2 names the method. Hint 3 does the arithmetic and gives the answer.
+**7. One answer you can defend.** If two readings of a clue are both
+reasonable, either the clue is redrawn until only one is, or the lock takes
+both. The tide clock on the cove winch opens for any time the sea is over the
+reef, because any of them is right.
 
-**8. The fiction pays for the mechanic.** Morse belongs on a radio, braille on
-a tag a blind-fingered engineer reads in the dark, a book cipher in a library.
-A code is only worth using where that world would really use it.
+**8. No way round the clue.** If a sensible guess opens the lock without the
+thing it is supposed to need, that thing is dead weight. (The first tide card
+had one sea on it, and "high water" opened the winch without anybody looking
+up. Now it has three, one for each moon.)
+
+**9. Hands on.** Wheels are turned, arrows pressed, scraps swapped, hands set,
+switches thrown, a dial swept, a lantern moved. Nothing is typed.
+
+**10. Nothing is dead.** Every clue opens something. There are no red
+herrings and no hotspots that are only scenery.
+
+**11. Hints narrow, they do not leap.** The first says where to look, the
+second says what connects to what, the third says the answer.
+
+`tests/audit.js` enforces what it can of this: 2, 4, 10 and 11 outright, that
+a room can actually be finished from what is in hand, and that every lock is
+built so its own face can show its answer. The rest takes a person.
+
+## What a room is made of
+
+An object is either a **clue** or a **lock**.
+
+A clue is a drawing (`figure`). Some let you do something to them: sweep a
+light over them (`lens`), lay a cut card on them and turn it (`tool: turn`),
+turn them over (`flip`), or play them (`listen`).
+
+A lock is a `puzzle` of one of these kinds:
+
+| kind | what your hands do | the answer is |
+|---|---|---|
+| `combo` | turn wheels of digits, letters, colours or pictures; each wheel can wear a marker | one face per wheel |
+| `dirpad` | press N, E, S, W into a row of slots | a course |
+| `clock` | set two hands, five minutes at a time | a time (or a span of times: `window`) |
+| `toggle` | throw levers, or switches drawn into a picture | which are on |
+| `press` | press keys, or parts of a picture, in order | a sequence |
+| `tiles` | tap two pieces to swap them | the picture, whole |
+| `tune` | sweep a dial until the meter peaks | found, not looked up |
+| `simul` | two people, two places, at once | everyone there |
+
+What comes out of an open lock is its `inside`: another drawing, which is
+then a clue for something else. Two more things shape the order of a room.
+`hiddenUntil` keeps an object out of the room until a lock is open (the chart
+is in the chest). `needs` leaves it standing there, visibly dead, until
+something else has happened (the receiver before the breakers are thrown) —
+which is better than hiding it whenever the player should be able to see what
+they are working towards.
+
+### Drawn once, placed twice
+
+Every object is drawn into the room itself (`sprite`) from the same drawing as
+its close-up, so what you can see from across the beach is exactly what you
+count when you lean in — the net has the same floats in the same places at
+both sizes. The backdrops are only the place. `lib/art.js` is the kit:
+`ART.svg` for a close-up, `ART.sprite` for the same thing in the room,
+`ART.inset` to set one drawing inside another, `ART.glyph` for the shared
+picture alphabet.
 
 ## Keeping the five distinct
 
-Each scenario owns its mechanics. The table below is the contract — adding a
-mechanic to one scenario means checking it isn't already another's signature.
+Within a scenario no kind of lock appears more than twice (wheels of digits
+and wheels of colours count as different kinds), and no two scenarios may have
+the same shape lock-for-lock or end the same way. The audit checks both. What
+it cannot check is that the *step* is different each time — counting, decoding
+with a legend, tracing, reassembling, reading a mirror — so that is tabled
+here, and a new puzzle is checked against the table before it is built.
 
-| Slot | Eldermoor (wreck) | Prospero (ship) | Vorstag (castle) | Erebus (ice) | Midnight (train) |
-|---|---|---|---|---|---|
-| R1 opener | tacked letters + davit list | phosphor burn-in down the pod plates | shield anagram + well-house plaque | flag channel numbers (A=1) | book cipher + the porter's own working |
-| R1 code lock | compass rose + the sail's wind marks | evacuation shutdown order | seasons tapestry + well rim | resupply notice + drum glyphs | fare card + punch chart |
-| R1 word lock | jetty posts + a rising tide | quarantine tag + contamination scale | canonical hours + the gatekeeper's card | polar signpost + re-keying notice | nightly seal register + tag date |
-| R1 number | ship's articles: signatures vs marks | watch bill: duty vs relief | ledger: departed vs not | sitrep + winter-over sheet | waybill: crates short, sacks aboard |
-| R2 tuning | band plan narrowed by the dial's range | beacon register, one marked SILENT | hymn board + psalter verse | sked card matched on its hours | diary: speed and track |
-| R2 code | morse | tap code | pigpen | braille | Cyrillic |
-| R2 second | Caesar disc, ring spun | 5-bit binary | Atbash | Vigenère | rail fence |
-| R2 deduction | lamps per correct dial | rod seating logic | numeral weights | halving chain | boarding order |
-| R3 filter | **threshold** — sides beat moss | **number property** — prime seed counts | **provenance** — the Baron's own wax | **date range** — drilled before the store failed | **cross-reference** — covers that settled |
-| R3 number | linked packing relations | countdown sequence | even factors of 48 on named ways | multiples of three | money addition |
-| R4 order | the boatbuilder's reasons | the flight officer's reasons | the Baron's reasons | the engineer's reasons | the fireman's reasons |
-| R4 locks | shelf count · lead-line soundings | pod-type table · release sequence | fuse chart · counterweight chain | approach plate · bins vs stock card | builder's plate · consist order |
-| Finale | flare morse | thruster panel | lightning hold | runway dial | whistle and lamp together |
+### Eldermoor (the wreck)
 
-The R3 filters are deliberately five different *kinds* of test, not five
-different number properties. That was the old failure mode: prime, odd, even
-and perfect-square are the same puzzle wearing four hats.
+| | lock | what you find | the step |
+|---|---|---|---|
+| R1 | crate — 4 digit wheels, ringed in colours | glass floats in a net | count by colour |
+| | chest — 5 letter wheels | flags on the mast + a page from the signal book | decode with a legend |
+| | chart — six scraps | (itself) | reassemble |
+| | binnacle — compass pad, 7 slots | the chart's course, and its compass rose | follow a route on a map that is not north-up |
+| R2 | breakers — 7 levers | a card of what the generator can carry + cables on the wall | trace a tangle |
+| | receiver — a dial | (itself; dead until the breakers are in) | sweep and listen |
+| | drawer — 5 letter wheels | the tape it prints + the code poster | decode sound |
+| | hatch — a clock | the operator's day, drawn | match the picture, read the time |
+| | transmitter — 4 colour wheels | a photograph taken in the window | read a reflection |
+| R3 | pack — 6 picture tabs | two frames from a trail camera | spot the difference |
+| | stones — press 5 of 8 | the lantern from the pack | light shows what is hidden |
+| | gate box — 4 picture wheels | carvings on a tree + the cut card from the pack | lay a mask and turn it |
+| | gate — two winches | (the crew) | be in two places at once |
+| R4 | flare locker — 5 digit wheels | five photographs, numbered | put a story in order |
+| | raft — five logs | the same photographs | match a silhouette |
+| | winch — a tide clock | a tide card + the moon over the cove | pick the right curve, read a graph |
+| | flares — short and long, 9 slots | a strip torn from the code chart | know what to say |
 
-## Writing a replacement
+### The other four
 
-The shape of one puzzle in a scenario file:
+Prospero, Vorstag, Erebus and Midnight are being rebuilt on this grammar one
+at a time. Until each one is, it is still built — and still audited — to the
+standard before this one: the rule lives on a prop, no prop states the method,
+and every answer is in the room's chain. Their mechanics, so that nothing
+built for Eldermoor's successors repeats them by accident:
+
+| Slot | Prospero (ship) | Vorstag (castle) | Erebus (ice) | Midnight (train) |
+|---|---|---|---|---|
+| R1 opener | phosphor burn-in down the pod plates | shield anagram + well-house plaque | flag channel numbers (A=1) | book cipher + the porter's own working |
+| R1 code lock | evacuation shutdown order | seasons tapestry + well rim | resupply notice + drum glyphs | fare card + punch chart |
+| R1 word lock | quarantine tag + contamination scale | canonical hours + the gatekeeper's card | polar signpost + re-keying notice | nightly seal register + tag date |
+| R1 number | watch bill: duty vs relief | ledger: departed vs not | sitrep + winter-over sheet | waybill: crates short, sacks aboard |
+| R2 tuning | beacon register, one marked SILENT | hymn board + psalter verse | sked card matched on its hours | diary: speed and track |
+| R2 code | tap code | pigpen | braille | Cyrillic |
+| R2 second | 5-bit binary | Atbash | Vigenère | rail fence |
+| R2 deduction | rod seating logic | numeral weights | halving chain | boarding order |
+| R3 filter | **number property** — prime seed counts | **provenance** — the Baron's own wax | **date range** — drilled before the store failed | **cross-reference** — covers that settled |
+| R3 number | countdown sequence | even factors of 48 on named ways | multiples of three | money addition |
+| R4 order | the flight officer's reasons | the Baron's reasons | the engineer's reasons | the fireman's reasons |
+| R4 locks | pod-type table · release sequence | fuse chart · counterweight chain | approach plate · bins vs stock card | builder's plate · consist order |
+| Finale | thruster panel | lightning hold | runway dial | whistle and lamp together |
+
+## Writing one
+
+A clue and the lock it opens:
 
 ```js
-{ id:'crate', icon:'📦', name:'Cargo Crate', pos:{...},
-  desc:"what you see, including the clue material this object carries",
-  puzzle:{
-    type:'keypad', prompt:"Enter the 4-digit combination.", answers:['8513'],
-    hints:["where to look", "what the method is", "the arithmetic and the answer"],
-    solvedText:"what opens, and what it hands you next",
-  }
-}
+{ id:'floats', icon:'🪢', name:'Net of Glass Floats', pos:POS.floats,
+  desc:"A fishing net snagged along the hull, still heavy with the glass floats that held it up.",
+  figure:ART.svg(netArt.w, netArt.h, netArt.body),                 // the close-up
+  sprite:ART.sprite(POS.floats, netArt.w, netArt.h, netArt.body) } // the same drawing, in the room
+
+{ id:'crate', icon:'📦', name:'Cargo Crate', pos:POS.crate,
+  desc:"Iron-banded, salt-swollen, and still shut.",
+  sprite:st => ART.sprite(POS.crate, 200, 150, crateBody(st.solved)),   // drawn open once it is
+  puzzle:{ type:'combo', from:['floats'],
+    wheels:[{mark:{color:'blue'}}, {mark:{color:'red'}}, {mark:{color:'white'}}, {mark:{color:'yellow'}}],
+    answer:'2457',
+    hints:["where to look", "what connects to what", "the answer"],
+    solvedText:"what opens, in a line",
+    inside:{ name:'From the signal book', figure:ART.svg(...) } } }     // the next clue
 ```
 
-`room.chain` documents the whole room's logic in one line and is shown to
-players on the end card. It must match the puzzles exactly — it's the only
-place the full solution is written down, so a stale chain is a bug.
+`room.chain` is the whole room in one sentence per lock, and is shown to
+players on the end card. It is the only place the full solution is written
+down, so it has to be true: the audit fails a room whose chain does not
+contain every answer.

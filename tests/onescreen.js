@@ -52,14 +52,21 @@ async function start(p, scenario) {
   await p.evaluate(() => { S.staged = { arrival: 1, squeeze: 1, midroom: 1 }; });
 }
 
-/** Open an object with whatever gate it sits behind already lifted. */
-async function show(p, room, id) {
-  await p.evaluate(({ room, id }) => {
+/**
+ * Open an object with whatever gate it sits behind already lifted.
+ * `state` picks which face of it: 'live' as a player first works it, 'dead'
+ * while the thing it needs is still shut, 'open' once it has been solved and
+ * is showing what was inside.
+ */
+async function show(p, room, id, state = 'live') {
+  await p.evaluate(({ room, id, state }) => {
     if (S.roomIndex !== room) enterRoom(room);
     const o = ACTIVE.rooms[room].objects.find(x => x.id === id);
     if (o.revealedBy) S.solved.add(o.revealedBy);
+    if (o.needs) { if (state === 'dead') S.solved.delete(o.needs); else S.solved.add(o.needs); }
+    if (state === 'open') S.solved.add(id); else S.solved.delete(id);
     closeModal();
-  }, { room, id });
+  }, { room, id, state });
   if (await p.locator('#enter-room-btn').count()) {
     await p.click('#enter-room-btn', { force: true });
     await clearBeat(p);
@@ -92,19 +99,27 @@ const fit = (p) => p.evaluate(() => {
       p.on('pageerror', e => errs.push(`${scenario} ${shape.name}: ${e.message}`));
       await start(p, scenario);
 
-      const all = await p.evaluate(() => ACTIVE.rooms.flatMap((r, ri) =>
-        r.objects.map(o => ({ room: ri, id: o.id }))));
+      /* On the reset grammar an object has up to three faces: the lock as it
+         is worked, the same thing standing dead, and the lock open with what
+         was inside it — which is usually the biggest drawing in the room. */
+      const all = await p.evaluate(() => ACTIVE.rooms.flatMap((r, ri) => r.objects.flatMap(o => {
+        const faces = [{ room: ri, id: o.id, state: 'live' }];
+        if (ACTIVE.classic && o.needs) faces.push({ room: ri, id: o.id, state: 'dead' });
+        if (ACTIVE.classic && o.puzzle) faces.push({ room: ri, id: o.id, state: 'open' });
+        return faces;
+      })));
 
       const spill = [], scrolled = [], squashed = [];
-      for (const { room, id } of all) {
-        await show(p, room, id);
+      for (const { room, id, state } of all) {
+        await show(p, room, id, state);
         const f = await fit(p);
-        if (f.over > 1) spill.push(`${id} by ${f.over}px`);
-        if (f.ovScroll > 1 || f.docScroll > 1) scrolled.push(`${id} (${f.ovScroll}/${f.docScroll})`);
+        const tag = state === 'live' ? id : `${id} (${state})`;
+        if (f.over > 1) spill.push(`${tag} by ${f.over}px`);
+        if (f.ovScroll > 1 || f.docScroll > 1) scrolled.push(`${tag} (${f.ovScroll}/${f.docScroll})`);
         // the shrink is the safety net; needing it hard means the layout lost
-        if (f.zoom < 0.82) squashed.push(`${id} at ${f.zoom}`);
+        if (f.zoom < 0.82) squashed.push(`${tag} at ${f.zoom}`);
       }
-      ok(`${shape.name}: ${all.length} objects all fit the window`, !spill.length, spill.slice(0, 5).join(', '));
+      ok(`${shape.name}: ${all.length} views all fit the window`, !spill.length, spill.slice(0, 5).join(', '));
       ok(`${shape.name}: nothing scrolls`, !scrolled.length, scrolled.slice(0, 5).join(', '));
       ok(`${shape.name}: nothing has to be shrunk to make it`, !squashed.length, squashed.slice(0, 5).join(', '));
 
@@ -113,7 +128,7 @@ const fit = (p) => p.evaluate(() => {
          and there is nothing to ask for a hint on. */
       const first = await p.evaluate(() => {
         S.solved.clear(); S.hintsShown = {};
-        const o = ACTIVE.rooms[0].objects.find(x => x.puzzle && !x.hiddenUntil);
+        const o = ACTIVE.rooms[0].objects.find(x => x.puzzle && !x.hiddenUntil && !x.needs);
         return o && o.id;
       });
       if (first) {
@@ -132,7 +147,8 @@ const fit = (p) => p.evaluate(() => {
   const p = await browser.newPage({ viewport: { width: 1440, height: 900 } });
   p.on('pageerror', e => errs.push('beat: ' + e.message));
   await start(p, 'eldermoor');
-  await show(p, 0, 'driftwood');
+  const anyLock = await p.evaluate(() => ACTIVE.rooms[0].objects.find(o => o.puzzle && !o.hiddenUntil && !o.needs).id);
+  await show(p, 0, anyLock);
   await p.evaluate(() => showBeat('Something moves in the treeline.', null));
   await p.waitForTimeout(250);
   ok('raised mid-puzzle, it is held rather than shown',
@@ -169,16 +185,18 @@ const fit = (p) => p.evaluate(() => {
   ph.on('pageerror', e => errs.push('phone: ' + e.message));
   await start(ph, 'eldermoor');
   await ph.evaluate(() => { S.isPhone = true; document.body.classList.add('phone'); });
-  await show(ph, 0, 'driftwood');
+  await show(ph, 0, await ph.evaluate(() => ACTIVE.rooms[0].objects.find(o => o.puzzle && !o.hiddenUntil && !o.needs).id));
   ok('a phone still scrolls its card, as it should', await ph.evaluate(() => {
     const ov = getComputedStyle(document.getElementById('overlay'));
     return ov.overflowY === 'auto' || ov.overflowY === 'scroll';
   }));
-  ok('and lays the two panes out stacked, not side by side', await ph.evaluate(() => {
-    const look = document.querySelector('.ex-look'), work = document.querySelector('.ex-work');
-    if (!look || !work) return true;
-    return work.getBoundingClientRect().top >= look.getBoundingClientRect().bottom - 1;
-  }));
+  ok('and is never shrunk to fit: a card in the hand is read at full size', await ph.evaluate(() =>
+    parseFloat(document.getElementById('modal').style.zoom || '1') === 1));
+  ok('and nothing on it runs off the side', await ph.evaluate(() =>
+    document.documentElement.scrollWidth <= innerWidth + 1 &&
+    [...document.querySelectorAll('#modal .lock, #modal .obj-fig, #modal .lk-try')].every(e => {
+      const r = e.getBoundingClientRect(); return r.left >= -1 && r.right <= innerWidth + 1;
+    })));
   await ctx.close();
 
   console.log('\nJS errors:', errs.length ? errs.slice(0, 5) : 'none');

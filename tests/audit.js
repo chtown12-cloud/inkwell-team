@@ -1,17 +1,27 @@
 /* The puzzle standard, enforced.
 
-   PUZZLES.md says what every puzzle has to do. Most of it is a judgement
-   call, but four things are checkable, and all four of them were broken
-   somewhere in the game before the rebuild:
+   PUZZLES.md says what a puzzle in this game is. Most of that is taste, but a
+   surprising amount of it can be checked, and every check below is here
+   because the game broke that way at least once.
 
-     1. No prop states the method. The old locks said NAME ME AS THE EBB
-        WOULD SPEAK IT — BACKWARD, THE GATE WINDS BACK, PINS PULLED IN
-        REVERSE, and the junction listened at TWICE the record.
-     2. Every puzzle carries a prompt, three hints and solved text.
-     3. Gating points at objects that exist in the same room.
-     4. room.chain matches the puzzles. It is the only place the whole
-        solution is written down and players are shown it on the end card,
-        so a stale chain is a bug.
+   A scenario on the reset grammar (classic:true) is held to this:
+
+     1. THE KEY IS SOMEWHERE ELSE. Every lock names where its answer comes
+        from (puzzle.from), and it is never the lock itself.
+     2. NOTHING IS DEAD. Every clue in a room opens something.
+     3. ALMOST NO TEXT. A lock has no prompt. Descriptions are a line, and
+        never contain the answer.
+     4. THE ROOM CAN BE WON. Working only from what is visible and what has
+        already come out of an open lock, every lock can be opened.
+     5. A LOCK IS BUILT RIGHT. Its answer is something its own face can show.
+     6. HINTS LAND. Three of them, and the third says the answer.
+     7. THE CHAIN IS TRUE. room.chain is the only place the whole solution is
+        written down, and players are shown it on the end card.
+     8. FIVE GAMES, NOT ONE IN FIVE COSTUMES. No kind of lock more than twice
+        in a scenario; no two scenarios with the same shape or the same ending.
+
+   Scenarios not yet rebuilt are held to the standard they were built under,
+   further down, until they are.
 
    Run with: node tests/audit.js
 */
@@ -24,16 +34,249 @@ const root = path.join(__dirname, '..');
 
 const loaded = [];
 globalThis.registerScenario = (s) => loaded.push(s);
-// the scenarios build their drawings at load, so the primitives come first
-vm.runInThisContext(fs.readFileSync(path.join(root, 'lib', 'figures.js'), 'utf8'), { filename: 'figures' });
+// the scenarios build their drawings at load, so the kits come first
+for (const lib of ['art', 'figures']) {
+  const f = path.join(root, 'lib', lib + '.js');
+  if (fs.existsSync(f)) vm.runInThisContext(fs.readFileSync(f, 'utf8'), { filename: lib });
+}
 for (const id of SCENARIOS) {
   vm.runInThisContext(fs.readFileSync(path.join(root, 'scenarios', id + '.js'), 'utf8'), { filename: id });
 }
 
 let fails = 0;
 const fail = (where, msg) => { console.log(`  FAIL  ${where}\n        ${msg}`); fails++; };
+const squash = (s) => String(s).toUpperCase().replace(/[^A-Z0-9]/g, '');
+const list = (a) => Array.isArray(a) ? a.map(String) : String(a == null ? '' : a).split('');
 
-/* 1 ─────────────────────────────────────────── nothing states the method */
+/* ======================================================================
+   THE RESET GRAMMAR
+   ====================================================================== */
+
+const HANDS_ON = new Set(['combo', 'dirpad', 'clock', 'toggle', 'press', 'tiles', 'tune', 'keypad', 'hold', 'simul']);
+// locks that are their own puzzle: nothing has to be carried to them
+const SELF_CONTAINED = new Set(['tune', 'simul', 'hold']);
+const DESC_MAX = 170, SOLVED_MAX = 260;
+
+/** What is on the wheels, so that digits and colours count as different locks. */
+function faceKind(p) {
+  const f = (p.wheels && p.wheels[0] && p.wheels[0].faces) || p.faces;
+  if (!f) return 'digits';
+  if (typeof f === 'string') return /^\d+$/.test(f) ? 'digits' : 'letters';
+  if (f.colors) return 'colours';
+  if (f.glyphs) return 'pictures';
+  return 'faces';
+}
+const kindOf = (p) => p.type === 'combo' ? 'combo/' + faceKind(p) : p.type;
+
+function faceIds(p) {
+  const f = (p.wheels && p.wheels[0] && p.wheels[0].faces) || p.faces || '0123456789';
+  if (typeof f === 'string') return f.split('');
+  if (f.colors) return f.colors;
+  if (f.glyphs) return f.glyphs;
+  return f.map(x => typeof x === 'string' ? x : x.id);
+}
+const minutes = (t) => { const [h, m] = String(t).split(':').map(Number); return (h % 12) * 60 + m; };
+
+/** 5 ── the answer is something this lock's own face can show */
+function checkBuilt(at, o) {
+  const p = o.puzzle;
+  if (p.type === 'combo') {
+    const n = Array.isArray(p.wheels) ? p.wheels.length : p.wheels;
+    const ans = Array.isArray(p.answer) ? p.answer.map(String) : (faceIds(p).some(f => String(f).length > 1) ? null : String(p.answer).split(''));
+    if (!ans) return fail(at, 'a combo with named faces needs its answer as a list');
+    if (ans.length !== n) fail(at, `has ${n} wheels and an answer ${ans.length} long`);
+    const faces = new Set(faceIds(p).map(String));
+    ans.forEach(a => { if (!faces.has(a)) fail(at, `answer needs "${a}", which is on none of its wheels`); });
+    if (faces.size < 5) fail(at, `has only ${faces.size} faces a wheel — too few to be worth a lock`);
+  } else if (p.type === 'dirpad') {
+    if (!/^[NESW]+$/.test(String(p.answer))) fail(at, 'a compass pad takes only N, E, S and W');
+    if (String(p.answer).length !== p.slots) fail(at, `has ${p.slots} slots and an answer ${String(p.answer).length} long`);
+  } else if (p.type === 'clock') {
+    const step = p.step || 5;
+    if (!/^\d{1,2}:\d\d$/.test(String(p.answer))) return fail(at, `answer "${p.answer}" is not a time`);
+    if (minutes(p.answer) % step) fail(at, `answer ${p.answer} cannot be set in ${step}-minute steps`);
+    if (p.window) {
+      const [a, b] = p.window.map(minutes);
+      if (!(a <= minutes(p.answer) && minutes(p.answer) <= b)) fail(at, `answer ${p.answer} is outside its own window ${p.window.join('–')}`);
+      if (b - a > 90) fail(at, `opens for any time across ${(b - a)} minutes — that is not a lock`);
+    }
+    const st = p.start || { h: 12, m: 0 };
+    if (st.h + ':' + String(st.m).padStart(2, '0') === String(p.answer)) fail(at, 'starts already set to its answer');
+  } else if (p.type === 'toggle') {
+    const keys = p.keys ? faceIds({ faces: p.keys }).map(String) : null;
+    const ans = list(p.answer), start = list(p.start || []);
+    if (keys) ans.forEach(a => { if (!keys.includes(a)) fail(at, `answer switch "${a}" is not on the board`); });
+    if (!ans.length) fail(at, 'has nothing switched on in its answer');
+    if (ans.slice().sort().join() === start.slice().sort().join()) fail(at, 'starts already set to its answer');
+  } else if (p.type === 'press') {
+    const ans = list(p.answer);
+    if (p.slots && ans.length !== p.slots) fail(at, `has ${p.slots} slots and an answer ${ans.length} long`);
+    if (p.keys) { const keys = p.keys.map(k => String(k.id)); ans.forEach(a => { if (!keys.includes(a)) fail(at, `answer press "${a}" is not a key it has`); }); }
+    if (!p.repeat && new Set(ans).size !== ans.length) fail(at, 'presses the same thing twice, but is not marked repeat');
+    if (!p.keys && !p.figure) fail(at, 'has neither keys nor a drawing to press');
+  } else if (p.type === 'tiles') {
+    const n = p.pieces ? p.pieces.length : p.cols * p.rows;
+    const want = p.pieces ? list(p.answer) : Array.from({ length: n }, (_, i) => String(i));
+    const start = list(p.start || []);
+    if (start.length !== n) fail(at, `lays out ${start.length} pieces of ${n}`);
+    if (start.slice().sort().join() !== want.slice().sort().join()) fail(at, 'starts with pieces that are not its own');
+    if (start.join() === want.join()) fail(at, 'starts already solved');
+    if (!p.pieces && !(p.picture && p.picture.body)) fail(at, 'has no picture to cut up');
+  } else if (p.type === 'tune') {
+    if (!(p.at > p.min && p.at < p.max)) fail(at, `sits at ${p.at}, off its own dial (${p.min}–${p.max})`);
+    if (Math.abs((p.start != null ? p.start : p.min) - p.at) <= (p.tol || 0.3)) fail(at, 'starts already tuned');
+  }
+}
+
+/** How an answer would be said out loud, piece by piece, for looking it up in prose. */
+function spoken(o) {
+  const p = o.puzzle;
+  if (p.type === 'tune') return { whole: [String(p.at)] };
+  if (p.answer == null) return {};
+  if (Array.isArray(p.answer)) {
+    const words = p.answer.map(String);
+    // ids like "s3" or "b" are plumbing, not something a hint would say
+    return words.every(w => /^[a-z]{3,}$/i.test(w) || /^\d+$/.test(w)) ? { words } : {};
+  }
+  const s = String(p.answer);
+  return /^[A-Za-z0-9:]+$/.test(s) ? { whole: [s] } : {};
+}
+function saysIt(text, say) {
+  if (say.whole) return say.whole.every(w => squash(text).includes(squash(w)));
+  if (say.words) return say.words.every(w => new RegExp(`\\b${w}\\b`, 'i').test(text));
+  return true;
+}
+
+function auditClassic(s) {
+  const ids = new Set();
+  const kinds = new Map();
+  let locks = 0, clues = 0;
+
+  s.rooms.forEach((room, ri) => {
+    const where = `${s.id} R${ri + 1}`;
+    const byId = new Map(room.objects.map(o => [o.id, o]));
+    if (!room.chain) fail(where, 'has no chain documented');
+    if (!room.objective) fail(where, 'has no objective');
+    const used = new Set();
+
+    room.objects.forEach(o => {
+      const at = `${where} [${o.id}]`;
+      if (ids.has(o.id)) fail(at, 'duplicate object id in this scenario');
+      ids.add(o.id);
+      const p = o.puzzle;
+
+      /* the thing itself */
+      if (!o.name || !o.icon) fail(at, 'has no name or no icon');
+      if (!o.pos) fail(at, 'has no place in the room');
+      else if (o.pos.x < 0 || o.pos.y < 0 || o.pos.x + o.pos.w > 100 || o.pos.y + o.pos.h > 100) fail(at, 'stands partly off the stage');
+      if (!o.sprite) fail(at, 'is not drawn in the room (no sprite): what can be examined must be visible from across it');
+      if (!p && !o.figure) fail(at, 'is neither a lock nor a clue: it has no puzzle and no drawing');
+      for (const fig of [o.figure, p && p.inside && p.inside.figure, p && p.plate]) {
+        if (!fig) continue;
+        const tag = (/<svg[^>]*>/.exec(fig) || [''])[0];
+        if (!/viewBox=/.test(tag)) fail(at, 'has a drawing with no viewBox, so it cannot scale');
+        if (/\swidth=|\sheight=/.test(tag)) fail(at, 'has a drawing with a fixed size on its root svg');
+        if (/<svg[^>]*\sx=/.test(fig.slice(tag.length))) fail(at, 'nests an <svg> inside a drawing — use ART.inset; a nested viewport clips translucent art on phones');
+      }
+
+      /* 3 ── almost no text */
+      if (!o.desc) fail(at, 'has no description');
+      if ((o.desc || '').length > DESC_MAX) fail(at, `description runs to ${o.desc.length} characters (${DESC_MAX} is a line and a half)`);
+      if ((o.deadDesc || '').length > DESC_MAX) fail(at, `deadDesc runs to ${o.deadDesc.length} characters`);
+      if (/\n/.test(o.desc || '')) fail(at, 'description has line breaks: a table in prose is a drawing that was never drawn');
+
+      /* gating points somewhere real */
+      for (const key of ['hiddenUntil', 'needs']) {
+        if (!o[key]) continue;
+        if (o[key] === o.id) fail(at, `${key} points at itself`);
+        else if (!byId.has(o[key])) fail(at, `${key}:'${o[key]}' is not an object in this room`);
+        else if (!byId.get(o[key]).puzzle) fail(at, `${key}:'${o[key]}' is not a lock, so it can never be satisfied`);
+      }
+      if (o.needs && !o.deadDesc) fail(at, 'can stand dead in the room but has nothing to say while it does (deadDesc)');
+
+      if (!p) { clues++; return; }
+      locks++;
+      const kind = kindOf(p);
+      kinds.set(kind, (kinds.get(kind) || []).concat(o.id));
+
+      if (!HANDS_ON.has(p.type)) fail(at, `is a "${p.type || 'text'}" puzzle: nothing on this grammar is typed`);
+      if (p.prompt) fail(at, 'carries a prompt: a lock shows the shape of its answer, it does not explain itself');
+      if ((p.solvedText || '').length > SOLVED_MAX) fail(at, `solved text runs to ${p.solvedText.length} characters`);
+
+      /* 1 ── the key is somewhere else */
+      const from = p.from || [];
+      if (!from.length && !SELF_CONTAINED.has(p.type) && !(p.type === 'tiles' && !p.pieces)) {
+        fail(at, 'does not say where its answer comes from (puzzle.from)');
+      }
+      from.forEach(f => {
+        used.add(f);
+        if (f === o.id) return fail(at, 'names itself as the source of its own answer');
+        const src = byId.get(f);
+        if (!src) return fail(at, `from:'${f}' is not an object in this room`);
+        if (src.puzzle && !src.puzzle.inside) fail(at, `takes its answer from the lock '${f}', but nothing comes out of that lock (inside)`);
+        if (!src.puzzle && !src.figure) fail(at, `takes its answer from '${f}', which has nothing to look at`);
+      });
+
+      /* the answer is not lying in the free text */
+      const say = spoken(o);
+      for (const [label, text] of [['description', o.desc], ['name', o.name], ['objective', room.objective], ['intro', room.intro]]) {
+        if (!text || !say.whole) continue;
+        if (say.whole.some(w => squash(w).length >= 3 && squash(text).includes(squash(w)))) fail(at, `answer is sitting in the ${label}`);
+      }
+
+      /* 5 ── built right */
+      checkBuilt(at, o);
+
+      /* 6 ── hints land */
+      if (!p.hints || p.hints.length !== 3) fail(at, `has ${(p.hints || []).length} hints, expected 3`);
+      (p.hints || []).forEach((h, i) => { if (!h || h.length < 20) fail(at, `hint ${i + 1} is too short to narrow anything`); });
+      if (p.hints && p.hints[2] && !saysIt(p.hints[2], say)) fail(at, `third hint does not say the answer (${JSON.stringify(p.answer != null ? p.answer : p.at)})`);
+      if (p.hints && p.hints[0] && say.whole && saysIt(p.hints[0], say) && squash(say.whole[0]).length >= 3) fail(at, 'first hint already gives the answer away');
+
+      /* 7 ── the chain is true */
+      if (room.chain && !saysIt(room.chain, say)) fail(at, `answer ${JSON.stringify(p.answer != null ? p.answer : p.at)} does not appear in the room's chain — one of them is stale`);
+
+      const isFinale = room === s.rooms[s.rooms.length - 1] && room.objects[room.objects.length - 1].id === o.id;
+      if (!isFinale && !p.solvedText) fail(at, 'has no solved text');
+    });
+
+    /* 2 ── nothing is dead */
+    room.objects.forEach(o => {
+      if (!o.puzzle && !used.has(o.id)) fail(`${where} [${o.id}]`, 'is a clue that no lock in the room uses');
+    });
+
+    /* 4 ── the room can be won, working only from what is in hand */
+    const solved = new Set();
+    const seen = (o) => !o.hiddenUntil || solved.has(o.hiddenUntil);
+    const live = (o) => !o.needs || solved.has(o.needs);
+    const inHand = (f) => { const src = byId.get(f); return !!src && seen(src) && (src.puzzle ? solved.has(f) : live(src)); };
+    const todo = room.objects.filter(o => o.puzzle);
+    const waves = [];
+    for (;;) {
+      const open = todo.filter(o => !solved.has(o.id) && seen(o) && live(o) && (o.puzzle.from || []).every(inHand));
+      if (!open.length) break;
+      waves.push(open.map(o => o.id));
+      open.forEach(o => solved.add(o.id));
+    }
+    const stuck = todo.filter(o => !solved.has(o.id)).map(o => o.id);
+    if (stuck.length) fail(where, `cannot be finished: ${stuck.join(', ')} can never be opened from what is in hand`);
+    room._waves = waves;
+  });
+
+  /* 8 ── variety inside the scenario */
+  for (const [kind, where] of kinds) {
+    if (where.length > 2) fail(s.id, `uses the ${kind} lock ${where.length} times (${where.join(', ')}): twice is the limit`);
+  }
+  if (kinds.size < 7) fail(s.id, `has only ${kinds.size} kinds of lock in the whole game`);
+
+  console.log(`  ok    ${s.id}: ${s.rooms.length} rooms, ${locks} locks, ${clues} clues, ${kinds.size} kinds of lock`);
+  s.rooms.forEach((room, ri) => console.log(`          R${ri + 1}  ${room._waves.map(w => w.join(' + ')).join('  →  ')}`));
+  return locks;
+}
+
+/* ======================================================================
+   THE STANDARD BEFORE THE RESET — for scenarios not yet rebuilt
+   ====================================================================== */
 
 // Phrases that only ever appear when a prop is telling the player which
 // transformation to apply. Each of these was live in the game before.
@@ -48,7 +291,6 @@ const BANNED = [
 const ALLOW = [
   /mist rips backward into the recyclers/i,   // describing a purge, not a method
 ];
-
 function scanText(where, text) {
   if (!text) return;
   for (const re of BANNED) {
@@ -59,122 +301,72 @@ function scanText(where, text) {
   }
 }
 
-/* 4 ───────────────────────── the chain agrees with the puzzles it describes */
-const squash = (s) => String(s).toUpperCase().replace(/[^A-Z0-9]/g, '');
-
-console.log('--- every scenario ---');
-for (const s of loaded) {
+function auditLegacy(s) {
   const ids = new Set();
   let puzzles = 0;
-
   s.rooms.forEach((room, ri) => {
     const where = `${s.id} R${ri + 1}`;
     const here = new Set(room.objects.map(o => o.id));
     const chain = squash(room.chain || '');
     if (!room.chain) fail(where, 'has no chain documented');
-
     scanText(`${where} chain`, room.chain);
 
     room.objects.forEach(o => {
       const at = `${where} [${o.id}]`;
       if (ids.has(o.id)) fail(at, 'duplicate object id in this scenario');
       ids.add(o.id);
-
       scanText(`${at} desc`, o.desc);
       scanText(`${at} revealDesc`, o.revealDesc);
-
-      /* 5 ── a drawing has to scale, and has to be the only place its own
-         contents are written down. A figure under a paragraph that already
-         lists what it shows is decoration, not a puzzle. */
-      for (const key of ['figure', 'revealFigure']) {
-        const fig = o[key];
-        if (!fig) continue;
-        const tag = (/<svg[^>]*>/.exec(fig) || [''])[0];
-        if (!/viewBox=/.test(tag)) fail(at, `${key} has no viewBox, so it cannot scale`);
-        if (/\swidth=|\sheight=/.test(tag)) fail(at, `${key} sets a fixed size on its root svg`);
-      }
-      if (o.figure || o.revealFigure) {
-        const lines = String(o.desc || '').split('\n')
-          .filter(l => /\.{4,}/.test(l) || /^\s*\S.{0,40}\s{3,}\S{1,8}\s*$/.test(l));
-        if (lines.length >= 3) {
-          fail(at, `has a drawing but still lists its contents in prose (${lines.length} label/value lines)`);
-        }
-      }
-
-      /* 3 ── gating points somewhere real */
       for (const key of ['hiddenUntil', 'revealedBy']) {
         if (o[key] && !here.has(o[key])) fail(at, `${key}:'${o[key]}' is not an object in this room`);
         if (o[key] === o.id) fail(at, `${key} points at itself`);
       }
-
       const p = o.puzzle;
       if (!p) return;
       puzzles++;
-
       scanText(`${at} prompt`, p.prompt);
       (p.hints || []).forEach((h, i) => scanText(`${at} hint ${i + 1}`, h));
       scanText(`${at} solvedText`, p.solvedText);
-
-      /* 2 ── every puzzle is fully furnished */
       if (!p.prompt) fail(at, 'has no prompt');
       if (!p.hints || p.hints.length !== 3) fail(at, `has ${(p.hints || []).length} hints, expected 3`);
-      (p.hints || []).forEach((h, i) => {
-        if (!h || h.length < 20) fail(at, `hint ${i + 1} is too short to narrow anything`);
-      });
-      // The finale ends the game outright, so it has nothing to say afterwards.
-      const isFinale = room === s.rooms[s.rooms.length - 1]
-        && room.objects[room.objects.length - 1].id === o.id;
+      (p.hints || []).forEach((h, i) => { if (!h || h.length < 20) fail(at, `hint ${i + 1} is too short to narrow anything`); });
+      const isFinale = room === s.rooms[s.rooms.length - 1] && room.objects[room.objects.length - 1].id === o.id;
       if (!isFinale && !p.solvedText) fail(at, 'has no solved text');
-
-      /* 6 ── an object that carries a drawing must not also spell its answer
-         out in prose. Scoped to figures on purpose: plenty of honest puzzles
-         are a lookup whose document has to contain the digits — the fuelling
-         protocol, the approach plate, the release sequence. The failure this
-         catches is the one that started the rewrite, a picture with a
-         paragraph above it already saying what the picture shows. */
-      if (o.figure || o.revealFigure) {
-        const plain = squash(o.desc || '');
-        for (const part of String((p.answers || [])[0] || '').split('|')) {
-          const want = squash(part);
-          if (want.length >= 3 && plain.includes(want)) {
-            fail(at, `has a drawing, but the answer ${part} is also sitting in its description`);
-          }
-        }
-      }
-
-      /* 4 ── the answer appears in the room's chain.
-         A control panel's answer is several settings rather than one word,
-         so each setting has to be documented, not the run-on of all three. */
       const ans = (p.answers || [])[0];
       for (const part of String(ans || '').split('|')) {
-        if (part && !chain.includes(squash(part))) {
-          fail(at, `answer ${part} does not appear in the room's chain — one of them is stale`);
-        }
+        if (part && !chain.includes(squash(part))) fail(at, `answer ${part} does not appear in the room's chain — one of them is stale`);
       }
     });
   });
-
-  console.log(`  ok    ${s.id}: ${s.rooms.length} rooms, ${puzzles} puzzles, ${ids.size} objects`);
+  console.log(`  ok    ${s.id}: ${s.rooms.length} rooms, ${puzzles} puzzles, ${ids.size} objects  (not yet rebuilt)`);
+  return puzzles;
 }
 
+/* ====================================================================== */
+
+console.log('--- every scenario ---');
+let total = 0;
+for (const s of loaded) total += s.classic ? auditClassic(s) : auditLegacy(s);
+
 /* The five must not collapse back into one game in five costumes. This only
-   measures the slot profile, which is a floor rather than a ceiling — what
-   actually keeps them apart is the mechanics table in PUZZLES.md, and that
-   one needs a human. */
-console.log('\n--- slot profiles (a floor, not a ceiling: see PUZZLES.md) ---');
-const shapes = loaded.map(s => [s.id, s.rooms.map(r =>
-  r.objects.filter(o => o.puzzle).map(o => o.puzzle.type || 'text').join('-')).join('|')]);
-const seen = new Map();
+   measures the shape, which is a floor rather than a ceiling — what actually
+   keeps them apart is the mechanics table in PUZZLES.md, and that one needs
+   a human. */
+console.log('\n--- shapes (a floor, not a ceiling: see PUZZLES.md) ---');
+const kindLabel = (o) => o.puzzle.type ? kindOf(o.puzzle) : 'text';
+const shapes = loaded.map(s => [s.id, s.rooms.map(r => r.objects.filter(o => o.puzzle).map(kindLabel).join('-')).join(' | ')]);
+const seenShape = new Map();
 for (const [id, shape] of shapes) {
   console.log(`  ${id.padEnd(10)} ${shape}`);
-  if (seen.has(shape)) fail(id, `has the same puzzle-type profile as ${seen.get(shape)}`);
-  seen.set(shape, id);
+  if (seenShape.has(shape)) fail(id, `has the same lock-by-lock shape as ${seenShape.get(shape)}`);
+  seenShape.set(shape, id);
 }
 
 const finales = loaded.map(s => {
   const last = s.rooms[s.rooms.length - 1];
   const o = last.objects[last.objects.length - 1];
-  return [s.id, (o.puzzle && (o.puzzle.type || 'text')) + ':' + ((o.puzzle && o.puzzle.answers) || [''])[0]];
+  const p = o.puzzle || {};
+  return [s.id, kindLabel(o) + ':' + JSON.stringify(p.answer != null ? p.answer : (p.answers || [''])[0])];
 });
 const fseen = new Map();
 for (const [id, f] of finales) {
@@ -183,6 +375,5 @@ for (const [id, f] of finales) {
 }
 console.log(`  ${fseen.size} of ${finales.length} finales are distinct`);
 
-const total = loaded.reduce((n, s) => n + s.rooms.reduce((m, r) => m + r.objects.filter(o => o.puzzle).length, 0), 0);
 console.log(fails ? `\n${fails} FAILURES` : `\nall ${total} puzzles meet the standard`);
 process.exit(fails ? 1 : 0);

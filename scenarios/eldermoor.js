@@ -951,7 +951,7 @@ const ROOM2 = {
   entryBeat:"The door swings shut behind you on its own. Rusted hinges don't do that quietly. This one did.",
   entrySound:'knock',
   completeText:"The transmitter hums, your distress call looping out to sea. Above the back door, the sign says ANTENNA, and the cable runs straight out into the jungle.",
-  chain:"The card on the breaker board ticks three things — the antenna, the receiver, the lamp — and the cable run on the wall takes each of them to its breaker: 2, 5 and 6 up, the rest down → with power, the receiver finds a station in the static and prints its morse, which the wall poster reads as RAVEN → the desk drawer opens on that, and holds a photograph of the transmitter taken in the window glass → the logbook draws the operator's day as pictures and clocks, and the hatch is the one at 9:40 → under it is the transmitter itself, to be patched as the photograph shows — but a reflection is back to front (the ANTENNA sign in it reads backwards), so the plugs run blue, yellow, red, green.",
+  chain:"The card on the breaker board ticks three things — the antenna, the receiver, the lamp — and the cable run on the wall takes each of them to its breaker: 2, 5 and 6 up, the rest down → with power, the receiver finds a station in the static at 103.7 and prints its morse, which the wall poster reads as RAVEN → the desk drawer opens on that, and holds a photograph of the transmitter taken in the window glass → the logbook draws the operator's day as pictures and clocks, and the hatch is the one at 9:40 → under it is the transmitter itself, to be patched as the photograph shows — but a reflection is back to front (the ANTENNA sign in it reads backwards), so the plugs run blue, yellow, red, green.",
   objects:[
     { id:'cables', icon:'🔌', name:'Cable Run', pos:POS2.cables,
       desc:"Seven cables stapled along the wall, and not one of them takes the short way.",
@@ -1219,6 +1219,7 @@ const ROOM3 = {
       desc:"Eight stones across black water that is moving faster than it looks. It is too dark down here to tell one from another.",
       sprite:stonesScene(),
       puzzle:{ type:'press', from:['pack'], slots:5, answer:SAFE,
+        gm:'the 1st, 3rd, 4th, 6th and 8th stones from the left, in that order',
         figure:ART.svg(stonesArt.w, stonesArt.h, stonesArt.body),
         lens:{ needs:'pack', hidden:stonesArt.glow, r:74, dark:.66 },
         hints:[
@@ -1482,6 +1483,7 @@ const ROOM4 = {
       desc:"Five logs, cut to five lengths on purpose, lying wherever they were dropped.",
       sprite:st=>ART.sprite(POS4.raft, 256, 128, raftBody(st.solved)),
       puzzle:{ type:'tiles', from:['photos'], cols:5, skin:'logs',
+        gm:'left to right: middling, longest, shortest, second longest, second shortest',
         pieces:Object.keys(LOGS).map(id=>({ id, w:70, h:210, body:`<rect width="70" height="210" fill="#6a5237"/>${logShape(18, 200, LOGS[id], 34)}` })),
         start:['a','b','c','d','e'], answer:LASHED,
         hints:[

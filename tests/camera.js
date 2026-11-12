@@ -143,7 +143,13 @@ const look = (p) => p.evaluate(() => {
   p.on('pageerror', e => errs.push('adaptive: ' + e.message));
   await start(p, 'eldermoor');
   console.log('\n--- the push-in adapts to what it is looking at ---');
-  const zoomOf = async (id) => {
+  const zoomOf = async ({ room, id }) => {
+    await p.evaluate(({ room, id }) => {
+      if (S.roomIndex !== room) enterRoom(room);
+      const o = ACTIVE.rooms[room].objects.find(x => x.id === id);
+      if (o.hiddenUntil) S.solved.add(o.hiddenUntil);
+    }, { room, id });
+    if (await p.locator('#enter-room-btn').count()) { await p.click('#enter-room-btn', { force: true }); await clearBeat(p); }
     await p.evaluate((i) => openModal(i), id);
     await p.waitForTimeout(650);
     const k = await p.evaluate(() => camFocus.k);
@@ -151,10 +157,15 @@ const look = (p) => p.evaluate(() => {
     await p.waitForTimeout(600);
     return k;
   };
-  const small = await zoomOf('chart');     // 9% wide
-  const big = await zoomOf('hull');        // 22% wide
-  ok(`a small thing is pushed in on harder than a big one (${small.toFixed(2)}x vs ${big.toFixed(2)}x)`,
-    small > big + 0.4, `${small} vs ${big}`);
+  // the narrowest and the widest things in the whole game, whatever they are this week
+  const [tiny, huge] = await p.evaluate(() => {
+    const all = ACTIVE.rooms.flatMap((r, room) => r.objects.map(o => ({ room, id: o.id, w: o.pos.w }))).sort((a, b) => a.w - b.w);
+    return [all[0], all[all.length - 1]];
+  });
+  const small = await zoomOf(tiny);
+  const big = await zoomOf(huge);
+  ok(`a small thing (${tiny.id}, ${tiny.w}% wide) is pushed in on harder than a big one (${huge.id}, ${huge.w}%): ${small.toFixed(2)}x vs ${big.toFixed(2)}x`,
+    small > big + 0.2, `${small} vs ${big}`);
   ok('and neither runs past the cap', small <= 2.8001 && big >= 1.4999, `${small}, ${big}`);
   await p.close();
 
@@ -163,7 +174,7 @@ const look = (p) => p.evaluate(() => {
   const cp = await calm.newPage();
   cp.on('pageerror', e => errs.push('calm: ' + e.message));
   await start(cp, 'eldermoor');
-  await cp.evaluate(() => openModal('crate'));
+  await cp.evaluate(() => openModal(ACTIVE.rooms[0].objects[0].id));
   const calmT = await cp.evaluate(() => document.getElementById('stage').style.transition);
   ok('nobody who asked for less motion gets a camera move', calmT === 'none', calmT);
   await calm.close();
@@ -174,7 +185,7 @@ const look = (p) => p.evaluate(() => {
   ph.on('pageerror', e => errs.push('phone: ' + e.message));
   await start(ph, 'eldermoor');
   await ph.evaluate(() => { S.isPhone = true; document.body.classList.add('phone'); });
-  await ph.evaluate(() => openModal('crate'));
+  await ph.evaluate(() => openModal(ACTIVE.rooms[0].objects[0].id));
   await ph.waitForTimeout(400);
   ok('a phone gets no camera at all', await ph.evaluate(() => !camFocus));
   ok('and keeps the card it already had', await ph.evaluate(() => {

@@ -840,9 +840,10 @@ svg.glyph{display:block}
   background:linear-gradient(180deg,var(--lk-hi),var(--lk-metal));color:var(--lk-ink);font-size:.86rem}
 
 /* levers */
-.lk-levers{display:flex;gap:14px;padding:16px 22px 12px;border-radius:12px;flex-wrap:wrap;justify-content:center;
+.lk-levers{display:flex;gap:8px;padding:16px 18px 12px;border-radius:12px;flex-wrap:wrap;justify-content:center;
   background:linear-gradient(180deg,#2c3539,#141a1d);box-shadow:0 16px 34px rgba(0,0,0,.6),inset 0 0 0 2px #3c474c}
-.lk-lever{background:none;border:none;display:flex;flex-direction:column;align-items:center;gap:7px;color:var(--sand);padding:0}
+/* each lever owns a column wider than its knob, so two knobs side by side never read as one bar */
+.lk-lever{background:none;border:none;display:flex;flex-direction:column;align-items:center;gap:7px;color:var(--sand);padding:0;min-width:46px}
 .lv-slot{position:relative;display:block;width:24px;height:76px;border-radius:12px;background:#06080a;box-shadow:inset 0 0 0 2px #3a4449}
 .lv-knob{position:absolute;left:50%;top:46px;width:36px;height:26px;margin-left:-18px;border-radius:7px;
   background:linear-gradient(180deg,#b9c2c7,#6d777d);transition:top .12s;box-shadow:0 3px 6px rgba(0,0,0,.6)}
@@ -871,7 +872,9 @@ svg.glyph{display:block}
 .lk-key small{font-family:var(--font-label);font-size:.66rem;letter-spacing:1.5px;text-transform:uppercase;opacity:.8}
 
 /* a picture in pieces */
-.lk-tiles{display:grid;grid-template-columns:repeat(var(--cols),1fr);gap:5px;width:100%}
+.lk-tiles{display:grid;grid-template-columns:repeat(var(--cols),1fr);gap:5px;width:100%;margin:0 auto}
+/* a shared screen never scrolls, so the picture is as big as the height left over allows and no bigger */
+body:not(.phone) .lk-tiles{width:min(100%,calc((100vh - 300px) * var(--whole,1.6)))}
 .lk-tile{padding:0;border:none;background:#0b1114;border-radius:4px;overflow:hidden;aspect-ratio:var(--ar);
   box-shadow:0 3px 8px rgba(0,0,0,.55);transition:transform .1s}
 .lk-tile svg{display:block;width:100%;height:100%}
@@ -900,7 +903,9 @@ svg.glyph{display:block}
   .lk-face{width:46px;height:58px;font-size:1.7rem}.lk-step{width:46px}
   .lk-combo{gap:7px;padding:14px 14px 12px}
   .lk-dir{grid-template-columns:repeat(3,60px);grid-template-rows:repeat(3,60px)}
-  .lk-levers{gap:9px;padding:14px 12px 10px}
+  .lk-levers{gap:5px;padding:14px 6px 10px}
+  .lk-lever{min-width:36px}
+  .lv-knob{width:30px;margin-left:-15px}
 }
 @media (prefers-reduced-motion: reduce){ .lk-face.tick{animation:none} .lv-knob{transition:none} }
 
@@ -3474,6 +3479,24 @@ $('gm-btn').onclick=()=>{
   p.classList.toggle('hidden');
   if(!p.classList.contains('hidden')) p.scrollIntoView({behavior:'smooth'});
 };
+/** How a hands-on lock's answer reads to a facilitator: as what to do, not as the data. */
+function gmLock(p){
+  if(p.gm) return p.gm;                 // where the answer is plumbing (stone ids), the scenario says it in words
+  const li=a=>LOCKS.asList(a);
+  if(p.type==='combo'){
+    const a=li(p.answer); return a.every(x=>x.length===1)?a.join(''):a.join(' · ');
+  }
+  if(p.type==='dirpad') return li(p.answer).join(' ');
+  if(p.type==='clock')  return p.answer+(p.window?` (anything from ${p.window[0]} to ${p.window[1]} opens it)`:'');
+  if(p.type==='toggle') return 'only these on: '+li(p.answer).join(', ');
+  if(p.type==='press'){
+    const a=li(p.answer);
+    return p.echo ? a.map(k=>p.echo[k]||k).join(' ') : a.join(' → ');
+  }
+  if(p.type==='tiles')  return p.pieces ? 'in this order: '+li(p.answer).join(', ') : 'put the picture back together';
+  if(p.type==='tune')   return `hold the dial at ${p.at}${p.unit?' '+p.unit:''}`;
+  return null;
+}
 function buildGmPanel(){
   let html=`<h2>🔑 Game Master Answer Key — ${ACTIVE.title}</h2>
   <p style="color:var(--dim)">Facilitator eyes only. Unreachable once the game starts.
@@ -3481,7 +3504,8 @@ function buildGmPanel(){
   ACTIVE.rooms.forEach(room=>{
     html+=`<h3>${room.name}</h3><div class="chain">CHAIN: ${room.chain}</div>`;
     room.objects.filter(o=>o.puzzle).forEach(o=>{
-      const disp=o.puzzle.type==='signal'?'··· −−− ··· (short×3, long×3, short×3)':
+      const disp=(window.LOCKS&&LOCKS.has(o.puzzle.type))?gmLock(o.puzzle):
+                 o.puzzle.type==='signal'?'··· −−− ··· (short×3, long×3, short×3)':
                  o.puzzle.type==='dial'?`tune to ${(o.puzzle.dial.target/o.puzzle.dial.div).toFixed(o.puzzle.dial.div>=100?2:1)}, then lock in`:
                  o.puzzle.type==='simul'?`man all ${(o.puzzle.stations||[]).length} stations at once (${(o.puzzle.stations||[]).map(x=>x.label).join(' + ')}), then haul`:
                  o.puzzle.type==='panel'?`set ${(o.puzzle.panel.controls||[]).map((c,i)=>c.label+' → '+(o.puzzle.answers[0].split('|')[i])).join(', ')}, then commit`:
