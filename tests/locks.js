@@ -229,8 +229,101 @@ const KINDS = {
     await p.waitForTimeout(1100);
     t.hit(!(await isOpen(p, o.id)), `${o.id}: opened on a dial that only passed through`);
   },
-  async simul() {}, async keypad() {}, async hold() {},
+  async levels(p, o, t) {
+    const at = () => p.evaluate(() => [...document.querySelectorAll('.lk-col')].map(c => +c.dataset.v));
+    const put = async (c, l) => { if ((await at())[c] !== l) await p.click(l ? `.lk-cell[data-c="${c}"][data-l="${l}"]` : `.lk-cell.base[data-c="${c}"]`); };
+    t.hit((await at()).length === o.want.length, `${o.id}: ${(await at()).length} columns for an answer ${o.want.length} long`);
+    await put(0, o.max);
+    t.hit((await at())[0] === o.max, `${o.id}: a column does not go where it is put`);
+    await p.click(`.lk-cell[data-c="0"][data-l="${o.max}"]`);       // the top of what is there: down one
+    t.hit((await at())[0] === o.max - 1, `${o.id}: tapping the top of a column does not take it down one`);
+    await put(0, 0);
+    t.hit((await at())[0] === 0, `${o.id}: a column cannot be emptied`);
+    // every column right but the first, which is one out
+    const off = +o.want[0] === o.max ? o.max - 1 : +o.want[0] + 1;
+    await put(0, off);
+    await reopen(p, o.id);
+    t.hit((await at())[0] === off, `${o.id}: forgets its levels when you walk away`);
+    for (let c = 1; c < o.want.length; c++) await put(c, +o.want[c]);
+    const before = await penalty(p);
+    await p.click('.lk-try');
+    t.hit(!(await isOpen(p, o.id)) && await failed(p), `${o.id}: opened, or said nothing, with one column a step out`);
+    t.hit((await penalty(p)) === before + 5, `${o.id}: a wrong try did not cost five seconds`);
+  },
+  async keypad(p, o, t) {
+    const shown = () => p.evaluate(() => [...document.querySelectorAll('#pad-display i')].map(i => i.textContent).join(''));
+    const n = o.want.length, d = o.want[0] === '1' ? '2' : '1';
+    t.hit((await p.locator('#pad-display i').count()) === n, `${o.id}: the display has not got ${n} places`);
+    await p.click(`.pad-key[data-k="${d}"]`);
+    t.hit((await shown()) === d, `${o.id}: a key pressed does not show`);
+    const before = await penalty(p);
+    await p.click('.pad-key.go');                                     // the tick, with places still empty
+    t.hit(!(await isOpen(p, o.id)) && (await penalty(p)) === before && (await shown()) === d, `${o.id}: the tick counts as a try before every place is filled`);
+    await p.click('.pad-key.del');
+    t.hit((await shown()) === '', `${o.id}: the back key does not take a digit off`);
+    for (let i = 0; i < n + 2; i++) await p.click(`.pad-key[data-k="${d}"]`);
+    t.hit((await shown()).length === n, `${o.id}: takes more digits than it has places`);
+    await reopen(p, o.id);
+    t.hit((await shown()).length === n, `${o.id}: forgets what was keyed when you walk away`);
+    await p.click('.pad-key.go');
+    t.hit(!(await isOpen(p, o.id)) && await failed(p), `${o.id}: opened, or said nothing, on a wrong number`);
+    t.hit((await penalty(p)) === before + 5, `${o.id}: a wrong number did not cost five seconds`);
+    t.hit((await shown()) === '', `${o.id}: a wrong number is not cleared for the next one`);
+  },
+  async hold(p, o, t) {
+    const v = () => p.evaluate(() => +document.getElementById('lk-hold').dataset.v);
+    const b = await p.locator('#hold-btn').boundingBox();
+    await p.mouse.move(b.x + b.width / 2, b.y + b.height / 2);
+    await p.mouse.down();
+    await p.waitForFunction(() => +document.getElementById('lk-hold').dataset.v > 0.4, null, { timeout: 4000 }).catch(() => {});
+    const short = await v();
+    t.hit(short > 0.4, `${o.id}: holding does not bring the gauge up`);
+    const before = await penalty(p);
+    await p.mouse.up();                                               // let go far too soon
+    t.hit(!(await isOpen(p, o.id)) && await failed(p), `${o.id}: opened, or said nothing, let go at ${short.toFixed(1)}`);
+    t.hit((await penalty(p)) === before + 5, `${o.id}: a short hold did not cost five seconds`);
+    await p.waitForFunction((was) => +document.getElementById('lk-hold').dataset.v < was / 2, short, { timeout: 4000 }).catch(() => {});
+    t.hit((await v()) < short / 2, `${o.id}: the gauge does not fall back once you let go`);
+    await p.mouse.down();                                             // and now straight through the mark
+    await p.waitForFunction((past) => +document.getElementById('lk-hold').dataset.v > past, o.past, { timeout: 12000 }).catch(() => {});
+    await p.mouse.up();
+    t.hit(!(await isOpen(p, o.id)), `${o.id}: opened when held past ${o.past}`);
+    t.hit((await penalty(p)) === before + 10, `${o.id}: a long hold did not cost five seconds`);
+  },
+  async simul() {},
 };
+
+/** Something that turns: it turns, stays turned, comes back round after its own number of steps, and undoes. */
+async function turns(p, id, steps, t, back) {
+  const at = () => p.evaluate(() => document.getElementById('turn-card').getAttribute('transform'));
+  const t0 = await at();
+  await p.click('#modal [data-turn="1"]');
+  const t1 = await at();
+  t.hit(t1 !== t0, `${id}: it does not turn`);
+  await back();
+  t.hit((await at()) === t1, `${id}: forgets how it was lying when you walk away`);
+  for (let i = 1; i < steps; i++) await p.click('#modal [data-turn="1"]');
+  t.hit((await at()) === t0, `${id}: ${steps} turns do not bring it back round`);
+  await p.click('#modal [data-turn="-1"]'); await p.click('#modal [data-turn="1"]');
+  t.hit((await at()) === t0, `${id}: turning back does not undo turning`);
+}
+/** Something that pulses: watch it for a few seconds and it must be seen both lit and dark, in the colours it claims. */
+async function pulses(p, id, tool, t) {
+  const seen = await p.evaluate((ms) => new Promise((done) => {
+    const lamp = document.querySelector('#modal .pulse-lamp'), out = { lamp: !!lamp, on: 0, off: 0, colours: [] };
+    if (!lamp) return done(out);
+    const t0 = performance.now();
+    const look = () => {
+      if (lamp.classList.contains('on')) { out.on++; const c = lamp.style.getPropertyValue('--lamp'); if (c && !out.colours.includes(c)) out.colours.push(c); }
+      else out.off++;
+      if (performance.now() - t0 < ms) setTimeout(look, 40); else done(out);
+    };
+    look();
+  }), tool.watch);
+  t.hit(seen.lamp, `${id}: nothing in the drawing to pulse`);
+  t.hit(seen.on > 0 && seen.off > 0, `${id}: watched for ${tool.watch}ms and saw it ${seen.on ? 'never go dark' : 'never light'}`);
+  if (tool.colours > 1) t.hit(seen.colours.length === tool.colours, `${id}: showed ${seen.colours.length} colours of its ${tool.colours}`);
+}
 
 (async () => {
   const browser = await launch();
@@ -254,9 +347,13 @@ const KINDS = {
       const pz = o.puzzle || null, base = { room, id: o.id, pos: o.pos, lock: !!pz, type: pz && pz.type, needs: o.needs ? [].concat(o.needs).join(' and ') : null, hiddenUntil: o.hiddenUntil || null };
       base.fnSprite = typeof o.sprite === 'function';
       base.lens = (o.lens || (pz && pz.lens)) ? { needs: (o.lens || pz.lens).needs || null } : null;
-      base.tool = o.tool ? { type: o.tool.type, needs: o.tool.needs || null } : null;
+      // long enough to see a sequence through once, whatever its pace
+      const tool = (t) => !t ? null : { type: t.type, needs: t.needs || null, steps: t.steps || 4, colours: t.seq ? new Set(t.seq).size : 0,
+        watch: 900 + (t.seq ? t.seq.length * ((t.on || 430) + (t.gap || 250)) : (t.groups || []).reduce((a, n) => a + n * ((t.on || 150) + (t.gap || 240)) + (t.pause || 950), 0)) };
+      base.tool = tool(o.tool);
       base.inside = !!(pz && pz.inside);
       base.insideTool = pz && pz.inside && pz.inside.tool ? pz.inside.tool.type : null;
+      base.insideGear = tool(pz && pz.inside && pz.inside.tool);
       if (!pz) return base;
       const faces = LOCKS.normFaces((pz.wheels && pz.wheels[0] && pz.wheels[0].faces) || pz.faces);
       const mins = (t) => { const [h, m] = String(t).split(':').map(Number); return (h % 12) * 60 + m; };
@@ -269,6 +366,8 @@ const KINDS = {
       else if (pz.type === 'press') Object.assign(base, { want: LOCKS.asList(pz.answer), repeat: !!pz.repeat });
       else if (pz.type === 'tiles') Object.assign(base, { want: pz.answer ? LOCKS.asList(pz.answer) : Array.from({ length: pz.cols * pz.rows }, (_, i) => String(i)) });
       else if (pz.type === 'tune') Object.assign(base, { want: pz.at, far: pz.at - (pz.max - pz.min) * 0.45 < pz.min ? pz.max : pz.min, near: pz.at + (pz.max - pz.min) * 0.05 });
+      else if (pz.type === 'levels') Object.assign(base, { want: LOCKS.asList(pz.answer).map(String), max: pz.max || 5 });
+      else if (pz.type === 'hold') Object.assign(base, { want: String(pz.target), past: Math.min((pz.max || 10) - 0.2, pz.target + (pz.tol || 0.3) + 0.6) });
       else base.want = String(pz.answer || '');
       return base;
     })));
@@ -369,7 +468,7 @@ const KINDS = {
     }
     if (lit.n()) lit.report('the lantern shows nothing until you have it, and goes where you point it');
 
-    /* ---- things you can turn, flip, or play ---- */
+    /* ---- things you can turn, flip, play, or watch ---- */
     const tools = tally();
     for (const o of all.filter(o => o.tool)) {
       if (o.tool.needs) {
@@ -377,19 +476,9 @@ const KINDS = {
         tools.hit((await p.locator('#modal .tool-btn').count()) === 0, `${o.id} can be worked before you have what it takes`);
       }
       await face(p, o.room, o.id);
-      if (o.tool.type === 'turn') {
-        const at = () => p.evaluate(() => document.getElementById('turn-card').getAttribute('transform'));
-        const t0 = await at();
-        await p.click('#modal [data-turn="1"]');
-        const t1 = await at();
-        tools.hit(t1 !== t0, `${o.id}: the card does not turn`);
-        await reopen(p, o.id);
-        tools.hit((await at()) === t1, `${o.id}: forgets how the card was lying when you walk away`);
-        for (let i = 0; i < 3; i++) await p.click('#modal [data-turn="1"]');
-        tools.hit((await at()) === t0, `${o.id}: four quarter turns do not bring it back`);
-        await p.click('#modal [data-turn="-1"]'); await p.click('#modal [data-turn="1"]');
-        tools.hit((await at()) === t0, `${o.id}: turning back does not undo turning`);
-      } else if (o.tool.type === 'flip') {
+      if (o.tool.type === 'turn') await turns(p, o.id, o.tool.steps, tools, () => reopen(p, o.id));
+      else if (o.tool.type === 'pulse') await pulses(p, o.id, o.tool, tools);
+      else if (o.tool.type === 'flip') {
         const fig = () => p.evaluate(() => document.querySelector('#modal .obj-fig').innerHTML.length);
         const a = await fig();
         await p.click('#modal [data-flip]'); await p.waitForTimeout(80);
@@ -399,7 +488,13 @@ const KINDS = {
         await p.click('#modal [data-listen]');
       }
     }
-    if (tools.n()) tools.report('what can be turned turns, and stays turned');
+    // and whatever came out of a lock: the same thing in your hands
+    for (const o of all.filter(o => o.insideGear)) {
+      await face(p, o.room, o.id, 'open');
+      if (o.insideGear.type === 'turn') await turns(p, `${o.id} (what was inside)`, o.insideGear.steps, tools, () => reopen(p, o.id));
+      else if (o.insideGear.type === 'pulse') await pulses(p, `${o.id} (what was inside)`, o.insideGear, tools);
+    }
+    if (tools.n()) tools.report('what can be turned turns and stays turned; what pulses, pulses');
     await p.close();
 
     /* ---- and in the hand ---- */
@@ -424,7 +519,7 @@ const KINDS = {
           const vw = innerWidth;
           const wide = [...document.querySelectorAll('#modal .lock > *, #modal .obj-fig, #modal .obj-fig svg, #modal .lk-try')]
             .map(e => e.getBoundingClientRect()).filter(r => r.width > 0);
-          const fig = document.querySelector('#modal .obj-fig svg, #modal .lock-fig svg, #modal .lk-combo, #modal .lk-dir, #modal .lk-clock, #modal .lk-levers, #modal .lk-keys, #modal .lk-tiles, #modal .lk-tune');
+          const fig = document.querySelector('#modal .obj-fig svg, #modal .lock-fig svg, #modal .lk-combo, #modal .lk-dir, #modal .lk-clock, #modal .lk-levers, #modal .lk-keys, #modal .lk-tiles, #modal .lk-tune, #modal .lk-levels, #modal .lk-pad, #modal .lk-hold');
           const fr = fig ? fig.getBoundingClientRect() : null;
           return { spill: wide.some(r => r.left < -1 || r.right > vw + 1), side: document.documentElement.scrollWidth > vw + 1, w: fr ? fr.width : 0, vw };
         });

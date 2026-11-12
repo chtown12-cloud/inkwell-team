@@ -857,10 +857,14 @@ svg.glyph{display:block}
 .lk-scale{display:flex;flex-direction:column;gap:3px;margin-bottom:26px}
 .lk-scale i{height:30px;line-height:30px;font-style:normal;font-family:var(--font-num);font-variant-numeric:lining-nums;
   font-size:.82rem;color:var(--dim);text-align:right;min-width:14px}
+/* tanks: few and fat, where rods are many and thin */
+.lk-levels.tanks{gap:16px}
 .lk-levels.tanks .lk-track{gap:0;padding:3px;border-radius:8px 8px 12px 12px}
-.lk-levels.tanks .lk-cell{border-radius:0;height:25px;background:rgba(255,255,255,.04);box-shadow:inset 0 -1px 0 rgba(255,255,255,.12)}
+.lk-levels.tanks .lk-cell{border-radius:0;width:78px;height:34px;background:rgba(255,255,255,.04);box-shadow:inset 0 -1px 0 rgba(255,255,255,.12)}
 .lk-levels.tanks .lk-cell.on{background:var(--tint);opacity:.9}
-.lk-levels.tanks .lk-scale{gap:0}.lk-levels.tanks .lk-scale i{height:25px;line-height:25px}
+.lk-levels.tanks .lk-cell.base{width:86px;height:16px;border-radius:4px}
+.lk-levels.tanks .lk-col .lk-mark.band{width:60px;height:14px}
+.lk-levels.tanks .lk-scale{gap:0}.lk-levels.tanks .lk-scale i{height:34px;line-height:34px}
 
 /* a number pad in the lock's own metal */
 .lk-pad{padding:14px 18px 18px;border-radius:16px;background:linear-gradient(180deg,var(--lk-hi),var(--lk-metal) 30%,var(--lk-lo));
@@ -884,7 +888,7 @@ svg.glyph{display:block}
   font-style:normal;font-family:var(--font-num);font-variant-numeric:lining-nums;font-size:.82rem;color:var(--dim)}
 .hd-read{text-align:center;font-family:var(--font-num);font-variant-numeric:lining-nums;font-size:1.9rem;color:var(--sand);line-height:1}
 .hd-read small{font-size:.8rem;color:var(--dim);letter-spacing:2px;margin-left:6px}
-.hd-btn{touch-action:none;user-select:none;-webkit-user-select:none;min-width:240px;padding:15px 28px}
+.hd-btn{touch-action:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;min-width:240px;padding:15px 28px}
 .hd-btn.pressing{filter:brightness(1.25);transform:translateY(2px)}
 
 /* a lamp, or a puff of dust, that repeats */
@@ -960,6 +964,8 @@ body:not(.phone) .lk-tiles{width:min(100%,calc((100vh - 300px) * var(--whole,1.6
   .lk-levers{gap:5px;padding:14px 6px 10px}
   .lk-levels{gap:6px;padding:14px 10px 10px}
   .lk-cell{width:40px;height:26px}.lk-cell.base{width:46px}.lk-scale i{height:26px;line-height:26px}.lk-col .lk-mark.band{width:38px}
+  .lk-levels.tanks{gap:12px}.lk-levels.tanks .lk-cell{width:64px;height:30px}.lk-levels.tanks .lk-cell.base{width:70px}
+  .lk-levels.tanks .lk-scale i{height:30px;line-height:30px}.lk-levels.tanks .lk-col .lk-mark.band{width:50px}
   .lk-lever{min-width:36px}
   .lv-knob{width:30px;margin-left:-15px}
 }
@@ -1105,10 +1111,8 @@ body:not(.phone) .lk-tiles{width:min(100%,calc((100vh - 300px) * var(--whole,1.6
 #phone-scene::after{content:"";position:absolute;inset:0;
   background:linear-gradient(180deg,rgba(3,10,11,.82) 0,rgba(3,10,11,.6) 30%,rgba(3,10,11,.78) 100%)}
 body:not(.phone) #phone-scene{display:none}
-#phone-root{position:fixed;inset:0;overflow:auto;padding:64px 12px 28px;z-index:20}
-/* the room label wraps on a narrow screen, so the HUD is two lines tall there
-   and the list has to start below it */
-@media (max-width:640px){ #phone-root{padding-top:96px} }
+/* the phone's header is two rows (see body.phone #hud), and the list starts below it */
+#phone-root{position:fixed;inset:0;overflow:auto;padding:92px 12px 28px;z-index:20}
 .ph-objective{color:var(--dim);font-size:.9rem;line-height:1.5;margin:0 4px 14px;text-align:center}
 .ph-list{display:flex;flex-direction:column;gap:10px}
 .ph-card{display:flex;align-items:center;gap:11px;width:100%;text-align:left;padding:14px 13px;
@@ -1124,7 +1128,17 @@ body:not(.phone) #phone-scene{display:none}
 .ph-who{font-size:.78rem;color:var(--teal-hi);font-family:Inter,sans-serif}
 .ph-tag{font-size:.7rem;color:var(--dim);font-family:Inter,sans-serif;letter-spacing:1px}
 body.phone #stage-wrap,body.phone #vignette,body.phone #grain,body.phone #objective,body.phone #hub-screen{display:none}
-body.phone #hud{font-size:.85rem}
+/* A phone's header, in two rows: who you are, the clock, the buttons — and then
+   the room on a line of its own. Side by side with the clock the room's name
+   had a third of the width, wrapped to four lines, and ran down over the
+   objective underneath. */
+body.phone #hud{font-size:.85rem;flex-wrap:wrap;gap:5px 10px;padding:8px 12px 6px}
+body.phone #hud .room-label{display:contents}
+body.phone #team-badge{order:1;margin-right:0;max-width:32vw;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+body.phone #timer{order:2;font-size:1.5rem;min-width:0;padding:1px 14px}
+body.phone #hud .stats{order:3;gap:8px}
+body.phone #hud-room{order:4;flex:0 0 100%;text-align:center;font-family:var(--font-display);color:var(--sand);font-size:.95rem;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-shadow:0 2px 6px #000}
 body.phone #modal{max-height:86vh;
   background:linear-gradient(165deg, rgb(var(--card,30 50 55) / 1), rgba(0,0,0,.45));
   border-color:rgb(var(--rule,61 90 96) / .45)}
@@ -2209,14 +2223,27 @@ function objFigure(o){
    function of state, for a crate that is shut and then is not. */
 /** There, but dead until everything it needs is open. `needs` names one lock, or several. */
 function objLive(o){ return [].concat(o.needs||[]).every(id=>S.solved.has(id)); }
-function spriteState(o){ return (S.solved.has(o.id)?'1':'0')+(objLive(o)?'1':'0'); }
+/** What a drawing may depend on: its own lock, whether it is live, and which
+    of the locks it waits on (`needs`) or merely shows (`watches`) are open —
+    so a console can light one lamp per thing it is waiting for, and a pod can
+    let go of its clamps when the lever across the bay is thrown. */
+function objState(o){
+  const open={};
+  [].concat(o.needs||[], o.watches||[]).forEach(id=>{ open[id]=S.solved.has(id); });
+  return {solved:S.solved.has(o.id), live:objLive(o), open};
+}
+function spriteState(o){
+  const st=objState(o);
+  return (st.solved?'1':'0')+(st.live?'1':'0')+Object.keys(st.open).map(id=>st.open[id]?'1':'0').join('');
+}
 function spriteOf(o){
-  return typeof o.sprite==='function'
-    ? o.sprite({solved:S.solved.has(o.id), live:objLive(o)}) : (o.sprite||'');
+  return typeof o.sprite==='function' ? o.sprite(objState(o)) : (o.sprite||'');
 }
 function sceneSvg(room){
   const svg=ACTIVE.scenes[room.scene]();
-  const sp=room.objects.filter(o=>o.sprite)
+  // `behind` puts a prop's drawing under all the others: for the one whose
+  // open state repaints something large at the back of the room.
+  const sp=room.objects.filter(o=>o.sprite).sort((a,b)=>(a.behind?0:1)-(b.behind?0:1))
     .map(o=>`<g id="el-${o.id}" class="sprite" data-s="${spriteState(o)}">${spriteOf(o)}</g>`).join('');
   if(!sp) return svg;
   return svg.includes('<!--SPRITES-->') ? svg.replace('<!--SPRITES-->',sp) : svg.replace(/<\/svg>\s*$/, sp+'</svg>');
@@ -2404,7 +2431,8 @@ function openSolo(o){
   let h=`<h3>${o.icon} ${esc(o.name)}${p&&solved?' <span class="opened">\u2713</span>':''}</h3>`;
   const dead=!objLive(o);        // there, but nothing will happen until something else has
   if(dead){
-    h+=`<div class="obj-desc">${o.deadDesc||objDesc(o)}</div>`+(o.deadFigure?`<figure class="obj-fig">${o.deadFigure}</figure>`:'');
+    const fig=typeof o.deadFigure==='function'?o.deadFigure(objState(o)):o.deadFigure;
+    h+=`<div class="obj-desc">${o.deadDesc||objDesc(o)}</div>`+(fig?`<figure class="obj-fig">${fig}</figure>`:'');
   } else if(p&&solved){
     h+=`<div class="obj-desc won">${p.solvedText||'Open.'}</div>`+LOCKS.inside(o);
   } else {

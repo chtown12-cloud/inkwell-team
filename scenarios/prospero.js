@@ -178,17 +178,30 @@ SCENES.podbay=()=>`
 <defs>
  <linearGradient id="pPB" x1="0" y1="0" x2="0" y2="1">
   <stop offset="0" stop-color="#0a0e18"/><stop offset="1" stop-color="#141a26"/></linearGradient>
+ <linearGradient id="pFloor" x1="0" y1="0" x2="0" y2="1">
+  <stop offset="0" stop-color="#151e2b"/><stop offset="1" stop-color="#090d14"/></linearGradient>
  <linearGradient id="pPod2" x1="0" y1="0" x2="1" y2="1">
   <stop offset="0" stop-color="#3a4c60"/><stop offset="1" stop-color="#182230"/></linearGradient>
 </defs>
 <rect width="1600" height="900" fill="url(#pPB)"/>
+<!-- the back wall: plates, a crane rail, and the frame the doors hang in -->
+<path d="M230 51V640M1390 51V640" stroke="#090d15" stroke-width="3" opacity=".8"/>
+<path d="M0 352H430M1190 352H1600" stroke="#090d15" stroke-width="2" opacity=".6"/>
+<rect x="0" y="0" width="1600" height="26" fill="#06090e"/>
+<rect x="0" y="26" width="1600" height="20" fill="#18212e"/><rect x="0" y="46" width="1600" height="5" fill="#0a0e14"/><circle cx="40" cy="36" r="3" fill="#2a3848"/><circle cx="120" cy="36" r="3" fill="#2a3848"/><circle cx="200" cy="36" r="3" fill="#2a3848"/><circle cx="280" cy="36" r="3" fill="#2a3848"/><circle cx="360" cy="36" r="3" fill="#2a3848"/><circle cx="440" cy="36" r="3" fill="#2a3848"/><circle cx="520" cy="36" r="3" fill="#2a3848"/><circle cx="600" cy="36" r="3" fill="#2a3848"/><circle cx="680" cy="36" r="3" fill="#2a3848"/><circle cx="760" cy="36" r="3" fill="#2a3848"/><circle cx="840" cy="36" r="3" fill="#2a3848"/><circle cx="920" cy="36" r="3" fill="#2a3848"/><circle cx="1000" cy="36" r="3" fill="#2a3848"/><circle cx="1080" cy="36" r="3" fill="#2a3848"/><circle cx="1160" cy="36" r="3" fill="#2a3848"/><circle cx="1240" cy="36" r="3" fill="#2a3848"/><circle cx="1320" cy="36" r="3" fill="#2a3848"/><circle cx="1400" cy="36" r="3" fill="#2a3848"/><circle cx="1480" cy="36" r="3" fill="#2a3848"/><circle cx="1560" cy="36" r="3" fill="#2a3848"/>
+<rect x="0" y="58" width="40" height="11" fill="#4a4420" opacity=".8"/><rect x="80" y="58" width="40" height="11" fill="#4a4420" opacity=".8"/><rect x="160" y="58" width="40" height="11" fill="#4a4420" opacity=".8"/><rect x="240" y="58" width="40" height="11" fill="#4a4420" opacity=".8"/><rect x="320" y="58" width="40" height="11" fill="#4a4420" opacity=".8"/><rect x="400" y="58" width="40" height="11" fill="#4a4420" opacity=".8"/><rect x="1200" y="58" width="40" height="11" fill="#4a4420" opacity=".8"/><rect x="1280" y="58" width="40" height="11" fill="#4a4420" opacity=".8"/><rect x="1360" y="58" width="40" height="11" fill="#4a4420" opacity=".8"/><rect x="1440" y="58" width="40" height="11" fill="#4a4420" opacity=".8"/><rect x="1520" y="58" width="40" height="11" fill="#4a4420" opacity=".8"/>
+<rect x="430" y="51" width="34" height="589" fill="#111925" stroke="#243242" stroke-width="3"/>
+<rect x="1156" y="51" width="34" height="589" fill="#111925" stroke="#243242" stroke-width="3"/>
+<rect x="441" y="286" width="12" height="44" rx="4" fill="#7fd4ff" opacity=".16"/><rect x="1167" y="286" width="12" height="44" rx="4" fill="#7fd4ff" opacity=".16"/>
 <!-- bay doors with caution chevrons -->
 <g>
   <rect x="480" y="90" width="660" height="480" rx="20" fill="#0c121a" stroke="#31465c" stroke-width="12"/>
+  <path d="M500 190H790M830 190H1120" stroke="#18212d" stroke-width="4"/><path d="M500 300H790M830 300H1120" stroke="#18212d" stroke-width="4"/><path d="M500 410H790M830 410H1120" stroke="#18212d" stroke-width="4"/>
   <line x1="810" y1="90" x2="810" y2="570" stroke="#26313e" stroke-width="10"/>
-  ${[0,1,2,3,4].map(i=>`<path d="M${520+i*120} 560 l50 -40 20 0 -50 40 z" fill="#4a4420" opacity=".8"/>`).join('')}
+  <path d="M520 560 l50 -40 20 0 -50 40 z" fill="#4a4420" opacity=".8"/><path d="M640 560 l50 -40 20 0 -50 40 z" fill="#4a4420" opacity=".8"/><path d="M760 560 l50 -40 20 0 -50 40 z" fill="#4a4420" opacity=".8"/><path d="M880 560 l50 -40 20 0 -50 40 z" fill="#4a4420" opacity=".8"/><path d="M1000 560 l50 -40 20 0 -50 40 z" fill="#4a4420" opacity=".8"/>
   <circle class="slowblink" cx="810" cy="76" r="9" fill="#c94a3d"/>
 </g>
+<rect x="470" y="576" width="680" height="64" fill="#0f1620"/><path d="M470 578H1150" stroke="#243242" stroke-width="2" opacity=".7"/>
 <!-- small viewport with the beacon star -->
 <g id="art-scratches">
   <rect x="120" y="140" width="200" height="150" rx="14" fill="#02040a" stroke="#26313e" stroke-width="9"/>
@@ -196,12 +209,26 @@ SCENES.podbay=()=>`
   <circle class="slowblink" cx="240" cy="200" r="4.5" fill="#8cd9c0"/>
   <path d="M150 300 l40 -18 M170 304 l36 -16 M192 308 l30 -12" stroke="#3a4856" stroke-width="3"/>
 </g>
-<rect x="540" y="740" width="560" height="14" rx="6" fill="#1a2530"/>
-${[0,1,2,3,4,5].map(i=>`<rect x="${560+i*96}" y="754" width="12" height="30" fill="#141c26"/>`).join('')}
+<!-- the deck, and the track the pod leaves by -->
+<rect x="0" y="640" width="1600" height="260" fill="url(#pFloor)"/>
+<path d="M0 640H1600" stroke="#06080c" stroke-width="6"/><path d="M0 646H1600" stroke="#243242" stroke-width="2" opacity=".6"/>
+<path d="M411 640L-200 900M545 640L140 900M680 640L480 900M940 640L1140 900M1075 640L1480 900M1209 640L1800 900" stroke="#090d14" stroke-width="3" opacity=".85" fill="none"/>
+<path d="M0 716H1600M0 806H1600" stroke="#090d14" stroke-width="2" opacity=".5"/>
+<ellipse cx="810" cy="800" rx="300" ry="38" fill="#7fd4ff" opacity=".05"/>
+<path d="M730 796h14l-28 104h-22zM876 796h14l36 104h-22z" fill="#2a3848"/>
+<rect x="722" y="838" width="176" height="8" fill="#131b27"/><rect x="708" y="876" width="204" height="10" fill="#131b27"/>
+<!-- the fuelling bay on the left wall, and its three lines out to the pod -->
+<rect x="48" y="404" width="376" height="202" rx="10" fill="#0f1620" stroke="#243242" stroke-width="4"/>
+<path d="M266 566C266 700 420 716 648 700" fill="none" stroke="#0c1119" stroke-width="13" stroke-linecap="round"/><path d="M266 566C266 700 420 716 648 700" fill="none" stroke="#1d2835" stroke-width="8" stroke-linecap="round"/><path d="M266 568V592" stroke="#cfd6dc" stroke-width="9" opacity=".75"/><path d="M322 566C322 678 444 702 652 688" fill="none" stroke="#0c1119" stroke-width="13" stroke-linecap="round"/><path d="M322 566C322 678 444 702 652 688" fill="none" stroke="#1d2835" stroke-width="8" stroke-linecap="round"/><path d="M322 568V592" stroke="#c9772e" stroke-width="9" opacity=".75"/><path d="M378 566C378 656 468 688 656 676" fill="none" stroke="#0c1119" stroke-width="13" stroke-linecap="round"/><path d="M378 566C378 656 468 688 656 676" fill="none" stroke="#1d2835" stroke-width="8" stroke-linecap="round"/><path d="M378 568V592" stroke="#3f78c9" stroke-width="9" opacity=".75"/>
+<!-- the console wall on the right -->
+<rect x="1196" y="160" width="372" height="372" rx="10" fill="#0f1620" stroke="#243242" stroke-width="4"/>
+<path d="M1306 532V640" stroke="#0c1119" stroke-width="14"/><path d="M1306 532V640" stroke="#1d2835" stroke-width="8"/>
+<rect x="1498" y="96" width="44" height="48" rx="8" fill="#141c28" stroke="#243242" stroke-width="3"/>
 <!-- rotating hazard glow over the bay doors -->
 <ellipse class="rippleA" cx="810" cy="86" rx="60" ry="18" fill="#c94a3d" opacity=".4"/>
-<circle class="slowblink" cx="60" cy="60" r="8" fill="#c94a3d"/>
-<text x="84" y="66" font-family="Special Elite" font-size="15" fill="#7f5a5a">BAY PRESSURE: FALLING</text>
+<circle class="slowblink" cx="60" cy="98" r="8" fill="#c94a3d"/>
+<text x="84" y="104" font-family="Special Elite" font-size="15" fill="#7f5a5a">BAY PRESSURE: FALLING</text>
+<rect x="0" y="846" width="1600" height="54" fill="#000" opacity=".22"/>
 <!--SPRITES-->
 <g class="atmo">
 <!-- something in here is still running -->
@@ -1124,108 +1151,131 @@ const ROOM3 = {
 /* ============================================================
    ROOM 4 — THE ESCAPE POD BAY
    The pod sits in four clamps, each tagged with when it lets go. The fuelling
-   table has a row for every kind of pod, and the kind is told by its engines.
-   The bay doors are on a clock: the station is on its way round to the gate,
-   one mark an hour, and the bay's own clock says what time it is now. Then
-   there is one handle left, and a mark on a gauge to let go of it at.
+   table has a row for every kind of pod, and the kind is told by its engines
+   — and its columns are not in the order the tanks stand in. The bay doors
+   are on a clock: the station is on its way round to where the pod's path
+   crosses its own, one mark an hour, and the bay's own clock says what time
+   it is now. Then there is one handle left, and a mark on a gauge to let go
+   of it at.
    ============================================================ */
 
-/* ---- the pod, from behind: three engines, four clamps ---- */
+/* ---- the pod in her launch ring, from behind: three engines, four clamps ---- */
 const CLAMP_STEPS = { N: [1, 4], E: [2], S: [3, 6], W: [5] };
 const RELEASE = [1, 2, 3, 4, 5, 6].map(n => Object.keys(CLAMP_STEPS).find(d => CLAMP_STEPS[d].includes(n))).join('');
 const POD_ENGINES = 3;
 const bell = (x, y, r) => `<circle cx="${x}" cy="${y}" r="${r}" fill="#1a222b" stroke="${P.dark}" stroke-width="5"/><circle cx="${x}" cy="${y}" r="${(r * .66).toFixed(1)}" fill="${P.deep}"/>`
   + `<path d="M${(x - r * .62).toFixed(1)} ${(y - r * .5).toFixed(1)}a${(r * .8).toFixed(1)} ${(r * .8).toFixed(1)} 0 0 1 ${(r * .8).toFixed(1)} ${(-r * .32).toFixed(1)}" fill="none" stroke="#6f8494" stroke-width="3" opacity=".6" stroke-linecap="round"/>`;
-const podArt = { w: 560, h: 560, body: (() => {
-  const tag = (x, y, nums) => `<rect x="${x}" y="${y}" width="${nums.length > 1 ? 86 : 50}" height="42" rx="5" fill="${P.plate}" stroke="#56626e" stroke-width="2.5"/>`
-    + W(x + (nums.length > 1 ? 43 : 25), y + 32, nums.join(' · '), { size: 30, face: 'num', weight: 700, fill: P.plateInk });
-  const arm = `fill="#4a4420" stroke="${P.dark}" stroke-width="4"`, jaw = `fill="#7d6f2c" stroke="${P.dark}" stroke-width="4"`;
-  let b = `<rect x="246" y="4" width="68" height="96" ${arm}/><rect x="222" y="84" width="116" height="24" rx="5" ${jaw}/>`
-    + `<rect x="246" y="460" width="68" height="96" ${arm}/><rect x="222" y="452" width="116" height="24" rx="5" ${jaw}/>`
-    + `<rect x="4" y="246" width="96" height="68" ${arm}/><rect x="84" y="222" width="24" height="116" rx="5" ${jaw}/>`
-    + `<rect x="460" y="246" width="96" height="68" ${arm}/><rect x="452" y="222" width="24" height="116" rx="5" ${jaw}/>`;
-  b += `<circle cx="280" cy="280" r="186" fill="#3a4c60" stroke="#182230" stroke-width="7"/><circle cx="280" cy="280" r="160" fill="none" stroke="#182230" stroke-width="3" opacity=".7"/>`;
-  b += `<path d="M146 152a186 186 0 0 1 134 -58" fill="none" stroke="#6f8494" stroke-width="7" opacity=".45" stroke-linecap="round"/>`;
-  for (let i = 0; i < 12; i++) { const a = i * 30 * Math.PI / 180; b += `<circle cx="${(280 + Math.sin(a) * 173).toFixed(1)}" cy="${(280 - Math.cos(a) * 173).toFixed(1)}" r="4" fill="#182230"/>`; }
-  b += bell(280, 204, 50) + bell(214, 322, 50) + bell(346, 322, 50);
-  b += tag(322, 12, CLAMP_STEPS.N) + tag(468, 196, CLAMP_STEPS.E) + tag(322, 506, CLAMP_STEPS.S) + tag(12, 196, CLAMP_STEPS.W);
+/** The pod as the bay sees her: `free` once the clamps have let go, `fed` once she is fuelled. */
+function podBody(st = {}) {
+  const pull = st.free ? 26 : 0;
+  // the launch ring and its feet
+  let b = `<path d="M120 480L78 600h52l26-92zM480 480l42 120h-52l-26-92z" fill="#131b27" stroke="${P.dark}" stroke-width="4"/>`;
+  b += `<circle cx="300" cy="300" r="262" fill="none" stroke="#1b2532" stroke-width="26"/><circle cx="300" cy="300" r="274" fill="none" stroke="${P.edge}" stroke-width="2.5" opacity=".6"/><circle cx="300" cy="300" r="250" fill="none" stroke="${P.dark}" stroke-width="2.5"/>`;
+  for (let i = 0; i < 12; i++) { const a = (i * 30 + 15) * Math.PI / 180; b += `<circle cx="${(300 + Math.sin(a) * 262).toFixed(1)}" cy="${(300 - Math.cos(a) * 262).toFixed(1)}" r="4.5" fill="${P.dark}"/>`; }
+  // her hull, tail on: four stub fins, three engines, three tell-tales that come up green when she is fed
+  [45, 135, 225, 315].forEach(a => b += `<path d="M284 128L300 62L316 128Z" fill="#2c3b4c" stroke="#182230" stroke-width="4" stroke-linejoin="round" transform="rotate(${a} 300 300)"/>`);
+  b += `<circle cx="300" cy="300" r="180" fill="#3a4c60" stroke="#182230" stroke-width="7"/><circle cx="300" cy="300" r="154" fill="none" stroke="#182230" stroke-width="3" opacity=".7"/>`;
+  b += `<path d="M172 176a180 180 0 0 1 128 -54" fill="none" stroke="#6f8494" stroke-width="7" opacity=".45" stroke-linecap="round"/>`;
+  for (let i = 0; i < 12; i++) { const a = (i * 30 + 15) * Math.PI / 180; b += `<circle cx="${(300 + Math.sin(a) * 167).toFixed(1)}" cy="${(300 - Math.cos(a) * 167).toFixed(1)}" r="4" fill="#182230"/>`; }
+  b += bell(300, 226, 50) + bell(238, 336, 50) + bell(362, 336, 50);
+  [272, 300, 328].forEach((x, i) => b += `<circle cx="${x}" cy="${i === 1 ? 438 : 432}" r="7" fill="${st.fed ? '#5fd08a' : '#10161d'}" stroke="#182230" stroke-width="2.5"/>`);
+  // four clamps: an arm in from the ring, a jaw over her rim. Thrown, the jaw stands off her.
+  const clamp = `<rect x="266" y="44" width="68" height="${78 - pull}" fill="#4a4420" stroke="${P.dark}" stroke-width="4"/>`
+    + `<rect x="242" y="${112 - pull}" width="116" height="26" rx="6" fill="${st.free ? '#5d6a3a' : '#8a7a30'}" stroke="${P.dark}" stroke-width="4"/>`
+    + `<path d="M256 ${125 - pull}h88" stroke="${P.dark}" stroke-width="2.5" opacity=".5"/>`;
+  [0, 90, 180, 270].forEach(a => b += `<g transform="rotate(${a} 300 300)">${clamp}</g>`);
+  // the tag riveted to each clamp
+  const tag = (cx, cy, nums) => { const w = nums.length > 1 ? 94 : 52;
+    return `<rect x="${cx - w / 2}" y="${cy - 23}" width="${w}" height="46" rx="5" fill="${P.plate}" stroke="#56626e" stroke-width="2.5"/>`
+      + `<circle cx="${cx - w / 2 + 7}" cy="${cy - 16}" r="2" fill="#56626e"/><circle cx="${cx + w / 2 - 7}" cy="${cy - 16}" r="2" fill="#56626e"/>`
+      + W(cx, cy + 12, nums.join(' · '), { size: 32, face: 'num', weight: 700, fill: P.plateInk }); };
+  b += tag(300, 78, CLAMP_STEPS.N) + tag(522, 300, CLAMP_STEPS.E) + tag(300, 522, CLAMP_STEPS.S) + tag(78, 300, CLAMP_STEPS.W);
   return b;
-})() };
+}
 
-/* ---- the fuelling table: a row for every kind of pod ---- */
+/* ---- the fuelling table: a row for every kind of pod, a column for every line ---- */
 const FUEL = { 2: [2, 3, 1], 3: [4, 2, 5], 4: [5, 4, 3] };
-const TANK_COLOURS = ['orange', 'blue', 'white'];
-const TANK_SET = FUEL[POD_ENGINES];
+const TABLE_COLUMNS = ['orange', 'blue', 'white'];          // how the table is ruled…
+const TANK_ORDER = ['white', 'orange', 'blue'];             // …and how the tanks actually stand
+const TANK_SET = TANK_ORDER.map(c => FUEL[POD_ENGINES][TABLE_COLUMNS.indexOf(c)]);
 const miniTank = (x, y, n, col) => {
   let t = `<rect x="${x - 3}" y="${y - 3}" width="46" height="96" rx="7" fill="#0a0e14" stroke="#56626e" stroke-width="2"/>`;
   for (let k = 0; k < 5; k++) t += `<rect x="${x}" y="${y + (4 - k) * 18}" width="40" height="16" rx="2" fill="${k < n ? C[col] : '#1c2836'}"/>`;
   return t;
 };
+const podIcon = (cx, cy, r, n) => {
+  const d = r * .36, at = { 2: [[-d, 0], [d, 0]], 3: [[0, -d], [-d, d * .78], [d, d * .78]], 4: [[-d, -d], [d, -d], [-d, d], [d, d]] }[n];
+  return `<circle cx="${cx}" cy="${cy}" r="${r}" fill="#3a4c60" stroke="#182230" stroke-width="${(r * .08).toFixed(1)}"/>`
+    + at.map(([dx, dy]) => `<circle cx="${(cx + dx).toFixed(1)}" cy="${(cy + dy).toFixed(1)}" r="${(r * .26).toFixed(1)}" fill="#05080d" stroke="#182230" stroke-width="${(r * .06).toFixed(1)}"/>`).join('');
+};
 const fuelArt = { w: 520, h: 520, body: (() => {
   let b = `<rect x="6" y="8" width="508" height="508" rx="10" fill="#000" opacity=".3"/><rect x="2" y="2" width="508" height="508" rx="10" fill="${P.plate}" stroke="#7d8892" stroke-width="3"/>`;
   b += `<rect x="2" y="2" width="508" height="58" rx="10" fill="#27313a"/><rect x="2" y="40" width="508" height="20" fill="#27313a"/>` + GL('droplet', 62, 12, 36, P.plate);
-  TANK_COLOURS.forEach((c, i) => b += `<rect x="${196 + i * 104}" y="16" width="52" height="30" rx="7" fill="${C[c]}" stroke="${P.dark}" stroke-width="3"/>`);
+  TABLE_COLUMNS.forEach((c, i) => b += `<rect x="${196 + i * 104}" y="16" width="52" height="30" rx="7" fill="${C[c]}" stroke="${P.dark}" stroke-width="3"/>`);
   Object.keys(FUEL).forEach((k, r) => {
-    const y = 78 + r * 142, n = +k;
-    b += `<rect x="18" y="${y}" width="476" height="128" rx="8" fill="#d9dfe5" stroke="#9fb0bd" stroke-width="2"/>`;
-    // the pod, by its engines
-    b += `<circle cx="80" cy="${y + 64}" r="50" fill="#3a4c60" stroke="#182230" stroke-width="4"/>`;
-    const at = { 2: [[-18, 0], [18, 0]], 3: [[0, -18], [-18, 14], [18, 14]], 4: [[-18, -18], [18, -18], [-18, 18], [18, 18]] }[n];
-    at.forEach(([dx, dy]) => b += `<circle cx="${80 + dx}" cy="${y + 64 + dy}" r="13" fill="#05080d" stroke="#182230" stroke-width="3"/>`);
-    FUEL[k].forEach((lvl, i) => b += miniTank(202 + i * 104, y + 18, lvl, TANK_COLOURS[i]));
+    const y = 78 + r * 142;
+    b += `<rect x="18" y="${y}" width="476" height="128" rx="8" fill="#d9dfe5" stroke="#9fb0bd" stroke-width="2"/>` + podIcon(80, y + 64, 50, +k);
+    FUEL[k].forEach((lvl, i) => b += miniTank(202 + i * 104, y + 18, lvl, TABLE_COLUMNS[i]));
   });
   return b;
 })() };
 function tanksBody(open) {
   let b = `<rect x="2" y="2" width="186" height="146" rx="10" fill="#141e2a" stroke="${P.edge}" stroke-width="5"/>`;
-  TANK_COLOURS.forEach((c, i) => {
+  TANK_ORDER.forEach((c, i) => {
     const x = 20 + i * 56, n = open ? TANK_SET[i] : 0;
-    b += `<rect x="${x}" y="16" width="14" height="10" rx="3" fill="${C[c]}" transform="translate(13 0)"/><rect x="${x}" y="30" width="40" height="100" rx="8" fill="#06080a" stroke="#2a3a4a" stroke-width="2.5"/>`;
+    b += `<rect x="${x + 11}" y="14" width="18" height="11" rx="3" fill="${C[c]}"/><rect x="${x}" y="30" width="40" height="100" rx="8" fill="#06080a" stroke="#2a3a4a" stroke-width="2.5"/>`;
     if (n) b += `<rect x="${x + 4}" y="${126 - n * 18}" width="32" height="${n * 18}" rx="4" fill="${C[c]}" opacity=".9"/>`;
   });
   return b;
 }
 
 /* ---- the orbital screen, and the bay's own clock ---- */
-const NOW = { h: 11, m: 35 }, STATION_AT = 10, GATE_AT = 3;                   // marks on the ring, numbered like a clock face
-const HOURS_OUT = (GATE_AT - STATION_AT + 12) % 12;
+const NOW = { h: 11, m: 35 }, STATION_AT = 10, CROSSING_AT = 3;             // marks on the ring, numbered like a clock face
+const HOURS_OUT = (CROSSING_AT - STATION_AT + 12) % 12;
 const LAUNCH_AT = `${((NOW.h + HOURS_OUT - 1) % 12) + 1}:${String(NOW.m).padStart(2, '0')}`;
+const stationIcon = (x, y, s, rot) => `<g transform="rotate(${rot} ${x.toFixed(1)} ${y.toFixed(1)})"><rect x="${(x - 9 * s).toFixed(1)}" y="${(y - 9 * s).toFixed(1)}" width="${18 * s}" height="${18 * s}" rx="${3 * s}" fill="#fdfbe8" stroke="${P.dark}" stroke-width="2"/>`
+  + [-1, 1].map(k => `<rect x="${(x + (k < 0 ? -34 : 12) * s).toFixed(1)}" y="${(y - 6 * s).toFixed(1)}" width="${22 * s}" height="${12 * s}" fill="${P.cyan}" stroke="${P.dark}" stroke-width="2"/>`).join('') + `</g>`;
 const orbitArt = { w: 600, h: 480, body: (() => {
-  const cx = 300, cy = 214, R = 158, at = (i, r = R) => [cx + Math.sin(i * 30 * Math.PI / 180) * r, cy - Math.cos(i * 30 * Math.PI / 180) * r];
+  const cx = 290, cy = 214, R = 158, at = (i, r = R) => [cx + Math.sin(i * 30 * Math.PI / 180) * r, cy - Math.cos(i * 30 * Math.PI / 180) * r];
   let b = `<rect x="4" y="4" width="592" height="472" rx="16" fill="#0a141c" stroke="#2a4258" stroke-width="7"/>`;
   for (let y = 20; y < 470; y += 8) b += `<path d="M10 ${y}H590" stroke="${P.crt}" stroke-width="1" opacity=".04"/>`;
-  b += `<circle cx="${cx}" cy="${cy}" r="62" fill="#1d3b4a" stroke="${P.crt}" stroke-width="2.5"/><path d="M${cx - 56} ${cy - 22}q56 22 112 0M${cx - 60} ${cy + 14}q60 22 120 0" fill="none" stroke="${P.crt}" stroke-width="1.5" opacity=".5"/>`;
+  // the planet nobody reached
+  b += `<circle cx="${cx}" cy="${cy}" r="56" fill="#1d3b4a" stroke="${P.crt}" stroke-width="2.5"/><path d="M${cx - 50} ${cy - 20}q50 20 100 0M${cx - 54} ${cy + 14}q54 20 108 0" fill="none" stroke="${P.crt}" stroke-width="1.5" opacity=".5"/>`;
+  // the ring the station keeps to, a mark for every hour of it
   b += `<circle cx="${cx}" cy="${cy}" r="${R}" fill="none" stroke="${P.crt}" stroke-width="2.5" opacity=".65"/>`;
   for (let i = 0; i < 12; i++) { const [x1, y1] = at(i, R - 11), [x2, y2] = at(i, R + 11); b += `<path d="M${x1.toFixed(1)} ${y1.toFixed(1)}L${x2.toFixed(1)} ${y2.toFixed(1)}" stroke="${P.crt}" stroke-width="4" stroke-linecap="round"/>`; }
-  // the way out: from this ship, straight up through the gate
-  const [gx, gy] = at(GATE_AT);
-  b += `<path d="M${cx + 62} ${cy}H${gx + 46}" stroke="${P.amber}" stroke-width="3" stroke-dasharray="9 7"/><path d="M${gx + 40} ${gy - 9}l14 9l-14 9z" fill="${P.amber}"/>`;
-  b += `<path d="M${gx - 22} ${gy - 30}h-12v60h12M${gx + 22} ${gy - 30}h12v60h-12" fill="none" stroke="#5fd08a" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>`;
+  // this pod, and the one line she can fly: out through the ring, there
+  const [gx, gy] = at(CROSSING_AT);
+  b += podIcon(cx + 86, cy, 17, POD_ENGINES);
+  b += `<path d="M${cx + 108} ${cy}H${gx + 52}" stroke="${P.amber}" stroke-width="3.5" stroke-dasharray="9 7"/><path d="M${gx + 48} ${gy - 10}l16 10l-16 10z" fill="${P.amber}"/>`;
+  b += `<circle cx="${gx}" cy="${gy}" r="20" fill="none" stroke="${P.amber}" stroke-width="3.5"/><path d="M${gx} ${gy - 30}v-12M${gx} ${gy + 30}v12" stroke="${P.amber}" stroke-width="3.5" stroke-linecap="round"/>`;
   // the station, and which way it is going
   const [sx, sy] = at(STATION_AT);
-  b += `<g transform="rotate(${STATION_AT * 30} ${sx.toFixed(1)} ${sy.toFixed(1)})"><rect x="${(sx - 9).toFixed(1)}" y="${(sy - 9).toFixed(1)}" width="18" height="18" rx="3" fill="#fdfbe8" stroke="${P.dark}" stroke-width="2"/>`
-    + `<rect x="${(sx - 34).toFixed(1)}" y="${(sy - 6).toFixed(1)}" width="22" height="12" fill="${P.cyan}" stroke="${P.dark}" stroke-width="2"/><rect x="${(sx + 12).toFixed(1)}" y="${(sy - 6).toFixed(1)}" width="22" height="12" fill="${P.cyan}" stroke="${P.dark}" stroke-width="2"/></g>`;
-  const [a1x, a1y] = at(STATION_AT + .45, R + 30), [a2x, a2y] = at(STATION_AT + 1.5, R + 30);
-  b += `<path d="M${a1x.toFixed(1)} ${a1y.toFixed(1)}A${R + 30} ${R + 30} 0 0 1 ${a2x.toFixed(1)} ${a2y.toFixed(1)}" fill="none" stroke="#fdfbe8" stroke-width="4" stroke-linecap="round"/>`
-    + `<path d="M${a2x.toFixed(1)} ${a2y.toFixed(1)}l-15 -3l9 13z" fill="#fdfbe8" transform="rotate(${(STATION_AT + 1.5) * 30 - 8} ${a2x.toFixed(1)} ${a2y.toFixed(1)})"/>`;
-  // the key along the bottom: one mark to the next is one hour
-  b += `<path d="M150 440V420M210 440V420" stroke="${P.crt}" stroke-width="4" stroke-linecap="round"/><path d="M156 430H200" stroke="#fdfbe8" stroke-width="3"/><path d="M196 423l10 7l-10 7z" fill="#fdfbe8"/>`;
-  b += W(262, 440, '=', { size: 30, face: 'num', fill: P.crt }) + ART.clockFace(322, 430, 24, 1, 0, { face: '#0a141c', ink: '#fdfbe8', rim: P.crt });
-  b += `<path d="M322 430V409A21 21 0 0 1 332.5 411.800Z" fill="${P.amber}" opacity=".85"/>` + W(392, 440, '1 h', { size: 26, face: 'num', weight: 700, fill: P.crt });
+  b += stationIcon(sx, sy, 1, STATION_AT * 30);
+  const [a1x, a1y] = at(STATION_AT + .5, R + 34), [a2x, a2y] = at(STATION_AT + 1.6, R + 34);
+  b += `<path d="M${a1x.toFixed(1)} ${a1y.toFixed(1)}A${R + 34} ${R + 34} 0 0 1 ${a2x.toFixed(1)} ${a2y.toFixed(1)}" fill="none" stroke="#fdfbe8" stroke-width="4" stroke-linecap="round"/>`
+    + `<path d="M0 -11L18 0L0 11z" fill="#fdfbe8" transform="translate(${a2x.toFixed(1)} ${a2y.toFixed(1)}) rotate(${(STATION_AT + 1.6) * 30})"/>`;
+  // the key down the side: mark to mark is one hour
+  const kx = 520, k1 = 300, k2 = 372;
+  b += `<path d="M${kx - 26} 262H${kx + 26}" stroke="${P.crt}" stroke-width="1.5" opacity=".5"/>`;
+  b += `<path d="M${kx - 22} ${k1}v22M${kx + 22} ${k1}v22" stroke="${P.crt}" stroke-width="4" stroke-linecap="round"/><path d="M${kx - 14} ${k1 + 11}H${kx + 8}" stroke="#fdfbe8" stroke-width="3"/><path d="M${kx + 6} ${k1 + 4}l10 7l-10 7z" fill="#fdfbe8"/>`;
+  b += W(kx, k1 + 52, '=', { size: 26, face: 'num', fill: P.crt });
+  b += ART.clockFace(kx, k2 + 26, 26, 1, 0, { face: '#0a141c', ink: '#fdfbe8', rim: P.crt }) + `<path d="M${kx} ${k2 + 26}V${k2 + 3}A23 23 0 0 1 ${kx + 11.5} ${(k2 + 26 - 19.9).toFixed(1)}Z" fill="${P.amber}" opacity=".9"/>`;
   return b;
 })() };
 function orbitBody() {
-  let b = `<rect x="2" y="2" width="226" height="176" rx="10" fill="#0a141c" stroke="#2a4258" stroke-width="5"/><circle cx="115" cy="84" r="23" fill="#1d3b4a" stroke="${P.crt}" stroke-width="1.5"/><circle cx="115" cy="84" r="58" fill="none" stroke="${P.crt}" stroke-width="1.5" opacity=".7"/>`;
-  for (let i = 0; i < 12; i++) { const a = i * 30 * Math.PI / 180; b += `<circle cx="${(115 + Math.sin(a) * 58).toFixed(1)}" cy="${(84 - Math.cos(a) * 58).toFixed(1)}" r="2.4" fill="${P.crt}"/>`; }
-  const sa = STATION_AT * 30 * Math.PI / 180, ga = GATE_AT * 30 * Math.PI / 180;
-  b += `<rect class="slowblink" x="${(115 + Math.sin(sa) * 58 - 5).toFixed(1)}" y="${(84 - Math.cos(sa) * 58 - 5).toFixed(1)}" width="10" height="10" rx="2" fill="#fdfbe8"/><circle cx="${(115 + Math.sin(ga) * 58).toFixed(1)}" cy="${(84 - Math.cos(ga) * 58).toFixed(1)}" r="8" fill="none" stroke="#5fd08a" stroke-width="2.5"/>`;
-  return b + `<rect x="60" y="158" width="110" height="8" rx="3" fill="${P.crt}" opacity=".3"/>`;
+  let b = `<rect x="2" y="2" width="226" height="176" rx="10" fill="#0a141c" stroke="#2a4258" stroke-width="5"/><circle cx="108" cy="88" r="21" fill="#1d3b4a" stroke="${P.crt}" stroke-width="1.5"/><circle cx="108" cy="88" r="60" fill="none" stroke="${P.crt}" stroke-width="1.5" opacity=".7"/>`;
+  for (let i = 0; i < 12; i++) { const a = i * 30 * Math.PI / 180; b += `<circle cx="${(108 + Math.sin(a) * 60).toFixed(1)}" cy="${(88 - Math.cos(a) * 60).toFixed(1)}" r="2.6" fill="${P.crt}"/>`; }
+  const sa = STATION_AT * 30 * Math.PI / 180, ga = CROSSING_AT * 30 * Math.PI / 180;
+  b += `<rect class="slowblink" x="${(108 + Math.sin(sa) * 60 - 5).toFixed(1)}" y="${(88 - Math.cos(sa) * 60 - 5).toFixed(1)}" width="10" height="10" rx="2" fill="#fdfbe8"/>`;
+  b += `<circle cx="${(108 + Math.sin(ga) * 60).toFixed(1)}" cy="${(88 - Math.cos(ga) * 60).toFixed(1)}" r="8" fill="none" stroke="${P.amber}" stroke-width="2.5"/><path d="M134 88H160" stroke="${P.amber}" stroke-width="2" stroke-dasharray="4 3"/>`;
+  return b + `<rect x="196" y="60" width="18" height="56" rx="3" fill="${P.crt}" opacity=".18"/>`;
 }
 const chronoArt = { w: 360, h: 360, body: `<circle cx="180" cy="186" r="170" fill="#000" opacity=".35"/><circle cx="180" cy="180" r="170" fill="#27313a" stroke="${P.dark}" stroke-width="6"/>`
   + ART.clockFace(180, 180, 146, NOW.h, NOW.m, { numerals: true, face: '#e7eef2', ink: '#141c26', rim: '#56626e' }) };
 
 /* ---- the door timer, the doors, and what the timer gives up ---- */
-const BURN = 6.4, BURN_TOL = 0.35;
+const BURN = 6.4, BURN_TOL = 0.4;
 const burnFig = ART.svg(600, 230, (() => {
   let b = ART.paper(10, 10, 580, 210, { fill: '#e7eef2' }) + `<rect x="10" y="10" width="580" height="40" fill="#a13a2e"/>` + GL('flame', 284, 12, 34, '#f6ead0');
   const X = v => 60 + v * 48;
@@ -1236,43 +1286,55 @@ const burnFig = ART.svg(600, 230, (() => {
   return b;
 })());
 function doorsBody(st) {
-  let b = `<rect x="2" y="2" width="136" height="116" rx="10" fill="#141e2a" stroke="${P.edge}" stroke-width="5"/>` + ART.clockFace(70, 54, 38, st.solved ? +LAUNCH_AT.split(':')[0] : 12, st.solved ? +LAUNCH_AT.split(':')[1] : 0, { face: '#e7eef2', ink: '#141c26', rim: '#56626e' });
-  b += `<rect x="30" y="100" width="80" height="10" rx="4" fill="${st.solved ? '#5fd08a' : P.warn}"${st.solved ? '' : ' class="slowblink"'}/>`;
-  return b;
+  const [h, m] = st.solved ? LAUNCH_AT.split(':').map(Number) : [12, 0];
+  let b = `<rect x="2" y="2" width="136" height="116" rx="10" fill="#141e2a" stroke="${P.edge}" stroke-width="5"/>` + ART.clockFace(70, 54, 38, h, m, { face: '#e7eef2', ink: '#141c26', rim: '#56626e' });
+  return b + `<rect x="30" y="100" width="80" height="10" rx="4" fill="${st.solved ? '#5fd08a' : P.warn}"${st.solved ? '' : ' class="slowblink"'}/>`;
 }
-/** The bay doors themselves, once the timer has run: drawn straight onto the stage, over the backdrop's shut ones. */
+/** The bay doors themselves, once the timer has run: drawn straight onto the stage over the backdrop's shut ones,
+    and under everything else in the room (the timer is the one prop that stands `behind`). */
 const DOORS_OPEN = (() => {
-  let g = `<rect x="492" y="102" width="636" height="402" fill="#02040a"/>`;
-  for (let i = 0; i < 46; i++) g += `<circle class="tw" cx="${500 + (i * 167) % 620}" cy="${110 + (i * 61) % 386}" r="${(0.8 + (i % 3) * .7).toFixed(1)}" fill="#dfe8ff" style="animation-delay:${((i * .53) % 4).toFixed(2)}s"/>`;
-  g += `<circle class="slowblink" cx="830" cy="210" r="6" fill="#8cd9c0"/><circle cx="830" cy="210" r="18" fill="#8cd9c0" opacity=".14"/>`;
-  g += `<rect x="492" y="102" width="56" height="402" fill="#0c121a" stroke="#31465c" stroke-width="4"/><rect x="1072" y="102" width="56" height="402" fill="#0c121a" stroke="#31465c" stroke-width="4"/>`;
+  let g = `<rect x="488" y="98" width="644" height="416" fill="#02040a"/>`;
+  for (let i = 0; i < 54; i++) g += `<circle class="tw" cx="${556 + (i * 167) % 508}" cy="${106 + (i * 61) % 400}" r="${(0.8 + (i % 3) * .7).toFixed(1)}" fill="#dfe8ff" style="animation-delay:${((i * .53) % 4).toFixed(2)}s"/>`;
+  // the planet's limb, and the one light out there that is on its way round
+  g += `<path d="M640 514Q860 404 1072 372V514Z" fill="#12303c"/><path d="M640 514Q860 404 1072 372" fill="none" stroke="#3f8f8a" stroke-width="3" opacity=".7"/>`;
+  g += `<circle class="slowblink" cx="872" cy="232" r="5" fill="#fdfbe8"/><circle cx="872" cy="232" r="16" fill="#fdfbe8" opacity=".12"/>`;
+  [488, 1072].forEach(x => g += `<rect x="${x}" y="98" width="60" height="416" fill="#0c121a" stroke="#31465c" stroke-width="4"/><path d="M${x + 30} 120V492" stroke="#18212d" stroke-width="4"/>`);
   return `<g>${g}</g>`;
 })();
 
 /* ---- the clamp lever, and the last handle ---- */
 function releaseBody(open) {
-  let b = `<rect x="2" y="2" width="216" height="150" rx="14" fill="#141e2a" stroke="${P.edge}" stroke-width="6"/><circle cx="110" cy="80" r="50" fill="#0a141c" stroke="#2a4258" stroke-width="4"/>`;
-  [[110, 40], [150, 80], [110, 120], [70, 80]].forEach(([x, y], i) => b += `<path d="M${x} ${y - 9}l9 14h-18z" fill="#56626e" transform="rotate(${i * 90} ${x} ${y})"/>`);
-  b += `<circle cx="110" cy="80" r="15" fill="${open ? '#5fd08a' : '#7d6f2c'}" stroke="${P.dark}" stroke-width="3"/>`;
-  [0, 1, 2, 3, 4, 5].forEach(i => b += `<circle cx="${45 + i * 26}" cy="20" r="6" fill="${open ? '#5fd08a' : '#0a0e14'}" stroke="#2a3a4a" stroke-width="2"/>`);
+  // a console on a post: a gate the lever throws four ways in, six lamps for six throws
+  let b = `<path d="M92 150h56l14 66H78z" fill="#111925" stroke="${P.dark}" stroke-width="4"/><rect x="66" y="212" width="108" height="12" rx="4" fill="#0c1119"/>`;
+  b += `<rect x="2" y="2" width="236" height="156" rx="14" fill="#141e2a" stroke="${P.edge}" stroke-width="6"/><circle cx="120" cy="88" r="52" fill="#0a141c" stroke="#2a4258" stroke-width="4"/>`;
+  [0, 90, 180, 270].forEach(a => b += `<path d="M120 42l11 16h-22z" fill="#56626e" transform="rotate(${a} 120 88)"/>`);
+  b += `<circle cx="120" cy="88" r="16" fill="${open ? '#5fd08a' : '#7d6f2c'}" stroke="${P.dark}" stroke-width="3"/><circle cx="115" cy="83" r="5" fill="#fff" opacity=".25"/>`;
+  [0, 1, 2, 3, 4, 5].forEach(i => b += `<circle cx="${50 + i * 28}" cy="20" r="6.5" fill="${open ? '#5fd08a' : '#0a0e14'}" stroke="#2a3a4a" stroke-width="2"/>`);
   return b;
 }
-function launchBody(st) {
-  let b = `<rect x="2" y="14" width="216" height="60" rx="10" fill="#141e2a" stroke="${P.edge}" stroke-width="5"/>`;
-  [0, 1, 2].forEach(i => b += `<circle cx="${40 + i * 30}" cy="44" r="9" fill="${st.solved ? '#5fd08a' : st.live ? P.amber : '#1a222b'}"${st.live && !st.solved ? ` class="slowblink" style="animation-delay:${i * .4}s"` : ''}/>`);
-  b += `<rect x="136" y="2" width="60" height="26" rx="8" fill="${st.live ? '#c94a3d' : '#5a2a26'}" stroke="${P.dark}" stroke-width="3"/><rect x="160" y="24" width="12" height="30" fill="#56626e" stroke="${P.dark}" stroke-width="2"/>`;
+/* The ignition console wears one lamp for each thing it is waiting on, so the bay itself says what is still to do. */
+const READY = [['tanks', 'droplet'], ['release', 'ring'], ['doors', 'lift']];
+function launchBody(st, big) {
+  const all = st.live, done = st.solved;
+  let b = `<path d="M96 104h48l12 60H84z" fill="#111925" stroke="${P.dark}" stroke-width="4"/><rect x="70" y="160" width="100" height="12" rx="4" fill="#0c1119"/>`;
+  b += `<path d="M22 18h196l16 92H6z" fill="#141e2a" stroke="${P.edge}" stroke-width="6" stroke-linejoin="round"/>`;
+  READY.forEach(([id, glyph], i) => {
+    const x = 44 + i * 40, on = done || (st.open && st.open[id]);
+    b += `<circle cx="${x}" cy="44" r="11" fill="${on ? '#5fd08a' : '#10161d'}" stroke="#2a3a4a" stroke-width="2.5"/>` + GL(glyph, x - 11, 64, 22, on ? '#5fd08a' : '#56626e');
+  });
+  b += `<rect x="176" y="34" width="14" height="52" rx="3" fill="#56626e" stroke="${P.dark}" stroke-width="2.5"/><rect x="152" y="14" width="62" height="28" rx="9" fill="${all ? '#c94a3d' : '#5a2a26'}" stroke="${P.dark}" stroke-width="3"${all && !done ? ' class="slowblink"' : ''}/>`;
   return b;
 }
 
 const POS4 = {
-  fueltable: { x: 12.9,  y: 50.6, w: 8.1,   h: 15 },
-  tanks:     { x: 24.4,  y: 40.4, w: 11.9,  h: 16.7 },
-  pod:       { x: 42.2,  y: 53.3, w: 16.9,  h: 30 },
-  orbit:     { x: 73.75, y: 20.6, w: 14.4,  h: 20 },
-  baychrono: { x: 90.4,  y: 24.6, w: 5.8,   h: 10.3 },
-  doors:     { x: 76.6,  y: 43.6, w: 8.75,  h: 13.3 },
-  release:   { x: 74.3,  y: 60.4, w: 13.75, h: 17.1 },
-  launch:    { x: 43.1,  y: 87.4, w: 13.75, h: 8.5 },
+  doors:     { x: 77.25, y: 43.6, w: 8.75,  h: 13.3 },
+  pod:       { x: 39.6,  y: 51.6, w: 22,    h: 39.1 },
+  fueltable: { x: 3.9,   y: 47.8, w: 9.4,   h: 16.7 },
+  tanks:     { x: 14.1,  y: 46.7, w: 11.9,  h: 16.7 },
+  orbit:     { x: 75.4,  y: 20,   w: 14.4,  h: 20 },
+  baychrono: { x: 91.1,  y: 24.7, w: 6,     h: 10.7 },
+  release:   { x: 70.6,  y: 72.2, w: 15,    h: 25 },
+  launch:    { x: 14.4,  y: 77.2, w: 15,    h: 19.1 },
 };
 
 const ROOM4 = {
@@ -1286,15 +1348,15 @@ const ROOM4 = {
   entryBeat:"The pod bay's dust is untouched except for one path — a wide, smooth track circling the pod itself. Around and around. Years of it. Something has been guarding your way out, or coveting it.",
   entrySound:'hiss',
   completeText:"Clamps clear, tanks green, the bay doors standing open on the dark. The burn is done the moment somebody says go.",
-  chain:`The pod is held by four clamps, each tagged with when it lets go, one to six: above, right, below, above, left, below, thrown on the lever as ${RELEASE.split('').join(', ')} → the fuelling table has a row for every kind of pod, told apart by its engines; the pod in the cradle has ${POD_ENGINES}, and that row fills the ${TANK_COLOURS.join(', ')} tanks to ${TANK_SET.join(', ')} → on the orbital screen the station moves one mark an hour and is ${HOURS_OUT} marks short of the gate the pod's path runs through; the bay clock reads ${NOW.h}:${NOW.m}, so the bay doors are set for ${LAUNCH_AT} → with the doors open, the burn card says where on the gauge to let go of the ignition handle: ${BURN}.`,
+  chain:`The pod is held by four clamps, each tagged with when it lets go, one to six: above, right, below, above, left, below, thrown on the lever as ${RELEASE.split('').join(', ')} → the fuelling table has a row for every kind of pod, told apart by its engines; the pod in the ring has ${POD_ENGINES}, and that row reads ${TABLE_COLUMNS.map((c, i) => c + ' ' + FUEL[POD_ENGINES][i]).join(', ')} — but the tanks stand ${TANK_ORDER.join(', ')}, so they are filled to ${TANK_SET.join(', ')} → on the orbital screen the station moves one mark an hour and is ${HOURS_OUT} marks short of where the pod's path crosses its ring; the bay clock reads ${NOW.h}:${NOW.m}, so the bay doors are set for ${LAUNCH_AT} → with the doors open, the burn card says where on the gauge to let go of the ignition handle: ${BURN}.`,
   objects:[
-    { id:'pod', icon:'🛸', name:'The Last Pod', pos:POS4.pod,
-      desc:"Tail toward you, nose toward the doors. Four clamps hold her in the cradle, and each has a tag riveted to it.",
-      figure:ART.svg(podArt.w, podArt.h, podArt.body),
-      sprite:ART.sprite(POS4.pod, podArt.w, podArt.h, podArt.body) },
-    { id:'release', icon:'🕹️', name:'Clamp Release', pos:POS4.release,
+    { id:'pod', icon:'🛸', name:'The Last Pod', pos:POS4.pod, watches:['release','tanks'],
+      desc:"Tail toward you, nose toward the doors. Four clamps hold her in the launch ring, and each has a tag riveted to it.",
+      figure:ART.svg(600, 600, podBody()),
+      sprite:st=>ART.sprite(POS4.pod, 600, 600, podBody({ free: st.open.release, fed: st.open.tanks })) },
+    { id:'release', icon:'🕹️', name:'Clamp Release', pos:POS4.release, ringAt:[50,39],
       desc:"One lever that throws four ways, and six lamps over it waiting to be lit.",
-      sprite:st=>ART.sprite(POS4.release, 220, 154, releaseBody(st.solved)),
+      sprite:st=>ART.sprite(POS4.release, 240, 226, releaseBody(st.solved)),
       puzzle:{ type:'dirpad', from:['pod'], slots:RELEASE.length, answer:RELEASE, labels:false,
         miss:"A clamp bites down harder instead of letting go. Not that order.",
         hints:[
@@ -1302,49 +1364,50 @@ const ROOM4 = {
           "Every clamp has a tag with one or two numbers stamped on it. One to six is the order they let go in — throw the lever toward each clamp in turn.",
           `Up, right, down, up, left, down: ${RELEASE.split('').join(', ')}.`
         ],
-        solvedText:"Six lamps, six heavy clunks around the hull, and the pod settles a hand's width onto the rails. Nothing is holding her now but her own weight." } },
+        solvedText:"Six lamps, six heavy clunks around the ring, and the pod settles a hand's width onto the rails. Nothing is holding her now but her own weight." } },
     { id:'fueltable', icon:'📋', name:'Fuelling Table', pos:POS4.fueltable,
-      desc:"Bolted to the gantry: how full each of the three tanks is to be, for each of the three kinds of pod this bay was built to launch.",
+      desc:"Bolted up by the tanks: how full each of the three lines is to be run, for each of the three kinds of pod this bay was built to launch.",
       figure:ART.svg(fuelArt.w, fuelArt.h, fuelArt.body),
-      sprite:ART.sprite(POS4.fueltable, fuelArt.w, fuelArt.h, fuelArt.body, { rot: -3 }) },
+      sprite:ART.sprite(POS4.fueltable, fuelArt.w, fuelArt.h, fuelArt.body, { rot: -2 }) },
     { id:'tanks', icon:'⛽', name:'Fuel Panel', pos:POS4.tanks,
       desc:"Three tanks under three coloured caps, all of them dry. Each fills in five steps.",
       sprite:st=>ART.sprite(POS4.tanks, 190, 150, tanksBody(st.solved)),
-      puzzle:{ type:'levels', from:['pod','fueltable'], cols:TANK_COLOURS.map(c=>({ mark:{ color:c } })), max:5, skin:'tanks', answer:TANK_SET, tryLabel:'OPEN THE FEED',
+      puzzle:{ type:'levels', from:['pod','fueltable'], cols:TANK_ORDER.map(c=>({ mark:{ color:c } })), max:5, skin:'tanks', answer:TANK_SET, tryLabel:'OPEN THE FEED',
         miss:"The feed opens, the pod's own gauges disagree, and the feed shuts itself again.",
         hints:[
-          "Three tanks to fill, and a table on the gantry that says how full — for three different kinds of pod.",
-          "The rows of the table are told apart by the engines drawn on each: two, three, or four. Look at the back of the pod in the cradle and count hers.",
-          `She has three engines. ${TANK_COLOURS.map((c, i) => i ? c : c[0].toUpperCase() + c.slice(1)).join(', ')}: ${TANK_SET.join(', ')}.`
+          "Three tanks to fill, and a table beside them that says how full — for three different kinds of pod.",
+          "The rows of the table are told apart by the engines drawn on each: two, three, or four. Count the engines on the pod in the ring — and go by the colour of each cap, because the table is not ruled in the order the tanks stand in.",
+          `She has three engines. ${TANK_ORDER.map((c, i) => (i ? c : c[0].toUpperCase() + c.slice(1)) + ' ' + TANK_SET[i]).join(', ')}.`
         ],
-        solvedText:"Three lines knock and run. The pod's skin ticks as the cold goes into her, and the gauges on her flank climb to green." } },
+        solvedText:"Three lines knock and run. The pod's skin ticks as the cold goes into her, and three lamps on her tail come up green." } },
     { id:'orbit', icon:'🪐', name:'Orbital Screen', pos:POS4.orbit,
-      desc:"The planet you never reached, and what is still circling it. One thing on the ring is moving. One thing on it is not.",
+      desc:"The planet you never reached, and what is still circling it. One thing on the ring is moving. The pod can only fly the one line.",
       figure:ART.svg(orbitArt.w, orbitArt.h, orbitArt.body),
       sprite:ART.sprite(POS4.orbit, 230, 180, orbitBody()) },
     { id:'baychrono', icon:'🕰️', name:'Bay Clock', pos:POS4.baychrono,
       desc:"Still running. The bridge told it the time, and it has believed the bridge ever since.",
       figure:ART.svg(chronoArt.w, chronoArt.h, chronoArt.body),
       sprite:ART.sprite(POS4.baychrono, chronoArt.w, chronoArt.h, chronoArt.body) },
-    { id:'doors', icon:'🚪', name:'Door Timer', pos:POS4.doors,
+    { id:'doors', icon:'🚪', name:'Door Timer', pos:POS4.doors, behind:true,
       desc:"The bay doors open on a clock, once, at whatever time it is given, and stay open for as long as it takes one pod to leave.",
       sprite:st=>ART.sprite(POS4.doors, 140, 120, doorsBody(st)) + (st.solved ? DOORS_OPEN : ''),
       puzzle:{ type:'clock', from:['orbit','baychrono'], start:{h:12,m:0}, answer:LAUNCH_AT, tryLabel:'SET THE DOORS',
         miss:"The timer takes it. The doors open on empty sky, wait, and close again. Nothing was there to meet you.",
         hints:[
           "The bay doors are on a timer, and the timer is a clock. There is another clock in this bay, and a screen with something on its way round a planet.",
-          "On the screen the station moves one mark every hour, the way the arrow points. Count the marks from where it is to the gate the pod's path runs through, and add that to what the bay clock says now.",
+          "On the screen the station moves one mark every hour, the way the arrow points. Count the marks from where it is to where the pod's line crosses the ring, and add that to what the bay clock says now.",
           `Five marks is five hours, and the bay clock reads ${NOW.h}:${NOW.m}. Set the doors for ${LAUNCH_AT}.`
         ],
         solvedText:"The timer runs out its hours in a breath. The bay doors grind apart on forty years of ice, and there is nothing in front of the pod now but stars — and a card in the timer's tray.",
-        solveBeat:"Something lands on the gantry behind you, heavily, and does not come closer. It is deciding.",
+        solveBeat:"Something lands on the deck behind you, heavily, and does not come closer. It is deciding.",
         beatSound:'clank',
         inside:{ name:'The burn card', figure:burnFig } } },
-    { id:'launch', icon:'🔥', name:'Ignition', pos:POS4.launch, needs:['tanks','release','doors'],
+    { id:'launch', icon:'🔥', name:'Ignition', pos:POS4.launch, needs:READY.map(r=>r[0]), ringAt:[76,22],
       desc:"One handle. Pull it and hold and the burn builds; let go and she goes with whatever she has. There is no second pull.",
-      deadDesc:"The ignition handle, locked out. It will not move until she is fuelled, free of her clamps, and has open doors in front of her.",
-      sprite:st=>ART.sprite(POS4.launch, 220, 76, launchBody(st)),
-      puzzle:{ type:'hold', from:['doors'], max:10, target:BURN, tol:BURN_TOL, tryLabel:'HOLD THE BURN',
+      deadDesc:"The ignition handle, locked out, under three lamps. It will not move until she is fuelled, free of her clamps, and has open doors in front of her.",
+      deadFigure:st=>ART.svg(240, 176, launchBody(st)),
+      sprite:st=>ART.sprite(POS4.launch, 240, 176, launchBody(st)),
+      puzzle:{ type:'hold', from:['doors'], max:10, target:BURN, tol:BURN_TOL, rise:2, tryLabel:'HOLD THE BURN',
         short:"Not enough burn to clear the bay. She settles back onto the rails.", over:"Too much. The pod's own safeties cut the burn before she tears herself off the rails.",
         hints:[
           "One handle: hold it and the gauge climbs, let go and that is your burn. The card that came out of the door timer says where to let go.",

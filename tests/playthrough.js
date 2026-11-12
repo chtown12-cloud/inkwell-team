@@ -9,7 +9,7 @@
    hidden can be worked early, presses the scenario's own final button, and
    confirms the score card and the chains.
 
-   The four scenarios not yet rebuilt are still played from the table below.
+   The three scenarios not yet rebuilt are still played from the table below.
 */
 const { launch } = require('./browser');
 
@@ -17,16 +17,6 @@ const BASE = 'http://localhost:8787';
 const ALL = ['eldermoor', 'prospero', 'vorstag', 'erebus', 'midnight'];
 
 const SOLUTIONS = {
-  prospero: {
-    finalButton: 'LAUNCH THE POD 🚀',
-    emoji: '👾', victoryText: 'THE POD IS AWAY', finale: ['thrusters', 'PANEL:LOCKED|PRESSURE|RELEASE'],
-    rooms: [
-      [['pods', 'LOCKER'], ['locker', '6942'], ['terminal', 'BURN'], ['manifest', '34']],
-      [['antenna', 'DIAL:4715'], ['beacon', 'SEAL VENTS'], ['console', 'GAMMA'], ['reactor', '651']],
-      [['vines', 'VENT'], ['trays', 'STARVE'], ['pumps', '642'], ['airlock', 'PURGE']],
-      [['checklist', 'ORDER:EBDAC'], ['fuelpanel', '9430'], ['window', '435'], ['clamps', '2496']],
-    ],
-  },
   vorstag: {
     finalButton: 'RIDE THE LIGHTNING ⚡',
     emoji: '🧟', victoryText: 'THE GATE IS OPEN', finale: ['rod', 'HOLD'],
