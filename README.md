@@ -293,7 +293,11 @@ Line):
   which would have meant sending your game URL to a third party.
 - **`lib/net.js`** — the multiplayer transport, with three tiers tried in
   order: **Firebase Realtime Database** (websocket push), then the bundled REST
-  API, then single-screen play. Every call fails soft.
+  API, then single-screen play. Every call fails soft. One rule holds on every
+  tier: the session's state is never handed to the game from inside the call
+  that changed it. Firebase would — it raises a page's own write back at it
+  before the write returns — and the game being re-entered half way through a
+  button press is how the shared screen once walked from room 1 into room 3.
 - **`lib/session.js`** — the session rules (join, sit, solve, hint, advance) as
   one pure module. It runs *inside a Firebase transaction* on the client and
   *inside the request handler* on the server, so both transports enforce

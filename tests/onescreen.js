@@ -18,7 +18,7 @@
 
    Needs the dev server:  node dev-server.js &  then  node tests/onescreen.js
 */
-const { chromium, devices } = require('playwright');
+const { launch, devices } = require('./browser');
 
 const BASE = 'http://localhost:8787';
 const SCENARIOS = process.argv.slice(2).length ? process.argv.slice(2)
@@ -89,7 +89,7 @@ const fit = (p) => p.evaluate(() => {
 });
 
 (async () => {
-  const browser = await chromium.launch();
+  const browser = await launch();
   const errs = [];
 
   for (const scenario of SCENARIOS) {

@@ -15,7 +15,7 @@
 
    Needs the dev server:  node dev-server.js &  then  node tests/locks.js
 */
-const { chromium, devices } = require('playwright');
+const { launch, devices } = require('./browser');
 
 const BASE = 'http://localhost:8787';
 const ASKED = process.argv.slice(2);
@@ -233,7 +233,7 @@ const KINDS = {
 };
 
 (async () => {
-  const browser = await chromium.launch();
+  const browser = await launch();
   const errs = [];
 
   // which scenarios are on the reset grammar is the game's own business

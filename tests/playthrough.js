@@ -11,7 +11,7 @@
 
    The four scenarios not yet rebuilt are still played from the table below.
 */
-const { chromium } = require('playwright');
+const { launch } = require('./browser');
 
 const BASE = 'http://localhost:8787';
 const ALL = ['eldermoor', 'prospero', 'vorstag', 'erebus', 'midnight'];
@@ -431,7 +431,7 @@ async function run(page, id) {
 }
 
 (async () => {
-  const browser = await chromium.launch();
+  const browser = await launch();
   const page = await browser.newPage({ viewport: { width: 1440, height: 810 } });
   const errs = [];
   page.on('pageerror', e => errs.push(e.message));

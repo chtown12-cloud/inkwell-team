@@ -3214,10 +3214,11 @@ function enterRoom(idx){
   clearBeats();
   /* At most one room card, ever. A card is only removed by the hand that
      presses ENTER on it, so a card nobody pressed — the crew solved the room
-     from their phones while the screen still showed the gate, or two rooms
-     landed close together — used to sit there under the next one and reappear
-     the moment that one was dismissed. That is the "room 3 flashes before
-     room 2" everyone saw. */
+     from their phones while the screen still showed the gate — would sit
+     there under the next one and reappear the moment that one was dismissed.
+     (This was once blamed for "room 3 flashes before room 2". It was only
+     how that looked: the screen really had entered two rooms on one press —
+     see the Continue button.) */
   $('card-root').innerHTML='';
   const room=currentRoom();
   const card=document.createElement('div');
@@ -3270,9 +3271,16 @@ $('start-btn').onclick=async ()=>{
 };
 $('continue-btn').onclick=()=>{
   $('room-complete').classList.add('hidden');
-  if(S.roomIndex<ACTIVE.rooms.length-1){
-    mpSend('advance',{roomIndex:S.roomIndex+1});
-    enterRoom(S.roomIndex+1);
+  /* Work out where "next" is ONCE, go there, and only then tell the session.
+     This used to send first and then enter S.roomIndex+1 — and on the live
+     transport the session's answer arrives inside the send, so by the second
+     line S.roomIndex had already moved and the screen walked on into the room
+     after next. (lib/net.js no longer delivers that way either; this order is
+     right whatever the transport does.) */
+  const next=S.roomIndex+1;
+  if(next<ACTIVE.rooms.length){
+    enterRoom(next);
+    mpSend('advance',{roomIndex:next});
   } else launchFinale();
 };
 $('mute-btn').onclick=toggleMute;
@@ -3345,6 +3353,8 @@ function launchFinale(){
   victory();
 }
 function victory(){
+  if(S.won) return;      // once: the press and the session's echo of it both end up here
+  S.won=true;
   S.finished=true; S.endElapsed=elapsedSec();
   stopHeartbeat(); closeModal(); clearBeats(); stopStuckWatch();
   // the danger is over: hush the room's soundscape and let something warm play instead

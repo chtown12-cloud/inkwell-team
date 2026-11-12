@@ -1,16 +1,22 @@
 # Tests
 
-Five checks, all run straight from the repo with no build step.
+Six checks, all run straight from the repo with no build step.
 
 ```sh
 node tests/audit.js                 # static: the puzzle standard, enforced
 node dev-server.js &                # serves the game on :8787
 node tests/playthrough.js           # live: all five scenarios, start to victory
 node tests/playthrough.js vorstag   # …or just one
+node tests/sync.js                  # live: a screen and a phone, in step, on both transports
 node tests/locks.js                 # live: every lock worked wrong on purpose, every drawing measured
 node tests/camera.js eldermoor      # live: the examine camera, at three window shapes
 node tests/onescreen.js             # live: nothing scrolls, at three window shapes
 ```
+
+None of them leaves the machine. Every suite launches its browser through
+`tests/browser.js`, which lets it reach the dev server and nothing else — so a
+test run can never open sessions in the real database, and always plays on the
+transport it says it does.
 
 **`audit.js`** loads the five scenario files and checks what PUZZLES.md can
 check mechanically. For a scenario on the reset grammar that is: every lock
@@ -38,7 +44,20 @@ the first lock to check the clock maths, and presses the scenario's own final
 button. The four scenarios not yet rebuilt are still played from the table at
 the top of the file. Needs Playwright and the dev server.
 
-**`locks.js`** is the other half of that: each kind of lock worked *wrong*.
+**`sync.js`** puts a shared screen and a phone in the same game and plays
+every scenario room by room, the two taking turns to open the locks. After
+every press it checks that they are in the same room, that one press of
+Continue entered one room, that every room was visited once and in order, and
+that the ending ran once. It does all of that twice: on the REST fallback the
+dev server provides, and on Firebase — which is what the deployed site
+actually uses, and which no other suite touches. Firebase is stood in for by
+`fake-firebase.js`, a small in-page double that keeps the one behaviour that
+matters and that REST does not have: a page's own write is raised back at it
+from *inside* the call that made it. (Checked against the real SDK.) That is
+the difference that let the screen skip a room on the live site while every
+suite here was green.
+
+**`locks.js`** is the other half of the playthrough: each kind of lock worked *wrong*.
 Wheels come back round; the face is a button too; a wrong try holds and costs
 five seconds; a wrong run on the compass clears itself; a lock you walk away
 from is as you left it; the tide clock holds one step either side of the span
