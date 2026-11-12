@@ -99,7 +99,7 @@ button{font-family:var(--font-body);cursor:pointer}
 /* ---------- hotspots ---------- */
 .hotspot{position:absolute;background:none;border:none;z-index:6}
 .hotspot .ring{
-  position:absolute;left:50%;top:50%;width:46px;height:46px;transform:translate(-50%,-50%);
+  position:absolute;left:var(--rx,50%);top:var(--ry,50%);width:46px;height:46px;transform:translate(-50%,-50%);
   border:2px solid rgba(240,220,170,.65);border-radius:50%;
   box-shadow:0 0 18px rgba(240,220,170,.35), inset 0 0 12px rgba(240,220,170,.25);
   animation:ringpulse 2.6s ease-in-out infinite;
@@ -109,7 +109,7 @@ button{font-family:var(--font-body);cursor:pointer}
 .hotspot.done .ring{border-color:rgba(127,174,106,.85);box-shadow:0 0 14px rgba(127,174,106,.4);animation:none;opacity:.8}
 .hotspot.done .ring::after{content:"✓";width:auto;height:auto;background:none;color:#bfe3a8;font-weight:700;font-size:15px}
 .hotspot .tag{
-  position:absolute;left:50%;top:calc(50% + 34px);transform:translateX(-50%);
+  position:absolute;left:var(--rx,50%);top:calc(var(--ry,50%) + 34px);transform:translateX(-50%);
   white-space:nowrap;font-family:var(--font-display);font-size:19px;color:#f4ecd8;
   background:rgba(10,16,15,.85);border:1px solid rgba(240,220,170,.4);border-radius:20px;
   padding:5px 16px;opacity:0;transition:opacity .18s;pointer-events:none;box-shadow:0 4px 14px rgba(0,0,0,.6);
@@ -793,6 +793,8 @@ svg.glyph{display:block}
 .lk-mark.icon{width:28px;height:28px;color:var(--lk-ink)}
 .lk-mark.icon svg{width:100%;height:100%}
 .lk-mark.text{height:auto;font-family:var(--font-label);font-size:.86rem;color:var(--lk-ink);line-height:1.1}
+.lk-mark.bars{width:40px;height:22px;color:var(--lk-ink)}
+.lk-mark.bars svg{width:100%;height:100%;display:block}
 .lk-step{width:58px;height:24px;border:none;border-radius:7px;background:rgba(0,0,0,.22);color:var(--lk-ink);font-size:.66rem;line-height:1}
 .lk-step:hover{background:rgba(0,0,0,.38)}
 .lk-face{width:58px;height:70px;border:none;border-radius:9px;display:flex;align-items:center;justify-content:center;padding:0;
@@ -838,6 +840,58 @@ svg.glyph{display:block}
 .ck-set em{font-style:normal;font-size:.72rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--dim);min-width:96px;text-align:center}
 .ck-btn{width:44px;height:38px;border-radius:8px;border:1px solid var(--lk-lo);
   background:linear-gradient(180deg,var(--lk-hi),var(--lk-metal));color:var(--lk-ink);font-size:.86rem}
+
+/* a pattern lock's trail */
+.lk-trail{fill:none;stroke:rgb(var(--glow,255 210 150));stroke-width:7;stroke-linecap:round;stroke-linejoin:round;opacity:.7}
+
+/* rods, slides, tanks */
+.lk-levels{display:flex;gap:9px;align-items:flex-end;padding:16px 20px 12px;border-radius:14px;
+  background:linear-gradient(180deg,#2c3539,#141a1d);box-shadow:0 16px 34px rgba(0,0,0,.6),inset 0 0 0 2px #3c474c}
+.lk-col{display:flex;flex-direction:column;align-items:center;gap:6px;--tint:var(--lk-hi)}
+.lk-col .lk-mark{color:var(--sand)}
+.lk-col .lk-mark.band{width:50px;height:12px}
+.lk-track{display:flex;flex-direction:column;gap:3px;padding:4px;border-radius:9px;background:#06080a;box-shadow:inset 0 0 0 2px #3a4449}
+.lk-cell{display:block;width:52px;height:30px;border:none;border-radius:6px;background:rgba(255,255,255,.07);padding:0}
+.lk-cell.on{background:var(--tint);box-shadow:0 0 10px rgba(255,255,255,.18)}
+.lk-cell.base{height:16px;width:60px;border-radius:4px;background:#3a4449}
+.lk-scale{display:flex;flex-direction:column;gap:3px;margin-bottom:26px}
+.lk-scale i{height:30px;line-height:30px;font-style:normal;font-family:var(--font-num);font-variant-numeric:lining-nums;
+  font-size:.82rem;color:var(--dim);text-align:right;min-width:14px}
+.lk-levels.tanks .lk-track{gap:0;padding:3px;border-radius:8px 8px 12px 12px}
+.lk-levels.tanks .lk-cell{border-radius:0;height:25px;background:rgba(255,255,255,.04);box-shadow:inset 0 -1px 0 rgba(255,255,255,.12)}
+.lk-levels.tanks .lk-cell.on{background:var(--tint);opacity:.9}
+.lk-levels.tanks .lk-scale{gap:0}.lk-levels.tanks .lk-scale i{height:25px;line-height:25px}
+
+/* a number pad in the lock's own metal */
+.lk-pad{padding:14px 18px 18px;border-radius:16px;background:linear-gradient(180deg,var(--lk-hi),var(--lk-metal) 30%,var(--lk-lo));
+  box-shadow:0 16px 34px rgba(0,0,0,.6),inset 0 2px 0 rgba(255,255,255,.3)}
+.lk-pad .pad-display{margin:2px 0 12px}
+.lk-pad .pad-display i{background:#06110f;border-color:rgba(0,0,0,.6);color:#bff5d3;font-family:var(--font-num);font-variant-numeric:lining-nums}
+.lk-pad .pad-grid{grid-template-columns:repeat(3,64px);gap:7px;max-width:none;width:max-content;margin:0 auto}
+.lk-pad .pad-key{padding:11px 0;background:rgba(0,0,0,.42);border-color:rgba(0,0,0,.5);color:#f3ead2;font-family:var(--font-num);font-variant-numeric:lining-nums}
+.lk-pad .pad-key:hover{background:rgba(0,0,0,.55);border-color:rgba(255,255,255,.25)}
+.lk-pad .pad-key.go{background:linear-gradient(180deg,#5fbf8d,#2f7d58);border-color:#1d5238;color:#f1fff7}
+
+/* hold it there */
+.lk-hold{width:min(520px,100%);padding:18px 22px 14px;border-radius:14px;
+  background:linear-gradient(180deg,#2c3539,#141a1d);box-shadow:0 16px 34px rgba(0,0,0,.6),inset 0 0 0 2px #3c474c}
+.hd-gauge{position:relative;height:26px;border-radius:13px;background:#06080a;box-shadow:inset 0 0 0 2px #3a4449;margin-bottom:26px}
+.hd-gauge b{display:block;height:100%;width:0;border-radius:13px;background:linear-gradient(90deg,#c9a04a,#ffd98c)}
+.hd-ticks{position:absolute;inset:0;pointer-events:none}
+.hd-ticks i{position:absolute;top:0;bottom:0;width:2px;margin-left:-1px;background:rgba(255,255,255,.22)}
+.hd-ticks i[data-n]{background:rgba(255,255,255,.5)}
+.hd-ticks i[data-n]::after{content:attr(data-n);position:absolute;top:30px;left:50%;transform:translateX(-50%);
+  font-style:normal;font-family:var(--font-num);font-variant-numeric:lining-nums;font-size:.82rem;color:var(--dim)}
+.hd-read{text-align:center;font-family:var(--font-num);font-variant-numeric:lining-nums;font-size:1.9rem;color:var(--sand);line-height:1}
+.hd-read small{font-size:.8rem;color:var(--dim);letter-spacing:2px;margin-left:6px}
+.hd-btn{touch-action:none;user-select:none;-webkit-user-select:none;min-width:240px;padding:15px 28px}
+.hd-btn.pressing{filter:brightness(1.25);transform:translateY(2px)}
+
+/* a lamp, or a puff of dust, that repeats */
+.pulse-lamp{fill:#0b1114;transition:fill .07s}
+.pulse-lamp.on{fill:var(--lamp,#ffd98c);filter:drop-shadow(0 0 14px var(--lamp,#ffd98c))}
+.pulse-lamp.puff{fill:inherit;opacity:0;transition:opacity .06s}
+.pulse-lamp.puff.on{opacity:1;filter:none}
 
 /* levers */
 .lk-levers{display:flex;gap:8px;padding:16px 18px 12px;border-radius:12px;flex-wrap:wrap;justify-content:center;
@@ -904,6 +958,8 @@ body:not(.phone) .lk-tiles{width:min(100%,calc((100vh - 300px) * var(--whole,1.6
   .lk-combo{gap:7px;padding:14px 14px 12px}
   .lk-dir{grid-template-columns:repeat(3,60px);grid-template-rows:repeat(3,60px)}
   .lk-levers{gap:5px;padding:14px 6px 10px}
+  .lk-levels{gap:6px;padding:14px 10px 10px}
+  .lk-cell{width:40px;height:26px}.lk-cell.base{width:46px}.lk-scale i{height:26px;line-height:26px}.lk-col .lk-mark.band{width:38px}
   .lk-lever{min-width:36px}
   .lv-knob{width:30px;margin-left:-15px}
 }
@@ -2226,6 +2282,9 @@ function renderHotspots(){
       +(S.urged===o.id?' urged':'');
     b.dataset.obj=o.id;
     b.style.cssText=`left:${o.pos.x}%;top:${o.pos.y}%;width:${o.pos.w}%;height:${o.pos.h}%`;
+    // The ring sits in the middle of a thing unless the middle is the very part
+    // you are meant to read (a star field): then the object says where it goes.
+    if(o.ringAt){ b.style.setProperty('--rx',o.ringAt[0]+'%'); b.style.setProperty('--ry',o.ringAt[1]+'%'); }
     b.innerHTML=`<span class="ring"></span><span class="tag">${o.icon} ${o.name}${S.solved.has(o.id)?' ✓':''}</span>`;
     b.onclick=()=>openModal(o.id);
     layer.appendChild(b);
@@ -3495,7 +3554,10 @@ function gmLock(p){
   }
   if(p.type==='tiles')  return p.pieces ? 'in this order: '+li(p.answer).join(', ') : 'put the picture back together';
   if(p.type==='tune')   return `hold the dial at ${p.at}${p.unit?' '+p.unit:''}`;
-  return null;
+  if(p.type==='levels') return 'set them to '+li(p.answer).join(' · ');
+  if(p.type==='keypad') return p.answer+' — key it in';
+  if(p.type==='hold')   return `hold until the gauge reads ${p.target}${p.unit?' '+p.unit:''}, then let go (±${p.tol||0.3})`;
+  return String(p.answer!=null?p.answer:'—');
 }
 function buildGmPanel(){
   let html=`<h2>🔑 Game Master Answer Key — ${ACTIVE.title}</h2>
@@ -3504,7 +3566,7 @@ function buildGmPanel(){
   ACTIVE.rooms.forEach(room=>{
     html+=`<h3>${room.name}</h3><div class="chain">CHAIN: ${room.chain}</div>`;
     room.objects.filter(o=>o.puzzle).forEach(o=>{
-      const disp=(window.LOCKS&&LOCKS.has(o.puzzle.type))?gmLock(o.puzzle):
+      const disp=(ACTIVE.classic&&LOCKS.has(o.puzzle.type))?gmLock(o.puzzle):
                  o.puzzle.type==='signal'?'··· −−− ··· (short×3, long×3, short×3)':
                  o.puzzle.type==='dial'?`tune to ${(o.puzzle.dial.target/o.puzzle.dial.div).toFixed(o.puzzle.dial.div>=100?2:1)}, then lock in`:
                  o.puzzle.type==='simul'?`man all ${(o.puzzle.stations||[]).length} stations at once (${(o.puzzle.stations||[]).map(x=>x.label).join(' + ')}), then haul`:
