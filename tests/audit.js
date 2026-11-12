@@ -52,7 +52,7 @@ const list = (a) => Array.isArray(a) ? a.map(String) : String(a == null ? '' : a
    THE RESET GRAMMAR
    ====================================================================== */
 
-const HANDS_ON = new Set(['combo', 'dirpad', 'clock', 'toggle', 'press', 'tiles', 'tune', 'keypad', 'hold', 'simul']);
+const HANDS_ON = new Set(['combo', 'dirpad', 'clock', 'toggle', 'press', 'tiles', 'tune', 'levels', 'keypad', 'hold', 'simul']);
 // locks that are their own puzzle: nothing has to be carried to them
 const SELF_CONTAINED = new Set(['tune', 'simul', 'hold']);
 const DESC_MAX = 170, SOLVED_MAX = 260;
@@ -111,7 +111,7 @@ function checkBuilt(at, o) {
   } else if (p.type === 'press') {
     const ans = list(p.answer);
     if (p.slots && ans.length !== p.slots) fail(at, `has ${p.slots} slots and an answer ${ans.length} long`);
-    if (p.keys) { const keys = p.keys.map(k => String(k.id)); ans.forEach(a => { if (!keys.includes(a)) fail(at, `answer press "${a}" is not a key it has`); }); }
+    if (p.keys) { const keys = faceIds({ faces: p.keys }).map(String); ans.forEach(a => { if (!keys.includes(a)) fail(at, `answer press "${a}" is not a key it has`); }); }
     if (!p.repeat && new Set(ans).size !== ans.length) fail(at, 'presses the same thing twice, but is not marked repeat');
     if (!p.keys && !p.figure) fail(at, 'has neither keys nor a drawing to press');
   } else if (p.type === 'tiles') {
@@ -122,6 +122,17 @@ function checkBuilt(at, o) {
     if (start.slice().sort().join() !== want.slice().sort().join()) fail(at, 'starts with pieces that are not its own');
     if (start.join() === want.join()) fail(at, 'starts already solved');
     if (!p.pieces && !(p.picture && p.picture.body)) fail(at, 'has no picture to cut up');
+  } else if (p.type === 'levels') {
+    const n = Array.isArray(p.cols) ? p.cols.length : p.cols, max = p.max || 5, ans = list(p.answer).map(Number), start = (p.start || []).map(Number);
+    if (ans.length !== n) fail(at, `has ${n} columns and an answer ${ans.length} long`);
+    ans.forEach(a => { if (!(a >= 0 && a <= max)) fail(at, `answer wants a column at ${a}, but they only go to ${max}`); });
+    if (ans.every((a, i) => a === (start[i] || 0))) fail(at, 'starts already set to its answer');
+    if (new Set(ans).size < 2) fail(at, 'wants every column at the same height — that is not a setting, it is a switch');
+  } else if (p.type === 'keypad') {
+    if (!/^\d{3,8}$/.test(String(p.answer))) fail(at, `answer "${p.answer}" is not something a number pad can key`);
+  } else if (p.type === 'hold') {
+    const max = p.max || 10;
+    if (!(p.target > 0.15 * max && p.target < 0.95 * max)) fail(at, `is to be held at ${p.target}, too near the end of a gauge that runs to ${max}`);
   } else if (p.type === 'tune') {
     if (!(p.at > p.min && p.at < p.max)) fail(at, `sits at ${p.at}, off its own dial (${p.min}–${p.max})`);
     if (Math.abs((p.start != null ? p.start : p.min) - p.at) <= (p.tol || 0.3)) fail(at, 'starts already tuned');
@@ -132,6 +143,7 @@ function checkBuilt(at, o) {
 function spoken(o) {
   const p = o.puzzle;
   if (p.type === 'tune') return { whole: [String(p.at)] };
+  if (p.type === 'hold') return { whole: [String(p.target)] };
   if (p.answer == null) return {};
   if (Array.isArray(p.answer)) {
     const words = p.answer.map(String);
@@ -366,7 +378,7 @@ const finales = loaded.map(s => {
   const last = s.rooms[s.rooms.length - 1];
   const o = last.objects[last.objects.length - 1];
   const p = o.puzzle || {};
-  return [s.id, kindLabel(o) + ':' + JSON.stringify(p.answer != null ? p.answer : (p.answers || [''])[0])];
+  return [s.id, kindLabel(o) + ':' + JSON.stringify(p.answer != null ? p.answer : p.target != null ? p.target : (p.answers || [''])[0])];
 });
 const fseen = new Map();
 for (const [id, f] of finales) {
