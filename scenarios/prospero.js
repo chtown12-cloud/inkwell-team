@@ -404,17 +404,6 @@ const padFig = ART.svg(440, 440, (() => {
   }));
   return b;
 })());
-function terminalBody(open) {
-  let b = `<rect x="52" y="112" width="46" height="62" fill="#141e2a"/><rect x="30" y="170" width="90" height="10" rx="4" fill="${P.edge}"/>`;
-  b += `<rect x="2" y="2" width="146" height="112" rx="9" fill="#0a141c" stroke="#2a4258" stroke-width="5"/><rect class="flick" x="14" y="14" width="122" height="88" rx="4" fill="#06130c"/>`;
-  if (!open) [0, 1, 2].forEach(r => [0, 1, 2].forEach(c => b += `<circle cx="${47 + c * 28}" cy="${32 + r * 26}" r="7" fill="none" stroke="${P.crt}" stroke-width="2.5" opacity=".85"/>`));
-  else {
-    [0, 1, 2, 3, 4].forEach(i => b += `<rect x="${24 + i * 22}" y="34" width="12" height="3.5" fill="${P.crt}"/><rect x="${24 + i * 22 + (i % 2 ? 0 : 8.5)}" y="38" width="3.5" height="13" fill="${P.crt}"/>`);
-    b += `<path d="M14 58l22 -5l18 7l26 -6l20 6l36 -4V102H14Z" fill="#020604"/><path d="M14 58l22 -5l18 7l26 -6l20 6l36 -4" fill="none" stroke="#8fb8a2" stroke-width="1.5" opacity=".7"/>`;
-  }
-  return b;
-}
-
 /* ---- seven-segment digits, and the five that matter ---- */
 const SEG = { 0: 'abcdef', 1: 'bc', 2: 'abged', 3: 'abgcd', 4: 'fgbc', 5: 'afgcd', 6: 'afgedc', 7: 'abc', 8: 'abcdefg', 9: 'abcdfg' };
 function seg7(x, y, w, h, digit, on, ghost) {
@@ -429,6 +418,22 @@ function seg7(x, y, w, h, digit, on, ghost) {
 }
 const POD_READS = { 1: 3, 2: 9, 3: 5, 5: 6, 6: 7 };          // pod number -> what its readout says (pod 4 is yours, and dark)
 const LIFT_CODE = Object.keys(POD_READS).map(k => POD_READS[k]).join('');
+
+function terminalBody(open) {
+  let b = `<rect x="52" y="112" width="46" height="62" fill="#141e2a"/><rect x="30" y="170" width="90" height="10" rx="4" fill="${P.edge}"/>`;
+  b += `<rect x="2" y="2" width="146" height="112" rx="9" fill="#0a141c" stroke="#2a4258" stroke-width="5"/><rect class="flick" x="14" y="14" width="122" height="88" rx="4" fill="#06130c"/>`;
+  if (!open) [0, 1, 2].forEach(r => [0, 1, 2].forEach(c => b += `<circle cx="${47 + c * 28}" cy="${32 + r * 26}" r="7" fill="none" stroke="${P.crt}" stroke-width="2.5" opacity=".85"/>`));
+  else {
+    // What is on the screen in the room is what is on it close up: the same six columns, drawn by the same
+    // hand from the same numbers. (It once showed five made-up shapes here, and they could be read — wrongly.)
+    [1, 2, 3, 4, 5, 6].forEach((n, i) => {
+      const x = 19.5 + i * 19.6;
+      b += POD_READS[n] != null ? seg7(x, 27, 13, 36, POD_READS[n], P.crt, 0) : `<rect x="${x + 2}" y="35" width="9" height="2.6" rx="1" fill="${P.crt}" opacity=".4"/>`;
+    });
+    b += `<path d="M14 43l22 -3l18 4l26 -4l20 4l36 -3V102H14Z" fill="#020604"/><path d="M14 43l22 -3l18 4l26 -4l20 4l36 -3" fill="none" stroke="#8fb8a2" stroke-width="1.5" opacity=".7"/>`;
+  }
+  return b;
+}
 
 /* what the terminal shows once it is in: the readouts' upper halves, and dead glass below the crack */
 const telemetryFig = ART.svg(680, 330, (() => {
@@ -732,7 +737,7 @@ const beaconArt = (live) => {
 };
 function beaconBody(live) {
   return `<circle cx="58" cy="62" r="52" fill="#0c121a" stroke="${P.edge}" stroke-width="7"/>` + [36, 24, 12].map(r => `<circle cx="58" cy="62" r="${r}" fill="none" stroke="#060a10" stroke-width="5"/>`).join('')
-    + `<circle cx="58" cy="14" r="9" fill="${live ? P.cyan : '#141c26'}" stroke="${P.dark}" stroke-width="2"${live ? ' class="slowblink"' : ''}/>` + (live ? `<circle cx="58" cy="14" r="20" fill="${P.cyan}" opacity=".18"/>` : '');
+    + `<circle cx="58" cy="14" r="9" fill="${live ? '#fdfbe8' : '#141c26'}" stroke="${P.dark}" stroke-width="2"${live ? ' class="slowblink"' : ''}/>` + (live ? `<circle cx="58" cy="14" r="20" fill="#fdfbe8" opacity=".14"/>` : '');
 }
 
 /* ---- engineering's scope, and the rods it is talking about ---- */
@@ -755,7 +760,7 @@ const scopeArt = (live) => {
 function scopeBody(live) {
   let b = `<rect x="2" y="2" width="116" height="116" rx="12" fill="#121c28" stroke="${P.edge}" stroke-width="4"/><circle cx="60" cy="60" r="46" fill="#06130c" stroke="${P.dark}" stroke-width="3"/>`;
   if (!live) return b;
-  [16, 31, 46].forEach(r => b += `<circle cx="60" cy="60" r="${r}" fill="none" stroke="${P.crt}" stroke-width="1.2" opacity=".4"/>`);
+  [1, 2, 3, 4, 5].forEach(n => b += `<circle cx="60" cy="60" r="${(n * 8.6).toFixed(1)}" fill="none" stroke="${P.crt}" stroke-width="1" opacity=".4"/>`);   // one ring per step, as close up
   SPOKES.forEach((col, i) => { const a = i * 72 * Math.PI / 180, n = RODS.find(r => r[0] === col)[1];
     b += `<path d="M60 60L${(60 + Math.sin(a) * 44).toFixed(1)} ${(60 - Math.cos(a) * 44).toFixed(1)}" stroke="${C[col]}" stroke-width="2.5"/><circle cx="${(60 + Math.sin(a) * n * 8.6).toFixed(1)}" cy="${(60 - Math.cos(a) * n * 8.6).toFixed(1)}" r="3.6" fill="#fdfbe8"/>`; });
   return b;

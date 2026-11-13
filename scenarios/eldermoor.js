@@ -669,8 +669,9 @@ function binnacleBody(open) {
 }
 function scrapsBody(whole) {
   if (whole) {
-    return `<ellipse cx="88" cy="74" rx="80" ry="6" fill="#000" opacity=".22"/><g transform="rotate(-5 88 40)"><rect x="18" y="8" width="140" height="62" fill="#d9c99d" stroke="#4a3a22" stroke-width="2"/>`
-      + `<path d="M40 58V44H76V30H56V18H130" fill="none" stroke="#8a2b1f" stroke-width="2.5" stroke-dasharray="5 4"/><circle cx="128" cy="50" r="9" fill="none" stroke="#4a3a22" stroke-width="1.5"/></g>`;
+    // the same chart as the close-up, small: a made-up course here could be read, and would be wrong
+    return `<ellipse cx="88" cy="76" rx="70" ry="5" fill="#000" opacity=".22"/><g transform="rotate(-5 88 40)"><rect x="28" y="0" width="120" height="80" fill="#d9c99d" stroke="#4a3a22" stroke-width="2"/>`
+      + ART.inset(29, 1, 118, 78, chartArt.w, chartArt.h, chartArt.body, { clip: true }) + `</g>`;
   }
   let b = `<ellipse cx="88" cy="74" rx="80" ry="6" fill="#000" opacity=".2"/>`;
   [[10, 30, -14], [52, 10, 9], [98, 22, -6], [34, 44, 16], [80, 46, -20], [124, 44, 11]].forEach(([x, y, r], i) => {
@@ -1172,7 +1173,7 @@ function gateboxBody(open) {
   [0, 1, 2, 3].forEach(i => b += `<rect x="${13 + i * 15.4}" y="22" width="11" height="26" rx="2" fill="${open ? '#7fe08f' : '#0c0f0f'}" stroke="#6a7a74" stroke-width="1.5"/>`);
   return b;
 }
-function winchBody(solved) {
+function gateWinchBody(solved) {
   const w = (x) => `<circle cx="${x}" cy="46" r="26" fill="#2c1d10" stroke="#120b05" stroke-width="4"/><circle cx="${x}" cy="46" r="7" fill="#9aa3a7"/>`
     + [0, 60, 120].map(a => `<path d="M${x - 24} 46h48" stroke="#5a3d22" stroke-width="5" transform="rotate(${a + (solved ? 30 : 0)} ${x} 46)"/>`).join('');
   return w(34) + w(206);
@@ -1249,7 +1250,7 @@ const ROOM3 = {
         solvedText:"Four carvings line up and a pin drops inside the post. The gate is unlocked — but the beam across it has not moved." } },
     { id:'gate', icon:'🌉', name:'Gorge Gate', pos:POS3.gate, hiddenUntil:'gatebox',
       desc:"A counterweight beam bars the bridge, and the two winches that lift it stand at opposite ends of the platform — too far apart for one pair of hands.",
-      sprite:st=>ART.sprite(POS3.gate, 240, 92, winchBody(st.solved)),
+      sprite:st=>ART.sprite(POS3.gate, 240, 92, gateWinchBody(st.solved)),
       puzzle:{ type:'simul',
         stations:[{id:'gate-port',label:'Near Winch',icon:'⚙️'},{id:'gate-star',label:'Far Winch',icon:'⚙️'}],
         need:2, pullLabel:'HAUL ON THREE',
@@ -1425,7 +1426,7 @@ function raftBody(built) {
   b += `<path d="M127 88V6" stroke="#3a2815" stroke-width="6" stroke-linecap="round"/><path d="M131 10L190 70H131Z" fill="#e9e1c9" stroke="#3a2815" stroke-width="2"/>`;
   return b;
 }
-function winchBody(free) {
+function launchWinchBody(free) {
   let b = `<rect x="46" y="60" width="16" height="140" fill="#241a10"/>`;
   [0, 1, 2, 3].forEach(i => b += `<path d="M10 62H98" stroke="#20241f" stroke-width="7" stroke-linecap="round" transform="rotate(${i * 45 + (free ? 20 : 0)} 54 62)"/>`);
   b += `<circle cx="54" cy="62" r="40" fill="#3a3d38" stroke="#20241f" stroke-width="6"/>`;
@@ -1496,7 +1497,7 @@ const ROOM4 = {
     { id:'tideclock', icon:'⚙️', name:'Launch Winch', pos:POS4.tideclock, needs:'raft',
       desc:"The winch that pays the raft out over the reef. Its brake is a tide clock: it lets go at the time it is set to, and not before.",
       deadDesc:"A winch with a clock for a brake, and a line that runs down the sand to nothing. There is no raft to launch yet.",
-      sprite:st=>ART.sprite(POS4.tideclock, 108, 204, winchBody(st.solved)),
+      sprite:st=>ART.sprite(POS4.tideclock, 108, 204, launchWinchBody(st.solved)),
       puzzle:{ type:'clock', from:['locker','moon'], start:{h:12,m:0}, answer:TIDE_AT, window:TIDE_OPEN, tryLabel:'RELEASE THE BRAKE',
         miss:"The brake lets go and the raft slides out — and grounds hard on the reef. You haul her back up the sand.",
         hints:[

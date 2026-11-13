@@ -39,12 +39,23 @@ for (const lib of ['art', 'figures']) {
   const f = path.join(root, 'lib', lib + '.js');
   if (fs.existsSync(f)) vm.runInThisContext(fs.readFileSync(f, 'utf8'), { filename: lib });
 }
+const SOURCE = {};
 for (const id of SCENARIOS) {
-  vm.runInThisContext(fs.readFileSync(path.join(root, 'scenarios', id + '.js'), 'utf8'), { filename: id });
+  SOURCE[id] = fs.readFileSync(path.join(root, 'scenarios', id + '.js'), 'utf8');
+  vm.runInThisContext(SOURCE[id], { filename: id });
 }
 
 let fails = 0;
 const fail = (where, msg) => { console.log(`  FAIL  ${where}\n        ${msg}`); fails++; };
+
+/* A scenario is one file, and its rooms are written one after another in it. Two drawing functions with the
+   same name do not collide out loud: the later one quietly replaces the earlier, and a room is drawn with
+   another room's prop. (The jungle gate once wore the launch winch's clock for exactly this reason.) */
+for (const id of SCENARIOS) {
+  const seen = {}, twice = new Set();
+  for (const m of SOURCE[id].matchAll(/^function\s+([A-Za-z_$][\w$]*)/gm)) { if (seen[m[1]]) twice.add(m[1]); seen[m[1]] = true; }
+  twice.forEach(name => fail(id, `two functions are both called ${name}: the second silently replaces the first`));
+}
 const squash = (s) => String(s).toUpperCase().replace(/[^A-Z0-9]/g, '');
 const list = (a) => Array.isArray(a) ? a.map(String) : String(a == null ? '' : a).split('');
 
