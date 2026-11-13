@@ -76,11 +76,8 @@ ${[0,1,2,3].map(i=>`<g>
   <rect x="${120+i*330}" y="220" width="150" height="380" rx="6" fill="#3a2a16" stroke="#241a0c" stroke-width="6"/>
   <circle cx="${252+i*330}" cy="420" r="7" fill="#c9a04a"/>
   <rect x="${150+i*330}" y="250" width="90" height="60" rx="4" fill="#d9cba6"/>
-  <text x="${195+i*330}" y="288" text-anchor="middle" font-family="Special Elite" font-size="22" fill="#3a2d1c">${i+1}</text>
+  <text x="${195+i*330}" y="288" text-anchor="middle" font-family="Special Elite" font-size="22" fill="#3a2d1c">${[10,11,12,14][i]}</text>
 </g>`).join('')}
-<!-- cabin 3 stands ajar, gramophone light inside -->
-<rect x="782" y="226" width="90" height="370" fill="#0d0805"/>
-<ellipse class="flick" cx="822" cy="480" rx="60" ry="90" fill="#c9a04a" opacity=".12"/>
 <!-- window strip along the top with passing lights -->
 <g>
   <rect x="0" y="60" width="1600" height="120" fill="#05070d" stroke="#241a0c" stroke-width="8"/>
@@ -93,41 +90,7 @@ ${[0,1,2,3].map(i=>`<g>
 <rect y="640" width="1600" height="260" fill="#2c1f14"/>
 <path d="M200 640 L1400 640 L1560 900 L40 900z" fill="url(#mCarpet)"/>
 <path d="M240 660 L1360 660 M300 700 L1300 700" stroke="#c9a04a" stroke-width="3" opacity=".4"/>
-<!-- gramophone in cabin 3 -->
-<g id="art-gramophone">
-  <rect x="790" y="470" width="80" height="70" fill="#3a2a16"/>
-  <circle cx="830" cy="470" r="30" fill="#170f08" stroke="#5c4423" stroke-width="4"/>
-  <path d="M840 450 q40 -40 60 -14 q12 18 -18 34" fill="#c9a04a" opacity=".9"/>
-  <circle cx="830" cy="470" r="5" fill="#c9a04a"/>
-</g>
-<!-- the run-out groove panel (appears) -->
-<g id="el-runout">
-  <rect x="920" y="440" width="130 " height="110" rx="8" fill="#241a0c" stroke="#5c4423" stroke-width="5"/>
-  <circle cx="985" cy="480" r="30" fill="#0d0805"/>
-  ${[22,14].map(r=>`<circle cx="985" cy="480" r="${r}" fill="none" stroke="#3a2a16" stroke-width="2"/>`).join('')}
-  <circle class="slowblink" cx="985" cy="528" r="6" fill="#ffd98c"/>
-</g>
-<!-- locked valise -->
-<g id="el-valise">
-  <rect x="360" y="680" width="150" height="90" rx="14" fill="#4a2f1a" stroke="#2c1c0e" stroke-width="5" transform="rotate(-4 435 725)"/>
-  <rect x="410" y="668" width="50" height="16" rx="8" fill="#2c1c0e" transform="rotate(-4 435 725)"/>
-  <rect x="415" y="700" width="40" height="26" rx="4" fill="#c9a04a" transform="rotate(-4 435 725)"/>
-  <text x="435" y="800" text-anchor="middle" font-family="Special Elite" font-size="11" fill="#8a6a3a">ZNK IRGYV...</text>
-</g>
-<!-- berth 13 door, different from the rest -->
-<g id="el-berthlock">
-  <rect x="1330" y="240" width="150" height="360" rx="6" fill="#241207" stroke="#170a04" stroke-width="8"/>
-  <rect x="1360" y="270" width="90" height="60" rx="4" fill="#8a2418"/>
-  <text x="1405" y="308" text-anchor="middle" font-family="Special Elite" font-size="22" fill="#e0cfa2">13</text>
-  ${[0,1,2].map(i=>`<circle cx="${1380+i*24}" cy="450" r="9" fill="#0d0805" stroke="#c9a04a" stroke-width="3"/>`).join('')}
-</g>
-<!-- diary on the carpet -->
-<g id="art-diary">
-  <path d="M600 780 l70 -12 8 34 -70 13z" fill="#d9cba6" transform="rotate(6 635 795)"/>
-  <path d="M670 768 l64 8 -3 34 -64 -8z" fill="#cfc0a0" transform="rotate(6 635 795)"/>
-</g>
-<!-- punched tickets scattered -->
-${[[980,700,-10],[1060,740,14],[1150,700,-4]].map(([x,y,r])=>`<g transform="rotate(${r} ${x} ${y})"><rect x="${x-26}" y="${y-14}" width="52" height="28" rx="4" fill="#d9cba6"/><circle cx="${x+12}" cy="${y}" r="4" fill="#2c1f14"/></g>`).join('')}
+<!--SPRITES-->
 <g class="atmo">
 <!-- something in here is still running -->
 <circle id="rl-sleeper" cx="230" cy="210" r="6" fill="#ffd98c" opacity=".12"/>
@@ -557,82 +520,164 @@ const ROOM1 = {
   ]
 };
 
-const OLD_ROOMS = [
-/* ============ ROOM 2 — THE SLEEPER CORRIDOR ============ */
-{
+/* ============================================================
+   ROOM 2 — THE SLEEPER CORRIDOR
+   Berths 10, 11, 12, 14 — and at the end of the car, a berth 13 that
+   should not be there. Its passenger hung her coat outside with her
+   ticket in the pocket and a card on the door asking to be woken for
+   her stop; the timetable on the wall says when that is. Inside, her
+   gramophone turns at the wrong speed. Bring it up until her song
+   comes clear, and ring it on the attendant's bells.
+   ============================================================ */
+
+/* ---- the timetable: the line's stations down the side, four trains across ---- */
+const TRAINS = ['sun', 'moon', 'comet', 'planet'];
+const TIMES = {
+  sun:    ['6:05', '6:20', '6:31', '6:44', '6:58', '7:10', '7:26', '7:41', '7:55', '8:09'],
+  moon:   ['11:50', '12:14', '', '12:52', '', '1:31', '', '2:35', '3:02', ''],
+  comet:  ['9:40', '', '10:02', '', '10:30', '', '', '11:05', '', '11:30'],
+  planet: ['4:10', '4:24', '4:37', '4:49', '5:03', '5:16', '5:31', '5:45', '5:58', '6:12'],
+};
+const HER_STOP = 'leaf';
+const WAKE = TIMES.moon[LINE.indexOf(HER_STOP)];
+const timetableArt = { w: 440, h: 620, body: (() => {
+  let b = `<rect width="440" height="620" fill="${M.woodDark}"/><rect x="12" y="12" width="416" height="596" fill="${M.paper}"/>`
+    + `<path d="M24 84H416M104 24V596" stroke="${M.ink}" stroke-width="3"/>`;
+  TRAINS.forEach((t, j) => {
+    const x = 146 + j * 80;
+    b += t === 'moon' ? `<circle cx="${x}" cy="52" r="24" fill="${M.paper}" stroke="${M.ink}" stroke-width="3"/>` + crescent(x - 4, 52, 15, M.ink)
+      : roundel(t, x, 52, 24);
+    if (j) b += `<path d="M${x - 40} 24V596" stroke="${M.paperDark}" stroke-width="2"/>`;
+  });
+  LINE.forEach((s, i) => {
+    const y = 120 + i * 50;
+    b += roundel(s, 62, y, 20) + (i ? `<path d="M24 ${y - 25}H416" stroke="${M.paperDark}" stroke-width="1.5"/>` : '');
+    TRAINS.forEach((t, j) => {
+      const v = TIMES[t][i], x = 146 + j * 80;
+      b += v ? W(x, y + 7, v, { size: 20, fill: M.ink, weight: 700, face: 'num' }) : `<path d="M${x - 12} ${y}H${x + 12}" stroke="${M.ink}" stroke-width="3"/>`;
+    });
+  });
+  return b;
+})() };
+
+/* ---- her coat, on the hook by berth 13, and the ticket in its pocket ---- */
+const herTicket = (x, y, s) => `<g transform="translate(${x} ${y}) scale(${s})"><rect width="190" height="112" rx="8" fill="#e8d0c8" stroke="${M.ink}" stroke-width="3"/>`
+  + `<path d="M132 8V104" stroke="${M.ink}" stroke-width="2" stroke-dasharray="5 5"/>` + roundel(HER_STOP, 40, 56, 24)
+  + W(98, 74, '13', { size: 40, fill: M.ink, weight: 700, face: 'num' }) + crescent(162, 56, 13, '#120c08') + `</g>`;
+const coatBody = `<circle cx="70" cy="18" r="8" fill="${M.brass}"/><path d="M70 24Q40 30 30 70L14 300Q12 318 30 318H110Q128 318 126 300L110 70Q100 30 70 24Z" fill="#3a1620" stroke="#1a0a0e" stroke-width="4"/>`
+  + `<path d="M70 26L56 120M70 26L84 120" stroke="#1a0a0e" stroke-width="3"/><path d="M70 120V318" stroke="#1a0a0e" stroke-width="3"/>`
+  + [150, 190, 230].map(y => `<circle cx="80" cy="${y}" r="4" fill="${M.brass}"/>`).join('')
+  + `<path d="M26 220H62V244H26Z" fill="#2a0e14" stroke="#1a0a0e" stroke-width="3"/><rect x="34" y="206" width="22" height="20" rx="2" fill="#e8d0c8" transform="rotate(-12 45 216)"/>`;
+const coatArt = { w: 460, h: 340, body: `<rect width="460" height="340" fill="${M.wall}"/>` + coatBody + herTicket(170, 110, 1.4) };
+
+/* ---- berth 13, with the card on its door ---- */
+function berthBody(st) {
+  let b = `<rect x="6" y="6" width="138" height="358" rx="6" fill="#241207" stroke="#170a04" stroke-width="8"/>`;
+  if (st.solved) {
+    b += `<rect x="14" y="14" width="122" height="342" fill="#120a06"/><ellipse cx="80" cy="260" rx="60" ry="90" fill="${M.brass}" opacity=".12"/>`
+      + `<rect x="18" y="300" width="114" height="50" fill="#3a2a16"/><path d="M14 14L-14 30V340L14 356Z" fill="#2c160a" stroke="#170a04" stroke-width="4"/>`;
+  } else {
+    b += `<rect x="34" y="30" width="80" height="54" rx="4" fill="#8a2418"/>` + W(74, 68, '13', { size: 30, fill: '#e0cfa2', weight: 700, face: 'num' })
+      + `<circle cx="126" cy="200" r="7" fill="${M.brass}"/><path d="M74 108L54 132M74 108L94 132" stroke="${M.paperDark}" stroke-width="2"/>`
+      + `<rect x="40" y="130" width="68" height="92" rx="5" fill="${M.paper}" stroke="${M.ink}" stroke-width="2"/>`
+      + ART.clockFace(74, 168, 24, 12, 0, { face: '#f2ead2', ink: '#1c1408', rim: M.ink, hands: false })
+      + `<path d="M58 206h32" stroke="${M.ink}" stroke-width="2"/>`;
+  }
+  return b;
+}
+
+/* ---- her gramophone, and her record ---- */
+function gramBody(st) {
+  return `<rect x="6" y="64" width="64" height="40" fill="#3a2a16" stroke="#170a04" stroke-width="3"/><ellipse cx="38" cy="64" rx="30" ry="6" fill="#120a06"/>`
+    + `<path d="M38 60L52 30Q60 4 78 6L80 40Q64 34 52 38Z" fill="${M.brass}" stroke="${M.brassDark}" stroke-width="2"/>`
+    + (st.solved ? `<path d="M80 14q8 -6 14 0M84 26q8 -6 14 0" stroke="${M.lamp}" stroke-width="2" fill="none"/>` : '');
+}
+const BELLS = ['10', '11', '12', '14', '15', '16'];
+const BELL_TONE = { 10: 392, 11: 440, 12: 523, 14: 587, 15: 659, 16: 784 };
+const HER_SONG = ['12', '15', '11', '16', '14'];
+const recordFig = ART.svg(420, 300, `<rect width="420" height="300" fill="${M.woodDark}"/><circle cx="210" cy="150" r="128" fill="#0c0806"/>`
+  + [110, 92, 74].map(r => `<circle cx="210" cy="150" r="${r}" fill="none" stroke="#2a201a" stroke-width="2"/>`).join('')
+  + `<circle cx="210" cy="150" r="44" fill="#8a2418"/>` + crescent(206, 150, 18, M.paper) + `<circle cx="210" cy="150" r="4" fill="#0c0806"/>`);
+
+/* ---- the attendant's call bells, at the end of the car ---- */
+const bellBoard = (keys) => {
+  let b = `<rect width="300" height="460" fill="${M.wall}"/><rect x="30" y="20" width="240" height="420" rx="14" fill="${M.brassDark}" stroke="#3a2a10" stroke-width="5"/>`
+    + `<rect x="44" y="34" width="212" height="392" rx="10" fill="${M.brass}"/>`;
+  BELLS.forEach((n, i) => {
+    const x = 100 + (i % 2) * 100, y = 90 + Math.floor(i / 2) * 120;
+    const push = `<circle cx="${x}" cy="${y}" r="34" fill="${M.woodDark}" stroke="#3a2a10" stroke-width="4"/><circle cx="${x}" cy="${y}" r="22" fill="#e8dcc0"/>`
+      + W(x, y + 58, n, { size: 26, fill: M.ink, weight: 700, face: 'num' });
+    b += keys ? `<g data-key="${n}" data-x="${x}" data-y="${y}">${push}</g>` : push;
+  });
+  return b;
+};
+
+const POS2 = {
+  timetable:  { x: 37.75, y: 25.6, w: 10.4,  h: 26.7 },
+  coat:       { x: 78.9,  y: 33.3, w: 4.1,   h: 24.4 },
+  berth13:    { x: 83.4,  y: 25.6, w: 9.4,   h: 41.1 },
+  gramophone: { x: 85.6,  y: 45.6, w: 5.6,   h: 12.2 },
+  bellpanel:  { x: 93.75, y: 27.8, w: 5.6,   h: 18.9 },
+};
+
+const ROOM2 = {
   id:'sleeper', name:'Room 2 — The Sleeper Corridor', scene:'sleeper', stageFx:'rocking',
   relays:[{el:'rl-sleeper',mode:'pulse',period:4.2}],
   wrongSound:'creak',
   wrongVfx:'shadow',
-  intro:"Four cabins, all made up for the night. Cabin 3 stands ajar, and a gramophone is playing to nobody.",
-  objective:"The passengers' things remember more than the passengers. Find the record's speed — then <b>mind what he left behind.</b>",
-  entryBeat:"Every cabin's berth is turned down, and on every pillow sits a ticket, neatly punched. You did not hear him pass. You never hear him pass.",
-  entrySound:'clack',
-  completeText:"Berth 13's door swings open on an empty room and a cold draft moving toward the dining car. You follow it, because the alternative is staying.",
-  chain:"Passenger diary (“he played it at 78, only ever the fourth song”) → set the gramophone to 78.4 → the record sleeve is English written in Cyrillic = WRONG STOP → the valise rail-fence cipher (two rails, BAERK) = BRAKE → berth 13 boarding-order logic (seat 7 between, 2 before 6) = 276.",
+  intro:"Berths 10, 11, 12 and 14. And at the end of the car, a door there is no number for.",
+  objective:"The dining car door is bolted from the far side. Whatever opens a lock is somewhere else in this corridor.",
+  entryBeat:"Every berth is made up and every berth is empty. Behind the door at the end, a gramophone is playing at the wrong speed.",
+  entrySound:'creak',
+  completeText:"The last bell rings, and far off a bolt slides back. The dining car door opens on candlelight and laid tables, and a smell of dinner that has been keeping warm since 1927.",
+  chain:`Her coat hangs outside berth 13 with her ticket in the pocket: ${HER_STOP}, punched with the crescent; the timetable's crescent column has the special at ${HER_STOP} at ${WAKE}, so the card on her door is set to ${WAKE} (anything from 2:25 counts as waking her in time) → inside, her gramophone runs slow until it is brought up to 78 → her record's five notes are the call bells for berths ${HER_SONG.join(', ')}, rung in that order.`,
   objects:[
-    { id:'diary', icon:'📔', name:"A Passenger's Diary", pos:{x:36,y:82,w:11,h:12},
-      desc:"A lady's travel diary, dropped open on the runner:\n\n“The man in Cabin 3 plays his gramophone at all hours. Always at 78, and only ever the fourth song on the record — he lifts the needle back, again and again. I could not place his accent — White Russian, Mrs. Pemberton insists. He came aboard with one record and no luggage.”\n\n“I asked the Conductor to speak to him. The Conductor said — and I am sure I misheard — that Cabin 3 has been empty since the accident.”" },
-    { id:'gramophone', icon:'📻', name:'The Gramophone', pos:{x:48,y:48,w:12,h:16},
-      desc:"Cabin 3's gramophone, brass horn dented, turntable waiting. The speed dial is a strange aftermarket thing — speed, then a point, then the track.\n\nThe diary said he only ever played one song.",
-      puzzle:{
-        type:'dial',
-        prompt:"Set the speed and track, then work the tone knobs until the groove tracks clean.",
-        answers:['784'],
-        dial:{min:600,max:900,div:10,target:784,pad:4,meter:'GROOVE TRACKING',lock:'DROP THE NEEDLE',miss:'the needle skates across dead wax.',
-          knobs:[{label:'NEEDLE WEIGHT',target:44},{label:'HORN GATE',target:69},{label:'GOVERNOR',target:26}]},
+    { id:'timetable', icon:'🕰️', name:'Timetable', pos:POS2.timetable,
+      desc:"The line's timetable: every station down the side, and four trains across the top, each with its emblem.",
+      figure:ART.svg(timetableArt.w, timetableArt.h, timetableArt.body),
+      sprite:ART.sprite(POS2.timetable, timetableArt.w, timetableArt.h, timetableArt.body) },
+    { id:'coat', icon:'🧥', name:'Her Coat', pos:POS2.coat,
+      desc:"A travelling coat on the hook outside berth 13. There is a ticket in the pocket.",
+      figure:ART.svg(coatArt.w, coatArt.h, coatArt.body),
+      sprite:ART.sprite(POS2.coat, 140, 330, coatBody) },
+    { id:'berth13', icon:'🚪', name:'Berth 13', pos:POS2.berth13,
+      desc:"A card on the door: wake me for my stop. Its little clock is set to nothing.",
+      sprite:st=>ART.sprite(POS2.berth13, 150, 370, berthBody(st)),
+      puzzle:{ type:'clock', from:['coat', 'timetable'], start:{h:12,m:0}, answer:WAKE, window:['2:25', WAKE], tryLabel:'SET THE CARD',
+        miss:"The door stays shut. She would sleep straight through her stop.",
         hints:[
-          "The diary gives both parts: the speed, then the song he replayed.",
-          "He played it at 78 — and only ever the fourth song. Speed, point, track.",
-          "Set the dial to exactly 78.4, then work the three knobs one at a time until the panel reads LOCKED IN."
+          "She wants waking for her stop. Her ticket, in the coat on the hook, says where she is going.",
+          "Find her station down the side of the timetable, and the Midnight Special's column across the top: the crescent. Where they meet is when she arrives.",
+          `She is going to the leaf station, and the special is there at ${WAKE}.`
         ],
-        solvedText:"At 78.4 the fourth song swells — a Russian waltz, beautiful and wrong. And as it plays, the RECORD SLEEVE propped on the cabinet catches the lamplight: someone has written across it, hard enough to tear the paper."
-      }
-    },
-    { id:'runout', onSolve:{el:'rx-sleeper',op:.2,fx:'surge'}, icon:'💿', name:'The Record Sleeve', pos:{x:57,y:47,w:10,h:15}, hiddenUntil:'gramophone',
-      desc:"The sleeve of the Russian pressing — and across it, in heavy pencil, two words in the writer's own alphabet:\n\n<span style='font-size:1.7rem;letter-spacing:6px'>ВРОНГ&nbsp;&nbsp;СТОП</span>\n\nNot Russian words. The hand was writing English sounds the only way it knew how. Sound the letters out.",
-      puzzle:{
-        prompt:"Sound out the two penciled words.",
-        placeholder:"TWO WORDS", answers:['WRONGSTOP','VRONGSTOP'],
+        solvedText:"The card turns on its string and the door of berth 13 swings in. The bed is made. On the table, her gramophone is still turning." } },
+    { id:'gramophone', icon:'📀', name:'Her Gramophone', pos:POS2.gramophone, hiddenUntil:'berth13',
+      desc:"Her record, dragging round far too slowly. Bring it up to speed until her song comes clear.",
+      sprite:st=>ART.sprite(POS2.gramophone, 90, 110, gramBody(st)),
+      puzzle:{ type:'tune', min:16, max:90, step:1, start:24, at:78, tol:1, unit:'rpm',
         hints:[
-          "That's the Cyrillic alphabet. Look it up and give each letter its sound: В is a V, Р is an R, С is an S…",
-          "Sound out the first word: V-R-O-N-G. Say it aloud — it's an English word in Russian dress. The second word even means the same thing in both languages.",
-          "ВРОНГ СТОП — WRONG STOP. Enter WRONGSTOP."
+          "Turn the speed up slowly and listen: the record drags, then wobbles, then plays.",
+          "Gramophones of her day ran fast, well past seventy.",
+          "It plays true at 78."
         ],
-        solvedText:"WRONG STOP. Penciled by a man who wanted the next passenger to know: whatever station this train pulls into tonight, do not get off. Stay aboard. Reach the engine.",
-        solveBeat:"Outside the windows, lights slide past — a platform, lamp posts, figures standing in rows. Every figure turns its head with the train, in unison, as you pass.",
-        beatSound:'hiss'
-      }
-    },
-    { id:'valise', icon:'💼', name:'The Locked Valise', pos:{x:21,y:73,w:12,h:15},
-      desc:"A gentleman's valise, banded shut. Someone has scratched a zigzag and five letters into the lock plate:\n\nZIGZAG CIPHER · TWO RAILS\nBAERK\n\n“Written up and down two rails, then read straight off — top rail first. Put it back on the rails to read it properly.”",
-      puzzle:{
-        prompt:"Enter the deciphered word.", placeholder:"FIVE LETTERS", answers:['BRAKE'],
+        solvedText:"At 78 the song comes clear: five notes, over and over, like somebody ringing for service.",
+        inside:{ name:'Her record', figure:recordFig, tool:{ type:'listen', notes:HER_SONG.map(n => BELL_TONE[n]), label:'play her song' } } } },
+    { id:'bellpanel', icon:'🛎️', name:'Call Bells', pos:POS2.bellpanel,
+      desc:"The attendant's bell push for each berth. The dining car door is bolted from the far side, and somebody over there is listening.",
+      sprite:ART.sprite(POS2.bellpanel, 300, 460, bellBoard(false)),
+      puzzle:{ type:'press', from:['gramophone'], slots:5, answer:HER_SONG, tones:BELL_TONE, figure:ART.svg(300, 460, bellBoard(true)),
+        echo:Object.fromEntries(BELLS.map(n => [n, n])),
+        miss:"The bells ring out down the car, and nothing answers.",
         hints:[
-          "Rail-fence, two rails: the first 3 letters (BAE) were the TOP rail, the last 2 (RK) the bottom rail.",
-          "Interleave them — top, bottom, top, bottom, top: B, R, A, K, E.",
-          "It spells BRAKE. THE CLASP OPENS TO: BRAKE."
+          "Five rings on six bells, and each bell has its own note. Her record plays five notes.",
+          "Play her song, then press each bell to hear its note. Match them one by one: the first note of the song is the first bell to ring.",
+          `Berths ${HER_SONG.join(', ')}.`
         ],
-        solvedText:"B-R-A-K-E. The valise opens on a railwayman's kit hidden under evening clothes: a brakeman's badge, berth 13's calibration card — and a revolver with six spent shells. Whatever he tried first, it wasn't puzzles."
-      }
-    },
-    { id:'berthlock', icon:'🚪', name:'Berth 13', pos:{x:82,y:26,w:11,h:42}, hiddenUntil:'valise',
-      desc:"Berth 13 — the cabin that is not on the car plan — locked at three digits. Three punched ticket stubs are pinned to the door, SEAT 2, SEAT 6 and SEAT 7, above the brakeman's note to himself:\n\n   “The lock takes the three seats in boarding order.\n    Seat 7 boarded between the other two.\n    Seat 2 boarded somewhere before seat 6.”",
-      puzzle:{
-        type:'keypad',
-        prompt:"Work out the boarding order of seats 2, 6 and 7, then enter the three digits.", answers:['276'],
-        hints:[
-          "Seat 7 boarded between the other two — so 7 is the MIDDLE digit, never first or last.",
-          "That leaves 2 and 6 for the ends, and seat 2 boarded before seat 6.",
-          "2, then 7, then 6 — enter 276."
-        ],
-        solvedText:"2-7-6. The lock gives — and berth 13 is empty except for a conductor's uniform laid out on the bunk like a shed skin, cap on the pillow, punch on the nightstand. The punch is still warm.",
-        solveBeat:"From the corridor behind you — from a spot each of you would swear was empty a breath ago — comes one soft, courteous cough.",
-        beatSound:'knock'
-      }
-    }
+        solvedText:"The fifth bell rings, and at the end of the car a bolt slides back. Nobody is there to have drawn it." } },
   ]
-},
+};
+
+const OLD_ROOMS = [
 /* ============ ROOM 3 — THE DINING CAR ============ */
 {
   id:'dining', name:'Room 3 — The Dining Car', scene:'dining', stageFx:'rocking',
@@ -798,7 +843,7 @@ const OLD_ROOMS = [
   ]
 }
 ];
-const ROOMS = [ROOM1, ...OLD_ROOMS];
+const ROOMS = [ROOM1, ROOM2, ...OLD_ROOMS];
 
 registerScenario({
   id:'midnight', classic:true,
