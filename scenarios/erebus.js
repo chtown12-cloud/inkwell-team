@@ -111,46 +111,18 @@ ${[0,1].map(i=>`<g transform="translate(${420+i*250},0)">
   <circle cx="1000" cy="560" r="90" fill="url(#eHeat)"/>
   ${[0,1,2].map(i=>`<rect class="flick" x="${958+i*30}" y="510" width="22" height="70" rx="4" fill="#b0502a" style="animation-delay:${i*.4}s"/>`).join('')}
 </g>
-<!-- shortwave set -->
-<g id="art-shortwave">
-  <rect x="1140" y="360" width="300" height="150" rx="10" fill="#22303a" stroke="#4c6478" stroke-width="6"/>
-  <rect x="1160" y="380" width="130" height="40" rx="4" fill="#06130c"/>
-  <text class="flick" x="1225" y="408" text-anchor="middle" font-family="Special Elite" font-size="20" fill="#8fe0a0">--.-</text>
-  <circle cx="1340" cy="420" r="30" fill="#0d1216" stroke="#5c7488" stroke-width="5"/>
-  <line x1="1340" y1="420" x2="1358" y2="400" stroke="#8fe0a0" stroke-width="4"/>
-  ${[0,1,2,3].map(i=>`<circle cx="${1180+i*36}" cy="470" r="9" fill="#1a242c"/>`).join('')}
-  <path d="M1300 360 q30 -60 90 -80" stroke="#4c6478" stroke-width="4" fill="none"/>
-</g>
-<!-- reel-to-reel (hidden until shortwave) -->
-<g id="el-recorder">
-  <rect x="1160" y="560" width="220" height="110" rx="10" fill="#1c262e" stroke="#4c6478" stroke-width="5"/>
-  ${[0,1].map(i=>`<g><circle cx="${1220+i*110}" cy="606" r="34" fill="#0d1216" stroke="#5c7488" stroke-width="4"/>
-  <circle cx="${1220+i*110}" cy="606" r="10" fill="#2a3a48"/></g>`).join('')}
-  <rect x="1200" y="646" width="150" height="12" rx="4" fill="#0d1216"/>
-</g>
-<!-- foot lockers -->
-<g id="el-footlocker">
-  <rect x="430" y="640" width="180" height="90" rx="8" fill="#46607a" stroke="#2a3a48" stroke-width="5"/>
-  <rect x="430" y="640" width="180" height="24" rx="8" fill="#5c7488"/>
-  <rect x="500" y="672" width="40" height="30" rx="4" fill="#1a242c"/>
-  <text x="520" y="758" text-anchor="middle" font-family="Special Elite" font-size="11" fill="#8aa4ba">VJG EQFG KU...</text>
-</g>
-<!-- generator panel (hidden) -->
-<g id="el-genpanel">
-  <rect x="700" y="640" width="180" height="170" rx="10" fill="#22303a" stroke="#4c6478" stroke-width="6"/>
-  ${[0,1,2].map(r=>[0,1,2].map(c=>`<circle class="flick" cx="${740+c*50}" cy="${680+r*46}" r="9" fill="#0a1018" stroke="#c9a04a" stroke-width="2" style="animation-delay:${(r+c)*.3}s"/>`).join('')).join('')}
-</g>
-<!-- duty roster -->
+<!-- the end wall: the day tanks stand against it, the generator room is through it -->
 <g>
-  <rect x="60" y="430" width="120" height="150" fill="#dce8f2" transform="rotate(-2 120 505)"/>
-  ${[0,1,2,3,4].map(i=>`<line x1="76" y1="${458+i*22}" x2="164" y2="${454+i*22}" stroke="#5a6a78" stroke-width="3" transform="rotate(-2 120 505)"/>`).join('')}
-  <text x="120" y="448" text-anchor="middle" font-family="Special Elite" font-size="11" fill="#7a2a1a" transform="rotate(-2 120 505)">DUTY ROSTER</text>
+  <rect x="1070" y="150" width="530" height="470" fill="#1b252e"/>
+  <path d="M1070 150V620" stroke="#0d1216" stroke-width="6"/>
+  <path d="M1070 230H1600" stroke="#141c22" stroke-width="3"/><path d="M1070 330H1600" stroke="#141c22" stroke-width="3"/><path d="M1070 430H1600" stroke="#141c22" stroke-width="3"/><path d="M1070 530H1600" stroke="#141c22" stroke-width="3"/>
 </g>
-<!-- nine empty parkas on hooks -->
+<!-- five empty parkas on hooks -->
 <g>
 ${[0,1,2,3,4].map(i=>`<g><circle cx="${640+i*56}" cy="180" r="4" fill="#3a2d1a"/>
  <path d="M${640+i*56} 184 q-20 14 -18 70 l36 0 q2 -56 -18 -70z" fill="${i%2?'#b03a2a':'#46607a'}"/></g>`).join('')}
 </g>
+<!--SPRITES-->
 <g class="atmo">
 <!-- something in here is still running -->
 <circle id="rl-quarters" cx="230" cy="210" r="6" fill="#ff9b6a" opacity=".12"/>
@@ -547,82 +519,290 @@ const ROOM1 = {
   ]
 };
 
-const OLD_ROOMS = [
-/* ============ ROOM 2 — CREW QUARTERS ============ */
-{
+/* ============================================================
+   ROOM 2 — CREW QUARTERS
+   The crew's last game of snakes and ladders, abandoned before anyone
+   moved: four counters on the start and each player's two dice on their
+   own mat. The foot locker wants the colour each one would have landed
+   on. Inside it is the station's thermal camera, and through it the
+   generator room door's keypad shows which keys a warm finger pressed,
+   fading in the order it pressed them, and the day tanks show how full
+   they are.
+   ============================================================ */
+
+/* ---- the game on the table ---- */
+const SQ_COL = {
+  1: 'yellow', 2: 'blue', 3: 'green', 4: 'red', 5: 'white',
+  6: 'yellow', 7: 'blue', 8: 'black', 9: 'green', 10: 'red',
+  11: 'blue', 12: 'white', 13: 'red', 14: 'green', 15: 'black',
+  16: 'green', 17: 'white', 18: 'blue', 19: 'red', 20: 'yellow',
+  21: 'black', 22: 'green', 23: 'yellow', 24: 'red', 25: 'white',
+};
+const LADDERS = [[7, 17], [9, 19], [15, 25]];
+const SNAKES = [[11, 1], [23, 13]];
+// Each player's two dice. Neither die alone lands on a snake or a ladder, so it makes no difference which is
+// counted first; and every counter is still on the start, so nobody has moved yet.
+const PLAYERS = [['penguin', [2, 6]], ['bird', [5, 6]], ['fish', [3, 4]], ['crab', [4, 5]]];
+const landsOn = (n) => { const j = LADDERS.find(x => x[0] === n) || SNAKES.find(x => x[0] === n); return j ? j[1] : n; };
+const LOCKER_MARKS = ['fish', 'crab', 'penguin', 'bird'];
+const ROLLED = Object.fromEntries(PLAYERS.map(([t, d]) => [t, d[0] + d[1]]));
+const LOCKER = LOCKER_MARKS.map(t => SQ_COL[landsOn(ROLLED[t])]);
+
+const BD = { x: 74, y: 16, s: 76 };
+const sqCorner = (n) => { const r = Math.floor((n - 1) / 5), i = (n - 1) % 5, c = r % 2 ? 4 - i : i; return [BD.x + c * BD.s, BD.y + (4 - r) * BD.s]; };
+const sqMid = (n, dx = 0, dy = 0) => { const [x, y] = sqCorner(n); return [x + BD.s / 2 + dx, y + BD.s / 2 + dy]; };
+const PIPS = { 1: [[0, 0]], 2: [[-1, -1], [1, 1]], 3: [[-1, -1], [0, 0], [1, 1]], 4: [[-1, -1], [1, -1], [-1, 1], [1, 1]],
+  5: [[-1, -1], [1, -1], [0, 0], [-1, 1], [1, 1]], 6: [[-1, -1], [1, -1], [-1, 0], [1, 0], [-1, 1], [1, 1]] };
+const die = (x, y, n, s, rot) => `<g transform="rotate(${rot} ${x + s / 2} ${y + s / 2})"><rect x="${x}" y="${y}" width="${s}" height="${s}" rx="${s * 0.18}" fill="#f4efe2" stroke="#2a1e12" stroke-width="2.5"/>`
+  + PIPS[n].map(([u, v]) => `<circle cx="${(x + s / 2 + u * s * 0.27).toFixed(1)}" cy="${(y + s / 2 + v * s * 0.27).toFixed(1)}" r="${(s * 0.09).toFixed(1)}" fill="#1a1410"/>`).join('') + `</g>`;
+const counter = (name, cx, cy, r) => `<circle cx="${cx}" cy="${cy}" r="${r}" fill="${E.ice}" stroke="${E.ink}" stroke-width="3"/>` + GL(name, cx - r * 0.66, cy - r * 0.66, r * 1.32, E.ink);
+function ladderArt(a, b) {
+  const [x1, y1] = a, [x2, y2] = b, len = Math.hypot(x2 - x1, y2 - y1), ux = (x2 - x1) / len, uy = (y2 - y1) / len, nx = -uy * 11, ny = ux * 11;
+  let d = '';
+  for (let t = 16; t < len - 8; t += 21) { const px = x1 + ux * t, py = y1 + uy * t; d += `M${(px + nx).toFixed(1)} ${(py + ny).toFixed(1)}L${(px - nx).toFixed(1)} ${(py - ny).toFixed(1)}`; }
+  [1, -1].forEach(k => { d += `M${(x1 + k * nx).toFixed(1)} ${(y1 + k * ny).toFixed(1)}L${(x2 + k * nx).toFixed(1)} ${(y2 + k * ny).toFixed(1)}`; });
+  return `<path d="${d}" stroke="#2a1a0c" stroke-width="9" stroke-linecap="round" fill="none"/><path d="${d}" stroke="#c99a5a" stroke-width="5" stroke-linecap="round" fill="none"/>`;
+}
+function snakeArt(a, b) {
+  const [x1, y1] = a, [x2, y2] = b, len = Math.hypot(x2 - x1, y2 - y1), nx = -(y2 - y1) / len, ny = (x2 - x1) / len;
+  const pts = [];
+  for (let k = 0; k <= 36; k++) {
+    const t = k / 36, w = Math.sin(t * Math.PI * 2.2) * Math.min(14, len / 9) * Math.min(1, t * 6);
+    pts.push([x1 + (x2 - x1) * t + nx * w, y1 + (y2 - y1) * t + ny * w]);
+  }
+  let out = '', body = '';
+  for (let k = 0; k < 36; k++) {
+    const t = k / 36, wd = 15 * (1 - 0.75 * t * t), [ax, ay] = pts[k], [bx, by] = pts[k + 1];
+    const seg = `M${ax.toFixed(1)} ${ay.toFixed(1)}L${bx.toFixed(1)} ${by.toFixed(1)}`;
+    out += `<path d="${seg}" stroke="#24123a" stroke-width="${(wd + 4).toFixed(1)}" stroke-linecap="round"/>`;
+    body += `<path d="${seg}" stroke="${k % 4 < 2 ? '#7a4fa0' : '#9a6ac4'}" stroke-width="${wd.toFixed(1)}" stroke-linecap="round"/>`;
+  }
+  const ang = Math.atan2(pts[1][1] - y1, pts[1][0] - x1) * 180 / Math.PI + 180;
+  const head = `<g transform="translate(${x1.toFixed(1)} ${y1.toFixed(1)}) rotate(${ang.toFixed(1)})"><path d="M14 0l12 -4M14 0l12 4" stroke="#c0392b" stroke-width="2.5"/>`
+    + `<ellipse rx="16" ry="12" fill="#7a4fa0" stroke="#24123a" stroke-width="3"/><circle cx="5" cy="-6" r="3.4" fill="#fff"/><circle cx="5" cy="6" r="3.4" fill="#fff"/>`
+    + `<circle cx="6" cy="-6" r="1.6" fill="#000"/><circle cx="6" cy="6" r="1.6" fill="#000"/></g>`;
+  return out + body + head;
+}
+const boardArt = { w: 640, h: 420, body: (() => {
+  let b = `<rect width="640" height="420" fill="#4a3826"/>` + Array.from({ length: 7 }, (_, i) => `<path d="M0 ${30 + i * 62}Q320 ${16 + i * 62} 640 ${34 + i * 62}" stroke="#3e2e1e" stroke-width="3" fill="none"/>`).join('');
+  b += `<rect x="${BD.x - 6}" y="${BD.y - 6}" width="${BD.s * 5 + 12}" height="${BD.s * 5 + 12}" rx="6" fill="#1c140c"/>`;
+  for (let n = 1; n <= 25; n++) {
+    const [x, y] = sqCorner(n), c = SQ_COL[n], dark = ['blue', 'red', 'green', 'black'].includes(c);
+    b += `<rect x="${x}" y="${y}" width="${BD.s}" height="${BD.s}" fill="${C[c]}" stroke="#1c140c" stroke-width="2"/>`
+      + W(x + 7, y + 21, String(n), { size: 17, fill: dark ? '#f4efe2' : '#2a1e12', weight: 700, face: 'num', anchor: 'start' });
+  }
+  // every ladder and snake keeps to the right of its squares, clear of the numbers in their top left corners
+  LADDERS.forEach(([f, t]) => { b += ladderArt(sqMid(f, 12, 18), sqMid(t, 12, 4)); });
+  SNAKES.forEach(([h, t]) => { b += snakeArt(sqMid(h, 14, 4), sqMid(t, 14, 18)); });
+  // the start, off the board before square 1, with all four counters still on it
+  b += `<rect x="4" y="300" width="62" height="96" rx="8" fill="#e8dcc0" stroke="#2a1e12" stroke-width="3"/>`
+    + `<path d="M14 384H58M48 376l10 8l-10 8" stroke="#2a1e12" stroke-width="4" fill="none" stroke-linecap="round"/>`;
+  PLAYERS.forEach(([t], i) => { b += counter(t, 21 + (i % 2) * 28, 320 + Math.floor(i / 2) * 32, 13); });
+  // each player's mat, with their two dice on it
+  PLAYERS.forEach(([t, [d1, d2]], i) => {
+    const y = 18 + i * 98;
+    b += `<rect x="476" y="${y}" width="156" height="88" rx="10" fill="#2f4a3a" stroke="#1a2a20" stroke-width="3"/>` + counter(t, 506, y + 44, 21)
+      + die(538, y + 24, d1, 38, -8 + i * 5) + die(584, y + 26, d2, 38, 6 - i * 4);
+  });
+  return b;
+})() };
+// lying flat on the table, from across the room
+const boardSprite = `<path d="M26 18H334L356 134H4Z" fill="#5a4630" stroke="#2e2416" stroke-width="3"/><rect x="4" y="134" width="352" height="14" fill="#3a2c1c"/>`
+  + `<rect x="18" y="148" width="14" height="52" fill="#2e2416"/><rect x="328" y="148" width="14" height="52" fill="#2e2416"/>`
+  + `<g transform="matrix(0.5 0 0 0.25 20 24)">${boardArt.body.replace(/^<rect width="640" height="420" fill="#4a3826"\/>/, '')}</g>`;
+
+/* ---- the foot locker at the end of the bunks ---- */
+function footlockerBody(st) {
+  let b = '';
+  if (st.solved) {
+    b += `<path d="M16 34L28 -4H192L204 34Z" fill="#5b7c60" stroke="#1e2a20" stroke-width="4"/><rect x="16" y="34" width="188" height="70" rx="6" fill="#16201a" stroke="#1e2a20" stroke-width="4"/>`
+      + `<rect x="16" y="56" width="188" height="48" rx="6" fill="#4c6a52" stroke="#1e2a20" stroke-width="4"/>`;
+  } else {
+    b += `<rect x="16" y="30" width="188" height="74" rx="6" fill="#4c6a52" stroke="#1e2a20" stroke-width="4"/><rect x="12" y="22" width="196" height="24" rx="6" fill="#5b7c60" stroke="#1e2a20" stroke-width="4"/>`
+      + `<rect x="88" y="44" width="44" height="30" rx="4" fill="#20282c" stroke="#8aa4ba" stroke-width="2"/>`
+      + [0, 1, 2, 3].map(i => `<rect x="${93 + i * 9}" y="50" width="6" height="18" rx="2" fill="#5a6a72"/>`).join('');
+  }
+  b += `<path d="M48 ${st.solved ? 56 : 24}V104M172 ${st.solved ? 56 : 24}V104" stroke="#8aa4ba" stroke-width="6"/>`;
+  return b;
+}
+const cameraFig = ART.svg(480, 300, `<defs><linearGradient id="therm" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#2a1450"/><stop offset=".3" stop-color="#a0287a"/>`
+  + `<stop offset=".55" stop-color="#e0442a"/><stop offset=".75" stop-color="#f7931e"/><stop offset=".9" stop-color="#ffd23f"/><stop offset="1" stop-color="#fffbe6"/></linearGradient></defs>`
+  + `<path d="M300 210l44 76h70l-46 -96Z" fill="#20262c" stroke="#101418" stroke-width="4"/>`
+  + `<rect x="30" y="30" width="370" height="200" rx="24" fill="#2a3138" stroke="#101418" stroke-width="5"/><circle cx="400" cy="130" r="54" fill="#1a1e22" stroke="#101418" stroke-width="5"/><circle cx="400" cy="130" r="30" fill="#3a2a5a"/><circle cx="390" cy="118" r="8" fill="#8a7ab0" opacity=".6"/>`
+  + `<rect x="52" y="50" width="250" height="160" rx="6" fill="#170b33"/>`
+  // on its screen: a mug of something hot, in the colours a thermal camera uses
+  + `<path d="M126 102h86v74q0 18 -18 18h-50q-18 0 -18 -18Z" fill="#f7931e"/><path d="M212 118q30 0 30 26t-30 24" stroke="#e0442a" stroke-width="10" fill="none"/>`
+  + `<ellipse cx="169" cy="104" rx="42" ry="8" fill="#fffbe6"/><path d="M136 150h66v24q0 12 -12 12h-42q-12 0 -12 -12Z" fill="#ffd23f"/>`
+  + `<path d="M150 90q-10 -14 2 -26M172 88q-10 -16 2 -30M194 90q-10 -14 2 -26" stroke="#a0287a" stroke-width="5" fill="none" stroke-linecap="round"/>`
+  + `<rect x="314" y="58" width="18" height="144" rx="4" fill="url(#therm)" stroke="#101418" stroke-width="2"/>`
+  + GL('flame', 312, 26, 22, '#ffd23f') + GL('snowflake', 312, 206, 22, '#8a7ab0'));
+
+/* ---- the day tanks along the end wall ---- */
+const TANK_ORDER = ['yellow', 'red', 'blue', 'green'];              // left to right along the wall
+const TANK_LEVEL = { yellow: 2, red: 5, blue: 1, green: 4 };
+const PANEL_ORDER = ['red', 'yellow', 'green', 'blue'];             // left to right on the generator's panel
+const PANEL = PANEL_ORDER.map(c => TANK_LEVEL[c]);
+const TK = { x: (i) => 36 + i * 142, w: 116, top: 56, bot: 360, band: 56 };
+const seamY = (j) => TK.bot - j * TK.band;                            // the weld at the top of band j
+const tankShell = (x, fill, stroke) => `<rect x="${x}" y="${TK.top}" width="${TK.w}" height="${TK.bot - TK.top}" rx="26" fill="${fill}" stroke="${stroke}" stroke-width="4"/>`;
+const tanksBody = (() => {
+  let b = `<path d="M${TK.x(0) + TK.w / 2} ${TK.top}V28H600" stroke="#4c6478" stroke-width="10" fill="none"/>`;
+  TANK_ORDER.forEach((c, i) => {
+    const x = TK.x(i);
+    b += `<path d="M${x + TK.w / 2} ${TK.top}V28" stroke="#4c6478" stroke-width="10"/><rect x="${x + TK.w / 2 - 12}" y="36" width="24" height="12" rx="3" fill="#2a3640"/>`
+      + `<rect x="${x + 12}" y="${TK.bot}" width="14" height="22" fill="${E.ink}"/><rect x="${x + TK.w - 26}" y="${TK.bot}" width="14" height="22" fill="${E.ink}"/>`
+      + tankShell(x, '#5c7488', E.ink);
+    for (let j = 1; j <= 5; j++) b += `<path d="M${x + 3} ${seamY(j)}H${x + TK.w - 3}" stroke="#40566a" stroke-width="3"/>`;
+    b += `<rect x="${x + 3}" y="${seamY(5) + 10}" width="${TK.w - 6}" height="18" fill="${C[c]}" stroke="${E.ink}" stroke-width="2"/>`;
+  });
+  return b;
+})();
+const tanksBack = `<rect width="600" height="400" fill="#26323c"/><rect y="382" width="600" height="18" fill="#161c22"/>`;
+// through the camera: the fuel holds the tank heaters' warmth, and the empty steel above it is as cold as the room
+const tanksThermal = (() => {
+  let b = `<rect width="600" height="400" fill="#170b33"/><path d="M${TK.x(0) + TK.w / 2} ${TK.top}V28H600" stroke="#2a1450" stroke-width="10" fill="none"/>`;
+  TANK_ORDER.forEach((c, i) => {
+    const x = TK.x(i), top = seamY(TANK_LEVEL[c]);
+    b += `<path d="M${x + TK.w / 2} ${TK.top}V28" stroke="#2a1450" stroke-width="10"/>` + tankShell(x, '#24104a', '#4a2a7a')
+      + `<path d="M${x + 2} ${top}H${x + TK.w - 2}V${TK.bot - 26}Q${x + TK.w - 2} ${TK.bot - 2} ${x + TK.w - 28} ${TK.bot - 2}H${x + 28}Q${x + 2} ${TK.bot - 2} ${x + 2} ${TK.bot - 26}Z" fill="#f7931e"/>`
+      + `<rect x="${x + 2}" y="${top}" width="${TK.w - 4}" height="14" fill="#ffd23f"/><rect x="${x + 2}" y="${top}" width="${TK.w - 4}" height="4" fill="#fffbe6"/>`
+      + `<rect x="${x + 10}" y="${TK.bot - 30}" width="${TK.w - 20}" height="18" rx="8" fill="#e0442a" opacity=".6"/>`;
+    for (let j = 1; j <= 5; j++) b += `<path d="M${x + 3} ${seamY(j)}H${x + TK.w - 3}" stroke="${seamY(j) >= top ? '#c45a1a' : '#4a2a7a'}" stroke-width="3"/>`;
+  });
+  return b;
+})();
+
+/* ---- the generator room door, and its keypad ---- */
+const DOOR_CODE = ['3', '8', '1', '6', '9'];                         // the order a warm finger pressed them in
+const HEAT = ['#b0287a', '#e0442a', '#f7931e', '#ffd23f', '#fffbe6']; // from the oldest print to the newest
+const keyAt = (d) => { const i = d === '0' ? 10 : +d - 1; return [52 + (i % 3) * 92, 66 + Math.floor(i / 3) * 94]; };
+const keypadBody = (() => {
+  let b = `<rect width="360" height="470" fill="#1b252e"/><rect x="16" y="10" width="328" height="450" rx="22" fill="#2e3c48" stroke="#4c6478" stroke-width="5"/>`
+    + `<circle cx="180" cy="38" r="8" fill="#7c2a1e" stroke="#101418" stroke-width="2"/>`;
+  ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0'].forEach(d => {
+    const [x, y] = keyAt(d);
+    b += `<g data-key="${d}" data-x="${x + 40}" data-y="${y + 39}"><rect x="${x}" y="${y}" width="80" height="78" rx="12" fill="#cfd8e0" stroke="#14202a" stroke-width="4"/>`
+      + W(x + 40, y + 52, d, { size: 38, fill: '#22303e', weight: 700, face: 'num' }) + `</g>`;
+  });
+  [[52, 348], [236, 348]].forEach(([x, y]) => { b += `<rect x="${x}" y="${y}" width="80" height="78" rx="12" fill="#3a4a58" stroke="#14202a" stroke-width="4"/>`; });
+  return b;
+})();
+const keypadThermal = (() => {
+  let b = `<rect width="360" height="470" fill="#170b33"/><rect x="16" y="10" width="328" height="450" rx="22" fill="#21103e" stroke="#3a1d6a" stroke-width="5"/>`;
+  ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0'].forEach(d => {
+    const [x, y] = keyAt(d);
+    b += `<rect x="${x}" y="${y}" width="80" height="78" rx="12" fill="#2e1858" stroke="#3a1d6a" stroke-width="4"/>` + W(x + 40, y + 52, d, { size: 38, fill: '#4a2c80', weight: 700, face: 'num' });
+  });
+  [[52, 348], [236, 348]].forEach(([x, y]) => { b += `<rect x="${x}" y="${y}" width="80" height="78" rx="12" fill="#2a1450" stroke="#3a1d6a" stroke-width="4"/>`; });
+  DOOR_CODE.forEach((d, i) => {
+    const [x, y] = keyAt(d), cx = x + 40, cy = y + 44, rx = 13 + i * 2.2, ry = 18 + i * 2.4;
+    b += `<ellipse cx="${cx}" cy="${cy}" rx="${(rx + 13).toFixed(1)}" ry="${(ry + 13).toFixed(1)}" fill="${HEAT[i]}" opacity=".18"/>`
+      + `<ellipse cx="${cx}" cy="${cy}" rx="${(rx + 6).toFixed(1)}" ry="${(ry + 6).toFixed(1)}" fill="${HEAT[i]}" opacity=".45"/>`
+      + `<ellipse cx="${cx}" cy="${cy}" rx="${rx.toFixed(1)}" ry="${ry.toFixed(1)}" fill="${HEAT[i]}"/>`;
+  });
+  return b;
+})();
+function gendoorBody(st) {
+  let b = `<rect x="4" y="4" width="152" height="392" rx="6" fill="#141c22" stroke="#4c6478" stroke-width="6"/>`;
+  if (st.solved) {
+    const on = st.open && st.open.genpanel;
+    b += `<rect x="12" y="12" width="136" height="380" fill="${on ? '#3a3226' : '#0b1014'}"/>`
+      + `<rect x="20" y="268" width="128" height="118" rx="8" fill="#22303a" stroke="#3a4c5c" stroke-width="3"/><path d="M34 290h96M34 310h96" stroke="#3a4c5c" stroke-width="3"/>`
+      + `<path d="M12 12L-8 26V378L12 392Z" fill="#3a5a78" stroke="#22303e" stroke-width="3"/>`;
+    if (on) b += `<rect x="12" y="12" width="136" height="380" fill="#ffd9a0" opacity=".16"/>`;
+  } else {
+    b += `<rect x="12" y="12" width="136" height="380" fill="#3a5a78"/>` + [80, 170, 260].map(y => `<path d="M18 ${y}H142" stroke="#2c4660" stroke-width="5"/>`).join('')
+      + `<path d="M12 352L148 352" stroke="#22303e" stroke-width="3"/>` + [0, 1, 2, 3, 4].map(i => `<path d="M${16 + i * 30} 390L${40 + i * 30} 356" stroke="${E.amber}" stroke-width="9"/>`).join('')
+      + `<rect x="108" y="176" width="34" height="44" rx="4" fill="#2e3c48" stroke="#8aa4ba" stroke-width="2"/>`
+      + Array.from({ length: 12 }, (_, i) => `<rect x="${112 + (i % 3) * 10}" y="${180 + Math.floor(i / 3) * 10}" width="7" height="7" rx="1.5" fill="#cfd8e0"/>`).join('')
+      + `<circle cx="125" cy="232" r="3" fill="#7c2a1e"/><rect x="118" y="244" width="22" height="9" rx="4" fill="#8aa4ba"/>`;
+  }
+  return b;
+}
+
+/* ---- the generator panel, through the door ---- */
+function genpanelBody(st) {
+  let b = `<rect x="4" y="4" width="88" height="132" rx="8" fill="#2e3c48" stroke="#8aa4ba" stroke-width="3"/>`;
+  PANEL_ORDER.forEach((c, i) => {
+    const x = 14 + i * 19, lvl = st.solved ? PANEL[i] : 0;
+    b += `<rect x="${x}" y="22" width="13" height="96" rx="3" fill="#0b1014" stroke="${C[c]}" stroke-width="2.5"/>`;
+    if (lvl) b += `<rect x="${x + 2}" y="${120 - lvl * 19}" width="9" height="${lvl * 19 - 4}" fill="${C[c]}"/>`;
+  });
+  return b;
+}
+
+const POS2 = {
+  boardgame:  { x: 3.75,  y: 67.8, w: 22.5,  h: 22.2 },
+  footlocker: { x: 29.4,  y: 74.4, w: 13.75, h: 12.2 },
+  tanks:      { x: 67.5,  y: 47.8, w: 20.6,  h: 24.4 },
+  gendoor:    { x: 88.75, y: 26.7, w: 10,    h: 44.4 },
+  genpanel:   { x: 90.75, y: 36.7, w: 6,     h: 15.6 },
+};
+const ROLL_SAY = PLAYERS.map(([t, [a, b2]]) => { const n = a + b2, to = landsOn(n); return `${t} ${a}+${b2} = ${n}` + (to === n ? '' : `, ${to > n ? 'up the ladder' : 'down the snake'} to ${to}`); });
+
+const ROOM2 = {
   id:'quarters', name:'Room 2 — Crew Quarters', scene:'quarters',
   relays:[{el:'rl-quarters',mode:'pulse',period:3.8}],
   wrongSound:'creak',
   wrongVfx:'shadow',
-  intro:"Fourteen bunks, nine parkas on hooks, zero people. The kettle is still faintly warm.",
-  objective:"The crew's last hours are recorded in this room. Find the frequency — then <b>read what they left.</b>",
-  entryBeat:"Nine parkas on the hooks. Outside it is forty below. Wherever the crew went, they went without their coats — or they went as something that no longer felt the cold.",
+  intro:"The bunks are made. The parkas are on their hooks. Nobody is here, and the heater is still running.",
+  objective:"The station is on its last battery: <b>start the generator</b>. Whatever opens a lock is somewhere else in this room.",
+  entryBeat:"Five parkas on the hooks, and outside it is forty below. Wherever the crew went, they went without their coats.",
   entrySound:'knock',
-  completeText:"The generator panel accepts the code and the station's spine of lights marches on, building by building, out toward the core lab. The last building lights with something already standing at its window. By the time anyone can point, it isn't.",
-  chain:"The roster says the operator kept the sked at 0600 and 1800 and never missed one; the sked card pinned under it lists the schedules by their hours, and only the weather base runs at those: 88.2 → the channel is open and the reel-to-reel's leader has been pressed by hand with braille, by a man snow-blind since day 80: MELT NOTHING → the foot locker's Vigenère, with the wheel and the keyword scratched on the lid by the scientist who set it: FROST → the generator's cold-start rule, each digit double the one after it and fourteen in all: 842.",
+  completeText:"The generator catches on the second crank, and the station's lights march away from you building by building, out toward the core lab. The last building lights with something already standing at its window. By the time anyone can point, it isn't.",
+  chain:`On the table, a game of snakes and ladders nobody got to move in: all four counters on the start and two dice on each player's mat — ${ROLL_SAY.join('; ')}. The foot locker's wheels are marked ${LOCKER_MARKS.join(', ')} and take the colours they land on: ${LOCKER.join(', ')} → inside, the station's thermal camera. Through it five keys on the generator room door still hold a finger's warmth, fading in the order they were pressed: ${DOOR_CODE.join(', ')} → the door opens on the generator's panel, which wants each day tank's level, and through the camera the fuel glows up to it: ${PANEL_ORDER.map((c, i) => `${c} ${PANEL[i]}`).join(', ')}.`,
   objects:[
-    { id:'roster', icon:'📋', name:'Duty Roster', pos:{x:3,y:46,w:10,h:20},
-      desc:"The duty roster, filled in to a point and then not:\n\n“STATION DAY 86 — cores E-1 through E-8 catalogued. E-9 tomorrow.”\n“STATION DAY 87 — E-9 case will not stay shut. Kept the weather sked, 0600 and 1800, as always. Two checks a day, never miss one.”\n“STATION DAY 88 — ”\n\nDay 88 is blank. They stopped counting on 88.\n\nPinned beneath the roster, the station's sked card — who this place talks to, and when:\n\n   AIR OPERATIONS ....... on request ......... 118.1\n   FIELD PARTIES ........ 0900 daily ......... 94.6\n   WEATHER BASE ......... 0600 and 1800 ...... 88.2" },
-    { id:'shortwave', icon:'📻', name:'The Shortwave Set', pos:{x:70,y:38,w:20,h:20},
-      desc:"The station's shortwave, still warm on standby, its dial waiting.\n\nOutside, the blizzard eats every other frequency alive — but the sked the operator never missed is the one he would have left this set sitting on.",
-      puzzle:{
-        type:'dial',
-        prompt:"Sweep the band to the sked he never missed, then work the trim knobs until the signal holds through the storm.",
-        answers:['882'],
-        dial:{min:760,max:1080,div:10,target:882,pad:4,meter:'SIGNAL THROUGH THE STORM',lock:'LOCK IT IN',miss:'the blizzard swallows it.',
-          knobs:[{label:'RF GAIN',target:58},{label:'SQUELCH',target:31},{label:'ANTENNA TRIM',target:77}]},
+    { id:'boardgame', icon:'🎲', name:'The Game on the Table', pos:POS2.boardgame,
+      desc:"Snakes and ladders, abandoned on the first turn: every counter still on the start, and each player's two dice rolled on their mat.",
+      figure:ART.svg(boardArt.w, boardArt.h, boardArt.body),
+      sprite:ART.sprite(POS2.boardgame, 360, 200, boardSprite) },
+    { id:'footlocker', icon:'🧳', name:'Foot Locker', pos:POS2.footlocker,
+      desc:"A steel-banded foot locker at the end of the bunks. Four wheels of colours, and an animal stamped over each.",
+      sprite:st=>ART.sprite(POS2.footlocker, 220, 110, footlockerBody(st)),
+      puzzle:{ type:'combo', from:['boardgame'], wheels:LOCKER_MARKS.map(g=>({ faces:{ colors:['red', 'yellow', 'blue', 'green', 'white', 'black'] }, mark:{ glyph:g } })), answer:LOCKER, tryLabel:'OPEN IT',
+        miss:"The hasp doesn't move.",
         hints:[
-          "The roster tells you which sked he kept and at what hours. The sked card pinned under it lists every schedule by its times.",
-          "He kept the one at 0600 and 1800 — twice a day, never missed. Find the schedule on the card with those hours against it.",
-          "Weather base, 0600 and 1800: 88.2. Tune there, then work the three knobs one at a time until the panel reads LOCKED IN."
+          "Four wheels, an animal over each, and a colour to find for each one. The same four animals are playing the game on the table.",
+          "Nobody has moved yet: every counter is on the start, and each player's two dice lie on their mat. Add them, count that many squares, and remember what a ladder's foot and a snake's head do.",
+          `${ROLL_SAY.map(s => s[0].toUpperCase() + s.slice(1)).join('. ')}. ${LOCKER_MARKS.map((t, i) => `${t[0].toUpperCase() + t.slice(1)} ${LOCKER[i]}`).join(', ')}.`
         ],
-        solvedText:"At 88.2 the blizzard parts — dead air, keyed open from inside the station. Somebody patched the reel-to-reel into the transmitter before the end, but the tape ran out years ago. The recorder is what is left. Go and look at what he did to it."
-      }
-    },
-    { id:'recorder', onSolve:{el:'rx-quarters',op:.2,fx:'surge'}, icon:'🎞️', name:'The Reel-to-Reel', pos:{x:71,y:60,w:16,h:15}, hiddenUntil:'shortwave',
-      desc:"The reel's last stretch of tape is blank — no recording. Instead, pressed into the leader by hand with a stylus, neat rows of raised dots:\n\n<span style='font-size:2rem;letter-spacing:10px'>⠍⠑⠇⠞&nbsp;&nbsp;⠝⠕⠞⠓⠊⠝⠛</span>\n\nThe last logbook page explains: snow-blind since day 80, the radio operator wrote the only way he still could — by touch. Divide the cells among the crew and work them out.",
-      puzzle:{
-        prompt:"Decode the tape (two words).",
-        placeholder:"TWO WORDS", answers:['MELTNOTHING'],
+        solvedText:"The hasp lets go. Inside, wrapped in somebody's jumper, the station's thermal camera, still charged. Anything warm shows up bright on it.",
+        inside:{ name:"The thermal camera", figure:cameraFig } } },
+    { id:'tanks', icon:'🛢️', name:'Day Tanks', pos:POS2.tanks,
+      desc:"The generator's four day tanks, plumbed through the wall. Plate steel, each painted with a band of colour, and no gauge on any of them.",
+      figure:ART.svg(600, 400, tanksBack + tanksBody),
+      lens:{ needs:'footlocker', hidden:tanksThermal, r:84, dark:0, tint:'#ffb46a' },
+      sprite:ART.sprite(POS2.tanks, 600, 400, tanksBody) },
+    { id:'gendoor', icon:'🚪', name:'Generator Room Door', pos:POS2.gendoor,
+      desc:"The generator room is through here. Its keypad wants five keys, and nothing anywhere says which.",
+      sprite:st=>ART.sprite(POS2.gendoor, 160, 400, gendoorBody(st)), watches:['genpanel'],
+      puzzle:{ type:'press', from:['footlocker'], slots:5, answer:DOOR_CODE, echo:Object.fromEntries('0123456789'.split('').map(d => [d, d])),
+        figure:ART.svg(360, 470, keypadBody),
+        lens:{ needs:'footlocker', hidden:keypadThermal, r:96, dark:0, tint:'#ffb46a' },
+        miss:"The light on the keypad blinks red.",
         hints:[
-          "Raised dots in small cells — that's braille. Look up the braille alphabet: each cell of up to six dots is one letter.",
-          "Eleven letters, two words. The first word is four letters: M, E, L… The second starts with N.",
-          "⠍⠑⠇⠞ is MELT; ⠝⠕⠞⠓⠊⠝⠛ is NOTHING. Enter MELTNOTHING."
+          "Five keys and nothing written down. But a key a finger has just pressed is warmer than the rest.",
+          "Hold the thermal camera from the foot locker over the keypad: five keys still glow where a finger pressed them. A print fades as it cools, so the faintest was pressed first.",
+          `Faintest to brightest: ${DOOR_CODE.join(', ')}.`
         ],
-        solvedText:"MELT NOTHING. Eleven letters a dying man pressed into tape so someone would find them. You think of core E-9's case, and the standing water around it, and how warm they kept this room.",
-        solveBeat:"The heater ticks — and something outside the window leans away from the glass, where it has been enjoying the warmth.",
-        beatSound:'hiss'
-      }
-    },
-    { id:'footlocker', icon:'🧳', name:'The Foot Locker', pos:{x:26,y:69,w:13,h:14},
-      desc:"A foot locker banded in steel, its 5-letter lock guarded by a Vigenère cipher — the scientist scratched the wheel and its keyword right onto the lid:\n\nKEYWORD: ICE  (the one thing this station studies)\nCIPHER:  N T S A V\n\n“Line the keyword under the cipher, repeating — I, C, E, I, C — and subtract each key letter (A=0). What's left is the word.”",
-      puzzle:{
-        prompt:"Enter the deciphered word.", placeholder:"FIVE LETTERS", answers:['FROST'],
+        solvedText:"The bolt slides back. Five prints, and the last of them is minutes old. Nobody has been here for nine days.",
+        solveBeat:"Behind you, the heater ticks as it cools. Something in this room was standing close to it a moment ago.",
+        beatSound:'hiss' } },
+    { id:'genpanel', icon:'⚡', name:'Generator Panel', pos:POS2.genpanel, hiddenUntil:'gendoor',
+      desc:"The generator will only start with each day tank's level set on its panel: four gauges, banded in the tanks' colours.",
+      sprite:st=>ART.sprite(POS2.genpanel, 96, 140, genpanelBody(st)),
+      puzzle:{ type:'levels', from:['tanks'], skin:'tanks', max:5, cols:PANEL_ORDER.map(c=>({ mark:{ color:c } })), answer:PANEL, tryLabel:'CRANK IT',
+        miss:"The generator turns over, coughs, and dies. One of those was wrong.",
         hints:[
-          "Number the alphabet A=0…Z=25. Under NTSAV write the repeating key ICE→ I,C,E,I,C, and subtract (wrap past A back to Z).",
-          "N(13)−I(8)=5=F.  T(19)−C(2)=17=R.  S(18)−E(4)=14=O.  A(0)−I(8)=18=S.  V(21)−C(2)=19=T.",
-          "The five letters spell FROST. THE CODE IS: FROST."
+          "Four gauges, each banded with a colour. The day tanks along the wall are banded in the same four colours, and none of them has a gauge.",
+          "Look at the tanks through the thermal camera: the fuel holds the warmth and the empty steel above it doesn't, so each one glows up to its level. Count the welded seams.",
+          `${PANEL_ORDER.map((c, i) => `${c[0].toUpperCase() + c.slice(1)} ${PANEL[i]}`).join(', ')}.`
         ],
-        solvedText:"F-R-O-S-T. Inside the locker: the generator's calibration card, a flare pistol with no flares — and someone's wedding ring, left square in the middle, the way you leave things you know you won't need."
-      }
-    },
-    { id:'genpanel', icon:'🔌', name:'Generator Panel', pos:{x:43,y:69,w:12,h:20}, hiddenUntil:'footlocker',
-      desc:"The backup generator wants a three-digit setting. The calibration card from the foot locker, in the engineer's block capitals:\n\n   “COLD-START RULE —\n    EACH DIGIT IS DOUBLE THE DIGIT THAT FOLLOWS IT.\n    ALL THREE TOGETHER MAKE FOURTEEN.”",
-      puzzle:{
-        type:'keypad',
-        prompt:"Find the three digits that fit the cold-start rule and enter them in order.", answers:['842'],
-        hints:[
-          "The digits halve as you read: the second is half the first, the third is half the second. Try a starting digit and follow it down.",
-          "Only one chain of halves sums to 14 — start from 8: 8, 4, 2 makes 14.",
-          "8, 4, 2 — enter 842."
-        ],
-        solvedText:"8-4-2. The generator catches on the second crank and the station wakes around you, room by room, like something remembering how to breathe.",
-        solveBeat:"Every light on the station comes up — and out on the ice, at the exact edge of the new light, something steps back one pace. Just enough. It knows exactly how far light reaches.",
-        beatSound:'growl'
-      }
-    }
+        solvedText:"Four tanks, four levels. The generator coughs, catches, and settles into a roar you can feel through the floor." } },
   ]
-},
+};
+
+const OLD_ROOMS = [
 /* ============ ROOM 3 — THE ICE CORE LAB ============ */
 {
   id:'corelab', name:'Room 3 — The Ice Core Lab', scene:'corelab',
@@ -788,7 +968,7 @@ const OLD_ROOMS = [
   ]
 }
 ];
-const ROOMS = [ROOM1, ...OLD_ROOMS];
+const ROOMS = [ROOM1, ROOM2, ...OLD_ROOMS];
 
 registerScenario({
   id:'erebus', classic:true,
