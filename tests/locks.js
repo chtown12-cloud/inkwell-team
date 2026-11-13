@@ -308,6 +308,42 @@ async function turns(p, id, steps, t, back) {
   t.hit((await at()) === t0, `${id}: turning back does not undo turning`);
 }
 /** Something that pulses: watch it for a few seconds and it must be seen both lit and dark, in the colours it claims. */
+/** Drag across snow: it comes away under the hand, and stays away. */
+async function sweeps(p, id, t, reopen) {
+  const holes = () => p.evaluate(() => document.querySelectorAll('#modal .brush-holes circle').length);
+  const box = await p.locator('#modal svg[data-brush]').boundingBox();
+  t.hit(!!box, `${id}: there is nothing to sweep`);
+  if (!box) return;
+  const a = await holes();
+  await p.mouse.move(box.x + box.width * 0.3, box.y + box.height * 0.4); await p.mouse.down();
+  for (let i = 1; i <= 8; i++) await p.mouse.move(box.x + box.width * (0.3 + i * 0.05), box.y + box.height * 0.4);
+  await p.mouse.up();
+  const b = await holes();
+  t.hit(b > a, `${id}: dragging across it sweeps nothing away (${a} → ${b})`);
+  await reopen();
+  t.hit((await holes()) === b, `${id}: what was swept comes back when you look away`);
+}
+/** Turn a focus knob from one end to the other: everything under it is sharp at exactly one setting. */
+async function focuses(p, id, steps, t, reopen) {
+  const blurs = () => p.evaluate(() => {
+    const svg = document.querySelector('#modal svg[data-focus]'); if (!svg) return null;
+    const px = (el) => parseFloat(((el.style.filter || '').match(/blur\(([\d.]+)px\)/) || [0, '0'])[1]);
+    const parts = [...svg.querySelectorAll('[data-at]')];
+    return parts.length ? parts.map(px) : [px(svg)];
+  });
+  const first = await blurs();
+  t.hit(!!first, `${id}: there is no focus to turn`);
+  if (!first) return;
+  for (let i = 0; i < steps; i++) await p.click('#modal button[data-focus="-1"]');
+  const sharp = first.map(() => 0);
+  for (let k = 0; k < steps; k++) {
+    (await blurs()).forEach((b, i) => { if (b === 0) sharp[i]++; });
+    if (k < steps - 1) await p.click('#modal button[data-focus="1"]');
+  }
+  sharp.forEach((n, i) => t.hit(n === 1, `${id}: part ${i + 1} is sharp at ${n} settings, not one`));
+  await reopen();
+  t.hit(+(await p.evaluate(() => document.querySelector('#modal svg[data-focus]').dataset.focus)) === steps - 1, `${id}: the knob does not stay where it was left`);
+}
 async function pulses(p, id, tool, t) {
   const seen = await p.evaluate((ms) => new Promise((done) => {
     const lamp = document.querySelector('#modal .pulse-lamp'), out = { lamp: !!lamp, on: 0, off: 0, colours: [] };
@@ -486,7 +522,8 @@ async function pulses(p, id, tool, t) {
       } else if (o.tool.type === 'listen') {
         tools.hit((await p.locator('#modal [data-listen], #modal [data-notes]').count()) === 1, `${o.id}: nothing to press to hear it`);
         await p.click('#modal [data-listen], #modal [data-notes]');
-      }
+      } else if (o.tool.type === 'brush') await sweeps(p, o.id, tools, () => reopen(p, o.id));
+      else if (o.tool.type === 'focus') await focuses(p, o.id, o.tool.steps, tools, () => reopen(p, o.id));
     }
     // and whatever came out of a lock: the same thing in your hands
     for (const o of all.filter(o => o.insideGear)) {
@@ -494,7 +531,7 @@ async function pulses(p, id, tool, t) {
       if (o.insideGear.type === 'turn') await turns(p, `${o.id} (what was inside)`, o.insideGear.steps, tools, () => reopen(p, o.id));
       else if (o.insideGear.type === 'pulse') await pulses(p, `${o.id} (what was inside)`, o.insideGear, tools);
     }
-    if (tools.n()) tools.report('what can be turned turns and stays turned; what pulses, pulses');
+    if (tools.n()) tools.report('what can be turned turns and stays turned; what pulses, pulses; what is swept stays swept; each thing under a lens is sharp at one setting');
     await p.close();
 
     /* ---- and in the hand ---- */

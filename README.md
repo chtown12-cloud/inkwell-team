@@ -14,7 +14,7 @@ and race the clock.
 | ❄️ **Station Erebus** | Silent Antarctic research station | Something that thawed out of core E-9 |
 | 🚂 **The Midnight Special** | A 1927 express that never arrives | The Conductor, punching tickets nobody bought |
 
-Every scenario: 4 rooms, 14 to 17 puzzles, illustrated animated scenes (SVG parallax,
+Every scenario: 4 rooms, 10 to 17 locks, illustrated animated scenes (SVG parallax,
 fog, snow, fireflies, film grain), discoverable glowing hotspots, an unseen
 monster delivered through narrative beats, and a fully synthesized WebAudio
 soundscape with a distinct signature per room (surf and gulls; reactor hum and
@@ -22,7 +22,7 @@ sonar pings; thunder and organ; blizzard and generator chug; rail clack and far
 whistles). No image or audio files — everything is generated in the browser.
 
 **How the puzzles work.** *The Wreck of the Eldermoor*, *Derelict: The
-Prospero* and *Castle Vorstag* are built the way a physical escape room is: locks that look like
+Prospero*, *Castle Vorstag* and *Station Erebus* are built the way a physical escape room is: locks that look like
 locks, and whatever opens each one somewhere else in the room. A padlock with
 four wheels ringed in four colours — and, along the hull, a net of glass
 floats in the same four colours. A lift that wants five digits — written
@@ -30,31 +30,31 @@ twice in the cryo bay, frosted over on the pods and cracked across on a
 terminal, and whole in neither place. Nothing is typed. Wheels are turned,
 scraps swapped, clock hands set, breakers thrown, a lantern swept across dark
 water, reactor rods raised, a burn held to the mark, a tune played on an organ,
-an opera glass held up to a painted ceiling; no lock carries
+an opera glass held up to a painted ceiling, new snow swept off a trail of boot
+prints, a thermal camera held over a keypad; no lock carries
 instructions, and no clue says which lock it belongs to. An open lock changes
 the room, not just its own close-up. Expect to be properly stuck now and
 then: a hint or two per room is normal.
 
-The other two scenarios are being rebuilt the same way, one at a time.
-Until each is, it plays as before — clue documents, ciphers and deductions —
-with its own palette, so a second scenario does not repeat the first:
+The last scenario, *The Midnight Special*, is being rebuilt the same way. Until
+it is, it plays as before — clue documents, ciphers and deductions — with its
+own palette:
 
-| Slot | Erebus | Midnight |
-|------|--------|----------|
-| Room-1 opener | **A1Z26** (№→letter) | **book cipher** (line·word) |
-| Room-2 cipher | **Vigenère** (key ICE) | **rail fence** (zigzag) |
-| Room-2 deduction | **halving-chain** rule | **boarding-order** logic |
-| Room-3 filter | **date range** (before the store failed) | **cross-reference** (covers that settled) |
-| Room-3 number lock | **multiples-of-three** | **money addition** |
-| Signal code | **braille** (embossed dots) | **Cyrillic** (émigré's hand) |
-| Co-op set piece | — | **whistle and lamp** together |
+| Slot | Midnight |
+|------|----------|
+| Room-1 opener | **book cipher** (line·word) |
+| Room-2 cipher | **rail fence** (zigzag) |
+| Room-2 deduction | **boarding-order** logic |
+| Room-3 filter | **cross-reference** (covers that settled) |
+| Room-3 number lock | **money addition** |
+| Signal code | **Cyrillic** (émigré's hand) |
+| Co-op set piece | **whistle and lamp** together |
 
-Each of those two uses its own real-world code for its two mid-game signal
-decodes — braille, or phonetic Cyrillic — and teams look the alphabet up
-themselves. The one mechanic they deliberately
-share, because it is their signature co-op moment, is the two-stage tuning
-**console**: the exact frequency comes from clues, then three trim knobs are
-coaxed by watching the meter until the panel reads LOCKED IN.
+It uses a real-world code for its two mid-game signal decodes — phonetic
+Cyrillic — and teams look the alphabet up themselves. Its signature co-op
+moment is the two-stage tuning **console**: the exact frequency comes from
+clues, then three trim knobs are coaxed by watching the meter until the panel
+reads LOCKED IN.
 
 The rules for both kinds of puzzle are written down in
 [PUZZLES.md](PUZZLES.md), and the ones a machine can check are enforced by
@@ -239,10 +239,10 @@ Answers per scenario, in solve order. (Full chains and all hint text: in-game GM
 
 | Room | Answers |
 |------|---------|
-| 1 · The Perimeter | GARAGE (A1Z26 channel №) → **6841** (resupply order: food/fuel/medical/flares) → SOUTH (riddle = NORTH, "we drilled the other way") → **73** (14 bunks − 7 rotated; 3 full drums) |
-| 2 · Crew Quarters | tune **88.2** (day 88 + 2 radio checks) → MELT NOTHING (braille leader) → FROST (Vigenère, key ICE) → **842** (halving chain, Σ14) |
-| 3 · The Ice Core Lab | ICE → BURIED (even depths) → **936** (multiples of 3: 9=3+6) → BELOW (braille fob) |
-| 4 · The Radio Tower | DEBAC (scheduling, plugs 2nd) → **1764** (88.2 × 2) → **530** (6:10 window − 40 min) → **1486** (6841 reversed) → SOS drum line |
+| 1 · The Perimeter | sign-out tags **hole, snowcat, antenna, drum** (zigzag, chevrons, bars, dots: sweep the new snow off the boot prints and follow each tread) → snowcat **2834** (the full drums, sunk in the snow, left to right) → storm door **4:30** (the mast's shadow halfway between 16 and 17) |
+| 2 · Crew Quarters | foot locker **white, red, black, yellow** (fish, crab, penguin, bird: each player's two dice from the start, ladders and snakes taken) → generator room door **3, 8, 1, 6, 9** (the warm prints through the thermal camera, faintest first) → generator panel **red 5, yellow 2, green 4, blue 1** (the day tanks' fuel, glowing through the camera) |
+| 3 · The Ice Core Lab | cold safe **187** (E-9's piece found in the core log, its red arrow pointing up) → airlock **diatom, beetle, amoeba** (wells one, two and three under the microscope, each sharp at its own turn of the knob) |
+| 4 · The Radio Tower | flare box **250** (the sock streams toward 70; the wind comes from the other side) → runway: the T's **crossbar across the left (west) end, its stem along the middle row** |
 
 ## 🚂 The Midnight Special
 
@@ -253,9 +253,9 @@ Answers per scenario, in solve order. (Full chains and all hint text: in-game GM
 | 3 · The Dining Car | MIRROR → HUNGRY (perfect-square covers) → **385** (chits total $3.85) → AGAIN (Cyrillic ticket) |
 | 4 · The Locomotive | CBEDA (scheduling, feed 2nd) → **1568** (78.4 × 2) → **340** (4:45 junction − 65 min) → **3528** (8253 reversed) → SOS whistle |
 
-Every deduction and number-lock puzzle in the two scenarios not yet rebuilt
-has a solver-verified unique solution, and their scheduling drills have
-verified unique orders. Room transitions hold on a title card until the team
+Every deduction and number-lock puzzle in the scenario not yet rebuilt has a
+solver-verified unique solution, and its scheduling drill has a verified
+unique order. Room transitions hold on a title card until the team
 clicks ENTER.
 
 ## Scoring / ratings
