@@ -999,7 +999,6 @@ registerScenario({
   },
   // One wording for every lock in this fiction: a salt-seized crate and a
   // frozen hut safe do not fail the same way.
-  padMiss:'The brass does not click. The carriage sways on.', padHow:'Key in the figures. A wrong set only costs 5 seconds of track.',
   wrongBeats:WRONG_BEATS, wrongSounds:WRONG_SOUNDS,
   scenes:SCENES, rooms:ROOMS
 });

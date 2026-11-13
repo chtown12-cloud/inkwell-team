@@ -20,8 +20,7 @@
      8. FIVE GAMES, NOT ONE IN FIVE COSTUMES. No kind of lock more than twice
         in a scenario; no two scenarios with the same shape or the same ending.
 
-   Scenarios not yet rebuilt are held to the standard they were built under,
-   further down, until they are.
+   Every scenario is built on this grammar; one that is not fails outright.
 
    Run with: node tests/audit.js
 */
@@ -35,7 +34,7 @@ const root = path.join(__dirname, '..');
 const loaded = [];
 globalThis.registerScenario = (s) => loaded.push(s);
 // the scenarios build their drawings at load, so the kits come first
-for (const lib of ['art', 'figures']) {
+for (const lib of ['art']) {
   const f = path.join(root, 'lib', lib + '.js');
   if (fs.existsSync(f)) vm.runInThisContext(fs.readFileSync(f, 'utf8'), { filename: lib });
 }
@@ -303,79 +302,14 @@ function auditClassic(s) {
   return locks;
 }
 
-/* ======================================================================
-   THE STANDARD BEFORE THE RESET — for scenarios not yet rebuilt
-   ====================================================================== */
-
-// Phrases that only ever appear when a prop is telling the player which
-// transformation to apply. Each of these was live in the game before.
-const BANNED = [
-  /runs? backward/i, /speak it\s*[—-]?\s*backward/i, /\bbackwards?\b(?!\s*(?:into|through))/i,
-  /\bin reverse\b/i, /\breversed\b/i, /winds? back\b/i,
-  /twice it\b/i, /twice the (?:band|dish|record|station|stop)\b/i,
-  /\bdoubled\b/i, /\btripled\b/i, /wrong way round/i,
-  /the other way\b/i, /set it right\b/i, /read straight down\b/i,
-];
-// Prose is allowed to describe motion; only clue-bearing fields are checked.
-const ALLOW = [
-  /mist rips backward into the recyclers/i,   // describing a purge, not a method
-];
-function scanText(where, text) {
-  if (!text) return;
-  for (const re of BANNED) {
-    const m = text.match(re);
-    if (!m) continue;
-    if (ALLOW.some(a => a.test(text))) continue;
-    fail(where, `says "${m[0]}" — a prop stating the method: ${text.slice(Math.max(0, m.index - 60), m.index + 60).replace(/\n/g, ' ')}`);
-  }
-}
-
-function auditLegacy(s) {
-  const ids = new Set();
-  let puzzles = 0;
-  s.rooms.forEach((room, ri) => {
-    const where = `${s.id} R${ri + 1}`;
-    const here = new Set(room.objects.map(o => o.id));
-    const chain = squash(room.chain || '');
-    if (!room.chain) fail(where, 'has no chain documented');
-    scanText(`${where} chain`, room.chain);
-
-    room.objects.forEach(o => {
-      const at = `${where} [${o.id}]`;
-      if (ids.has(o.id)) fail(at, 'duplicate object id in this scenario');
-      ids.add(o.id);
-      scanText(`${at} desc`, o.desc);
-      scanText(`${at} revealDesc`, o.revealDesc);
-      for (const key of ['hiddenUntil', 'revealedBy']) {
-        if (o[key] && !here.has(o[key])) fail(at, `${key}:'${o[key]}' is not an object in this room`);
-        if (o[key] === o.id) fail(at, `${key} points at itself`);
-      }
-      const p = o.puzzle;
-      if (!p) return;
-      puzzles++;
-      scanText(`${at} prompt`, p.prompt);
-      (p.hints || []).forEach((h, i) => scanText(`${at} hint ${i + 1}`, h));
-      scanText(`${at} solvedText`, p.solvedText);
-      if (!p.prompt) fail(at, 'has no prompt');
-      if (!p.hints || p.hints.length !== 3) fail(at, `has ${(p.hints || []).length} hints, expected 3`);
-      (p.hints || []).forEach((h, i) => { if (!h || h.length < 20) fail(at, `hint ${i + 1} is too short to narrow anything`); });
-      const isFinale = room === s.rooms[s.rooms.length - 1] && room.objects[room.objects.length - 1].id === o.id;
-      if (!isFinale && !p.solvedText) fail(at, 'has no solved text');
-      const ans = (p.answers || [])[0];
-      for (const part of String(ans || '').split('|')) {
-        if (part && !chain.includes(squash(part))) fail(at, `answer ${part} does not appear in the room's chain — one of them is stale`);
-      }
-    });
-  });
-  console.log(`  ok    ${s.id}: ${s.rooms.length} rooms, ${puzzles} puzzles, ${ids.size} objects  (not yet rebuilt)`);
-  return puzzles;
-}
-
 /* ====================================================================== */
 
 console.log('--- every scenario ---');
 let total = 0;
-for (const s of loaded) total += s.classic ? auditClassic(s) : auditLegacy(s);
+for (const s of loaded) {
+  if (!s.classic) { fail(s.id, 'is not built on the reset grammar (classic), and nothing else is audited any more'); continue; }
+  total += auditClassic(s);
+}
 
 /* The five must not collapse back into one game in five costumes. This only
    measures the shape, which is a floor rather than a ceiling — what actually

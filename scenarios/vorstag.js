@@ -717,7 +717,8 @@ const ROOM2 = {
         inside:{ name:'An opera glass', figure:glassFig } } },
     { id:'ceiling', icon:'🎨', name:'The Painted Ceiling', pos:POS2.ceiling,
       desc:"Eight beasts in roundels above the cornice, joined by a painted vine. The painter took more care over some of them than anyone below could ever see.",
-      figure:ART.svg(ceilingArt.w, ceilingArt.h, ceilingArt.body),
+      // the close-up takes in a strip of the plaster cornice under the frieze, so so wide a drawing is never too shallow to read
+      figure:ART.svg(ceilingArt.w, ceilingArt.h + 30, ceilingArt.body + `<rect y="${ceilingArt.h}" width="${ceilingArt.w}" height="30" fill="#2a1d2e"/><path d="M0 ${ceilingArt.h + 12}H${ceilingArt.w}" stroke="${V.brassDark}" stroke-width="3" opacity=".6"/>`),
       lens:{ needs:'lectern', zoom:5, r:90, tint:V.brass, bg:'#3a2a3e' },
       sprite:ART.sprite(POS2.ceiling, ceilingArt.w, ceilingArt.h, ceilingArt.body) },
     { id:'orrery', icon:'🪐', name:'The Orrery', pos:POS2.orrery, needs:'organ',

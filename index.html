@@ -79,7 +79,7 @@ body{--font-label:var(--font-body);--font-num:var(--font-display);
   font-family:var(--font-body);color:var(--ink);line-height:1.55}
 h1,h2,h3,.headline{font-family:var(--font-display);letter-spacing:var(--title-track);font-weight:var(--display-weight)}
 /* anything drawn — a poster in a scene, a label on a prop — is lettered in the place's own hand */
-#scene text,#phone-scene text,.obj-fig text,.lock-fig text,.lk-plate text,#title-art text,.hub-card .art text,.disc-wrap text{font-family:var(--font-display)}
+#scene text,#phone-scene text,.obj-fig text,.lock-fig text,.lk-plate text,#title-art text,.hub-card .art text{font-family:var(--font-display)}
 button{font-family:var(--font-body);cursor:pointer}
 .hidden{display:none !important}
 
@@ -291,11 +291,9 @@ body:not(.phone) .solved-note{border:none;background:none;border-left:2px solid 
 body:not(.phone) .hints{border-top:1px solid rgb(var(--rule,120 160 160) / .14)}
 body:not(.phone) .hint-text{background:rgba(216,195,154,.07)}
 .puzzle-box .prompt{font-family:var(--font-label);color:var(--teal-hi);margin-bottom:10px}
-.answer-row{display:flex;gap:10px;flex-wrap:wrap}
-.answer-row input{flex:1;min-width:170px;padding:12px 14px;font-size:1.2rem;letter-spacing:3px;background:#0b1619;color:var(--sand);border:1px solid #3a565c;border-radius:8px;font-family:var(--font-display);text-transform:uppercase}
-.answer-row input:focus{outline:none;border-color:var(--teal-hi);box-shadow:0 0 12px rgba(79,163,155,.25)}
-.answer-row button,.hint-btn,.signal-btn,.morse-btn,#dial-lock{padding:12px 22px;font-size:1rem;font-weight:600;border-radius:8px;border:1px solid #6dc0b8;background:linear-gradient(180deg,var(--teal-hi),var(--teal));color:#eafaf7}
-.answer-row button:hover{filter:brightness(1.12)}
+
+.hint-btn,.signal-btn{padding:12px 22px;font-size:1rem;font-weight:600;border-radius:8px;border:1px solid #6dc0b8;background:linear-gradient(180deg,var(--teal-hi),var(--teal));color:#eafaf7}
+
 .feedback{min-height:22px;margin-top:10px;font-size:.9rem}
 .feedback.bad{color:#ff9a82;font-weight:600}
 .feedback.good{color:var(--ok);font-weight:600}
@@ -308,7 +306,7 @@ body:not(.phone) .hint-text{background:rgba(216,195,154,.07)}
 .hint-text{margin-top:8px;padding:10px 12px;background:rgba(216,195,154,.09);border-left:3px solid var(--wood-hi);border-radius:0 6px 6px 0;font-size:.92rem;color:var(--sand)}
 .hint-cost{color:var(--dim);font-size:.75rem;margin-left:8px}
 .how{margin-top:9px;font-size:.78rem;color:#7d8a84;font-style:italic;line-height:1.45}
-.symbols{font-size:1.7rem;letter-spacing:12px;color:var(--sand);text-align:center;margin:8px 0}
+
 /* ---------- figures ----------
    A figure is the clue itself, not decoration. It scales to whatever width the
    modal has, and on a phone it is capped so it can never push the answer box
@@ -331,40 +329,12 @@ body.phone .obj-fig svg{max-height:40vh}
 @media (max-width:640px){ .obj-fig svg{max-height:40vh} }
 .morse{font-family:var(--font-display);font-size:1.4rem;letter-spacing:4px;color:var(--teal-hi);text-align:center;margin:8px 0;word-break:break-all}
 .morse .lit{color:#ffe9b8;text-shadow:0 0 10px #ffda8c}
-.morse-btn{display:inline-block;margin:6px 4px 2px;font-size:.9rem;padding:9px 20px}
-.knob-row{margin-top:7px;display:flex;align-items:center;gap:10px;justify-content:center}
-.knob-label{font-family:var(--font-label);font-size:.72rem;color:var(--dim);min-width:118px;text-align:right;letter-spacing:1px}
-.knob-row .knob-slider{flex:1;max-width:300px}
-.knob-val{font-family:var(--font-label);color:var(--sand);min-width:30px;text-align:left;font-size:.85rem}
 
-/* ---------- tuning dial ---------- */
-.dial-ui{margin-top:14px;text-align:center}
-.freq-readout{display:inline-block;font-family:var(--font-num);font-size:2.3rem;letter-spacing:4px;color:#9df0b4;background:#06130a;border:2px solid #1f4a2c;border-radius:8px;padding:2px 26px;text-shadow:0 0 16px rgba(120,255,160,.5);animation:crt 4s infinite}
 @keyframes crt{0%,100%{opacity:1}92%{opacity:1}93%{opacity:.7}94%{opacity:1}97%{opacity:.85}98%{opacity:1}}
-.dial-row{display:flex;align-items:center;gap:10px;margin:16px 4px 4px}
-.dial-row input[type=range]{flex:1;accent-color:#7fae6a;height:34px;cursor:ew-resize}
-.dial-fine{background:#243a3e;border:1px solid #3a565c;color:var(--sand);border-radius:6px;font-size:1.15rem;width:44px;height:38px}
-/* ---------- the cipher disc ----------
-   Two alphabet rings, the inner one turned by hand. Reading it is the puzzle,
-   so the decoded line is big and the ring is big enough to read on a phone. */
-.disc-wrap{margin:6px 0 2px}
-.disc-wrap svg{display:block;width:100%;max-width:296px;height:auto;margin:0 auto}
-.disc-read{margin:12px 2px 2px;padding:12px 10px;background:#06130a;border:2px solid #1f4a2c;border-radius:8px;
-  font-family:var(--font-display);font-size:1.25rem;letter-spacing:3px;color:#9df0b4;text-align:center;
-  word-break:break-word;min-height:1.6em}
-.disc-read.near{text-shadow:0 0 16px rgba(120,255,160,.55)}
-.disc-off{text-align:center;color:var(--dim);font-size:.8rem;margin-top:4px}
-@media (max-width:640px){ .disc-read{font-size:1.05rem;letter-spacing:2px} }
-.sig-meter{height:10px;border-radius:6px;background:#0b1619;border:1px solid #2c4144;margin:12px auto 4px;max-width:420px;overflow:hidden}
-.sig-meter i{display:block;height:100%;width:0%;background:linear-gradient(90deg,#3f6b3a,#9df0b4);transition:width .15s}
-.sig-label{font-size:.72rem;color:var(--dim);letter-spacing:2px}
 
-/* ---------- signal pad ---------- */
-.signal-pad{margin-top:12px;text-align:center}
+/* ---------- the buttons on a simultaneity lock ---------- */
+
 .signal-btn{margin:4px 6px;min-width:138px}
-.signal-btn.long{background:linear-gradient(180deg,var(--wood-hi),var(--wood));border-color:#a5896a}
-.signal-btn.clear{background:#243a3e;border-color:#3a565c}
-.signal-display{min-height:46px;margin:12px auto 4px;max-width:430px;font-family:var(--font-display);font-size:1.8rem;letter-spacing:7px;color:var(--sand);background:#0b1619;border:1px solid #3a565c;border-radius:8px;padding:6px 10px}
 
 /* ---------- scenario hub ---------- */
 #hub-screen{position:fixed;inset:0;z-index:50;overflow-y:auto;background:radial-gradient(ellipse at 50% -10%, rgba(70,60,90,.25), transparent 55%),linear-gradient(180deg,#07090f,#0b0e14 60%,#06070b)}
@@ -980,22 +950,6 @@ body:not(.phone) .lk-tiles{width:min(100%,calc((100vh - 300px) * var(--whole,1.6
 }
 @media (prefers-reduced-motion: reduce){ .lk-face.tick{animation:none} .lv-knob{transition:none} }
 
-/* ---------- pick the ones that qualify ---------- */
-.sel-grid{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 10px;justify-content:center}
-.sel-chip{display:flex;flex-direction:column;align-items:center;gap:3px;min-width:min(92px,11vh);
-  padding:10px 12px;border:1px solid #3a565c;border-radius:10px;background:#0b1619;
-  color:var(--dim);cursor:pointer;transition:border-color .15s,background .15s,transform .1s}
-.sel-chip:hover{border-color:#6dc0b8}
-.sel-chip.on{border-color:var(--teal-hi);background:rgba(79,163,155,.22);transform:translateY(-2px)}
-.sel-chip.on .sel-letter{color:var(--teal-hi)}
-.sel-art{display:block;width:100%;max-width:min(120px,13vh);margin:0 auto 2px}
-.sel-art svg{display:block;width:100%;height:auto}
-.sel-letter{font-family:var(--font-display);font-size:1.5rem;color:var(--sand);line-height:1}
-.sel-val{font-size:.74rem;font-family:var(--font-body);letter-spacing:.3px;text-align:center}
-.sel-readout{text-align:center;color:var(--dim);font-size:.85rem;margin-bottom:4px}
-.sel-readout b{font-family:var(--font-display);font-size:1.25rem;color:var(--teal-hi);letter-spacing:3px}
-.sel-grid.shakein{animation:shakeI .4s}
-
 /* the phone, once the last lock is open and the screen has not been pressed */
 .ph-wait{margin:14px 2px 0;padding:12px 14px;border:1px solid var(--teal-hi);border-radius:10px;
   background:rgba(79,163,155,.14);color:var(--sand);font-size:.95rem;line-height:1.45;text-align:center}
@@ -1015,59 +969,11 @@ body:not(.phone) .lk-tiles{width:min(100%,calc((100vh - 300px) * var(--whole,1.6
 .pad-key.go{border-color:#6dc0b8;background:linear-gradient(180deg,var(--teal-hi),var(--teal));color:#eafaf7}
 .pad-key.del{color:var(--dim)}
 .pad-grid.shakein{animation:shakeI .4s}
-@media (prefers-reduced-motion: reduce){ .sel-chip,.pad-key{transition:none} .sel-grid.shakein,.pad-grid.shakein{animation:none} }
+@media (prefers-reduced-motion: reduce){ .pad-key{transition:none} .pad-grid.shakein{animation:none} }
 
-/* ---------- a control panel ---------- */
-.pan-grid{display:flex;flex-direction:column;gap:9px;margin:14px 0 4px}
-.pan-row{display:flex;flex-direction:column;gap:6px;padding:10px 12px;
-  border:1px solid #3a565c;border-radius:9px;background:#0b1619}
-.pan-label{font-family:var(--font-label);color:var(--sand);font-size:.95rem}
-.pan-opts{display:flex;gap:6px;flex-wrap:wrap}
-.pan-opt{flex:1;min-width:84px;padding:9px 8px;border-radius:7px;border:1px solid #3a565c;
-  background:#0e1f23;color:var(--dim);font-family:var(--font-label);font-size:.84rem;
-  letter-spacing:1px;cursor:pointer;transition:border-color .15s,background .15s,color .15s}
-.pan-opt:hover{border-color:#6dc0b8;color:var(--sand)}
-.pan-opt.on{border-color:var(--teal-hi);background:linear-gradient(180deg,var(--teal-hi),var(--teal));
-  color:#eafaf7}
-.pan-grid.shakein{animation:shakeI .4s}
-
-/* ---------- hold it, and let go at the right moment ---------- */
-.hold-gauge{position:relative;height:22px;margin:18px 0 8px;border-radius:11px;
-  background:rgba(255,255,255,.06);border:1px solid #3a565c;overflow:hidden}
-.hold-gauge i{display:block;height:100%;width:0;border-radius:11px;
-  background:linear-gradient(90deg,var(--teal),var(--teal-hi));transition:background .2s}
-.hold-gauge i.near{background:linear-gradient(90deg,#c9a04a,#ffd98c)}
-.hold-ticks{position:absolute;inset:0;pointer-events:none}
-.hold-ticks b{position:absolute;top:0;bottom:0;width:2px;background:rgba(255,255,255,.3)}
-.hold-read{text-align:center;font-family:var(--font-num);font-size:1.7rem;
-  color:var(--teal-hi);margin-bottom:12px}
-.hold-read small{font-size:.8rem;color:var(--dim);letter-spacing:2px}
-.hold-btn{width:100%;touch-action:none;user-select:none}
-.hold-btn.pressing{background:linear-gradient(180deg,#c9a04a,#8a6a2a);border-color:#ffd98c;
-  transform:scale(.985)}
-@media (prefers-reduced-motion: reduce){ .pan-opt{transition:none} .pan-grid.shakein{animation:none} }
-
-/* ---------- putting things in order ---------- */
-.ord-list{list-style:none;margin:14px 0 4px;padding:0;display:flex;flex-direction:column;gap:7px}
 /* touch-action does NOT inherit, and the touch lands on the row, not the list —
    without this the browser claims the gesture as a scroll and cancels the drag
    before it starts, which is exactly what it was doing on phones. */
-.ord-list,.ord-item,.ord-item *{touch-action:none}
-.ord-item{display:grid;grid-template-columns:auto auto 1fr auto;gap:11px;align-items:center;
-  padding:10px 12px;border:1px solid #3a565c;border-radius:9px;background:#0b1619;
-  cursor:grab;user-select:none;transition:border-color .2s ease,background .2s ease,transform .12s ease}
-.ord-item:hover{border-color:#6dc0b8}
-.ord-item.lifting{cursor:grabbing;border-color:var(--teal-hi);background:#12252a;
-  transform:scale(1.02);box-shadow:0 8px 22px rgba(0,0,0,.55)}
-.ord-grip{color:#4f747c;font-size:1.05rem;letter-spacing:-2px}
-.ord-letter{font-family:var(--font-display);color:var(--teal-hi);font-size:1.15rem;min-width:1.2em;text-align:center}
-.ord-label{color:var(--sand);font-size:.92rem}
-.ord-move{display:flex;flex-direction:column;gap:2px}
-.ord-move button{background:#0e1f23;border:1px solid #3a565c;color:var(--dim);border-radius:5px;
-  width:30px;height:20px;line-height:1;font-size:.62rem;cursor:pointer;padding:0}
-.ord-move button:hover{border-color:#6dc0b8;color:var(--sand)}
-.ord-list.shakein{animation:shakeI .4s}
-@media (prefers-reduced-motion: reduce){ .ord-item{transition:none} .ord-list.shakein{animation:none} }
 
 /* ---------- simultaneity lock ---------- */
 .simul-grid{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin:14px 0}
@@ -1309,17 +1215,7 @@ body.phone #modal{max-height:86vh;
    full data contract.
    ============================================================ */
 const SCENARIOS=[];
-function registerScenario(s){
-  // The reset writes one `answer` per lock. The handful of older widgets that
-  // survive it (keypad, hold) still read an `answers` list, so give them one.
-  (s.rooms||[]).forEach(r=>(r.objects||[]).forEach(o=>{
-    const p=o.puzzle;
-    if(p && p.answer!=null && !p.answers){
-      p.answers=[String(Array.isArray(p.answer)?p.answer.join(''):p.answer).toUpperCase().replace(/[^A-Z0-9.\-]/g,'')];
-    }
-  }));
-  SCENARIOS.push(s);
-}
+function registerScenario(s){ SCENARIOS.push(s); }
 let ACTIVE=null;
 /* Each place has its own light and its own materials. This is the only hook
    that varies styling by scenario; everything below it is CSS. */
@@ -1829,7 +1725,6 @@ window.FIREBASE_CONFIG = {
 <script src="lib/qr.js"></script>
 <script src="lib/session.js"></script>
 <script src="lib/net.js"></script>
-<script src="lib/figures.js"></script>
 <script src="lib/art.js"></script>
 <script src="lib/locks.js"></script>
 <script>
@@ -1857,7 +1752,7 @@ const S = {
   roomIndex:0, solved:new Set(),
   hintsShown:{}, hintsUsed:0, wrongCount:0, penaltySec:0,
   startTime:null, endElapsed:null,
-  signalPattern:'', teamName:'THE CASTAWAYS', teamEmoji:'⚓',
+  teamName:'THE CASTAWAYS', teamEmoji:'⚓',
   difficulty:'standard', isPhone:false, code:null,
   urged:null, staged:{}, lastIntrusion:0
 };
@@ -2219,11 +2114,6 @@ function objDesc(o){
   if(o.revealedBy && S.solved.has(o.revealedBy) && o.revealDesc) return o.revealDesc;
   return o.desc;
 }
-/** The drawing an object shows. Same reveal rule as the description. */
-function objFigure(o){
-  if(o.revealedBy && S.solved.has(o.revealedBy) && o.revealFigure) return o.revealFigure;
-  return o.figure || '';
-}
 /* ---------- props that stand in the room ----------
    An object can carry its own art (`sprite`, in 1600x900 stage coordinates).
    It goes into the scene as <g id="el-ID">, which is the id renderHotspots
@@ -2341,89 +2231,7 @@ function renderHotspots(){
 
 /* ---------- modal ---------- */
 function openModal(objId){
-  const o=currentRoom().objects.find(x=>x.id===objId);
-  if(ACTIVE.classic) return openSolo(o);
-  const solved=S.solved.has(o.id);
-  cameraOn(o);          // lean in before anything is drawn over the room
-  /* Two panes: what you are looking at, and what you do about it. Side by
-     side on a shared screen, stacked on a phone. This is what keeps the
-     whole thing on one screen — a keypad under a drawing under three
-     paragraphs was always going to run off the bottom. */
-  let look=`<h3>${o.icon} ${o.name}</h3>
-    <div class="obj-desc">${objDesc(o)}${(o.revealSymbols&&(!o.revealedBy||S.solved.has(o.revealedBy)))?`<div class="symbols">${o.revealSymbols}</div>`:''}</div>`;
-  let html='';
-  const fig=objFigure(o);
-  if(fig) look+=`<figure class="obj-fig">${fig}</figure>`;
-  if(o.puzzle){
-    const p=o.puzzle;
-    const codeReady=(p.morse||p.taps)&&(!p.morseLocked||S.solved.has(p.morseLocked));
-    if(codeReady&&!solved){
-      if(p.morse){
-        look+=`<div class="morse" id="morse-view">${p.morse.replaceAll('.','·').replaceAll('-','−')}</div>
-          <div style="text-align:center"><button class="morse-btn" onclick="playMorseUI('${o.id}')">▶ &nbsp;PLAY THE SIGNAL</button></div>
-          <div class="how">▶ plays the signal out loud. It's international morse code — look the alphabet up, match each dot-dash group to a letter in order, and type only the decoded word(s) below.</div>`;
-      } else {
-        look+=`<div class="morse" id="taps-view">${tapsDisplay(p.taps)}</div>
-          <div style="text-align:center"><button class="morse-btn" onclick="playTapsUI('${o.id}')">▶ &nbsp;PLAY THE KNOCKS</button></div>
-          <div class="how">▶ plays the knocking out loud. Each letter is TWO counts — a count, a small pause, a count — with a longer pause between letters. It's a famous code with a 5×5 letter grid; look it up, turn each pair of counts into a letter, and type only the decoded word(s) below.</div>`;
-      }
-    }
-    if(solved){
-      html+=`<div class="solved-note">✓ ${p.solvedText||'Solved.'}</div>`;
-    } else if(p.type==='simul'){
-      html+=renderSimul(o)+renderHints(o);
-    } else if(p.type==='select'){
-      html+=renderSelect(o)+renderHints(o);
-    } else if(p.type==='keypad'){
-      html+=renderKeypad(o)+renderHints(o);
-    } else if(p.type==='panel'){
-      html+=renderPanel(o)+renderHints(o);
-    } else if(p.type==='hold'){
-      html+=renderHold(o)+renderHints(o);
-    } else if(p.type==='order'){
-      html+=renderOrder(o)+renderHints(o);
-    } else if(p.type==='signal'){
-      html+=renderSignalPad(o)+renderHints(o);
-    } else if(p.type==='disc'){
-      html+=renderDisc(o)+renderHints(o);
-    } else if(p.type==='dial'){
-      html+=renderDial(o)+renderHints(o);
-    } else {
-      html+=`<div class="puzzle-box">
-        <div class="prompt">${p.prompt}</div>
-        <div class="answer-row">
-          <input id="answer-input" placeholder="${p.placeholder||''}" autocomplete="off"
-                 onkeydown="if(event.key==='Enter')submitAnswer('${o.id}')">
-          <button onclick="submitAnswer('${o.id}')">Try It</button>
-        </div>
-        <div class="how">Type the answer and press TRY IT (or Enter). Capitals, spaces and punctuation don't matter — a wrong try only costs 5 seconds.</div>
-        <div class="feedback" id="feedback"></div>
-      </div>`+renderHints(o);
-    }
-  }
-  const m=$('modal');
-  m.className = (html ? 'two' : '') + (fig ? ' fig' : '');
-  m.innerHTML = `<button class="close-x" onclick="closeModal()">✕</button>`
-    + `<div class="ex-look">${look}</div>`
-    + (html ? `<div class="ex-work">${html}</div>` : '');
-  $('overlay').classList.remove('hidden');
-  // Opening anything puts you there, so the crew can see where everyone is —
-  // a clue with no puzzle and a puzzle already solved both count, because this
-  // is presence, not a claim on the work. Simultaneity locks are the one
-  // exception: there you sit at a station, and re-seating here would tip you
-  // straight back off it.
-  if((!o.puzzle || o.puzzle.type!=='simul') && MP.openObj!==o.id){
-    MP.openObj=o.id; mpSend('sit',{objId:o.id});
-  }
-  if(o.puzzle&&o.puzzle.type==='dial'&&!solved) dialInit(o);
-  if(o.puzzle&&o.puzzle.type==='disc'&&!solved) discInit(o);
-  if(o.puzzle&&o.puzzle.type==='order'&&!solved) orderInit(o);
-  if(o.puzzle&&o.puzzle.type==='select'&&!solved) selectInit(o);
-  if(o.puzzle&&o.puzzle.type==='keypad'&&!solved) keypadInit(o);
-  if(o.puzzle&&o.puzzle.type==='panel'&&!solved) panelInit(o);
-  if(o.puzzle&&o.puzzle.type==='hold'&&!solved) holdInit(o);
-  const inp=$('answer-input'); if(inp) inp.focus();
-  fitExamine();
+  return openSolo(currentRoom().objects.find(x=>x.id===objId));
 }
 /**
  * The examine view for the reset scenarios: one thing, in the middle.
@@ -2448,8 +2256,6 @@ function openSolo(o){
     h+=`<div class="obj-desc">${objDesc(o)}</div>`;
     if(!p) h+=LOCKS.clue(o);
     else if(LOCKS.has(p.type)) h+=LOCKS.render(o)+renderHints(o);
-    else if(p.type==='keypad') h+=renderKeypad(o)+renderHints(o);
-    else if(p.type==='hold') h+=renderHold(o)+renderHints(o);
     else if(p.type==='simul') h+=renderSimul(o)+renderHints(o);
   }
   const m=$('modal');
@@ -2461,8 +2267,6 @@ function openSolo(o){
   }
   if(p&&!solved&&!dead){
     if(LOCKS.has(p.type)) LOCKS.init(o);
-    else if(p.type==='keypad') keypadInit(o);
-    else if(p.type==='hold') holdInit(o);
   }
   if(!p&&!dead) LOCKS.wireClue(o,m,reopen);
   if(p&&solved) LOCKS.wireInside(o,m,reopen);
@@ -2498,7 +2302,7 @@ function fitExamine(){
 }
 
 function closeModal(){
-  $('overlay').classList.add('hidden'); S.signalPattern=''; dialTeardown(); holdTeardown();
+  $('overlay').classList.add('hidden');
   cameraWide();
   if(MP.openObj){ mpSend('stand',{objId:MP.openObj}); MP.openObj=null; }
   if(S.isPhone) renderPhone();
@@ -2506,49 +2310,6 @@ function closeModal(){
 }
 $('overlay').addEventListener('click',e=>{ if(e.target.id==='overlay') closeModal(); });
 
-function playMorseUI(objId){
-  const o=currentRoom().objects.find(x=>x.id===objId);
-  const seq=o.puzzle.morse;
-  playMorse(seq);
-  const view=$('morse-view'); if(!view) return;
-  const glyphs=seq.replaceAll('.','·').replaceAll('-','−').split('');
-  let t=50;
-  glyphs.forEach((ch,i)=>{
-    const dur=(ch==='−'?255:85);
-    if(ch!==' '){
-      setTimeout(()=>{ view.innerHTML=glyphs.map((g,j)=>j===i?`<span class="lit">${g}</span>`:g).join(''); },t);
-      t+=dur+85;
-    } else t+=170;
-  });
-  setTimeout(()=>{ if($('morse-view')) $('morse-view').textContent=glyphs.join(''); },t+300);
-}
-
-/* ---------- tap code (pairs of knocks; puzzle.taps e.g. '43 15|51 44') ---------- */
-function tapsDisplay(t){
-  return t.split('|').map(w=>w.trim().split(/\s+/).map(pr=>
-    '●'.repeat(+pr[0])+'&hairsp;·&hairsp;'+'●'.repeat(+pr[1])
-  ).join('&nbsp;&nbsp;&nbsp;&nbsp;')).join('&nbsp;&nbsp;&nbsp;∕&nbsp;&nbsp;&nbsp;');
-}
-function playTaps(t){
-  if(!AC) return;
-  let at=AC.currentTime+0.05;
-  t.split('|').forEach((w,wi)=>{
-    if(wi>0) at+=0.7;
-    w.trim().split(/\s+/).forEach(pr=>{
-      [+pr[0],+pr[1]].forEach((n,gi)=>{
-        for(let i=0;i<n;i++){ tone(135,0.05,at,0.32,'sine'); noiseBurst(0.025,420,0.2,'lowpass',at); at+=0.21; }
-        if(gi===0) at+=0.32;
-      });
-      at+=0.72;
-    });
-  });
-}
-function playTapsUI(objId){
-  const o=currentRoom().objects.find(x=>x.id===objId);
-  playTaps(o.puzzle.taps);
-}
-
-/* ---------- hints (escalating cost) ---------- */
 function renderHints(o){
   const shown=S.hintsShown[o.id]||0;
   const nextCost=HINT_COSTS[Math.min(shown,2)];
@@ -2616,19 +2377,6 @@ function offerNudge(){
 }
 
 /* ---------- answers ---------- */
-function norm(s){ return (s||'').toUpperCase().replace(/[^A-Z0-9]/g,''); }
-function submitAnswer(objId){
-  const o=currentRoom().objects.find(x=>x.id===objId);
-  const inp=$('answer-input');
-  const guess=norm(inp.value);
-  if(!guess) return;
-  if(o.puzzle.answers.includes(guess)) return solvePuzzle(o);
-  wrongAnswer();
-  const fb=$('feedback');
-  fb.className='feedback bad'; fb.textContent='✗ Nothing happens. (+0:05 penalty)';
-  inp.classList.remove('shakein'); void inp.offsetWidth; inp.classList.add('shakein');
-  inp.select();
-}
 function wrongAnswer(){
   S.wrongCount++; S.penaltySec+=WRONG_PENALTY;
   if(!MP.suppress) mpSend('wrong',{cost:WRONG_PENALTY});
@@ -2662,201 +2410,11 @@ function solvePuzzle(o){
   if(allDone && S.roomIndex===ACTIVE.rooms.length-1) armFinalLaunch();
   // A lock with nothing inside it and nothing to say steps out of the way:
   // what it did is happening in the room, not in the close-up.
-  if(ACTIVE.classic && !o.puzzle.solvedText && !o.puzzle.inside) closeModal();
+  if(!o.puzzle.solvedText && !o.puzzle.inside) closeModal();
   else openModal(o.id);
   renderHotspots();
   reactTo(o);
   refreshRelays();
-}
-
-/* ---------- the cipher disc (config via puzzle.disc) ----------
-   A shift cipher used to be a paragraph explaining that there was a brass
-   disc and that the ring had been moved. Now there is a brass disc and the
-   ring has been moved, and you turn it. The readout decodes live, so the
-   moment the gibberish turns into English is something the room does rather
-   than something the text announces. */
-const DISC_AZ='ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-let discOff=0;
-function discRings(){
-  const R=132, r=96, cx=150, cy=150;
-  let outer='', inner='';
-  for(let i=0;i<26;i++){
-    const a=(Math.PI*2/26)*i - Math.PI/2;
-    const ox=cx+Math.cos(a)*R, oy=cy+Math.sin(a)*R;
-    const ix=cx+Math.cos(a)*r,  iy=cy+Math.sin(a)*r;
-    const deg=(360/26)*i;
-    outer+=`<text x="${ox.toFixed(1)}" y="${(oy+5).toFixed(1)}" text-anchor="middle" font-size="15" fill="#d8c39a" transform="rotate(${deg} ${ox.toFixed(1)} ${oy.toFixed(1)})">${DISC_AZ[i]}</text>`;
-    inner+=`<text x="${ix.toFixed(1)}" y="${(iy+5).toFixed(1)}" text-anchor="middle" font-size="15" fill="#9df0b4" transform="rotate(${deg} ${ix.toFixed(1)} ${iy.toFixed(1)})">${DISC_AZ[i]}</text>`;
-  }
-  return {outer,inner};
-}
-function renderDisc(o){
-  const p=o.puzzle, d=p.disc||{};
-  const {outer,inner}=discRings();
-  const start=d.start!=null?d.start:9;
-  return `<div class="puzzle-box">
-    <div class="prompt">${p.prompt}</div>
-    <div class="disc-wrap">
-      <svg viewBox="0 0 300 300" preserveAspectRatio="xMidYMid meet" role="img">
-        <circle cx="150" cy="150" r="146" fill="#10201f" stroke="#c9a24a" stroke-width="3"/>
-        <circle cx="150" cy="150" r="114" fill="none" stroke="#c9a24a" stroke-width="1.5" opacity=".55"/>
-        <g>${outer}</g>
-        <g id="disc-inner" style="transform-origin:150px 150px">
-          <circle cx="150" cy="150" r="112" fill="#0a1a18" stroke="#4fa39b" stroke-width="2"/>
-          ${inner}
-        </g>
-        <circle cx="150" cy="150" r="9" fill="#c9a24a"/>
-        <path d="M150 8 l 9 16 h -18 z" fill="#ffe9b8"/>
-      </svg>
-      <div class="dial-row">
-        <button class="dial-fine" onclick="discTurn(-1)">↺</button>
-        <input type="range" id="disc-slider" min="0" max="25" step="1" value="${start}">
-        <button class="dial-fine" onclick="discTurn(1)">↻</button>
-      </div>
-      <div class="disc-off" id="disc-off">ring offset ${start}</div>
-      <div class="disc-read" id="disc-read">&nbsp;</div>
-      <div class="how">${d.how||'Turn the inner ring. The scratched line is decoded below it as you go — stop when it stops being nonsense, then set the dials to what it asks for.'}</div>
-    </div>
-    <div class="answer-row">
-      <input id="answer-input" placeholder="${p.placeholder||''}" autocomplete="off"
-             onkeydown="if(event.key==='Enter')submitAnswer('${o.id}')">
-      <button onclick="submitAnswer('${o.id}')">Try It</button>
-    </div>
-    <div class="feedback" id="feedback"></div>
-  </div>`;
-}
-function discShift(text,k){
-  return String(text).replace(/[A-Z]/g, c =>
-    DISC_AZ[(DISC_AZ.indexOf(c) - k + 26) % 26]);
-}
-function discPaint(o){
-  const d=o.puzzle.disc||{};
-  const ring=$('disc-inner'); if(!ring) return;
-  ring.style.transform=`rotate(${(360/26)*discOff}deg)`;
-  const off=$('disc-off'); if(off) off.textContent='ring offset '+discOff;
-  const read=$('disc-read');
-  if(read){
-    read.textContent=discShift(d.cipher||'', discOff);
-    read.classList.toggle('near', discOff===(d.shift||0));
-  }
-}
-function discTurn(step){
-  const sl=$('disc-slider'); if(!sl) return;
-  discOff=(discOff+step+26)%26; sl.value=discOff;
-  sfxThud();
-  const o=currentRoom().objects.find(x=>x.puzzle&&x.puzzle.type==='disc'&&!S.solved.has(x.id));
-  if(o) discPaint(o);
-}
-function discInit(o){
-  const sl=$('disc-slider'); if(!sl) return;
-  discOff=+sl.value||0;
-  sl.oninput=()=>{ discOff=+sl.value||0; discPaint(o); };
-  discPaint(o);
-}
-
-/* ---------- tuning dial (config via puzzle.dial) ---------- */
-let dialNodes=null;
-function dialFmt(o,v){
-  const d=o.puzzle.dial;
-  return (v/d.div).toFixed(d.div>=100?2:1).padStart(d.pad||5,'0');
-}
-function renderDial(o){
-  const d=o.puzzle.dial;
-  const starts=[16,54,88,32,70];
-  const knobs=(d.knobs||[]).map((k,i)=>`
-      <div class="dial-row knob-row">
-        <span class="knob-label">${k.label}</span>
-        <input type="range" class="knob-slider" id="knob-${i}" data-target="${k.target}" min="0" max="100" step="1" value="${starts[i%starts.length]}">
-        <span class="knob-val" id="knob-val-${i}">${starts[i%starts.length]}</span>
-      </div>`).join('');
-  return `<div class="puzzle-box">
-    <div class="prompt">${o.puzzle.prompt}</div>
-    <div class="dial-ui">
-      <span class="freq-readout" id="freq-readout">${dialFmt(o,d.min)}</span>
-      <div class="dial-row">
-        <button class="dial-fine" onclick="dialNudge(-1)">−</button>
-        <input type="range" id="dial-slider" min="${d.min}" max="${d.max}" step="1" value="${d.min}">
-        <button class="dial-fine" onclick="dialNudge(1)">+</button>
-      </div>
-      ${knobs}
-      <div class="sig-meter"><i id="sig-bar"></i></div>
-      <div class="sig-label" id="sig-label">${d.meter||'SIGNAL STRENGTH'}</div>
-      <div class="how">${d.knobs&&d.knobs.length?
-        `Two stages. First set the main dial to the exact number your clues give — the meter barely breathes until it's right. Then work the ${d.knobs.length} knobs below <b>one at a time, slowly</b>: the meter climbs as each finds its sweet spot. When the panel reads <b>LOCKED IN — SIGNAL IS GO</b>, hit the lock.`:
-        `Drag the slider to sweep, or tap − / + to move one step at a time. The meter fills as you close in on the right number — when the readout matches your answer exactly, lock it.`}</div>
-      <button id="dial-lock" style="margin-top:14px" onclick="dialLock('${o.id}')">🔒 ${d.lock||'LOCK IT IN'}</button>
-      <div class="feedback" id="feedback"></div>
-    </div>
-  </div>`;
-}
-function dialInit(o){
-  dialTeardown(); // re-renders (e.g. hint reveals) must not orphan a running static loop
-  const slider=$('dial-slider'); if(!slider) return;
-  const d=o.puzzle.dial;
-  if(AC){
-    const s=AC.createBufferSource(); s.buffer=amb.noiseBuf; s.loop=true;
-    const f=AC.createBiquadFilter(); f.type='bandpass'; f.frequency.value=1800; f.Q.value=0.6;
-    const g=AC.createGain(); g.gain.value=0.11;
-    s.connect(f); f.connect(g); g.connect(master); s.start();
-    dialNodes={src:s,gain:g,beepTimer:setInterval(()=>{
-      const v=+($('dial-slider')?.value??0);
-      const prox=Math.max(0,1-Math.abs(v-d.target)/((d.max-d.min)*0.085));
-      if(prox>0.75&&d.nearMorse) playMorse(d.nearMorse,0.05+prox*0.08,0.06);
-    },3400)};
-  }
-  slider.addEventListener('input',()=>dialUpdate(o));
-  document.querySelectorAll('.knob-slider').forEach(k=>k.addEventListener('input',()=>dialUpdate(o)));
-  dialUpdate(o);
-}
-function dialKnobsLocked(d){
-  return !d.knobs||!d.knobs.length||d.knobs.every((k,i)=>Math.abs(+($('knob-'+i)?.value??-99)-k.target)<=3);
-}
-function dialUpdate(o){
-  const d=o.puzzle.dial, v=+$('dial-slider').value;
-  $('freq-readout').textContent=dialFmt(o,v);
-  const mainProx=Math.max(0,1-Math.abs(v-d.target)/((d.max-d.min)*0.26));
-  let prox=mainProx;
-  if(d.knobs&&d.knobs.length){
-    let kp=0;
-    d.knobs.forEach((k,i)=>{
-      const kv=+$('knob-'+i).value;
-      $('knob-val-'+i).textContent=kv;
-      kp+=Math.max(0,1-Math.abs(kv-k.target)/16);
-    });
-    kp/=d.knobs.length;
-    const exact=(v===d.target);
-    prox = exact ? 0.3+0.7*kp : mainProx*0.28;
-    const locked = exact && dialKnobsLocked(d);
-    if(locked) prox=1;
-    $('sig-label').innerHTML = locked
-      ? '<b style="color:#8fe3a8;letter-spacing:2px">◉ LOCKED IN — SIGNAL IS GO</b>'
-      : (d.meter||'SIGNAL STRENGTH');
-  }
-  $('sig-bar').style.width=(prox*100)+'%';
-  if(dialNodes) dialNodes.gain.gain.value=0.11*(1-prox*0.82)+0.01;
-}
-function dialNudge(dv){
-  const s=$('dial-slider'); if(!s) return;
-  s.value=+s.value+dv;
-  const o=currentRoom().objects.find(x=>x.puzzle&&x.puzzle.type==='dial');
-  if(o) dialUpdate(o);
-}
-function dialTeardown(){
-  if(!dialNodes) return;
-  try{ dialNodes.src.stop(); }catch(e){}
-  clearInterval(dialNodes.beepTimer);
-  dialNodes=null;
-}
-function dialLock(objId){
-  const o=currentRoom().objects.find(x=>x.id===objId);
-  const d=o.puzzle.dial, v=+$('dial-slider').value;
-  if(v===d.target&&dialKnobsLocked(d)){ dialTeardown(); return solvePuzzle(o); }
-  wrongAnswer(); sfxStatic(0.5,0.2);
-  const fb=$('feedback');
-  fb.className='feedback bad';
-  fb.textContent = (v===d.target)
-    ? `✗ ${dialFmt(o,v)} — the number is right, but the carrier won't hold. Keep working the knobs. (+0:05 penalty)`
-    : `✗ ${dialFmt(o,v)} — ${d.miss||'nothing but static out there.'} (+0:05 penalty)`;
 }
 
 /* ---------- simultaneity lock: several stations manned at once ---------- */
@@ -2928,334 +2486,6 @@ function simulPull(objId){
    same as a laptop, and the arrows are there for anyone who would rather not
    drag at all. The typed box stays, because it is the accessible path and
    because some people just know the answer. */
-function orderLetters(o){
-  return (o.puzzle.answers[0]||'').split('');
-}
-function renderOrder(o){
-  const p=o.puzzle, letters=orderLetters(o);
-  const labels=p.order&&p.order.labels||{};
-  // a fixed, reproducible shuffle so it doesn't reshuffle on every re-render
-  const start=(S.orderState&&S.orderState[o.id]) ||
-    letters.slice().sort((a,b)=>((a.charCodeAt(0)*37+o.id.length*11)%7)-((b.charCodeAt(0)*37+o.id.length*11)%7));
-  S.orderState=S.orderState||{}; S.orderState[o.id]=start;
-  const rows=start.map((ch,i)=>`
-    <li class="ord-item" data-ch="${ch}" draggable="false">
-      <span class="ord-grip">⠿</span>
-      <span class="ord-letter">${ch}</span>
-      <span class="ord-label">${esc(labels[ch]||'')}</span>
-      <span class="ord-move">
-        <button class="ord-up" data-i="${i}" aria-label="Move up">▲</button>
-        <button class="ord-down" data-i="${i}" aria-label="Move down">▼</button>
-      </span>
-    </li>`).join('');
-  return `<div class="puzzle-box">
-    <div class="prompt">${p.prompt}</div>
-    <ol class="ord-list" id="ord-list">${rows}</ol>
-    <div class="how">Drag the tags into order, or use ▲▼. When the order looks right, lock it in — a wrong order only costs 5 seconds.</div>
-    <button class="big-btn" style="margin-top:12px" onclick="submitOrder('${o.id}')">🔒 LOCK THIS ORDER</button>
-    <div class="answer-row" style="margin-top:14px">
-      <input id="answer-input" placeholder="${p.placeholder||'FIVE LETTERS'}" autocomplete="off"
-             onkeydown="if(event.key==='Enter')submitAnswer('${o.id}')">
-      <button onclick="submitAnswer('${o.id}')">Try It</button>
-    </div>
-    <div class="feedback" id="feedback"></div>
-  </div>`;
-}
-function orderInit(o){
-  const list=$('ord-list'); if(!list) return;
-  const save=()=>{ S.orderState[o.id]=[...list.querySelectorAll('.ord-item')].map(li=>li.dataset.ch); };
-
-  list.querySelectorAll('.ord-up,.ord-down').forEach(b=>{
-    b.onclick=(e)=>{
-      e.stopPropagation();
-      const li=b.closest('.ord-item');
-      const to=b.classList.contains('ord-up')?li.previousElementSibling:li.nextElementSibling;
-      if(!to) return;
-      if(b.classList.contains('ord-up')) list.insertBefore(li,to); else list.insertBefore(to,li);
-      save(); sfxThud();
-    };
-  });
-
-  /* Dragging is the nicer way to do this and the arrows are the reliable one,
-     so both are wired. Touch gets its own handlers rather than riding on
-     pointer events: touch-action, scroll-claiming and pointer capture all
-     interact badly on phones, and the oldest API is the one that behaves. */
-  let dragging=null;
-  const grab=(el)=>{ if(!el) return; dragging=el; el.classList.add('lifting'); };
-  const moveTo=(x,y)=>{
-    if(!dragging) return;
-    const over=document.elementFromPoint(x,y);
-    const target=over&&over.closest&&over.closest('.ord-item');
-    if(!target||target===dragging||target.parentElement!==list) return;
-    const up=target.getBoundingClientRect().top < dragging.getBoundingClientRect().top;
-    list.insertBefore(dragging, up?target:target.nextSibling);
-  };
-  const drop=()=>{ if(!dragging) return; dragging.classList.remove('lifting'); dragging=null; save(); sfxThud(); };
-  const from=(e)=>{
-    const t=e.target;
-    if(!t||!t.closest||t.closest('.ord-move')) return null;
-    return t.closest('.ord-item');
-  };
-
-  list.addEventListener('pointerdown',(e)=>{ if(e.pointerType==='touch') return; grab(from(e)); });
-  list.addEventListener('pointermove',(e)=>{ if(!dragging||e.pointerType==='touch') return; e.preventDefault(); moveTo(e.clientX,e.clientY); });
-  list.addEventListener('pointerup',(e)=>{ if(e.pointerType==='touch') return; drop(); });
-  list.addEventListener('pointercancel',drop);
-
-  list.addEventListener('touchstart',(e)=>{ grab(from(e)); },{passive:true});
-  list.addEventListener('touchmove',(e)=>{
-    if(!dragging) return;
-    e.preventDefault();                       // we own the gesture, not the scroller
-    const t=e.touches[0]; if(t) moveTo(t.clientX,t.clientY);
-  },{passive:false});
-  list.addEventListener('touchend',drop);
-  list.addEventListener('touchcancel',drop);
-}
-function submitOrder(objId){
-  const o=currentRoom().objects.find(x=>x.id===objId);
-  const list=$('ord-list'); if(!list) return;
-  const guess=[...list.querySelectorAll('.ord-item')].map(li=>li.dataset.ch).join('');
-  if(o.puzzle.answers.includes(guess)) return solvePuzzle(o);
-  wrongAnswer();
-  const fb=$('feedback');
-  fb.className='feedback bad'; fb.textContent='\u2717 The steps fight each other. (+0:05 penalty)';
-  list.classList.remove('shakein'); void list.offsetWidth; list.classList.add('shakein');
-}
-
-/* ---------- pick the ones that qualify ----------
-   This puzzle was identical in all five scenarios: a rack of lettered things,
-   a rule about which ones are sound, and a box to type the survivors' letters
-   into. Tapping the rack itself is the same deduction with the bookkeeping
-   taken away — you can see what you have chosen instead of holding it in your
-   head while you transcribe. */
-function renderSelect(o){
-  const p=o.puzzle, cfg=p.select;
-  const picked=(S.selectState&&S.selectState[o.id]) || [];
-  S.selectState=S.selectState||{}; S.selectState[o.id]=picked;
-  const chips=cfg.items.map((it,i)=>`
-    <button class="sel-chip${picked.includes(i)?' on':''}" data-i="${i}">
-      ${it.art?`<span class="sel-art">${it.art}</span>`:''}
-      <span class="sel-letter">${esc(it.letter)}</span>
-      <span class="sel-val">${esc(it.value)}</span>
-    </button>`).join('');
-  return `<div class="puzzle-box">
-    <div class="prompt">${p.prompt}</div>
-    <div class="sel-grid" id="sel-grid">${chips}</div>
-    <div class="sel-readout">Chosen: <b id="sel-read">—</b></div>
-    <div class="how">Tap the ones the rule keeps. They stay in rack order, so you do not have to work out the spelling yourself — tap again to put one back.</div>
-    <button class="big-btn" style="margin-top:12px" onclick="submitSelect('${o.id}')">${cfg.commit||'✔ THAT IS THE SET'}</button>
-    <div class="feedback" id="feedback"></div>
-  </div>`;
-}
-function selectWord(o){
-  const picked=S.selectState[o.id]||[];
-  return o.puzzle.select.items.filter((it,i)=>picked.includes(i)).map(it=>it.letter).join('');
-}
-function selectInit(o){
-  const grid=$('sel-grid'); if(!grid) return;
-  const paint=()=>{
-    const w=selectWord(o);
-    const read=$('sel-read'); if(read) read.textContent=w||'—';
-  };
-  grid.querySelectorAll('.sel-chip').forEach(b=>{
-    b.onclick=()=>{
-      const i=+b.dataset.i, picked=S.selectState[o.id];
-      const at=picked.indexOf(i);
-      if(at>=0) picked.splice(at,1); else picked.push(i);
-      b.classList.toggle('on',at<0);
-      sfxThud(); paint();
-    };
-  });
-  paint();
-}
-function submitSelect(objId){
-  const o=currentRoom().objects.find(x=>x.id===objId);
-  if(o.puzzle.answers.includes(norm(selectWord(o)))) return solvePuzzle(o);
-  wrongAnswer();
-  const fb=$('feedback');
-  fb.className='feedback bad';
-  fb.textContent='\u2717 '+(o.puzzle.select.wrong||'That set does not hold.')+' (+0:05 penalty)';
-  const g=$('sel-grid'); g.classList.remove('shakein'); void g.offsetWidth; g.classList.add('shakein');
-}
-
-/* ---------- a combination lock ----------
-   Every one of these is a lock in the fiction — a crate, a safe, a fuse box,
-   a winch — and was a text box you typed four digits into. The keys are the
-   thing the room actually has. */
-function renderKeypad(o){
-  const p=o.puzzle, n=(p.answers[0]||'').length;
-  S.padState=S.padState||{}; S.padState[o.id]=S.padState[o.id]||'';
-  const keys=['1','2','3','4','5','6','7','8','9','⌫','0','✔'];
-  return `<div class="puzzle-box">
-    ${p.prompt?`<div class="prompt">${p.prompt}</div>`:''}
-    <div class="pad-display" id="pad-display">${'<i></i>'.repeat(n)}</div>
-    <div class="pad-grid" id="pad-grid">
-      ${keys.map(k=>`<button class="pad-key${k==='✔'?' go':''}${k==='⌫'?' del':''}" data-k="${k}">${k}</button>`).join('')}
-    </div>
-    <div class="how">${p.padHow||ACTIVE.padHow||'Key in the combination. A wrong one only costs 5 seconds.'}</div>
-    <div class="feedback" id="feedback"></div>
-  </div>`;
-}
-function keypadInit(o){
-  const grid=$('pad-grid'); if(!grid) return;
-  const n=(o.puzzle.answers[0]||'').length;
-  const paint=()=>{
-    const v=S.padState[o.id], d=$('pad-display'); if(!d) return;
-    d.innerHTML=Array.from({length:n},(_,i)=>`<i${v[i]?' class="set"':''}>${v[i]||''}</i>`).join('');
-  };
-  grid.querySelectorAll('.pad-key').forEach(b=>{
-    b.onclick=()=>{
-      const k=b.dataset.k;
-      let v=S.padState[o.id];
-      if(k==='⌫'){ v=v.slice(0,-1); sfxThud(); }
-      else if(k==='✔'){
-        if(o.puzzle.answers.includes(norm(v))) return solvePuzzle(o);
-        wrongAnswer();
-        const fb=$('feedback');
-        fb.className='feedback bad';
-        fb.textContent='\u2717 '+(o.puzzle.padMiss||ACTIVE.padMiss||'The lock does not move.')+' (+0:05 penalty)';
-        S.padState[o.id]=''; paint();
-        const g=$('pad-grid'); g.classList.remove('shakein'); void g.offsetWidth; g.classList.add('shakein');
-        return;
-      }
-      else if(v.length<n){ v+=k; tone(520+(+k||0)*18,0.05,undefined,0.09,'square'); }
-      S.padState[o.id]=v; paint();
-    };
-  });
-  paint();
-}
-
-/* ---------- a control panel ----------
-   Set each control to the right position, then commit. Different in kind from
-   everything else here: not a sequence, not a value, not a word — a
-   configuration, where every control is visible and wrong at once. */
-function renderPanel(o){
-  const p=o.puzzle, cfg=p.panel;
-  const state=(S.panelState&&S.panelState[o.id]) || cfg.controls.map(()=>0);
-  S.panelState=S.panelState||{}; S.panelState[o.id]=state;
-  const rows=cfg.controls.map((c,i)=>`
-    <div class="pan-row">
-      <div class="pan-label">${c.icon||'🎚️'} ${esc(c.label)}</div>
-      <div class="pan-opts" data-i="${i}">
-        ${c.options.map((opt,j)=>`<button class="pan-opt${state[i]===j?' on':''}" data-i="${i}" data-j="${j}">${esc(opt)}</button>`).join('')}
-      </div>
-    </div>`).join('');
-  return `<div class="puzzle-box">
-    <div class="prompt">${p.prompt}</div>
-    <div class="pan-grid" id="pan-grid">${rows}</div>
-    <div class="how">Set every control, then commit. A wrong configuration only costs 5 seconds.</div>
-    <button class="big-btn" style="margin-top:14px" onclick="submitPanel('${o.id}')">${cfg.commit||'⚙️ COMMIT'}</button>
-    <div class="feedback" id="feedback"></div>
-  </div>`;
-}
-function panelInit(o){
-  const grid=$('pan-grid'); if(!grid) return;
-  grid.querySelectorAll('.pan-opt').forEach(b=>{
-    b.onclick=()=>{
-      const i=+b.dataset.i, j=+b.dataset.j;
-      S.panelState[o.id][i]=j;
-      grid.querySelectorAll(`.pan-opt[data-i="${i}"]`).forEach(x=>x.classList.toggle('on',+x.dataset.j===j));
-      sfxThud();
-    };
-  });
-}
-function submitPanel(objId){
-  const o=currentRoom().objects.find(x=>x.id===objId);
-  const cfg=o.puzzle.panel, state=S.panelState[objId];
-  const guess=cfg.controls.map((c,i)=>c.options[state[i]]).join('|');
-  if(o.puzzle.answers.includes(guess)) return solvePuzzle(o);
-  wrongAnswer();
-  const fb=$('feedback');
-  fb.className='feedback bad'; fb.textContent='\u2717 '+(cfg.wrong||'Nothing engages. (+0:05 penalty)');
-  const g=$('pan-grid'); g.classList.remove('shakein'); void g.offsetWidth; g.classList.add('shakein');
-}
-
-/* ---------- hold it, and let go at the right moment ----------
-   A gauge climbs while the control is held and falls back when it is not. The
-   team has to work out from the room what reading to stop at, then actually
-   stop there — the only puzzle in the game where knowing the answer is not
-   quite the same as doing it. */
-let holdTimer=null, holdVal=0, holdDown=false;
-function renderHold(o){
-  const p=o.puzzle, h=p.hold;
-  return `<div class="puzzle-box">
-    <div class="prompt">${p.prompt}</div>
-    <div class="hold-gauge"><i id="hold-bar"></i>
-      <span class="hold-ticks">${(h.ticks||[]).map(t=>`<b style="left:${t/h.max*100}%"></b>`).join('')}</span></div>
-    <div class="hold-read"><span id="hold-val">0.0</span> <small>${esc(h.unit||'')}</small></div>
-    <button class="big-btn hold-btn" id="hold-btn">${h.label||'HOLD'}</button>
-    <div class="how">Press and hold to bring it up; let go to stop. It falls back when you are not holding. Let go at the reading the room gives you.</div>
-    <div class="feedback" id="feedback"></div>
-  </div>`;
-}
-function holdTeardown(){ if(holdTimer) clearInterval(holdTimer); holdTimer=null; holdDown=false; holdVal=0; }
-function holdInit(o){
-  holdTeardown();
-  const h=o.puzzle.hold, btn=$('hold-btn'); if(!btn) return;
-  const down=(e)=>{ e.preventDefault(); holdDown=true; btn.classList.add('pressing'); };
-  const up=()=>{
-    if(!holdDown) return;
-    holdDown=false; btn.classList.remove('pressing');
-    const hit=Math.abs(holdVal-h.target)<=(h.tolerance||0.45);
-    if(hit) return solvePuzzle(o);
-    wrongAnswer();
-    const fb=$('feedback');
-    if(fb){ fb.className='feedback bad';
-      fb.textContent='\u2717 '+(holdVal<h.target?'Not enough. ':'Too far. ')+'(+0:05 penalty)'; }
-  };
-  btn.addEventListener('pointerdown',down);
-  btn.addEventListener('touchstart',down,{passive:false});
-  ['pointerup','pointerleave','pointercancel','touchend','touchcancel'].forEach(t=>btn.addEventListener(t,up));
-  holdTimer=setInterval(()=>{
-    const bar=$('hold-bar'); if(!bar){ holdTeardown(); return; }
-    holdVal = holdDown ? Math.min(h.max, holdVal + (h.rate||2.2)/20)
-                       : Math.max(0, holdVal - (h.fall||3.2)/20);
-    bar.style.width=(holdVal/h.max*100).toFixed(1)+'%';
-    bar.classList.toggle('near', Math.abs(holdVal-h.target)<=(h.tolerance||0.45));
-    const v=$('hold-val'); if(v) v.textContent=holdVal.toFixed(1);
-  },50);
-}
-
-/* ---------- signal pad (labels via puzzle.labels) ---------- */
-function renderSignalPad(o){
-  const L=Object.assign({short:'🔥 SHORT BURST ·',long:'🔥 LONG BURN −',reset:'RESET',send:'📡 SEND SIGNAL'},o.puzzle.labels||{});
-  return `<div class="puzzle-box">
-    <div class="prompt">${o.puzzle.prompt}</div>
-    <div class="signal-pad">
-      <div class="signal-display" id="signal-display">&nbsp;</div>
-      <button class="signal-btn" onclick="signalAdd('.')">${L.short}</button>
-      <button class="signal-btn long" onclick="signalAdd('-')">${L.long}</button>
-      <button class="signal-btn clear" onclick="signalClear()">${L.reset}</button>
-      <div class="how">Each press adds one beat to the pattern above: the first button adds a SHORT (·), the second a LONG (−). Build the whole pattern in order, then press send. Reset wipes it and starts over.</div>
-      <br>
-      <button class="signal-btn" style="margin-top:12px;min-width:210px" onclick="signalSend('${o.id}')">${L.send}</button>
-      <div class="feedback" id="feedback"></div>
-    </div>
-  </div>`;
-}
-function signalAdd(ch){
-  if(S.signalPattern.length>=12) return;
-  S.signalPattern+=ch;
-  $('signal-display').textContent=S.signalPattern.replaceAll('.','·').replaceAll('-','−');
-  spawnFlare(ch==='-');
-  tone(ch==='-'?420:640, ch==='-'?0.5:0.16, undefined, 0.1, 'triangle');
-}
-function signalClear(){
-  S.signalPattern='';
-  $('signal-display').innerHTML='&nbsp;';
-  const fb=$('feedback'); if(fb){fb.textContent='';fb.className='feedback';}
-}
-function signalSend(objId){
-  const o=currentRoom().objects.find(x=>x.id===objId);
-  if(S.signalPattern===o.puzzle.answers[0]) return solvePuzzle(o);
-  wrongAnswer();
-  const fb=$('feedback');
-  fb.className='feedback bad';
-  fb.textContent='✗ '+(o.puzzle.missText||'Wrong pattern.')+' (+0:05 — reset)';
-  const d=$('signal-display'); d.classList.remove('shakein'); void d.offsetWidth; d.classList.add('shakein');
-  S.signalPattern=''; d.innerHTML='&nbsp;';
-}
-
 /* ---------- hub & title flow ---------- */
 function buildHub(){
   const grid=$('hub-cards'); grid.innerHTML='';
@@ -3614,17 +2844,9 @@ function buildGmPanel(){
   ACTIVE.rooms.forEach(room=>{
     html+=`<h3>${room.name}</h3><div class="chain">CHAIN: ${room.chain}</div>`;
     room.objects.filter(o=>o.puzzle).forEach(o=>{
-      const disp=(ACTIVE.classic&&LOCKS.has(o.puzzle.type))?gmLock(o.puzzle):
-                 o.puzzle.type==='signal'?'··· −−− ··· (short×3, long×3, short×3)':
-                 o.puzzle.type==='dial'?`tune to ${(o.puzzle.dial.target/o.puzzle.dial.div).toFixed(o.puzzle.dial.div>=100?2:1)}, then lock in`:
+      const disp=LOCKS.has(o.puzzle.type)?gmLock(o.puzzle):
                  o.puzzle.type==='simul'?`man all ${(o.puzzle.stations||[]).length} stations at once (${(o.puzzle.stations||[]).map(x=>x.label).join(' + ')}), then haul`:
-                 o.puzzle.type==='panel'?`set ${(o.puzzle.panel.controls||[]).map((c,i)=>c.label+' → '+(o.puzzle.answers[0].split('|')[i])).join(', ')}, then commit`:
-                 o.puzzle.type==='hold'?`hold until the gauge reads ${o.puzzle.hold.target}${o.puzzle.hold.unit||''}, then let go (±${o.puzzle.hold.tolerance||0.45})`:
-                 o.puzzle.type==='order'?`${(o.puzzle.answers||['—'])[0]} — drag the tags into that order`:
-                 o.puzzle.type==='disc'?`${(o.puzzle.answers||['—'])[0]} — ring offset ${(o.puzzle.disc||{}).shift}`:
-                 o.puzzle.type==='select'?`${(o.puzzle.answers||['—'])[0]} — tap those, in rack order`:
-                 o.puzzle.type==='keypad'?`${(o.puzzle.answers||['—'])[0]} — key it in`:
-                 (o.puzzle.answers||['—'])[0];
+                 String(o.puzzle.answer!=null?o.puzzle.answer:'—');
       html+=`<div class="gm-puzzle"><b>${o.icon} ${o.name}</b> — answer: <span class="gm-answer">${disp}</span>
         <ul>${o.puzzle.hints.map((h,i)=>`<li>Hint ${i+1} (+${fmt(HINT_COSTS[i])}): ${h}</li>`).join('')}</ul></div>`;
     });
