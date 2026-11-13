@@ -1,8 +1,14 @@
 /* ============================================================
    SCENARIO: THE MIDNIGHT SPECIAL (1927 ghost train)
-   The overnight express stopped at a station that isn't on
-   the line. The other passengers are gone. The Conductor
-   still walks the corridor, punching tickets nobody bought.
+   The overnight express stopped at a station that isn't on the
+   line. The other passengers are gone. The Conductor still walks
+   the corridor, punching tickets nobody bought. Get to the engine
+   and make the junction before he reaches you.
+
+   Built on the reset grammar (see PUZZLES.md): locks that look like locks,
+   and whatever opens them somewhere else in the room. Each object carries
+   its own art into the room as `sprite`; the backdrops below are only the
+   place.
    ============================================================ */
 (function(){
 const SCENES={};
@@ -36,52 +42,7 @@ ${[0,1,2,3,4,5].map(i=>`<line x1="${i*300-100}" y1="640" x2="${i*340-200}" y2="9
   <circle class="flick" cx="800" cy="146" r="13" fill="#ffd98c"/>
   <circle cx="800" cy="146" r="90" fill="url(#mLamp)"/>
 </g>
-<!-- steamer trunks -->
-<g id="art-trunks">
-${[['PEMBERTON',480,700,-3],['ROSSITER',650,730,2],['CARMODY',820,700,-2],['WHITAKER',990,732,3],['KESTREL',1160,702,-3],['HARGREAVES',1330,730,2]].map(([nm,x,y,r])=>
- `<g transform="rotate(${r} ${x} ${y})">
-  <rect x="${x-70}" y="${y-52}" width="140" height="94" rx="10" fill="#4a2f1a" stroke="#2c1c0e" stroke-width="4"/>
-  <line x1="${x-70}" y1="${y-6}" x2="${x+70}" y2="${y-6}" stroke="#2c1c0e" stroke-width="5"/>
-  ${[-38,0,38].map(dx=>`<rect x="${x+dx-5}" y="${y-52}" width="10" height="94" fill="#8a6a3a"/>`).join('')}
-  <rect x="${x-34}" y="${y+8}" width="68" height="22" rx="3" fill="#d9cba6"/>
-  <text x="${x}" y="${y+23}" text-anchor="middle" font-family="Special Elite" font-size="9" fill="#3a2d1c">${nm}</text></g>`).join('')}
-</g>
-<!-- the fare card, framed on the wall -->
-<g id="art-farecard">
-  <rect x="640" y="200" width="120" height="150" fill="#d9cba6" stroke="#5c4423" stroke-width="7" transform="rotate(-2 700 275)"/>
-  <text x="700" y="232" text-anchor="middle" font-family="Special Elite" font-size="10" fill="#7a2a1a" transform="rotate(-2 700 275)">FARE CARD</text>
-  ${[0,1,2,3,4].map(i=>`<line x1="656" y1="${250+i*18}" x2="744" y2="${247+i*18}" stroke="#5a4a34" stroke-width="3" transform="rotate(-2 700 275)"/>`).join('')}
-</g>
-<!-- porter's desk -->
-<g id="art-desk">
-  <rect x="430" y="440" width="240" height="18" fill="#5c4423"/>
-  <rect x="446" y="458" width="208" height="120" fill="#3a2a1a"/>
-  <rect x="470" y="400" width="90" height="40" rx="4" fill="#2c1c0e"/>
-  <circle cx="515" cy="420" r="12" fill="#c9a04a"/>
-  <path d="M580 414 l60 -10 4 22 -60 10z" fill="#d9cba6"/>
-</g>
-<!-- mail cage -->
-<g id="art-mailcage">
-  <rect x="1140" y="220" width="300" height="360" fill="#100a06" stroke="#5c4423" stroke-width="8"/>
-  ${[0,1,2,3,4,5,6].map(i=>`<line x1="${1162+i*40}" y1="220" x2="${1162+i*40}" y2="580" stroke="#5c4423" stroke-width="4"/>`).join('')}
-  ${[0,1,2].map(i=>`<line x1="1140" y1="${290+i*100}" x2="1440" y2="${290+i*100}" stroke="#5c4423" stroke-width="4"/>`).join('')}
-  ${[0,1,2].map(i=>`<path d="M${1180+i*80} 580 q-6 -50 24 -56 q30 6 24 56z" fill="#8a7448"/>`).join('')}
-  <rect x="1250" y="420" width="70" height="90" fill="#0d0805" stroke="#c9a04a" stroke-width="3"/>
-</g>
-<!-- waybill on clip -->
-<g id="el-waybill">
-  <rect x="900" y="300" width="110" height="150" fill="#d9cba6" transform="rotate(-2 955 375)"/>
-  <text x="955" y="330" text-anchor="middle" font-family="Special Elite" font-size="11" fill="#7a2a1a" transform="rotate(-2 955 375)">WAYBILL</text>
-  ${[0,1,2,3,4].map(i=>`<line x1="916" y1="${348+i*20}" x2="996" y2="${344+i*20}" stroke="#5a4a34" stroke-width="3" transform="rotate(-2 955 375)"/>`).join('')}
-  <circle cx="955" cy="302" r="5" fill="#8a6a3a"/>
-</g>
-<!-- crates -->
-<g>
-  ${[0,1].map(i=>`<rect x="${540+i*130}" y="${606-i*40}" width="110" height="${90+i*40}" fill="#4a3520" stroke="#2c1c0e" stroke-width="4"/>`).join('')}
-  <text x="600" y="660" text-anchor="middle" font-family="Special Elite" font-size="11" fill="#8a6a3a">HALIFAX</text>
-</g>
-<!-- a top hat, left on a crate -->
-<g><ellipse cx="710" cy="600" rx="34" ry="8" fill="#0d0805"/><rect x="688" y="560" width="44" height="40" rx="4" fill="#100a06"/></g>
+<!--SPRITES-->
 <g class="atmo">
 <!-- something in here is still running -->
 <circle id="rl-baggage" cx="230" cy="210" r="6" fill="#ffd98c" opacity=".12"/>
@@ -378,78 +339,225 @@ const WRONG_BEATS=[
 ];
 const WRONG_SOUNDS=['clank','hiss','knock','clank','bell'];
 
-const ROOMS=[
-/* ============ ROOM 1 — THE BAGGAGE CAR ============ */
-{
+/* ============================================================
+   THE DRAWINGS, AND THE ROOMS THEY STAND IN
+
+   Every prop is drawn once and used twice: large in the close-up, and small
+   standing in the room, so what you can see from across the car is exactly
+   what you read when you lean in.
+   ============================================================ */
+const C = ART.COL, I = ART.INK, W = ART.words, GL = ART.glyph;
+
+/* ============================================================
+   ROOM 1 — THE BAGGAGE CAR
+   The line is framed on the wall, station by station, and wherever
+   the Midnight Special stops it carries the train's crescent. Four
+   trunks wait to be put off, each labelled for its station; the mail
+   cage wants their straps in the order they leave the train. Inside
+   are the night's collected tickets, and only some of them carry the
+   Conductor's own punch. The gangway out wants a ticket punched for
+   every stop.
+   ============================================================ */
+const M = { wall: '#241a12', wood: '#4a3520', woodDark: '#2c1c0e', woodLip: '#6a4a2a', brass: '#c9a04a', brassDark: '#7d6126',
+            paper: '#d9cba6', paperDark: '#b9a57c', ink: '#2c1c0e', night: '#05070d', lamp: '#ffd98c', red: '#7a2a1a', iron: '#3a3430' };
+
+/* ---- the line: ten stations from the terminus to the junction ---- */
+const LINE = ['crown', 'anchor', 'bell', 'key', 'tower', 'star', 'mountain', 'leaf', 'fish', 'flag'];
+const STOPS = ['anchor', 'key', 'star', 'leaf', 'fish'];               // where the Midnight Special stops
+const LINE_AT = [[56, 254], [118, 186], [184, 128], [258, 150], [314, 222], [382, 252], [446, 204], [488, 132], [540, 168], [566, 246]];
+// a disc with a second disc of the same size, shifted right, taken out of it: the horns point right
+const crescent = (x, y, r, fill) => { const hx = (x + r * 0.3).toFixed(1), t = (y - r * 0.954).toFixed(1), b = (y + r * 0.954).toFixed(1);
+  return `<path d="M${hx} ${t}A${r} ${r} 0 1 0 ${hx} ${b}A${r} ${r} 0 0 1 ${hx} ${t}Z" fill="${fill}"/>`; };
+const roundel = (name, x, y, r = 22) => `<circle cx="${x}" cy="${y}" r="${r}" fill="${M.paper}" stroke="${M.ink}" stroke-width="4"/>` + GL(name, x - r * 0.62, y - r * 0.62, r * 1.24, M.ink);
+const mapArt = { w: 600, h: 360, body: (() => {
+  let b = `<rect width="600" height="360" fill="${M.woodDark}"/><rect x="12" y="12" width="576" height="336" fill="${M.paper}"/>`
+    + `<rect x="22" y="22" width="556" height="316" fill="none" stroke="${M.paperDark}" stroke-width="2"/>`;
+  // the line, and at its far end the junction, forking
+  b += `<path d="M${LINE_AT.map(p => p.join(' ')).join('L')}" stroke="${M.ink}" stroke-width="9" fill="none" stroke-linejoin="round"/>`
+    + `<path d="M566 246L582 218M566 246L582 276" stroke="${M.ink}" stroke-width="9" fill="none" stroke-linecap="round"/>`;
+  LINE.forEach((s, i) => {
+    const [x, y] = LINE_AT[i];
+    b += roundel(s, x, y);
+    if (STOPS.includes(s)) b += crescent(x + 26, y - 30, 11, M.brassDark);
+  });
+  // the key in the corner: the crescent is the Midnight Special
+  b += crescent(470, 304, 12, M.brassDark) + `<path d="M490 304H516" stroke="${M.ink}" stroke-width="3"/>`
+    + `<rect x="522" y="292" width="40" height="22" rx="4" fill="${M.ink}"/><circle cx="530" cy="318" r="4" fill="${M.ink}"/><circle cx="554" cy="318" r="4" fill="${M.ink}"/><rect x="546" y="284" width="8" height="10" fill="${M.ink}"/>`;
+  return b;
+})() };
+
+/* ---- the trunks, each strapped in its colour and labelled for its station ---- */
+const TRUNKS = [['red', 'star'], ['yellow', 'fish'], ['blue', 'anchor'], ['green', 'key']];      // as they stand, left to right
+const DROP = TRUNKS.slice().sort((a, b) => LINE.indexOf(a[1]) - LINE.indexOf(b[1])).map(t => t[0]);
+const trunksArt = { w: 880, h: 300, body: (() => {
+  let b = '';
+  TRUNKS.forEach(([col, to], i) => {
+    const x = 30 + i * 214, y = 70 + (i % 2) * 18, w = 190, h = 180 - (i % 2) * 18;
+    b += `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="12" fill="${M.wood}" stroke="${M.woodDark}" stroke-width="5"/>`
+      + `<path d="M${x} ${y + 44}H${x + w}" stroke="${M.woodDark}" stroke-width="5"/>`
+      + [0.16, 0.84].map(f => `<rect x="${x + w * f - 7}" y="${y}" width="14" height="${h}" fill="${M.brassDark}" opacity=".7"/>`).join('')
+      + `<rect x="${x + w / 2 - 16}" y="${y}" width="32" height="${h}" fill="${C[col]}" stroke="${M.woodDark}" stroke-width="3"/>`
+      + `<rect x="${x + w / 2 - 22}" y="${y + 52}" width="44" height="30" rx="4" fill="${M.brass}" stroke="${M.woodDark}" stroke-width="3"/>`
+      + `<path d="M${x + w / 2 - 24} ${y - 2}q24 -26 48 0" stroke="${M.woodDark}" stroke-width="7" fill="none"/>`;
+    // the label, tied to the handle by its string
+    b += `<path d="M${x + w / 2 + 10} ${y - 10}L${x + w / 2 + 52} ${y - 40}" stroke="${M.paperDark}" stroke-width="3"/>`
+      + `<rect x="${x + w / 2 + 36}" y="${y - 70}" width="64" height="58" rx="6" fill="${M.paper}" stroke="${M.ink}" stroke-width="3" transform="rotate(${8 - i * 5} ${x + w / 2 + 68} ${y - 41})"/>`
+      + roundel(to, x + w / 2 + 68, y - 41, 20);
+  });
+  return b;
+})() };
+
+/* ---- the mail cage, and the tickets collected inside it ---- */
+const cagePlate = ART.svg(560, 90, `<rect width="560" height="90" rx="10" fill="${M.woodDark}"/>`
+  + crescent(40, 45, 16, M.brass) + `<path d="M62 45H520" stroke="${M.paper}" stroke-width="6"/><path d="M520 45L548 22M520 45L548 68" stroke="${M.paper}" stroke-width="6" stroke-linecap="round"/>`
+  + [0, 1, 2, 3].map(i => `<circle cx="${130 + i * 110}" cy="45" r="16" fill="${M.woodDark}" stroke="${M.paper}" stroke-width="5"/>` + W(130 + i * 110, 52, String(i + 1), { size: 20, fill: M.paper, weight: 700, face: 'num' })).join(''));
+function cageBody(st) {
+  let b = `<rect x="8" y="8" width="264" height="354" fill="#100a06" stroke="${M.woodLip}" stroke-width="8"/>`;
+  if (!st.solved) b += Array.from({ length: 6 }, (_, i) => `<path d="M${44 + i * 40} 8V362" stroke="${M.woodLip}" stroke-width="4"/>`).join('')
+    + [80, 180, 280].map(y => `<path d="M8 ${y}H272" stroke="${M.woodLip}" stroke-width="4"/>`).join('');
+  else b += `<path d="M8 8L-30 22V350L8 362Z" fill="#1a120a" stroke="${M.woodLip}" stroke-width="5"/>` + Array.from({ length: 3 }, (_, i) => `<path d="M${-22 + i * 10} 20V352" stroke="${M.woodLip}" stroke-width="3"/>`).join('');
+  b += [0, 1, 2].map(i => `<path d="M${50 + i * 80} 362q-6 -50 24 -56q30 6 24 56Z" fill="#8a7448"/>`).join('')
+    + `<rect x="100" y="200" width="80" height="62" rx="4" fill="${M.woodDark}" stroke="${M.brass}" stroke-width="3"/>`
+    + [0, 1, 2, 3].map(i => `<rect x="${110 + i * 16}" y="212" width="11" height="38" rx="2" fill="${M.paperDark}"/>`).join('');
+  return b;
+}
+const TICKETS = [   // destination, seat, the shape its punch left
+  ['anchor', 7, 'crescent'], ['key', 2, 'star'], ['star', 5, 'crescent'], ['leaf', 9, 'diamond'], ['fish', 4, 'crescent'], ['bell', 8, 'heart'],
+];
+const punchHole = (shape, x, y, r) => shape === 'crescent' ? crescent(x, y, r, '#120c08')
+  : shape === 'star' ? GL('star', x - r * 1.2, y - r * 1.2, r * 2.4, '#120c08')
+  : shape === 'diamond' ? `<path d="M${x} ${y - r * 1.2}L${x + r} ${y}L${x} ${y + r * 1.2}L${x - r} ${y}Z" fill="#120c08"/>`
+  : GL('heart', x - r * 1.2, y - r * 1.2, r * 2.4, '#120c08');
+const ticketCard = (to, seat, shape, x, y, tint) => `<g transform="translate(${x} ${y})"><rect width="190" height="112" rx="8" fill="${tint}" stroke="${M.ink}" stroke-width="3"/>`
+  + `<path d="M132 8V104" stroke="${M.ink}" stroke-width="2" stroke-dasharray="5 5"/>` + roundel(to, 40, 56, 24)
+  + W(98, 74, String(seat), { size: 46, fill: M.ink, weight: 700, face: 'num' }) + punchHole(shape, 162, 56, 13) + `</g>`;
+const ticketsFig = ART.svg(640, 290, `<rect width="640" height="290" fill="${M.woodDark}"/>`
+  + TICKETS.map(([to, seat, shape], i) => ticketCard(to, seat, shape, 18 + (i % 3) * 206, 26 + Math.floor(i / 3) * 132, ['#e8dcc0', '#d8e0c8', '#e8d0c8'][i % 3])).join(''));
+
+/* ---- the Conductor's punch, hanging by the gangway ---- */
+const punchArt = { w: 360, h: 300, body: `<rect width="360" height="300" fill="${M.wall}"/><circle cx="180" cy="22" r="7" fill="${M.brass}"/>`
+  + `<path d="M180 26L150 70M180 26L210 70" stroke="${M.brassDark}" stroke-width="4"/>`
+  + `<path d="M150 70L120 230Q118 250 136 252L150 252L172 96Z" fill="${M.iron}" stroke="#141010" stroke-width="4"/>`
+  + `<path d="M210 70L240 230Q242 250 224 252L210 252L188 96Z" fill="${M.iron}" stroke="#141010" stroke-width="4"/>`
+  + `<circle cx="180" cy="96" r="12" fill="${M.brass}" stroke="#141010" stroke-width="3"/>`
+  + `<rect x="138" y="56" width="84" height="30" rx="6" fill="${M.iron}" stroke="#141010" stroke-width="4"/>` + crescent(180, 71, 11, M.lamp)
+  // and on the floor, what it has cut
+  + [[60, 270, -20], [96, 284, 30], [282, 276, 10], [316, 262, -40], [250, 290, 60]].map(([x, y, r]) => `<g transform="rotate(${r} ${x} ${y})">${crescent(x, y, 7, M.paper)}</g>`).join('') };
+const punchSprite = `<circle cx="180" cy="22" r="7" fill="${M.brass}"/><path d="M180 26L150 70M180 26L210 70" stroke="${M.brassDark}" stroke-width="5"/>`
+  + `<path d="M150 70L120 230Q118 250 136 252L150 252L172 96Z" fill="${M.iron}" stroke="#141010" stroke-width="5"/><path d="M210 70L240 230Q242 250 224 252L210 252L188 96Z" fill="${M.iron}" stroke="#141010" stroke-width="5"/>`
+  + `<rect x="138" y="56" width="84" height="30" rx="6" fill="${M.iron}" stroke="#141010" stroke-width="5"/>`;
+
+/* ---- the porter's strongbox ---- */
+const SAFE_MARKS = ['fish', 'anchor', 'star'];
+const SAFE = SAFE_MARKS.map(s => String(TICKETS.find(t => t[0] === s && t[2] === 'crescent')[1]));
+function strongboxBody(st) {
+  let b = `<rect x="10" y="30" width="130" height="84" rx="6" fill="${M.iron}" stroke="#141010" stroke-width="4"/>`;
+  if (st.solved) b += `<path d="M10 36L24 2H126L140 36Z" fill="#4a4440" stroke="#141010" stroke-width="4"/><rect x="18" y="40" width="114" height="20" fill="#0c0806"/>`;
+  else b += `<rect x="10" y="24" width="130" height="18" rx="4" fill="#4a4440" stroke="#141010" stroke-width="4"/>` + [0, 1, 2].map(i => `<rect x="${44 + i * 22}" y="56" width="16" height="30" rx="3" fill="${M.brass}" stroke="#141010" stroke-width="2"/>`).join('');
+  return b + [26, 124].map(x => `<circle cx="${x}" cy="100" r="5" fill="${M.brassDark}"/>`).join('');
+}
+const porterPunch = ART.svg(420, 200, `<rect width="420" height="200" fill="${M.woodDark}"/>`
+  + `<path d="M60 100L300 70Q330 66 332 86L334 96Q330 112 300 110L80 112Z" fill="#6a6460" stroke="#141010" stroke-width="4"/>`
+  + `<path d="M60 112L300 136Q330 140 332 120" fill="none" stroke="#141010" stroke-width="4"/><path d="M60 112L300 140Q326 144 330 128L300 122L80 116Z" fill="#5a5450" stroke="#141010" stroke-width="3"/>`
+  + `<circle cx="318" cy="98" r="9" fill="#141010"/><circle cx="72" cy="106" r="10" fill="${M.brass}" stroke="#141010" stroke-width="3"/>`);
+
+/* ---- the gangway door, and the ticket its barrier wants punched ---- */
+const TICKET_BOXES = ['key', 'fish', 'crown', 'star', 'bell', 'leaf', 'tower', 'anchor', 'flag', 'mountain'];
+const gangTicket = (keys) => {
+  let b = `<rect width="620" height="330" fill="${M.woodDark}"/><rect x="20" y="20" width="580" height="290" rx="14" fill="#e8dcc0" stroke="${M.ink}" stroke-width="4"/>`
+    + crescent(60, 64, 18, M.brassDark) + `<path d="M96 64H560" stroke="${M.paperDark}" stroke-width="3"/>`;
+  TICKET_BOXES.forEach((s, i) => {
+    const x = 50 + (i % 5) * 108, y = 100 + Math.floor(i / 5) * 102;
+    const box = `<rect x="${x}" y="${y}" width="92" height="88" rx="8" fill="${M.paper}" stroke="${M.ink}" stroke-width="3"/>` + roundel(s, x + 46, y + 44, 30);
+    b += keys ? `<g data-key="${s}">${box}<g class="sw-on"><circle cx="${x + 46}" cy="${y + 44}" r="18" fill="#120c08"/></g></g>` : box;
+  });
+  return b;
+};
+function gangwayBody(st) {
+  let b = `<rect x="6" y="6" width="118" height="438" rx="6" fill="${M.woodDark}" stroke="${M.woodLip}" stroke-width="6"/>`;
+  if (st.solved) b += `<rect x="14" y="14" width="102" height="422" fill="#0a0706"/><rect x="40" y="80" width="50" height="40" fill="${M.lamp}" opacity=".18"/>`
+    + `<path d="M14 14L44 30V420L14 436Z" fill="${M.wood}" stroke="${M.woodDark}" stroke-width="3"/>`;
+  else b += `<rect x="14" y="14" width="102" height="422" fill="${M.wood}"/><rect x="30" y="40" width="70" height="90" fill="${M.night}" stroke="${M.woodLip}" stroke-width="5"/>`
+    + `<rect x="34" y="200" width="62" height="34" rx="4" fill="#e8dcc0" stroke="${M.ink}" stroke-width="2"/>` + crescent(46, 217, 6, M.brassDark)
+    + `<circle cx="104" cy="250" r="7" fill="${M.brass}"/>`;
+  return b;
+}
+
+const POS1 = {
+  linemap:   { x: 29.4,  y: 16.7, w: 25,    h: 26.7 },
+  trunks:    { x: 26.25, y: 67.8, w: 30,    h: 22.2 },
+  mailcage:  { x: 66.25, y: 24.4, w: 17.5,  h: 41.1 },
+  punch:     { x: 85.6,  y: 33.3, w: 4.4,   h: 13.3 },
+  strongbox: { x: 60,    y: 71.1, w: 9.4,   h: 13.3 },
+  gangway:   { x: 91.25, y: 21.1, w: 8.1,   h: 50 },
+};
+
+const ROOM1 = {
   id:'baggage', name:'Room 1 — The Baggage Car', scene:'baggage', stageFx:'rocking',
   relays:[{el:'rl-baggage',mode:'pulse',period:3.6}],
   wrongSound:'clack',
   wrongVfx:'shadow',
-  intro:"You woke between stations to an empty train. The baggage car is the way forward — and everyone's luggage is still here.",
-  objective:"Work toward the front of the train — <b>glowing rings</b> mark what the passengers left behind.",
-  entryBeat:"Six trunks, packed for six passengers you dined with at eight o'clock. The dust on the latches says the trunks have been here for years.",
+  intro:"You wake on a mail sack. The train is moving fast, and every station going past the open door is dark.",
+  objective:"Get forward through the train — <b>glowing rings</b> mark what you can look at. Whatever opens a lock is somewhere else in this car.",
+  entryBeat:"Somewhere ahead, a ticket punch clicks. Then again, closer. The Conductor is working his way down the train.",
   entrySound:'clack',
-  completeText:"The forward door unbolts. Through it, the sleeper corridor sways gently — and at its far end, a shape in a peaked cap turns, unhurried, into a cabin that has no floor number.",
-  chain:"Six trunk tags carry line-and-word pairs into the Standing Orders on the wall, and the porter's own pencilled working on the rack rail shows what he did with them: PORTER → the punch chart pairs shapes with digits and the framed fare card gives the company's order, first class down to freight: 8253 → the mail cage's seal register lists a different word for every night of the run, and every shipping tag in the car is stamped 16 NOV: COAL → the forward door takes the crates short (eleven loaded, seven standing) then the sacks aboard (nine in the open cage): 49.",
+  completeText:"The barrier takes your ticket and the gangway door swings in on a corridor of sleeping-car doors. Behind you, a punch clicks once, very close.",
+  chain:`The line on the wall runs ${LINE.join(', ')}, with the special's crescent at ${STOPS.join(', ')}; the four trunks are strapped ${TRUNKS.map(([c, s]) => `${c} for ${s}`).join(', ')}, so they come off ${DROP.join(', ')} → the mail cage holds the night's tickets, three of them punched with the Conductor's crescent (the punch hangs by the gangway): ${TICKETS.filter(t => t[2] === 'crescent').map(t => `${t[0]} seat ${t[1]}`).join(', ')} → the strongbox's wheels are marked ${SAFE_MARKS.join(', ')}: ${SAFE.join(', ')} → it holds the porter's punch, and the gangway barrier wants a ticket punched at every crescent stop: ${STOPS.join(', ')}.`,
   objects:[
-    { id:'trunks', icon:'🧳', name:'Steamer Trunks', pos:{x:26,y:66,w:66,h:18},
-      desc:"Six steamer trunks in a luggage row, every shipping tag date-stamped 16 NOV in the same purple ink.\n\nEach tag also carries a pair of numbers, keyed to the company's Standing Orders bolted to the wall above the rack:\n\n   1. All passengers present tickets promptly on request.\n   2. Passengers of the overnight service remain seated.\n   3. Refreshments are served rearward, then removed.\n   4. The evening express tolerates no exceptions ever.\n\n   TAGS:   1·2   ·   2·4   ·   3·1   ·   4·4   ·   4·2   ·   3·4\n\nPencilled on the rack rail, the porter's own working from some earlier consignment, left there the way a man leaves a note to himself:\n\n   “2·3 = remain = R”",
-      puzzle:{
-        prompt:"The tags point into the orders. Whose desk do they name?",
-        placeholder:"SIX LETTERS", answers:['PORTER'],
+    { id:'linemap', icon:'🗺️', name:'The Line', pos:POS1.linemap,
+      desc:"The line, framed on the wall, station by station from the terminus to the junction.",
+      figure:ART.svg(mapArt.w, mapArt.h, mapArt.body),
+      sprite:ART.sprite(POS1.linemap, mapArt.w, mapArt.h, mapArt.body) },
+    { id:'trunks', icon:'🧳', name:'Steamer Trunks', pos:POS1.trunks,
+      desc:"Four trunks waiting to be put off, each strapped in a colour and labelled for its station.",
+      figure:ART.svg(trunksArt.w, trunksArt.h, `<rect width="880" height="300" fill="#1a120a"/>` + trunksArt.body),
+      sprite:ART.sprite(POS1.trunks, trunksArt.w, trunksArt.h, trunksArt.body) },
+    { id:'mailcage', icon:'📮', name:'The Mail Cage', pos:POS1.mailcage,
+      desc:"The cage's tag board: four tags to set, for the trunks that leave this car, first off to last.",
+      sprite:st=>ART.sprite(POS1.mailcage, 280, 370, cageBody(st)),
+      puzzle:{ type:'combo', from:['trunks', 'linemap'], plate:cagePlate, wheels:[1, 2, 3, 4].map(n=>({ faces:{ colors:['red', 'yellow', 'blue', 'green', 'white', 'black'] }, mark:{ text:String(n) } })), answer:DROP, tryLabel:'SET THE TAGS',
+        miss:"The cage stays locked. Those would go off at the wrong stations.",
         hints:[
-          "The porter's pencilled line on the rail is a worked example. Follow exactly what he did with 2·3 and do it to all six tags.",
-          "Line, then word: 1·2 is line 1's second word, “passengers” — P. 2·4 is “overnight” — O. 3·1 is “Refreshments” — R.",
-          "P, O, R, then 4·4 “tolerates” T, 4·2 “evening” E, 3·4 “rearward” R. The tags name the PORTER."
+          "Four tags for four trunks, first off to last. Each trunk is labelled with a station, and the line on the wall shows where each station comes.",
+          "Find each trunk's station on the line. The one nearest the terminus comes off first. Set its strap colour on the first wheel, and so on.",
+          `Anchor, key, star, fish: ${DROP.join(', ')}.`
         ],
-        solvedText:"P-O-R-T-E-R. The porter's desk: cash box locked at four digits, ledger open, chair still warm. You choose not to dwell on the chair."
-      }
-    },
-    { id:'farecard', icon:'🎫', name:'The Fare Card', pos:{x:38,y:20,w:10,h:22},
-      desc:"The company fare card, framed on the wall above the porter's desk:\n\n“GREAT NORTHERN & COASTAL RAILWAY —\nFARES SHALL BE RECKONED, AND TAKINGS COUNTED,\nFROM FIRST CLASS DOWN TO FREIGHT.\nNO EXCEPTIONS. NO REFUNDS.\nNO PASSAGE WITHOUT A PUNCHED TICKET.”\n\nSomeone has underlined the last line. The ink is fresh." },
-    { id:'desk', onSolve:{el:'rx-baggage',op:.2,fx:'surge'}, icon:'🗃️', name:"The Porter's Desk", pos:{x:28,y:44,w:15,h:18},
-      desc:"The porter's cash box wears a four-digit lock. His punch-mark chart is pasted to the desk — four punch shapes, each with its takings figure, written up in the order he happened to empty his apron:\n\n   ★ 8        ✚ 2        ● 5        ■ 3\n\nAnd the company chart beside it pairs the punches with the classes they belong to:\n\n   ★ FIRST CLASS     ✚ SECOND CLASS     ● THIRD CLASS     ■ FREIGHT\n\nFour figures and no sequence. But the company counted its money in one fixed order, and every porter on the line knew it by heart, because it is framed on the wall of every car.",
-      puzzle:{
-        type:'keypad',
-        prompt:"Enter the 4-digit code.", answers:['8253'],
+        solvedText:"The tags drop into place and the cage door swings open. On the shelf inside, the guard's ticket box: every ticket collected tonight.",
+        inside:{ name:"The night's tickets", figure:ticketsFig } } },
+    { id:'punch', icon:'🎫', name:"The Conductor's Punch", pos:POS1.punch,
+      desc:"His punch, hung on its nail by the gangway, still warm. Every conductor's punch cuts its own shape.",
+      figure:ART.svg(punchArt.w, punchArt.h, punchArt.body),
+      sprite:ART.sprite(POS1.punch, punchArt.w, punchArt.h, punchSprite) },
+    { id:'strongbox', icon:'🧰', name:'Strongbox', pos:POS1.strongbox,
+      desc:"The porter's strongbox. Three number wheels, each with a station's picture over it.",
+      sprite:st=>ART.sprite(POS1.strongbox, 150, 120, strongboxBody(st)),
+      puzzle:{ type:'combo', from:['mailcage', 'punch'], wheels:SAFE_MARKS.map(g=>({ mark:{ glyph:g } })), answer:SAFE, tryLabel:'OPEN IT',
+        miss:"The lid won't lift.",
         hints:[
-          "The digits belong to classes, so you need the company's order for classes. It is framed on the wall above this desk.",
-          "The fare card: takings are counted from first class down to freight.",
-          "★ 8, ✚ 2, ● 5, ■ 3. Enter 8253."
+          "Three wheels, each under a station. The tickets from the mail cage each name a station and a seat.",
+          "Only some of those tickets were punched by him: his punch, by the gangway, cuts a crescent. Use the crescent tickets, and read each one's seat.",
+          `Fish ${SAFE[0]}, anchor ${SAFE[1]}, star ${SAFE[2]}: ${SAFE.join(', ')}.`
         ],
-        solvedText:"8-2-5-3 and the cash box opens. Inside: no money at all — only a conductor's pocket watch, stopped dead, and a punched ticket for a seat in a car this train does not have.",
-        solveBeat:"The stopped watch in your hand ticks once. Only once. As if something, somewhere, allowed the train one more second.",
-        beatSound:'clank'
-      }
-    },
-    { id:'mailcage', icon:'📮', name:'The Mail Cage', pos:{x:70,y:24,w:20,h:42},
-      desc:"The mail cage is locked with a four-letter dial, the way the Post Office insisted on and the railway resented paying for.\n\nScrewed inside the frame, the clerk's seal register — the word the cage is sealed with changes every night of the run, so that a cage found open can be dated:\n\n   14 NOV ......... ASHES\n   15 NOV ......... LAMP\n   16 NOV ......... COAL\n   17 NOV ......... BELL\n   18 NOV ......... SOOT\n\nThe register is the only thing in this car that still smells of ink.",
-      puzzle:{
-        prompt:"Set the four letter dials.", placeholder:"FOUR LETTERS", answers:['COAL'],
+        solvedText:"Inside, under a cash bag nobody has counted since 1927: the porter's own ticket punch.",
+        inside:{ name:"The porter's punch", figure:porterPunch } } },
+    { id:'gangway', icon:'🚪', name:'Gangway Door', pos:POS1.gangway, needs:'strongbox',
+      desc:"The barrier on the gangway door holds a blank ticket. Punch it for the journey: every station this train stops at.",
+      deadDesc:"The barrier on the gangway door holds a blank ticket, and won't open for one that hasn't been punched. You have nothing to punch it with.",
+      deadFigure:ART.svg(620, 330, gangTicket(false)),
+      sprite:st=>ART.sprite(POS1.gangway, 130, 450, gangwayBody(st)),
+      puzzle:{ type:'toggle', from:['linemap'], figure:ART.svg(620, 330, gangTicket(true)), answer:STOPS, tryLabel:'HAND IT OVER',
+        gm:'punch anchor, key, star, leaf and fish: the five stations with the crescent beside them on the line',
+        miss:"The barrier pushes the ticket back out. That isn't this train's journey.",
         hints:[
-          "The register gives you a different seal word for every night of the run. All you need is which night this is.",
-          "Nothing in this car is dated except the luggage. Every shipping tag on the trunk row is stamped with the same date.",
-          "The tags are stamped 16 NOV, and the register's word for the 16th is COAL. Enter COAL."
+          "The ticket wants a hole for every station this train stops at. The line on the wall marks them.",
+          "On the line, the crescent beside a station is the Midnight Special stopping there (the key in the corner says so). Punch those five, and nothing else.",
+          "Anchor, key, star, leaf and fish."
         ],
-        solvedText:"C-O-A-L. The cage opens on nine mail sacks, all full, all addressed to towns that stopped existing before you were born."
-      }
-    },
-    { id:'waybill', icon:'📄', name:'The Waybill', pos:{x:54,y:31,w:10,h:19}, hiddenUntil:'mailcage',
-      desc:"The car's waybill hangs clipped inside the cage, next to the forward door and its two-digit lock. The instruction is printed on the door plate, not written — the railway set this lock the same way in every car on the line:\n\n   “FORWARD DOOR — THE CRATES SHORT, THEN THE SACKS ABOARD.”\n\nThe manifest line at the top of the bill: “Eleven crates loaded at Halifax.”\n\nYou count the crates still standing in this car. Seven. And the sacks are behind you in the open cage, where you can count those too.",
-      puzzle:{
-        prompt:"Enter the 2-digit code.", placeholder:"TWO DIGITS", answers:['49'],
-        hints:[
-          "Two counts, both of them in this car. One person on the crates, one on the sacks.",
-          "Eleven crates were loaded and seven are still standing, so some are short. Then count the mail sacks in the cage.",
-          "Four crates short, nine sacks aboard. Enter 49."
-        ],
-        solvedText:"4-9. The forward bolt slides — and from the corridor beyond, faint and courteous, comes the click of a ticket punch, testing itself.",
-        solveBeat:"Behind you in the baggage car, one trunk latch pops open. Just one. As if something wanted you to know which passenger it kept.",
-        beatSound:'knock'
-      }
-    }
+        solvedText:"The barrier clicks, and the gangway door unlatches." } },
   ]
-},
+};
+
+const OLD_ROOMS = [
 /* ============ ROOM 2 — THE SLEEPER CORRIDOR ============ */
 {
   id:'sleeper', name:'Room 2 — The Sleeper Corridor', scene:'sleeper', stageFx:'rocking',
@@ -690,9 +798,10 @@ const ROOMS=[
   ]
 }
 ];
+const ROOMS = [ROOM1, ...OLD_ROOMS];
 
 registerScenario({
-  id:'midnight',
+  id:'midnight', classic:true,
   title:'The Midnight Special',
   sub:'1927 · the overnight express · a stop that isn’t on the line',
   tagline:'An empty express, supper still steaming, and a Conductor who punches tickets nobody bought.',
