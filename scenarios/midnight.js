@@ -137,12 +137,6 @@ ${[420,880,1340].map((x,i)=>`<g class="lampswing" style="animation-delay:${i*.7}
   <rect x="1180" y="430" width="360" height="26" fill="#5c4423"/>
   ${[0,1,2].map(i=>`<g><path d="M${1240+i*90} 430 v-26 q0 -10 10 -10 q10 0 10 10 v26z" fill="#3a2416" opacity=".9"/></g>`).join('')}
 </g>
-<!-- chef's board -->
-<g>
-  <rect x="1050" y="310" width="100" height="140" fill="#241a0c" stroke="#3a2a16" stroke-width="5"/>
-  <text x="1100" y="340" text-anchor="middle" font-family="Special Elite" font-size="11" fill="#d9cba6">TONIGHT</text>
-  ${[0,1,2].map(i=>`<line x1="1066" y1="${360+i*24}" x2="1134" y2="${360+i*24}" stroke="#8a6a3a" stroke-width="3"/>`).join('')}
-</g>
 <!-- dining tables with settings -->
 <g id="el-tables">
 ${[[300,640],[640,640],[980,660]].map(([x,y],t)=>`<g>
@@ -157,27 +151,7 @@ ${[[300,640],[640,640],[980,660]].map(([x,y],t)=>`<g>
   <ellipse class="steam" cx="${x+70}" cy="${y-52}" rx="15" ry="6" fill="#ffe9c9" opacity=".14" style="animation-delay:${t*1.7+4.1}s"/>
 </g>`).join('')}
 </g>
-<!-- the till -->
-<g id="el-till">
-  <rect x="1360" y="480" width="130 " height="100" rx="8" fill="#3a2416" stroke="#241a0c" stroke-width="5"/>
-  <rect x="1376" y="496" width="98" height="34" rx="4" fill="#0d0805"/>
-  <text class="flick" x="1425" y="520" text-anchor="middle" font-family="Special Elite" font-size="16" fill="#c9a04a">£ --.-</text>
-  ${[0,1,2].map(i=>`<circle cx="${1392+i*32}" cy="552" r="9" fill="#c9a04a"/>`).join('')}
-</g>
-<!-- kitchen service hatch + bell -->
-<g id="el-servicebell">
-  <rect x="60" y="330" width="180" height="150" fill="#0d0805" stroke="#5c4423" stroke-width="7"/>
-  <rect x="76" y="346" width="148" height="90" fill="#170f08"/>
-  <path d="M130 452 a18 18 0 0 1 36 0 l4 14 h-44z" fill="#c9a04a"/>
-  <circle id="bell-lamp" cx="148" cy="478" r="8" fill="#ffdf9c" opacity=".1"/>
-  <text x="150" y="510" text-anchor="middle" font-family="Special Elite" font-size="10" fill="#8a6a3a">SERVICE</text>
-</g>
-<!-- abandoned violin on a chair -->
-<g>
-  <rect x="530" y="700 " width="70" height="90" rx="8" fill="#3a2416"/>
-  <path d="M545 700 q-10 -34 14 -44 q-16 -8 -8 -26 q22 -10 30 8 q8 -6 14 2 q-22 44 -50 60z" fill="#8a4a24"/>
-  <line x1="551" y1="630" x2="583" y2="666" stroke="#170f08" stroke-width="2.5"/>
-</g>
+<!--SPRITES-->
 <g class="atmo">
 <!-- something in here is still running -->
 <circle id="rl-dining" cx="420" cy="210" r="6" fill="#ffd98c" opacity=".12"/>
@@ -677,80 +651,188 @@ const ROOM2 = {
   ]
 };
 
-const OLD_ROOMS = [
-/* ============ ROOM 3 — THE DINING CAR ============ */
-{
+/* ============================================================
+   ROOM 3 — THE DINING CAR
+   Tonight's last bill is still on the spike by the till, and the
+   chef's board says what everything cost. The till holds the barman's
+   card for the house cocktail, drawn bottle by bottle; the bottles on
+   the bar each wear a letter, and the spirits cabinet wants them in the
+   order they are poured. The steward's key in the cabinet turns the
+   vestibule clock — which only opens at the hour on the platform clock
+   of the station that keeps sliding past the window.
+   ============================================================ */
+
+/* ---- the chef's board, and the last order ---- */
+const dish = {
+  soup: (x, y, s) => `<g transform="translate(${x} ${y}) scale(${s})"><path d="M-30 0H30Q28 26 0 28Q-28 26 -30 0Z" fill="${M.paper}"/><path d="M-34 0H34" stroke="${M.paper}" stroke-width="4"/>`
+    + `<path d="M-10 -8q-6 -10 0 -18M4 -8q-6 -10 0 -18" stroke="${M.paper}" stroke-width="3" fill="none" stroke-linecap="round"/></g>`,
+  fish: (x, y, s) => `<g transform="translate(${x} ${y}) scale(${s})"><ellipse cx="0" cy="8" rx="36" ry="10" fill="none" stroke="${M.paper}" stroke-width="3"/>${GL('fish', -20, -18, 40, M.paper)}</g>`,
+  pie: (x, y, s) => `<g transform="translate(${x} ${y}) scale(${s})"><path d="M-32 12H32L26 -2H-26Z" fill="${M.paper}"/><path d="M-26 -2Q0 -26 26 -2Z" fill="${M.paper}" opacity=".8"/>`
+    + `<path d="M-10 -10l4 6M4 -12l2 7" stroke="${M.woodDark}" stroke-width="3"/></g>`,
+  pudding: (x, y, s) => `<g transform="translate(${x} ${y}) scale(${s})"><path d="M-26 12H26Q24 -24 0 -24Q-24 -24 -26 12Z" fill="${M.paper}"/><path d="M-12 -22l-4 -10M12 -22l4 -10M0 -24v-10" stroke="${M.paper}" stroke-width="4" stroke-linecap="round"/></g>`,
+  tea: (x, y, s) => `<g transform="translate(${x} ${y}) scale(${s})"><path d="M-20 -14H18V4Q18 16 0 16Q-20 16 -20 4Z" fill="${M.paper}"/><path d="M18 -8q14 0 12 10t-12 6" stroke="${M.paper}" stroke-width="4" fill="none"/>`
+    + `<path d="M-30 18H28" stroke="${M.paper}" stroke-width="4"/></g>`,
+};
+const MENU = [['soup', 30], ['fish', 85], ['pie', 60], ['pudding', 25], ['tea', 10]];
+const ORDER = { soup: 2, fish: 1, pie: 2, tea: 3 };
+const BILL = String(MENU.reduce((t, [d, p]) => t + (ORDER[d] || 0) * p, 0));
+const menuArt = { w: 420, h: 560, body: `<rect width="420" height="560" fill="#3a2a16"/><rect x="18" y="18" width="384" height="524" fill="#1c241e"/>`
+  + crescent(210, 62, 22, M.brass) + `<path d="M60 100H360" stroke="${M.paper}" stroke-width="2" opacity=".5"/>`
+  + MENU.map(([d, p], i) => dish[d](120, 156 + i * 86, 1.15) + `<path d="M180 ${158 + i * 86}H262" stroke="${M.paper}" stroke-width="2" stroke-dasharray="3 7" opacity=".6"/>`
+    + W(318, 170 + i * 86, String(p), { size: 40, fill: M.paper, weight: 700, face: 'num' })).join('') };
+const tally = (n, x, y) => { let b = ''; for (let k = 0; k < n; k++) b += `<path d="M${x + k * 14} ${y - 22}L${x + k * 14 - 3} ${y + 22}" stroke="${M.ink}" stroke-width="5" stroke-linecap="round"/>`; return b; };
+const slipArt = { w: 360, h: 470, body: `<rect width="360" height="470" fill="${M.woodDark}"/><path d="M40 20H320V430L300 450L280 430L260 450L240 430L220 450L200 430L180 450L160 430L140 450L120 430L100 450L80 430L60 450L40 430Z" fill="#efe6cc" stroke="${M.ink}" stroke-width="3"/>`
+  + `<circle cx="180" cy="46" r="8" fill="${M.woodDark}"/>`
+  + Object.keys(ORDER).map((d, i) => dish[d](110, 112 + i * 84, 0.95).replace(new RegExp(M.paper, 'g'), M.ink) + tally(ORDER[d], 196, 112 + i * 84)).join('') };
+
+/* ---- the till ---- */
+function tillBody(st) {
+  let b = `<rect x="6" y="20" width="118" height="80" rx="8" fill="#3a2416" stroke="#241a0c" stroke-width="4"/><rect x="18" y="30" width="94" height="28" rx="4" fill="#0d0805"/>`;
+  b += st.solved ? `<rect x="14" y="96" width="102" height="18" fill="#241a0c"/><rect x="20" y="104" width="90" height="10" fill="${M.paper}"/>` + W(65, 50, BILL, { size: 18, fill: M.brass, weight: 700, face: 'num' })
+    : [0, 1, 2].map(i => `<circle cx="${32 + i * 32}" cy="78" r="9" fill="${M.brass}"/>`).join('');
+  return b;
+}
+
+/* ---- the bottles on the bar, and the card for the house cocktail ---- */
+const BOTTLE = {   // a silhouette for every bottle on the shelf
+  slim: (x, b, h) => `M${x - 14} ${b}V${b - h * 0.62}Q${x - 14} ${b - h * 0.74} ${x - 6} ${b - h * 0.8}V${b - h}H${x + 6}V${b - h * 0.8}Q${x + 14} ${b - h * 0.74} ${x + 14} ${b - h * 0.62}V${b}Z`,
+  flask: (x, b, h) => `M${x - 30} ${b - 26}Q${x - 30} ${b} ${x} ${b}Q${x + 30} ${b} ${x + 30} ${b - 26}Q${x + 30} ${b - h * 0.62} ${x + 6} ${b - h * 0.7}V${b - h}H${x - 6}V${b - h * 0.7}Q${x - 30} ${b - h * 0.62} ${x - 30} ${b - 26}Z`,
+  square: (x, b, h) => `M${x - 24} ${b}V${b - h * 0.7}L${x - 8} ${b - h * 0.78}V${b - h}H${x + 8}V${b - h * 0.78}L${x + 24} ${b - h * 0.7}V${b}Z`,
+  long: (x, b, h) => `M${x - 20} ${b}V${b - h * 0.42}Q${x - 20} ${b - h * 0.52} ${x - 5} ${b - h * 0.56}V${b - h}H${x + 5}V${b - h * 0.56}Q${x + 20} ${b - h * 0.52} ${x + 20} ${b - h * 0.42}V${b}Z`,
+  decanter: (x, b, h) => `M${x - 34} ${b}L${x - 22} ${b - h * 0.5}L${x - 8} ${b - h * 0.62}V${b - h * 0.8}H${x + 8}V${b - h * 0.62}L${x + 22} ${b - h * 0.5}L${x + 34} ${b}Z`,
+  stubby: (x, b, h) => `M${x - 22} ${b}V${b - h * 0.5}Q${x - 22} ${b - h * 0.62} ${x - 8} ${b - h * 0.66}V${b - h * 0.86}H${x + 8}V${b - h * 0.66}Q${x + 22} ${b - h * 0.62} ${x + 22} ${b - h * 0.5}V${b}Z`,
+};
+const SHELF = [['long', 'H', '#3a6a3a'], ['flask', 'I', '#8a4a24'], ['slim', 'T', '#5a2a4a'], ['decanter', 'S', '#b08a3a'], ['square', 'N', '#2a4a5a'], ['stubby', 'G', '#4a3a2a']];
+const POUR = ['square', 'flask', 'stubby', 'long', 'slim'];                     // the card's order
+const CABINET = POUR.map(sh => SHELF.find(x => x[0] === sh)[1]);
+const BOTTLE_H = { slim: 150, flask: 126, square: 132, long: 156, decanter: 112, stubby: 100 };
+const bottlesBody = (() => {
+  let b = `<rect x="0" y="176" width="680" height="16" fill="${M.woodLip}"/>`;
+  SHELF.forEach(([sh, letter, glass], i) => {
+    const x = 62 + i * 112, base = 176;
+    b += `<path d="${BOTTLE[sh](x, base, BOTTLE_H[sh])}" fill="${glass}" stroke="#120c08" stroke-width="3"/>`
+      + `<rect x="${x - 15}" y="${base - 66}" width="30" height="36" rx="3" fill="${M.paper}" stroke="#120c08" stroke-width="2"/>`
+      + W(x, base - 39, letter, { size: 24, fill: M.ink, weight: 700, face: 'num' });
+  });
+  return b;
+})();
+const cocktailCard = ART.svg(640, 260, `<rect width="640" height="260" fill="${M.woodDark}"/><rect x="20" y="20" width="600" height="220" rx="10" fill="#efe6cc" stroke="${M.ink}" stroke-width="3"/>`
+  + crescent(56, 60, 18, M.brassDark) + `<path d="M90 60H590" stroke="${M.paperDark}" stroke-width="2"/>`
+  + POUR.map((sh, i) => {
+    const x = 104 + i * 108;
+    return `<path d="${BOTTLE[sh](x, 214, BOTTLE_H[sh] * 0.82)}" fill="${M.ink}"/>` + (i < POUR.length - 1 ? `<path d="M${x + 38} 160h22M${x + 54} 154l6 6l-6 6" stroke="${M.ink}" stroke-width="3" fill="none"/>` : '');
+  }).join(''));
+function cabinetBody(st) {
+  let b = `<rect x="6" y="6" width="108" height="108" rx="6" fill="${M.wood}" stroke="${M.woodDark}" stroke-width="5"/>`;
+  if (st.solved) b += `<rect x="14" y="14" width="92" height="92" fill="#120c08"/><path d="M14 14L-10 24V100L14 106Z" fill="${M.wood}" stroke="${M.woodDark}" stroke-width="3"/>`;
+  else b += `<path d="M60 10V110" stroke="${M.woodDark}" stroke-width="3"/>` + [0, 1, 2, 3, 4].map(i => `<rect x="${20 + i * 17}" y="50" width="12" height="22" rx="2" fill="${M.brass}"/>`).join('');
+  return b;
+}
+const stewardKey = ART.svg(420, 200, `<rect width="420" height="200" fill="${M.woodDark}"/><circle cx="110" cy="100" r="40" fill="none" stroke="${M.brass}" stroke-width="14"/>`
+  + `<rect x="146" y="92" width="200" height="16" rx="4" fill="${M.brass}"/><path d="M300 108v26M330 108v18" stroke="${M.brass}" stroke-width="12"/>` + crescent(110, 100, 16, M.brass));
+
+/* ---- the window, and the station that keeps going past it ---- */
+const GHOST_TIME = '3:10';
+const windowBody = `<defs><clipPath id="pane"><rect x="20" y="20" width="560" height="280"/></clipPath></defs>`
+  + `<rect width="600" height="320" rx="14" fill="#241a0c"/><rect x="20" y="20" width="560" height="280" fill="#05070d"/>`
+  + `<g clip-path="url(#pane)"><g class="passby">`
+  + `<rect x="0" y="236" width="600" height="64" fill="#3a2e1c"/><rect x="0" y="230" width="600" height="8" fill="#8a7448"/>`
+  + `<ellipse cx="300" cy="200" rx="300" ry="110" fill="${M.lamp}" opacity=".12"/>`
+  + [90, 510].map(x => `<rect x="${x - 4}" y="70" width="8" height="166" fill="#1a1410"/><circle cx="${x}" cy="66" r="12" fill="${M.lamp}"/>`).join('')
+  + `<rect x="296" y="196" width="8" height="40" fill="#1a1410"/>` + ART.clockFace(300, 128, 66, 3, 10, { face: '#f2ead2', ink: '#1c1408', rim: '#1a1410' })
+  + `<circle cx="186" cy="160" r="30" fill="${M.paper}" stroke="#8a2418" stroke-width="7"/>` + GL('eye', 168, 142, 36, M.ink)
+  + `<rect x="410" y="150" width="34" height="80" fill="#1a1410"/><rect x="416" y="160" width="22" height="22" fill="${M.lamp}" opacity=".5"/>`
+  + `</g></g>`;
+
+/* ---- the vestibule door, and its clock ---- */
+function vestibuleBody(st) {
+  let b = `<rect x="6" y="6" width="158" height="358" rx="6" fill="#241207" stroke="#170a04" stroke-width="6"/>`;
+  if (st.solved) b += `<rect x="14" y="70" width="142" height="288" fill="#0a0706"/><rect x="40" y="110" width="90" height="70" fill="#ff9b4e" opacity=".2"/>`
+    + `<path d="M14 70L40 82V348L14 358Z" fill="#2c160a" stroke="#170a04" stroke-width="3"/>`;
+  else b += `<rect x="14" y="70" width="142" height="288" fill="#3a2214"/><rect x="40" y="96" width="90" height="100" rx="6" fill="#120c08" stroke="${M.brass}" stroke-width="3"/>`
+    + `<circle cx="140" cy="250" r="7" fill="${M.brass}"/><rect x="124" y="270" width="20" height="26" rx="3" fill="#120c08" stroke="${M.brass}" stroke-width="2"/>`;
+  return b + ART.clockFace(85, 38, 28, 12, 0, { face: st.live ? '#f2ead2' : '#6a5a4a', ink: '#1c1408', rim: M.brass });
+}
+
+const POS3 = {
+  menu:      { x: 65,    y: 33.3, w: 7.5,   h: 17.8 },
+  slip:      { x: 81.9,  y: 52.2, w: 3.2,   h: 10 },
+  till:      { x: 85,    y: 53.3, w: 8.1,   h: 11.1 },
+  bottles:   { x: 74.4,  y: 36.7, w: 21.25, h: 11.1 },
+  cabinet:   { x: 73.75, y: 52.2, w: 7.5,   h: 13.3 },
+  window:    { x: 41.25, y: 13.3, w: 18.75, h: 17.8 },
+  vestibule: { x: 1.9,   y: 27.8, w: 10.6,  h: 41.1 },
+};
+
+const ROOM3 = {
   id:'dining', name:'Room 3 — The Dining Car', scene:'dining', stageFx:'rocking',
   relays:[{el:'rl-dining',mode:'pulse',period:3.2}],
   wrongSound:'bell',
-  intro:"Every table is set for supper. The kitchen bell rings for orders no one is taking.",
-  objective:"Cross the dining car and settle the house's accounts. <b>Mind the mirror.</b>",
-  entryBeat:"Three tables are set with plates still steaming. The train has been abandoned for hours. Somebody keeps cooking.",
+  wrongVfx:'flash',
+  intro:"The tables are laid, the soup is hot, and every chair is pushed back as if its diner has only just stood up.",
+  objective:"Get through the vestibule to the engine. Whatever opens a lock is somewhere else in this car.",
+  entryBeat:"Outside the window a lit platform slides past, and is gone. A minute later, the same platform slides past again.",
   entrySound:'bell',
-  completeText:"The service door to the tender swings wide. Behind you, in the dining car, a chair scrapes politely back into place — supper, apparently, is over.",
-  chain:"The chef's board riddle points at the one thing in the car nobody wants to look at: the bar MIRROR → the head waiter's book lists the covers that settled tonight, and his instruction is to clear what has settled and never touch a setting that has not paid, which leaves two laid and spells HUNGRY in what is cleared → the three unpaid chits on the spike add to $3.85: 385 → the galley's order ticket comes up in the same Cyrillic hand as the record sleeve: AGAIN.",
+  completeText:"The vestibule clock strikes, once, and the door opens on coal dust and firelight. Behind you every chair in the dining car scrapes back at the same moment.",
+  chain:`The last bill on the spike is ${Object.entries(ORDER).map(([d, n]) => `${n} ${d}`).join(', ')}, and the chef's board prices them ${MENU.map(([d, p]) => `${d} ${p}`).join(', ')}: ${BILL} → the till holds the house cocktail's card, five bottles drawn in the order they are poured; the bottles on the bar wear the letters ${SHELF.map(([sh, l]) => `${l} (${sh})`).join(', ')}, so the spirits cabinet takes ${CABINET.join('')} → it holds the steward's key, which wakes the vestibule clock, and the platform clock of the station that keeps going past the window says ${GHOST_TIME}.`,
   objects:[
-    { id:'menu', icon:'🍽️', name:"The Chef's Board", pos:{x:64,y:33,w:8,h:18},
-      desc:"Tonight's menu, chalked in a strong hand that failed at the dessert line. Under the entrées, a riddle — the chef's game with the waiters, every service:\n\n“I show you the whole car.\nI seat a second party opposite yours.\nNo guest of mine has ever paid,\nand no guest of mine has ever left.\nWhat am I?”",
-      puzzle:{
-        prompt:"What is the chef pointing you at?", placeholder:"ANSWER", answers:['MIRROR','THEMIRROR','BARMIRROR'],
+    { id:'menu', icon:'📋', name:"The Chef's Board", pos:POS3.menu,
+      desc:"Tonight's dinner, in chalk, and what each thing costs.",
+      figure:ART.svg(menuArt.w, menuArt.h, menuArt.body),
+      sprite:ART.sprite(POS3.menu, menuArt.w, menuArt.h, menuArt.body) },
+    { id:'slip', icon:'🧾', name:'The Last Order', pos:POS3.slip,
+      desc:"The last order of the night, still on the spike by the till.",
+      figure:ART.svg(slipArt.w, slipArt.h, slipArt.body),
+      sprite:ART.sprite(POS3.slip, slipArt.w, slipArt.h, slipArt.body) },
+    { id:'till', icon:'💷', name:'The Till', pos:POS3.till,
+      desc:"The till won't open until tonight's last bill is rung up.",
+      sprite:st=>ART.sprite(POS3.till, 130, 120, tillBody(st)),
+      puzzle:{ type:'keypad', from:['slip', 'menu'], answer:BILL,
+        miss:"The till rings, and the drawer stays shut. That isn't what they owed.",
         hints:[
-          "It's behind the bar, and you've been avoiding looking at it since you walked in.",
-          "It seats a second dining car opposite this one, full of guests who never pay and never leave.",
-          "The MIRROR. Go and look. Look carefully at the tables."
+          "The till wants the last bill. The order on the spike says what the table had; the chef's board says what each thing cost.",
+          "Count each dish's strokes on the slip, multiply by its price on the board, and add the lot.",
+          `Two soups 60, one fish 85, two pies 120, three teas 30: ${BILL}.`
         ],
-        solvedText:"The bar MIRROR. In the glass, the same car looks back — but in the reflection, the place settings are subtly different. Someone has been keeping score in there. Count the silver, table by table.",
-        solveBeat:"In the mirror — only in the mirror — the service door at the far end stands open. You turn. Here, it is closed.",
-        beatSound:'hiss'
-      }
-    },
-    { id:'tables', onSolve:{el:'rx-dining',op:.2,fx:'surge'}, icon:'🍴', name:'The Table Settings', pos:{x:10,y:60,w:56,h:16}, hiddenUntil:'menu',
-      desc:"Eight settings down the dining car, each place card stamped with its cover number.\n\nThe head waiter's book lies open on the sideboard at tonight's page, and his standing instruction is written across the top of it in the same hand every night for thirty years:\n\n   “CLEAR WHAT HAS SETTLED. WE DO NOT TOUCH A SETTING THAT HAS NOT PAID.”\n\n   SETTLED TONIGHT — covers 2, 6, 9, 12, 14, 21\n\nReading from the front of the car to the back:",
-      puzzle:{
-        type:'select',
-        select:{commit:"🍽️ CLEAR THESE", wrong:"The settings stay where they are.",
-          items:[{letter:"H",value:"cover 12"},{letter:"S",value:"cover 3"},{letter:"U",value:"cover 21"},{letter:"N",value:"cover 6"},{letter:"O",value:"cover 17"},{letter:"G",value:"cover 9"},{letter:"R",value:"cover 14"},{letter:"Y",value:"cover 2"}]},
-        prompt:"Which settings get cleared? Tap them along the car.", answers:['HUNGRY'],
+        solvedText:"The drawer springs open. Under the coins, the barman's card for the house cocktail.",
+        inside:{ name:'The house cocktail', figure:cocktailCard } } },
+    { id:'bottles', icon:'🍾', name:'The Bar', pos:POS3.bottles,
+      desc:"Six bottles on the bar, no two the same shape, each with a letter on its label.",
+      figure:ART.svg(680, 200, `<rect width="680" height="200" fill="#1c2430"/>` + bottlesBody),
+      sprite:ART.sprite(POS3.bottles, 680, 200, bottlesBody) },
+    { id:'cabinet', icon:'🗄️', name:'Spirits Cabinet', pos:POS3.cabinet,
+      desc:"The steward's spirits cabinet. Five letter wheels.",
+      sprite:st=>ART.sprite(POS3.cabinet, 120, 120, cabinetBody(st)),
+      puzzle:{ type:'combo', from:['till', 'bottles'], wheels:5, faces:'ACEGHINORSTW', answer:CABINET.join(''), tryLabel:'OPEN IT',
+        miss:"The cabinet stays locked.",
         hints:[
-          "The book lists the covers that settled tonight. Go along the car and check each place card's number against that list.",
-          "Six of the eight covers are in the book. Two are not, and those two stay exactly where they are.",
-          "Covers 12, 21, 6, 9, 14 and 2 settled; 3 and 17 never did. Cleared front to back, they spell HUNGRY."
+          "Five letters, and five bottles on the barman's card from the till. The bottles on the bar each wear a letter.",
+          "Match each shape on the card to the bottle on the bar with the same outline, and take its letter, in the card's order.",
+          `Square, flask, stubby, long, slim: ${CABINET.join('')}.`
         ],
-        solvedText:"H-U-N-G-R-Y. The word sits on the linen like a spill. Two settings stay laid — covers three and seventeen, who ate and never paid and have not, in any sense anybody wants to examine, left.",
-        solveBeat:"The kitchen's serving hatch slides up two inches. Steam drifts out. Nothing looks through. It doesn't need to.",
-        beatSound:'clank'
-      }
-    },
-    { id:'till', icon:'🧾', name:'The Till', pos:{x:84,y:52,w:10,h:14},
-      desc:"The bar till, locked at 3 digits. Three unpaid chits still hang on the spike beside it:\n\nTABLE 2 — 85¢\nTABLE 5 — $1.15\nTABLE 7 — $1.85\n\nThe head waiter's tag on the drawer: “THE TILL OPENS ON THE NIGHT'S TOTAL — DOLLARS, THEN CENTS.”",
-      puzzle:{
-        type:'keypad',
-        prompt:"Add up the three chits and enter the total as three digits (dollars, then cents).", answers:['385'],
+        solvedText:"The cabinet opens on bottles nobody has touched since 1927, and on its hook, the steward's key.",
+        inside:{ name:"The steward's key", figure:stewardKey } } },
+    { id:'window', icon:'🪟', name:'The Window', pos:POS3.window,
+      desc:"Night, and every so often a lit platform slides past: the same station every time. It is not on the line.",
+      figure:ART.svg(600, 320, windowBody),
+      sprite:ART.sprite(POS3.window, 600, 320, windowBody) },
+    { id:'vestibule', icon:'🚪', name:'Vestibule Door', pos:POS3.vestibule, needs:'cabinet',
+      desc:"The steward's key is in the vestibule clock. The door opens only at the hour the clock is set to, and only if it is the right one.",
+      deadDesc:"The door to the engine is bolted, and its clock is locked behind a little brass door with a keyhole.",
+      deadFigure:st=>ART.svg(170, 370, vestibuleBody(st)),
+      sprite:st=>ART.sprite(POS3.vestibule, 170, 370, vestibuleBody(st)),
+      puzzle:{ type:'clock', from:['window'], start:{h:12,m:0}, answer:GHOST_TIME, tryLabel:'SET THE CLOCK',
+        miss:"The clock ticks on, and the door stays shut. That is not the hour this train keeps.",
         hints:[
-          "Straight addition — split the chits among the crew and check each other.",
-          "85¢ + $1.15 = $2.00 even. Now add the last chit.",
-          "$2.00 + $1.85 = $3.85 → enter 385."
+          "The clock wants an hour. Every clock on this train stopped; one outside didn't.",
+          "Watch the window: the station that slides past has a big clock on its platform. It is always the same time there.",
+          `Its clock says ${GHOST_TIME}.`
         ],
-        solvedText:"3-8-5. The till opens on stacks of fares — every note crisp, every coin bright, and every date on every coin the same year: this one. The house always balances. That's the horror of it.",
-        solveBeat:null
-      }
-    },
-    { id:'servicebell', icon:'🛎️', name:'The Service Bell', pos:{x:3,y:36,w:13,h:22}, hiddenUntil:'till',
-      desc:"The kitchen's service bell rings once from the empty galley — and the order wheel spins. A ticket comes up from below, written in a hand you've seen once already tonight, on a record sleeve:\n\n<span style='font-size:1.7rem;letter-spacing:6px'>АГЕЙН</span>\n\nThe tender door's 5-letter lock waits. Sound it out.",
-      puzzle:{
-        prompt:"Enter the 5-letter word the bell is ringing.", placeholder:"5 LETTERS", answers:['AGAIN','AGEYN','AGEN'],
-        hints:[
-          "Cyrillic again — the passenger from Cabin 3 got here first. Look up each letter's sound: А is A, Г is G, Й is a Y-glide…",
-          "A-G-E-Y-N. Say it out loud — the tender lock wants the English spelling of what you hear.",
-          "АГЕЙН sounds out to AGAIN. Enter AGAIN. It has done all this before. It will do it again."
-        ],
-        solvedText:"A-G-A-I-N. The order wheel clatters to a stop, satisfied. The tender door unbolts — and you understand, finally, that the train doesn't want prisoners. It wants staff. Move.",
-        solveBeat:"As the door opens, every place setting in the car — in the room, not the mirror — is suddenly, silently, cleared.",
-        beatSound:'bell'
-      }
-    }
+        solvedText:"The clock strikes, and the bolts draw back." } },
   ]
-},
+};
+
+const OLD_ROOMS = [
 /* ============ ROOM 4 — THE LOCOMOTIVE ============ */
 {
   id:'locomotive', name:'Room 4 — The Locomotive', scene:'locomotive', stageFx:'rocking',
@@ -843,7 +925,7 @@ const OLD_ROOMS = [
   ]
 }
 ];
-const ROOMS = [ROOM1, ROOM2, ...OLD_ROOMS];
+const ROOMS = [ROOM1, ROOM2, ROOM3, ...OLD_ROOMS];
 
 registerScenario({
   id:'midnight', classic:true,
