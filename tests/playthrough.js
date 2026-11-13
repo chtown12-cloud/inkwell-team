@@ -9,7 +9,7 @@
    hidden can be worked early, presses the scenario's own final button, and
    confirms the score card and the chains.
 
-   The two scenarios not yet rebuilt are still played from the table below.
+   The one scenario not yet rebuilt is still played from the table below.
 */
 const { launch } = require('./browser');
 
@@ -17,16 +17,6 @@ const BASE = 'http://localhost:8787';
 const ALL = ['eldermoor', 'prospero', 'vorstag', 'erebus', 'midnight'];
 
 const SOLUTIONS = {
-  erebus: {
-    finalButton: 'CALL THE PLANE 🛩️',
-    emoji: '🐧', victoryText: null, finale: ['runway', 'DIAL:1764'],
-    rooms: [
-      [['flags', 'GARAGE'], ['garage', '6841'], ['maindoor', 'SOUTH'], ['noticeboard', '73']],
-      [['shortwave', 'DIAL:882'], ['recorder', 'MELT NOTHING'], ['footlocker', 'FROST'], ['genpanel', '842']],
-      [['coreE9', 'ICE'], ['cores', 'BURIED'], ['coldsafe', '936'], ['intercom', 'BELOW']],
-      [['genstart', 'ORDER:DEBAC'], ['lockbox', '1764'], ['weather', '530'], ['flarebox', '1486']],
-    ],
-  },
   midnight: {
     finalButton: 'MAKE THE JUNCTION 🚂',
     emoji: '🎩', victoryText: null, finale: ['whistle', 'SIMUL'],

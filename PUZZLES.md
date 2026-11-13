@@ -209,29 +209,43 @@ here, and a new puzzle is checked against the table before it is built.
 | | great clock | the telescope on the village church | read a clock that is upside down |
 | | lightning rod | (itself) | sweep the dial until the coil sings |
 
-### The other two
+### Erebus (the ice station)
 
-Erebus and Midnight are being rebuilt on this grammar one at a
-time. Until each one is, it is still built — and still audited — to the
-standard before this one: the rule lives on a prop, no prop states the method,
-and every answer is in the room's chain. Their mechanics, so that nothing
-built for their successors repeats them by accident:
+| | lock | what you find | the step |
+|---|---|---|---|
+| R1 | sign-out board — 4 picture wheels, each under a boot's tread | new snow at the foot of the steps | sweep it away, then follow each trail to where it goes |
+| | snowcat — keypad, 4 digits | eight numbered fuel drums | a full drum is heavy: it has sunk into the snow |
+| | storm door — a clock (dead until the snowcat runs) | a ring of hours round the mast's foot | read a sundial; twenty-four hours onto twelve |
+| R2 | foot locker — 4 colour wheels, each under an animal | a game of snakes and ladders nobody got to move in | add the dice, count, and take the ladder or the snake |
+| | generator room door — ten keys, 5 presses | the thermal camera from the foot locker | a warm print fades: the faintest was pressed first |
+| | generator panel — 4 tanks under colour bands | the day tanks, through the camera | see through steel; go by colour, not by position |
+| R3 | cold safe — keypad, 3 digits, under a drawn plate | a piece of core in E-9's case + the long core's log | find a short barcode in a long one, the right way up |
+| | airlock — 3 picture wheels, each under a well's dots | E-9's slide, under the microscope | turn the focus until each well is sharp |
+| R4 | flare box — 3 digit wheels | the windsock, over a compass rose painted on the deck | read a bearing on a rose that is not north-up; a wind is where it comes from |
+| | runway — twelve drums, light the ones that make a T | the pilot's card + the runway plan | lay the T into the wind |
 
-| Slot | Erebus (ice) | Midnight (train) |
-|---|---|---|
-| R1 opener | flag channel numbers (A=1) | book cipher + the porter's own working |
-| R1 code lock | resupply notice + drum glyphs | fare card + punch chart |
-| R1 word lock | polar signpost + re-keying notice | nightly seal register + tag date |
-| R1 number | sitrep + winter-over sheet | waybill: crates short, sacks aboard |
-| R2 tuning | sked card matched on its hours | diary: speed and track |
-| R2 code | braille | Cyrillic |
-| R2 second | Vigenère | rail fence |
-| R2 deduction | halving chain | boarding order |
-| R3 filter | **date range** — drilled before the store failed | **cross-reference** — covers that settled |
-| R3 number | multiples of three | money addition |
-| R4 order | the engineer's reasons | the fireman's reasons |
-| R4 locks | approach plate · bins vs stock card | builder's plate · consist order |
-| Finale | runway dial | whistle and lamp together |
+### The other one
+
+Midnight is the last to be rebuilt on this grammar. Until it is, it is still
+built — and still audited — to the standard before this one: the rule lives on
+a prop, no prop states the method, and every answer is in the room's chain. Its
+mechanics, so that nothing built for its successor repeats them by accident:
+
+| Slot | Midnight (train) |
+|---|---|
+| R1 opener | book cipher + the porter's own working |
+| R1 code lock | fare card + punch chart |
+| R1 word lock | nightly seal register + tag date |
+| R1 number | waybill: crates short, sacks aboard |
+| R2 tuning | diary: speed and track |
+| R2 code | Cyrillic |
+| R2 second | rail fence |
+| R2 deduction | boarding order |
+| R3 filter | **cross-reference** — covers that settled |
+| R3 number | money addition |
+| R4 order | the fireman's reasons |
+| R4 locks | builder's plate · consist order |
+| Finale | whistle and lamp together |
 
 ## Writing one
 

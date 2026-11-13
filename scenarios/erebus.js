@@ -214,51 +214,22 @@ ${Array.from({length:30},(_,i)=>`<circle class="tw" cx="${(i*59+14)%1600}" cy="$
   <line x1="800" y1="60" x2="1100" y2="580" stroke="#22303e" stroke-width="3"/>
   <circle class="slowblink" cx="800" cy="52" r="9" fill="#c94a3d"/>
 </g>
-<!-- the generator sled -->
-<g id="art-genstart">
-  <rect x="180" y="620" width="260" height="130" rx="14" fill="#b03a2a" stroke="#7c2a1e" stroke-width="6"/>
-  <circle cx="250" cy="686" r="34" fill="#1a242c" stroke="#0d1216" stroke-width="6"/>
-  <path d="M250 686 l22 -16" stroke="#c9a04a" stroke-width="5"/>
-  <rect x="310" y="646" width="100" height="50" rx="6" fill="#1a242c"/>
-  ${[0,1,2].map(i=>`<circle class="flick" cx="${330+i*30}" cy="671" r="7" fill="#5a4a1a" style="animation-delay:${i*.5}s"/>`).join('')}
-  <path d="M420 620 q30 -40 26 -90" stroke="#2a3a48" stroke-width="8" fill="none"/>
-  <ellipse class="steam" cx="446" cy="520" rx="14" ry="8" fill="#8aa4ba" opacity=".4"/>
-</g>
-<!-- tower lockbox -->
-<g id="el-lockbox">
-  <rect x="700" y="640" width="130 " height="100" rx="8" fill="#46607a" stroke="#2a3a48" stroke-width="5"/>
-  <circle cx="765" cy="690" r="18" fill="#0d1216" stroke="#8aa4ba" stroke-width="4"/>
-  <text x="765" y="628" text-anchor="middle" font-family="Special Elite" font-size="11" fill="#c8ecff">APPROACH CRYSTAL</text>
-</g>
-<!-- weather fax (hidden) -->
-<g id="el-weather">
-  <rect x="920" y="620" width="200" height="140" rx="8" fill="#22303a" stroke="#4c6478" stroke-width="5"/>
-  <rect x="936" y="636" width="168" height="80" fill="#dce8f2"/>
-  ${[0,1,2].map(i=>`<path d="M944 ${652+i*22} q40 ${(i%2?12:-12)} 80 0 t72 ${(i%2?8:-8)}" stroke="#5a6a78" stroke-width="2.5" fill="none"/>`).join('')}
-  <line x1="960" y1="724" x2="1080" y2="724" stroke="#0d1216" stroke-width="4"/>
-</g>
-<!-- flare cache (hidden) -->
-<g id="el-flarebox">
-  <rect x="1200" y="640" width="150" height="110" rx="10" fill="#5c1f1a" stroke="#3a1410" stroke-width="6"/>
-  ${[0,1,2].map(i=>`<rect x="${1214+i*46}" y="626" width="14" height="60" rx="5" fill="#c94a3d"/>`).join('')}
-  <rect x="1240" y="688" width="70" height="30" rx="5" fill="#20140f"/>
-</g>
-<!-- runway drums stretching away (final signal) -->
-<g id="el-runway">
-  ${[0,1,2,3,4,5].map(i=>{const k=i/5;const x=760+ i*130, y=828-  i*24, s=1-k*.5;
-   return `<g transform="translate(${x} ${y}) scale(${s})"><rect x="-20" y="-30" width="40" height="52" rx="6" fill="#46362a"/>
-    <circle class="flame" cx="0" cy="-38" r="${9}" fill="#ffb45e" opacity=".9" style="animation-delay:${i*.2}s"/></g>`;}).join('')}
-  <path d="M700 870 q380 -60 760 -140" stroke="#3c5064" stroke-width="30" fill="none" opacity=".5"/>
-</g>
 <!-- the plane's lights, far off -->
 <g class="shiplights">
   <circle class="slowblink" cx="1420" cy="240" r="4" fill="#ffd98c"/>
   <circle class="slowblink" cx="1444" cy="246" r="3" fill="#8cd9c0" style="animation-delay:.8s"/>
 </g>
-<!-- footprints ending mid-field -->
-<g opacity=".7">
-  ${[0,1,2,3,4].map(i=>`<ellipse cx="${420+i*54}" cy="${800+(i%2)*8}" rx="10" ry="4.5" fill="#46607a"/>`).join('')}
+<!-- the radio hut -->
+<g>
+  <rect x="1150" y="430" width="380" height="210" fill="#2a3a48" stroke="#1a242c" stroke-width="6"/>
+  <path d="M1130 436L1340 360L1550 436Z" fill="#dce8f2" stroke="#8aa4ba" stroke-width="4"/>
+  <rect x="1340" y="470" width="70" height="56" rx="4" fill="#3a3020" stroke="#1a242c" stroke-width="5"/>
+  <rect class="flick" x="1346" y="476" width="58" height="44" fill="#ffd98c" opacity=".25"/>
+  <rect x="1432" y="496" width="70" height="144" rx="4" fill="#1e2a36" stroke="#1a242c" stroke-width="5"/>
+  <circle cx="1490" cy="572" r="5" fill="#8aa4ba"/>
+  <path d="M1150 640H1530" stroke="#dce8f2" stroke-width="10"/>
 </g>
+<!--SPRITES-->
 <g class="atmo">
 <!-- something in here is still running -->
 <circle id="rl-radiotower" cx="230" cy="210" r="6" fill="#ff9b6a" opacity=".12"/>
@@ -559,7 +530,7 @@ const boardArt = { w: 640, h: 420, body: (() => {
   for (let n = 1; n <= 25; n++) {
     const [x, y] = sqCorner(n), c = SQ_COL[n], dark = ['blue', 'red', 'green', 'black'].includes(c);
     b += `<rect x="${x}" y="${y}" width="${BD.s}" height="${BD.s}" fill="${C[c]}" stroke="#1c140c" stroke-width="2"/>`
-      + W(x + 7, y + 21, String(n), { size: 17, fill: dark ? '#f4efe2' : '#2a1e12', weight: 700, face: 'num', anchor: 'start' });
+      + W(x + 6, y + 23, String(n), { size: 22, fill: dark ? '#f4efe2' : '#2a1e12', weight: 700, face: 'num', anchor: 'start' });
   }
   // every ladder and snake keeps to the right of its squares, clear of the numbers in their top left corners
   LADDERS.forEach(([f, t]) => { b += ladderArt(sqMid(f, 12, 18), sqMid(t, 12, 4)); });
@@ -959,101 +930,175 @@ const ROOM3 = {
   ]
 };
 
-const OLD_ROOMS = [
-/* ============ ROOM 4 — THE RADIO TOWER ============ */
-{
+/* ============================================================
+   ROOM 4 — THE RADIO TOWER
+   The windsock on the tower deck streams over a compass rose painted
+   round its pole; the flare box wants the wind, given the way wind
+   always is: where it comes from. The pilot's card by the hut door shows
+   how a landing T is laid, crossbar into the wind. With the flares, lay
+   it in fire on the runway.
+   ============================================================ */
+
+/* ---- the windsock, from above: the rose painted on the deck round its pole ---- */
+const SOCK_TO = 70;                                   // the bearing the sock streams toward (downwind)
+const WIND_FROM = (SOCK_TO + 180) % 360;              // and so the wind's own bearing
+const LOCKBOX = String(WIND_FROM).padStart(3, '0').split('');
+const ROSE_ROT = -35;                                 // the deck is not square to anything: north is up and to the left
+const rosePt = (cx, cy, b, r) => { const a = (b + ROSE_ROT) * Math.PI / 180; return [cx + Math.sin(a) * r, cy - Math.cos(a) * r]; };
+const sockArt = { w: 560, h: 470, body: (() => {
+  const cx = 280, cy = 236;
+  let b = `<rect width="560" height="470" fill="#4e4234"/>` + Array.from({ length: 12 }, (_, i) => `<path d="M0 ${18 + i * 40}H560" stroke="#3e3428" stroke-width="3"/>`).join('');
+  b += `<circle cx="${cx}" cy="${cy}" r="200" fill="none" stroke="#e8eef2" stroke-width="5"/><circle cx="${cx}" cy="${cy}" r="158" fill="none" stroke="#e8eef2" stroke-width="2.5" opacity=".7"/>`;
+  for (let d = 0; d < 360; d += 10) {
+    const long = d % 30 === 0, [x1, y1] = rosePt(cx, cy, d, long ? 158 : 176), [x2, y2] = rosePt(cx, cy, d, 198);
+    b += `<path d="M${x1.toFixed(1)} ${y1.toFixed(1)}L${x2.toFixed(1)} ${y2.toFixed(1)}" stroke="#e8eef2" stroke-width="${long ? 4 : 2.5}"/>`;
+    // the numbers stand outside the ring, where nothing lying on the deck can cover one
+    if (long) { const [tx, ty] = rosePt(cx, cy, d, 224); b += W(tx, ty + 6, d === 0 ? 'N' : String(d), { size: d === 0 ? 24 : 17, fill: d === 0 ? '#ffd9a0' : '#e8eef2', weight: 700, face: 'num' }); }
+  }
+  // the sock: its mouth at the pole, streaming away downwind
+  const a = (SOCK_TO + ROSE_ROT) * Math.PI / 180, ux = Math.sin(a), uy = -Math.cos(a), nx = -uy, ny = ux;
+  const half = (r) => 26 - (r - 16) * 17 / 168;
+  for (let k = 0; k < 6; k++) {
+    const r1 = 16 + k * 28, r2 = r1 + 28, h1 = half(r1), h2 = half(r2);
+    const pts = [[r1, h1], [r2, h2], [r2, -h2], [r1, -h1]].map(([r, h]) => `${(cx + ux * r + nx * h).toFixed(1)},${(cy + uy * r + ny * h).toFixed(1)}`).join(' ');
+    b += `<polygon points="${pts}" fill="${k % 2 ? '#f2f2ea' : '#e0662a'}" stroke="#3a1e10" stroke-width="2"/>`;
+  }
+  b += `<circle cx="${cx}" cy="${cy}" r="14" fill="#22303e" stroke="#0a1018" stroke-width="3"/><circle cx="${cx}" cy="${cy}" r="5" fill="#8aa4ba"/>`;
+  return b;
+})() };
+// from across the snow: the pole, the sock blowing out to the right and a little away, the rose a smudge on the deck
+const sockSprite = (() => {
+  let b = `<ellipse cx="150" cy="268" rx="130" ry="26" fill="#4e4234"/><ellipse cx="150" cy="268" rx="104" ry="18" fill="none" stroke="#e8eef2" stroke-width="2" opacity=".6"/>`
+    + `<rect x="144" y="40" width="10" height="230" fill="#22303e"/><circle cx="149" cy="40" r="6" fill="#8aa4ba"/>`;
+  for (let k = 0; k < 5; k++) {
+    const x = 154 + k * 24, h1 = 17 - k * 2.4, h2 = 17 - (k + 1) * 2.4, y = 50 + k * 3;
+    b += `<polygon points="${x},${y - h1} ${x + 24},${y + 3 - h2} ${x + 24},${y + 3 + h2} ${x},${y + h1}" fill="${k % 2 ? '#f2f2ea' : '#e0662a'}" stroke="#3a1e10" stroke-width="1.5"/>`;
+  }
+  return b;
+})();
+
+/* ---- the flare box at the foot of the mast ---- */
+const lockboxPlate = ART.svg(520, 96, `<rect width="520" height="96" rx="10" fill="#22303e"/>`
+  + `<rect x="34" y="18" width="6" height="64" fill="#8aa4ba"/>` + [0, 1, 2].map(k => `<polygon points="${40 + k * 26},${30 - k * 2 + 0} ${66 + k * 26},${32 - k * 2} ${66 + k * 26},${50 + k * 2} ${40 + k * 26},${52 + k * 2}" fill="${k % 2 ? '#f2f2ea' : '#e0662a'}"/>`).join('')
+  + W(190, 60, 'WIND', { size: 30, fill: '#cfd8e0', weight: 700, face: 'num', spacing: 3 })
+  + [0, 1, 2].map(i => `<rect x="${276 + i * 50}" y="22" width="40" height="52" rx="6" fill="#0b1014" stroke="#8aa4ba" stroke-width="2.5"/>`).join('')
+  + `<circle cx="438" cy="30" r="8" fill="none" stroke="#cfd8e0" stroke-width="4"/>`);
+function lockboxBody(st) {
+  let b = `<rect x="6" y="24" width="118" height="70" rx="6" fill="#7c2a1e" stroke="#3a1410" stroke-width="4"/>`;
+  if (st.solved) b += `<path d="M6 30L22 0H108L124 30Z" fill="#9a3a2a" stroke="#3a1410" stroke-width="4"/>` + [0, 1, 2, 3].map(i => `<rect x="${28 + i * 20}" y="14" width="12" height="40" rx="4" fill="#c94a3d" stroke="#3a1410" stroke-width="2"/>`).join('');
+  else b += `<rect x="6" y="18" width="118" height="18" rx="5" fill="#9a3a2a" stroke="#3a1410" stroke-width="4"/><rect x="46" y="44" width="38" height="26" rx="4" fill="#20282c" stroke="#8aa4ba" stroke-width="2"/>`
+    + [0, 1, 2].map(i => `<rect x="${52 + i * 10}" y="49" width="7" height="16" rx="2" fill="#5a6a72"/>`).join('');
+  return b;
+}
+const flaresFig = ART.svg(440, 200, `<rect width="440" height="200" fill="#1a1410"/>`
+  + [0, 1, 2, 3, 4].map(i => `<g transform="rotate(${-8 + i * 4} 220 100)"><rect x="70" y="${40 + i * 26}" width="290" height="22" rx="6" fill="#c94a3d" stroke="#3a1410" stroke-width="3"/>`
+    + `<rect x="330" y="${40 + i * 26}" width="30" height="22" rx="4" fill="#e8e0c8"/><rect x="70" y="${48 + i * 26}" width="260" height="5" fill="#8a2a20"/></g>`).join(''));
+
+/* ---- the pilot's card, by the hut door ---- */
+const dotsT = (x, y, s, dir) => {           // a landing T in drums: three across, three down the stem; dir -1 = crossbar on the left
+  const cross = dir < 0 ? x : x + 3 * s, pts = [[cross, y - s], [cross, y], [cross, y + s]];
+  for (let k = 1; k <= 3; k++) pts.push([cross - dir * k * s, y]);
+  return pts.map(([px, py]) => `<circle cx="${px}" cy="${py}" r="${s * 0.32}" fill="#e0662a" stroke="#3a1e10" stroke-width="2"/>`).join('');
+};
+const planeIcon = (x, y, dir) => `<g transform="translate(${x} ${y}) scale(${dir} 1)"><path d="M-22 0H20M4 -16V16M-18 -7V7" stroke="#22303e" stroke-width="5" stroke-linecap="round"/></g>`;
+const cardSock = (x, y) => `<rect x="${x}" y="${y}" width="4" height="40" fill="#22303e"/>` + [0, 1, 2].map(k => `<polygon points="${x + 4 + k * 16},${y + 1 + k} ${x + 20 + k * 16},${y + 2 + k} ${x + 20 + k * 16},${y + 14 - k} ${x + 4 + k * 16},${y + 15 - k}" fill="${k % 2 ? '#f2f2ea' : '#e0662a'}" stroke="#3a1e10" stroke-width="1"/>`).join('');
+const pilotArt = { w: 460, h: 320, body: `<rect width="460" height="320" fill="#f1ede2"/><rect x="8" y="8" width="444" height="304" fill="none" stroke="#2c4a7a" stroke-width="5"/>`
+  + `<path d="M8 160H452" stroke="#2c4a7a" stroke-width="2"/>`
+  // the right way: wind from the left, crossbar on the left, landing toward it
+  + cardSock(34, 40) + dotsT(150, 104, 30, -1) + planeIcon(320, 52, -1) + `<path d="M380 52H350" stroke="#22303e" stroke-width="3" stroke-dasharray="6 6"/>`
+  + `<path d="M404 96l14 16l28 -34" stroke="#2f7a3a" stroke-width="8" fill="none" stroke-linecap="round"/>`
+  // and the wrong way, the same wind
+  + cardSock(34, 196) + dotsT(150, 260, 30, 1) + planeIcon(170, 208, 1) + `<path d="M110 208H140" stroke="#22303e" stroke-width="3" stroke-dasharray="6 6"/>`
+  + `<path d="M406 240l32 32M438 240l-32 32" stroke="#a3322a" stroke-width="8" stroke-linecap="round"/>` };
+
+/* ---- the runway: twelve drums of fuel on the snow, for a T ---- */
+const RW = { cols: 4, rows: 3, x: 170, y: 150, dx: 92, dy: 52 };
+const drumKey = (r, c) => `r${r}c${c}`;
+const RUNWAY_T = [drumKey(0, 0), drumKey(1, 0), drumKey(2, 0), drumKey(1, 1), drumKey(1, 2), drumKey(1, 3)];   // crossbar at the west end
+const drumTop = (x, y, s, lit) => `<circle cx="${x}" cy="${y}" r="${s}" fill="#4a3a2c" stroke="#1a120c" stroke-width="3"/><circle cx="${x}" cy="${y}" r="${s * 0.55}" fill="#2a2018"/>`
+  + (lit ? `<circle cx="${x}" cy="${y}" r="${s * 1.5}" fill="#ffb45e" opacity=".35"/><circle cx="${x}" cy="${y}" r="${s * 0.7}" fill="#ffd98c"/>` : '');
+const runwayPlan = (lit, keys) => {
+  let b = `<rect width="640" height="420" fill="#c9d6e2"/>` + [[120, 40], [330, 330], [480, 52], [60, 360], [250, 372], [520, 350]].map(([x, y]) => `<path d="M${x} ${y}q40 -10 80 0" stroke="#e8eef2" stroke-width="4" fill="none"/>`).join('');
+  b += `<rect x="60" y="100" width="560" height="204" fill="#e8eef2" stroke="#8aa4ba" stroke-width="4"/>` + [0, 1, 2, 3].map(i => `<path d="M${590 - i * 22} 202h12" stroke="#8aa4ba" stroke-width="4"/>`).join('');
+  // north, as the survey plan has it: the runway runs west-south-west to east-north-east
+  b += `<g transform="translate(64 64) rotate(20)"><path d="M0 34V-30M-12 -16L0 -32L12 -16" stroke="#22303e" stroke-width="5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></g>`
+    + W(78, 30, 'N', { size: 22, fill: '#22303e', weight: 700, face: 'num' });
+  for (let r = 0; r < RW.rows; r++) for (let c = 0; c < RW.cols; c++) {
+    const x = RW.x + c * RW.dx, y = RW.y + r * RW.dy, k = drumKey(r, c);
+    b += keys ? `<g data-key="${k}"><circle cx="${x}" cy="${y}" r="30" fill="#000" opacity="0"/><g class="sw-off">${drumTop(x, y, 18, false)}</g><g class="sw-on">${drumTop(x, y, 18, true)}</g></g>`
+      : drumTop(x, y, 18, lit && RUNWAY_T.includes(k));
+  }
+  return b;
+};
+function runwaySprite(st) {
+  // from the tower: the strip running away to the right, the drums smaller as it goes
+  const L = [70, 132], R = [1160, 40];
+  let b = `<path d="M${L[0] - 40} ${L[1] + 46}L${R[0] + 30} ${R[1] + 14}L${R[0] + 20} ${R[1] - 12}L${L[0] - 60} ${L[1] - 40}Z" fill="#e8eef2" opacity=".55"/>`;
+  for (let c = 0; c < RW.cols; c++) for (let r = 0; r < RW.rows; r++) {
+    const t = 0.2 + c * 0.12, hw = 42 - 28 * t, x = L[0] + (R[0] - L[0]) * t + (r - 1) * 6, y = L[1] + (R[1] - L[1]) * t + (r - 1) * hw * 0.8, s = 12 - 7 * t;
+    const lit = st.solved && RUNWAY_T.includes(drumKey(r, c));
+    b += `<rect x="${(x - s * 0.7).toFixed(1)}" y="${(y - s).toFixed(1)}" width="${(s * 1.4).toFixed(1)}" height="${(s * 1.6).toFixed(1)}" rx="2" fill="#4a3a2c"/>`;
+    if (lit) b += `<circle cx="${x.toFixed(1)}" cy="${(y - s * 1.6).toFixed(1)}" r="${(s * 1.1).toFixed(1)}" fill="#ffb45e" opacity=".9"/>`;
+  }
+  return b;
+}
+
+const POS4 = {
+  windsock:  { x: 7.5,   y: 36.7, w: 18.75, h: 33.3 },
+  lockbox:   { x: 55,    y: 65.6, w: 8.1,   h: 11.1 },
+  pilotcard: { x: 75,    y: 52.2, w: 6.9,   h: 10 },
+  runway:    { x: 18.75, y: 77.8, w: 75,    h: 20 },
+};
+
+const ROOM4 = {
   id:'radiotower', name:'Room 4 — The Radio Tower', scene:'radiotower',
-  stageFx:'gust',
   relays:[{el:'rl-radiotower',mode:'pulse',period:3.0}],
   wrongSound:'chug',
   wrongVfx:'shake',
-  intro:"Dawn is a rumor on the horizon and the plane is up there waiting. Light the runway and bring them down.",
-  objective:"Restart the generator, raise the plane, and <b>light the drum line</b> — before what's below finishes its climb.",
-  entryBeat:"The tower's guy-wires are thrumming — all of them, evenly. Not the wind. Something at the far anchor point is testing, very gently, whether the tower would fall.",
+  intro:"Dawn is a rumour on the horizon, and the plane is up there waiting. Light the runway and bring it down.",
+  objective:"Lay a <b>landing T</b> in fire on the runway, the way the pilot needs it. Whatever opens a lock is somewhere else out here.",
+  entryBeat:"The tower's guy-wires are thrumming, all of them, evenly. Not the wind. Something at the far anchor point is testing, very gently, whether the tower would fall.",
   entrySound:'clank',
-  completeText:"The generator is running, the runway flares are laid, and the set is warm. There is a plane out there in the dark, waiting to be told.",
-  chain:"Five cold-start tags, each with its reason: fuel first because nothing else matters without it, plugs with fuel already in the line, crank while the plugs are hot, choke only once she has caught, breaker last — DEBAC → the approach plate gives the skiway's three channels and the lockbox lid says it holds the approach crystal, coded with the point omitted: 1764 → the weather fax rules out the 4:50 window (under the 1500 m minimum) and the 9:30 (after the aircraft's fuel is gone), leaving 6:10 less the forty minutes the drum line needs = 5:30 → the depot cache's bins are numbered on the door and the quartermaster's stock card gives the quantities in a different order: 1486 → put the beacon on the approach channel, 176.4, and transmit.",
+  completeText:"The T burns on the snow with its crossbar into the wind, and out in the grey the plane's lights turn toward it.",
+  chain:`From above, the windsock streams toward ${SOCK_TO} on the compass rose painted round its pole, so the wind comes from ${WIND_FROM} → the flare box takes ${LOCKBOX.join(', ')} and gives up its flares → the pilot's card shows a landing T laid with its crossbar on the side the wind comes from, and the plane landing along the stem toward it; on the runway plan north is marked, the west-south-west end is on the left, so the three drums across the left end and the three down the middle beside them.`,
   objects:[
-    { id:'genstart', icon:'⚙️', name:'The Generator Sled', pos:{x:11,y:66,w:18,h:18},
-      desc:"The tower generator's cold-start drill, five steps on five tags that nine days of wind have shuffled across the floor. The engineer wrote each one with the reason attached, the way you do when you expect to be read by somebody with cold hands and no time:\n\n   TAG A — “Close the choke, and not until she has actually caught. Choking a cold engine only floods it.”\n\n   TAG B — “Crank the flywheel while the plugs are still hot. You get about twenty seconds of hot.”\n\n   TAG C — “Throw the breaker last, once she is running steady. Put a load on her before that and she stalls.”\n\n   TAG D — “Open the fuel line first. Nothing else on this list matters if she has nothing to burn.”\n\n   TAG E — “Warm the glow plugs — with fuel already in the line, or you are just heating air.”",
-      puzzle:{
-        type:'order', order:{labels:{"A": "Close the choke", "B": "Crank the flywheel", "C": "Throw the breaker", "D": "Open the fuel line", "E": "Warm the glow plugs"}},
-        prompt:"Enter the five tag letters in start order.", placeholder:"FIVE LETTERS", answers:['DEBAC'],
+    { id:'windsock', icon:'🎐', name:'The Windsock', pos:POS4.windsock,
+      desc:"Seen from the ladder above it: the sock on its pole, and a compass rose painted on the deck all round it.",
+      figure:ART.svg(sockArt.w, sockArt.h, sockArt.body),
+      sprite:ART.sprite(POS4.windsock, 300, 300, sockSprite) },
+    { id:'lockbox', icon:'🧨', name:'Flare Box', pos:POS4.lockbox,
+      desc:"The flare box at the foot of the mast. Three wheels, and a plate that wants the wind.",
+      sprite:st=>ART.sprite(POS4.lockbox, 130, 100, lockboxBody(st)),
+      puzzle:{ type:'combo', from:['windsock'], wheels:3, answer:LOCKBOX, plate:lockboxPlate, tryLabel:'OPEN IT',
+        miss:"The lid stays down.",
         hints:[
-          "Each tag says why it sits where it sits. Two of them claim an end outright: one is explicitly first, one explicitly last.",
-          "Fuel line first (D), breaker last (C). The plugs want fuel already in the line, and the crank wants the plugs still hot.",
-          "Fuel, plugs, crank, then the choke once she has caught, then the breaker: enter DEBAC."
+          "The plate wants the wind, and a wind is always given as where it comes from. The windsock on the deck is out in it.",
+          "Look down on the windsock: the compass rose round its pole is painted with north marked. The sock streams away from the wind, so the wind comes from the opposite side of the rose.",
+          `The sock points at ${SOCK_TO}, so the wind comes from ${WIND_FROM}: ${LOCKBOX.join(', ')}.`
         ],
-        solvedText:"Fuel, plugs, crank, choke, breaker. The generator coughs, catches, and settles into a steady chug you feel through your boots like a second heartbeat. A better one than the ice's.",
-        solveBeat:"The moment the engine steadies, the thrumming in the guy-wires stops — the way a fisherman goes still when the line finally moves.",
-        beatSound:'clank'
-      }
-    },
-    { id:'lockbox', onSolve:{el:'rx-radiotower',op:.2,fx:'surge'}, icon:'📦', name:'The Tower Lockbox', pos:{x:42,y:68,w:11,h:16},
-      desc:"The transmitter's approach crystal is locked in a four-digit box.\n\nBolted to the wall above it, the skiway's approach plate — the card every aircraft working this strip flies off:\n\n   EREBUS SKIWAY — APPROACH\n     TOWER, GROUND ............. 88.2\n     APPROACH BEACON ........... 176.4\n     EMERGENCY ONLY ............ 243.0\n\nAnd stencilled across the lid of the box itself, the radio officer's own shorthand:\n\n   “CRYSTAL: APPROACH. CODE IS THE CHANNEL, POINT OMITTED.”",
-      puzzle:{
-        type:'keypad',
-        prompt:"Enter the 4-digit code.", answers:['1764'],
+        solvedText:"The lid comes up on a nest of road flares, dry and ready.",
+        inside:{ name:'Flares', figure:flaresFig } } },
+    { id:'pilotcard', icon:'🛩️', name:"The Pilot's Card", pos:POS4.pilotcard,
+      desc:"Pinned by the hut door, for whoever is on the ground when a plane needs to come in.",
+      figure:ART.svg(pilotArt.w, pilotArt.h, pilotArt.body),
+      sprite:ART.sprite(POS4.pilotcard, pilotArt.w, pilotArt.h, pilotArt.body) },
+    { id:'runway', icon:'🔥', name:'The Runway', pos:POS4.runway, needs:'lockbox',
+      desc:"The survey plan of the runway, and twelve drums of fuel set out on it. Light the ones that make the T.",
+      deadDesc:"Twelve drums of fuel set out on the runway, and nothing to light them with.",
+      deadFigure:ART.svg(640, 420, runwayPlan(false, false)),
+      sprite:st=>ART.sprite(POS4.runway, 1200, 180, runwaySprite(st)),
+      puzzle:{ type:'toggle', from:['pilotcard', 'windsock'], figure:ART.svg(640, 420, runwayPlan(false, true)), answer:RUNWAY_T, tryLabel:'LIGHT THEM',
+        gm:'the three drums across the left (west) end, and the three along the middle row beside them',
+        miss:"The plane's lights swing past and keep going. That T would bring it down with the wind behind it.",
         hints:[
-          "The plate on the wall gives you three channels. The lid tells you which one this box holds and how to type it.",
-          "The box holds the approach crystal, so you want the approach beacon's channel — and the lock has no decimal point.",
-          "176.4 with the point left out is 1764. Enter 1764."
-        ],
-        solvedText:"1-7-6-4. The crystal seats, the transmitter warms, and a voice you could weep at answers on the third call: “Erebus, we see your lights. Give us a runway and a window.”"
-      }
-    },
-    { id:'weather', icon:'🌨️', name:'The Weather Fax', pos:{x:57,y:66,w:14,h:18},
-      desc:"The fax chatters out the morning's landing windows:\n\n“WINDOW 1 — 4:50 · visibility 800 m\nWINDOW 2 — 6:10 · visibility 2200 m\nWINDOW 3 — 9:30 · visibility 3000 m\n\nMINIMUM LEGAL VISIBILITY: 1500 m.\nAIRCRAFT FUEL EXHAUSTED BY 8:00.\nDRUM LINE MUST BURN 40 MINUTES BEFORE THE WINDOW.”",
-      puzzle:{
-        prompt:"Set the drum-line ignition time (hour then minutes).", placeholder:"H:MM", answers:['530','0530'],
-        hints:[
-          "Two filters: the visibility floor, and the plane's fuel.",
-          "4:50 is under the 1500 m minimum. 9:30 is after the fuel runs out at 8:00. That leaves 6:10 — count back 40 minutes.",
-          "6:10 minus 0:40 is 5:30. Enter 530."
-        ],
-        solvedText:"5:30. The ignition clock arms. Out along the snow, the drum line waits — a runway drawn in barrels, aimed at the dawn."
-      }
-    },
-    { id:'flarebox', icon:'🧨', name:'The Flare Cache', pos:{x:74,y:69,w:11,h:15}, hiddenUntil:'weather',
-      desc:"The outer depot cache, four-digit lock, everything the station keeps for the dark months stacked behind it — flares included.\n\nThe door is stencilled into four bins, numbered the way the quartermaster had them loaded:\n\n   BIN 1 ▲        BIN 2 ✚        BIN 3 ●        BIN 4 ■\n\nHis stock card is wired to the handle, written up in whatever order he happened to count things:\n\n   ● FUEL ............. 8 drums\n   ■ FOOD ............. 6 crates\n   ▲ FLARES ........... 1 case\n   ✚ MEDICAL .......... 4 cases\n\n   “CODE IS THIS SEASON'S ISSUE, BIN BY BIN.”",
-      puzzle:{
-        type:'keypad',
-        prompt:"Enter the 4-digit code.", answers:['1486'],
-        hints:[
-          "The card has the quantities and the door has the bins, and the two are not in the same order. You need both.",
-          "Work along the bins, one to four, and look up what the card says is in each.",
-          "Bin 1 is flares (1), bin 2 medical (4), bin 3 fuel (8), bin 4 food (6). Enter 1486."
-        ],
-        solvedText:"1-4-8-6 and the cache opens on flares. Dozens of them. Enough to write on the dark with.",
-        solveBeat:"At the base of the tower, unhurried, something begins to climb. The ladder rungs ring one at a time — patient as a metronome, far apart as a tall man's reach. Taller.",
-        beatSound:'clank'
-      }
-    },
-    { id:'runway', icon:'📡', name:'The Approach Beacon', pos:{x:46,y:84,w:14,h:10}, hiddenUntil:'flarebox',
-      desc:"The drum line is lit and the strip is bright enough to land on. What the plane still has no reason to do is believe it — a fire on the ice is a fire on the ice until somebody on the ground is talking.\n\nThe tower's transmit set is cold but intact, and the approach plate is still bolted to the wall where it has always been.\n\nPut the beacon on the approach channel and hold it there. They are low on fuel and they will only come round once.",
-      puzzle:{
-        type:'dial',
-        dial:{ min:1500, max:2000, target:1764, div:10, pad:5,
-               meter:'CARRIER STRENGTH', lock:'TRANSMIT', miss:'nothing out there but the ice.',
-               knobs:[ {label:'Antenna match', target:62},
-                       {label:'Power stage',   target:38},
-                       {label:'Keying bias',   target:74} ] },
-        prompt:"Set the beacon to the approach channel, trim it in, and transmit.",
-        answers:['176.4'],
-        hints:[
-          "The approach plate on the wall has the number. It is the same channel the crystal in the lockbox was cut for, which is the point of the crystal.",
-          "APPROACH BEACON — 176.4.",
-          "Set the main dial to 176.4, bring the three trims to their sweet spots, and transmit."
-        ],
-        solvedText:"",
-        solveBeat:"The carrier catches. Thirty seconds of nothing — and then a voice, thin and flat and utterly ordinary, reading your position back to you.",
-        beatSound:'ping'
-      }
-    }
+          "The pilot's card shows how to lay a landing T: the crossbar goes on the side the wind comes from, and the plane lands along the stem toward it.",
+          `The wind comes from ${WIND_FROM}, west-south-west. North is marked on the runway plan: the left end is the west end. The crossbar goes there.`,
+          "Light the three drums across the left end, and the three along the middle row beside them."
+        ] } },
   ]
-}
-];
-const ROOMS = [ROOM1, ROOM2, ROOM3, ...OLD_ROOMS];
+};
+
+const ROOMS = [ROOM1, ROOM2, ROOM3, ROOM4];
 
 registerScenario({
   id:'erebus', classic:true,
@@ -1085,16 +1130,16 @@ registerScenario({
   </svg>`,
   story:[
     "Station Erebus missed nine scheduled radio checks in a row. Your survey team drew the short straw: fly in, restore contact, find the crew. The pilot will not cut his engines while you look.",
-    "The station is warm, lit, and empty. Fourteen bunks. Nine parkas still on their hooks. In the ice core lab, sample E-9 — drilled from three hundred thousand years down — stands open. From the inside.",
-    "The plane can land once more at dawn, if you light the runway and raise them on the radio. Work warm, work fast — and whatever the intercom tells you, remember the crew's last message: <em>melt nothing.</em>"
+    "The station is warm, lit, and empty. The bunks are made; the parkas are on their hooks. In the ice core lab, sample E-9 — drilled from three hundred thousand years down — stands open. From the inside.",
+    "The plane can land once more at dawn, if somebody on the ground lays out the runway for it. Work warm, work fast — and whatever is walking around in here, do not let it follow you onto that plane."
   ],
   begin:'❄️ BEGIN — 45:00', finalButton:'CALL THE PLANE 🛩️',
   emojis:['❄️','🐧','⛏️','🔬','🧊','🌨️','🚩','📡','🛩️','⛽','🧣','💀'],
   ratings:['🏆 Polar Legend','❄️ Able Surveyor','⛏️ Field Hand','🛟 Barely Made the Plane','🌨️ Lost to the White'],
   shareTitle:'ESCAPED STATION EREBUS!',
   victoryTitle:'🛩️ WHEELS UP',
-  victoryProse:`Three short. Three long. Three short. The drum line roars alive down the snow and the plane drops out of the grey like a promise kept, skis shrieking, props clawing the storm.<br><br>
-    As you climb away, the whole station shrinks to a scatter of lights — and between the burning drums, dead center on your runway, something stands looking up. It does not shield its eyes from the fire. It waited three hundred thousand years; it can wait out a little heat.<br><br>
+  victoryProse:`The T burns on the snow with its crossbar into the wind, and the plane drops out of the grey along its stem like a promise kept, skis shrieking, props clawing the storm.<br><br>
+    As you climb away, the whole station shrinks to a scatter of lights — and between the burning drums, dead center in your T, something stands looking up. It does not shield its eyes from the fire. It waited three hundred thousand years; it can wait out a little heat.<br><br>
     Nobody talks on the flight home. You watch the ice the whole way, and the ice watches back.`,
   gameOverProse:`The fuel gauge on the circling plane runs past its point of no return, and the engines fade north.<br><br>Below the floor, patient as winter, the climbing sound resumes.`,
   flare:{x:800,y:800,hue:[255,150,60]},

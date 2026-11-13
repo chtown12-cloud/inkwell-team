@@ -788,6 +788,8 @@ svg.glyph{display:block}
   transform:translateX(-50%);border:13px solid var(--lk-steel);border-bottom:none;border-radius:70px 70px 0 0;
   box-shadow:inset 0 3px 0 rgba(255,255,255,.28),0 -2px 8px rgba(0,0,0,.35)}
 .lk-wheel{display:flex;flex-direction:column;align-items:center;gap:5px}
+/* three wheels or fewer: bigger ones, so a short combination is still something to get your hands on */
+.lk-combo.few .lk-face{width:72px;height:84px}.lk-combo.few .lk-step{width:72px}.lk-combo.few{gap:14px}
 .lk-mark{display:block;height:13px;min-width:13px}
 .lk-mark.band{width:100%;border-radius:7px;box-shadow:inset 0 0 0 1.5px rgba(0,0,0,.5),0 1px 0 rgba(255,255,255,.3)}
 .lk-mark.icon{width:28px;height:28px;color:var(--lk-ink)}
@@ -962,6 +964,7 @@ body:not(.phone) .lk-tiles{width:min(100%,calc((100vh - 300px) * var(--whole,1.6
 @media (max-width:520px){
   .lk-face{width:46px;height:58px;font-size:1.7rem}.lk-step{width:46px}
   .lk-combo{gap:7px;padding:14px 14px 12px}
+  .lk-combo.few .lk-face{width:64px;height:74px}.lk-combo.few .lk-step{width:64px}.lk-combo.few{gap:10px}
   .lk-dir{grid-template-columns:repeat(3,60px);grid-template-rows:repeat(3,60px)}
   .lk-levers{gap:5px;padding:14px 6px 10px}
   .lk-levels{gap:6px;padding:14px 10px 10px}
