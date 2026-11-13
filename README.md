@@ -14,43 +14,44 @@ and race the clock.
 | ❄️ **Station Erebus** | Silent Antarctic research station | Something that thawed out of core E-9 |
 | 🚂 **The Midnight Special** | A 1927 express that never arrives | The Conductor, punching tickets nobody bought |
 
-Every scenario: 4 rooms, 16 or 17 puzzles, illustrated animated scenes (SVG parallax,
+Every scenario: 4 rooms, 14 to 17 puzzles, illustrated animated scenes (SVG parallax,
 fog, snow, fireflies, film grain), discoverable glowing hotspots, an unseen
 monster delivered through narrative beats, and a fully synthesized WebAudio
 soundscape with a distinct signature per room (surf and gulls; reactor hum and
 sonar pings; thunder and organ; blizzard and generator chug; rail clack and far
 whistles). No image or audio files — everything is generated in the browser.
 
-**How the puzzles work.** *The Wreck of the Eldermoor* and *Derelict: The
-Prospero* are built the way a physical escape room is: locks that look like
+**How the puzzles work.** *The Wreck of the Eldermoor*, *Derelict: The
+Prospero* and *Castle Vorstag* are built the way a physical escape room is: locks that look like
 locks, and whatever opens each one somewhere else in the room. A padlock with
 four wheels ringed in four colours — and, along the hull, a net of glass
 floats in the same four colours. A lift that wants five digits — written
 twice in the cryo bay, frosted over on the pods and cracked across on a
 terminal, and whole in neither place. Nothing is typed. Wheels are turned,
 scraps swapped, clock hands set, breakers thrown, a lantern swept across dark
-water, reactor rods raised, a burn held to the mark; no lock carries
+water, reactor rods raised, a burn held to the mark, a tune played on an organ,
+an opera glass held up to a painted ceiling; no lock carries
 instructions, and no clue says which lock it belongs to. An open lock changes
 the room, not just its own close-up. Expect to be properly stuck now and
 then: a hint or two per room is normal.
 
-The other three scenarios are being rebuilt the same way, one at a time.
+The other two scenarios are being rebuilt the same way, one at a time.
 Until each is, it plays as before — clue documents, ciphers and deductions —
 with its own palette, so a second scenario does not repeat the first:
 
-| Slot | Vorstag | Erebus | Midnight |
-|------|---------|--------|----------|
-| Room-1 opener | **anagram** | **A1Z26** (№→letter) | **book cipher** (line·word) |
-| Room-2 cipher | **Atbash** (mirror) | **Vigenère** (key ICE) | **rail fence** (zigzag) |
-| Room-2 deduction | **Roman-numeral** weighing | **halving-chain** rule | **boarding-order** logic |
-| Room-3 filter | **provenance** (the Baron's wax) | **date range** (before the store failed) | **cross-reference** (covers that settled) |
-| Room-3 number lock | **factor puzzle** (×48) | **multiples-of-three** | **money addition** |
-| Signal code | **pigpen** (masons' cipher) | **braille** (embossed dots) | **Cyrillic** (émigré's hand) |
-| Co-op set piece | — | — | **whistle and lamp** together |
+| Slot | Erebus | Midnight |
+|------|--------|----------|
+| Room-1 opener | **A1Z26** (№→letter) | **book cipher** (line·word) |
+| Room-2 cipher | **Vigenère** (key ICE) | **rail fence** (zigzag) |
+| Room-2 deduction | **halving-chain** rule | **boarding-order** logic |
+| Room-3 filter | **date range** (before the store failed) | **cross-reference** (covers that settled) |
+| Room-3 number lock | **multiples-of-three** | **money addition** |
+| Signal code | **braille** (embossed dots) | **Cyrillic** (émigré's hand) |
+| Co-op set piece | — | **whistle and lamp** together |
 
-Each of those three uses its own real-world code for its two mid-game signal
-decodes — pigpen, braille, or phonetic Cyrillic — and teams look the alphabet
-up themselves. The one mechanic they deliberately
+Each of those two uses its own real-world code for its two mid-game signal
+decodes — braille, or phonetic Cyrillic — and teams look the alphabet up
+themselves. The one mechanic they deliberately
 share, because it is their signature co-op moment, is the two-stage tuning
 **console**: the exact frequency comes from clues, then three trim knobs are
 coaxed by watching the meter until the panel reads LOCKED IN.
@@ -229,10 +230,10 @@ Answers per scenario, in solve order. (Full chains and all hint text: in-game GM
 
 | Room | Answers |
 |------|---------|
-| 1 · The Gatehouse Court | WELL (anagram of L,W,L,E) → **9357** (seasons from spring: ⚘✠♜☾) → NOCTIS (NIGHT in the old tongue) → **56** (11 guests − 6 wolves; 3 dead candles × 2) |
-| 2 · The Library | organ stop **119.3** (hymn CXIX + third verse) → STAY INSIDE (pigpen vellum) → SPARK (Atbash mirror) → **763** (Roman weights VII·VI·III, heaviest first) |
-| 3 · The Laboratory | LIGHTNING → RISEN (odd charges) → **624** (even digits, product 48) → ALIVE (pigpen card) |
-| 4 · The Tower | EADCB (scheduling, capacitor 2nd) → **2386** (119.3 × 2) → **1040** (11:30 strike − 50 min) → **7539** (9357 reversed) → SOS lamp |
+| 1 · The Gatehouse Court | well face **right, down, left, left, up, right** (the six gargoyles' gazes) → strongbox **crown, key, tower, raven** (what each row of the shield wall is missing) → keep door pins **3, 4, 1, 5, 2** (the raven key's teeth, tip first from the right-hand keyhole) |
+| 2 · The Library | cabinet **CAGED** (the white pieces' columns) → organ pipes **2, 5, 1, 3, 4, 5, 2** counted from the left (the music box: short tooth, short pipe) → lectern **9376** (the missing volumes by ribbon: gold IX, red III, green VII, blue VI) → orrery **snake, crab, raven, beetle** (sun, moon, star, comet, through the opera glass) |
+| 3 · The Laboratory | locker **6284** (the four gauges) → jars **green, yellow, purple, red, blue**, feather to anvil (the chalkboard's weighings) → dumbwaiter **blue, red, yellow, green** (the slab's clamps at head, heart, hand, foot) |
+| 4 · The Tower | winch **anticlockwise, clockwise, still, anticlockwise, anticlockwise, clockwise** (sun, moon, star, bell, crown, key, off the gear train) → capacitor **4, 1, 3** (red, yellow, blue: the photograph is a negative) → great clock **8:05** (the church clock, the right way up) → rod: sweep to **73** |
 
 ## ❄️ Station Erebus
 
@@ -252,7 +253,7 @@ Answers per scenario, in solve order. (Full chains and all hint text: in-game GM
 | 3 · The Dining Car | MIRROR → HUNGRY (perfect-square covers) → **385** (chits total $3.85) → AGAIN (Cyrillic ticket) |
 | 4 · The Locomotive | CBEDA (scheduling, feed 2nd) → **1568** (78.4 × 2) → **340** (4:45 junction − 65 min) → **3528** (8253 reversed) → SOS whistle |
 
-Every deduction and number-lock puzzle in the three scenarios not yet rebuilt
+Every deduction and number-lock puzzle in the two scenarios not yet rebuilt
 has a solver-verified unique solution, and their scheduling drills have
 verified unique orders. Room transitions hold on a title card until the team
 clicks ENTER.

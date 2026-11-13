@@ -41,7 +41,7 @@ in the order the room allows, looking first at every object the lock says its
 answer comes from. Along the way it checks that nothing hidden is in the room
 early and nothing dead can be worked early, takes a wrong try and two hints on
 the first lock to check the clock maths, and presses the scenario's own final
-button. The three scenarios not yet rebuilt are still played from the table at
+button. The two scenarios not yet rebuilt are still played from the table at
 the top of the file. Needs Playwright and the dev server.
 
 **`sync.js`** puts a shared screen and a phone in the same game and plays

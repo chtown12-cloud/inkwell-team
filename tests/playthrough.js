@@ -9,7 +9,7 @@
    hidden can be worked early, presses the scenario's own final button, and
    confirms the score card and the chains.
 
-   The three scenarios not yet rebuilt are still played from the table below.
+   The two scenarios not yet rebuilt are still played from the table below.
 */
 const { launch } = require('./browser');
 
@@ -17,16 +17,6 @@ const BASE = 'http://localhost:8787';
 const ALL = ['eldermoor', 'prospero', 'vorstag', 'erebus', 'midnight'];
 
 const SOLUTIONS = {
-  vorstag: {
-    finalButton: 'RIDE THE LIGHTNING ⚡',
-    emoji: '🧟', victoryText: 'THE GATE IS OPEN', finale: ['rod', 'HOLD'],
-    rooms: [
-      [['crests', 'WELL'], ['well', '9357'], ['doors', 'NOCTIS'], ['ledger', '56']],
-      [['organ', 'DIAL:1193'], ['chimes', 'STAY INSIDE'], ['folio', 'SPARK'], ['orrery', '763']],
-      [['slab', 'LIGHTNING'], ['jars', 'RISEN'], ['switchboard', '624'], ['dumbwaiter', 'ALIVE']],
-      [['rig', 'ORDER:EADCB'], ['fusebox', '2386'], ['barometer', '1040'], ['portcullis', '7539']],
-    ],
-  },
   erebus: {
     finalButton: 'CALL THE PLANE 🛩️',
     emoji: '🐧', victoryText: null, finale: ['runway', 'DIAL:1764'],
@@ -167,6 +157,8 @@ async function fumble(page, lock) {
     for (const k of lock.want.slice().reverse()) await page.click(`#modal .lock [data-key="${k}"]`, { force: true });
   } else return false;
   await page.waitForSelector('.feedback.bad', { timeout: 4000 });
+  // a wrong run on a pad or a row of keys clears itself a moment later, and presses made before then are not taken
+  await page.waitForFunction(() => document.querySelectorAll('#lk-slots i.set').length === 0, null, { timeout: 3000 }).catch(() => {});
   return true;
 }
 

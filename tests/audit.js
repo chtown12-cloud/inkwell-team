@@ -98,7 +98,10 @@ function checkBuilt(at, o) {
     if (ans.length !== n) fail(at, `has ${n} wheels and an answer ${ans.length} long`);
     const faces = new Set(faceIds(p).map(String));
     ans.forEach(a => { if (!faces.has(a)) fail(at, `answer needs "${a}", which is on none of its wheels`); });
-    if (faces.size < 5) fail(at, `has only ${faces.size} faces a wheel — too few to be worth a lock`);
+    // What makes a lock worth opening properly is how many ways it can be set, not how many faces one wheel has:
+    // six clutches of three settings are 729 ways, four wheels of four are only 256.
+    const ways = Math.pow(faces.size, n);
+    if (ways < 500) fail(at, `can only be set ${ways} ways (${faces.size} faces on ${n} wheels) — a patient team would just try them all`);
   } else if (p.type === 'dirpad') {
     if (!/^[NESW]+$/.test(String(p.answer))) fail(at, 'a compass pad takes only N, E, S and W');
     if (String(p.answer).length !== p.slots) fail(at, `has ${p.slots} slots and an answer ${String(p.answer).length} long`);

@@ -427,7 +427,7 @@ async function pulses(p, id, tool, t) {
         await face(p, o.room, o.id, 'open');
         const f = await p.evaluate(() => { const s = document.querySelector('#modal .inside svg'); if (!s) return null; const r = s.getBoundingClientRect(); return { w: r.width, h: r.height, bottom: r.bottom, vh: innerHeight }; });
         inside.hit(!!f && f.w >= 280 && f.h >= 100 && f.bottom <= f.vh, `${o.id} opens on ${f ? Math.round(f.w) + 'x' + Math.round(f.h) : 'nothing'}`);
-        if (o.insideTool === 'listen') inside.hit((await p.locator('#modal [data-listen]').count()) === 1, `${o.id}: nothing to play what came out of it`);
+        if (o.insideTool === 'listen') inside.hit((await p.locator('#modal [data-listen], #modal [data-notes]').count()) === 1, `${o.id}: nothing to play what came out of it`);
       }
     }
     readable.report('every clue draws big enough to read, inside the screen');
@@ -484,8 +484,8 @@ async function pulses(p, id, tool, t) {
         await p.click('#modal [data-flip]'); await p.waitForTimeout(80);
         tools.hit((await fig()) !== a, `${o.id}: turning it over shows the same side`);
       } else if (o.tool.type === 'listen') {
-        tools.hit((await p.locator('#modal [data-listen]').count()) === 1, `${o.id}: nothing to press to hear it`);
-        await p.click('#modal [data-listen]');
+        tools.hit((await p.locator('#modal [data-listen], #modal [data-notes]').count()) === 1, `${o.id}: nothing to press to hear it`);
+        await p.click('#modal [data-listen], #modal [data-notes]');
       }
     }
     // and whatever came out of a lock: the same thing in your hands

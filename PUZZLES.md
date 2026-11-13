@@ -190,29 +190,48 @@ here, and a new puzzle is checked against the table before it is built.
 | | door timer — a clock | the orbital screen + the bay clock | count the marks, add the hours |
 | | ignition — a handle and a gauge | the burn card from the door timer | let go on the mark |
 
-### The other three
+### Vorstag (the castle)
 
-Vorstag, Erebus and Midnight are being rebuilt on this grammar one at a
+| | lock | what you find | the step |
+|---|---|---|---|
+| R1 | well cover — a stone face whose eyes roll four ways, 6 looks | the gargoyles on the parapet | follow each one's gaze |
+| | strongbox — six enamel shields, press four | the shield wall, one shield gone from every row | finish the pattern |
+| | keep door — five pins | the ring of keys from the well, and where the keyhole is | a key goes in tip first |
+| R2 | cabinet — 5 letter wheels, A to H, each under a chessman | the game left on the chess table | read the board's columns |
+| | organ — five pipes, seven notes | the music box from the cabinet | match tooth to pipe by length |
+| | lectern — 4 digit wheels ringed in colours | nine volumes on the mantel, four gone, a ribbon in each gap | find what is missing from a run |
+| | orrery — 4 picture wheels, each under a heavenly body | the painted ceiling, through the opera glass from the lectern | look closer than the floor allows |
+| R3 | locker — keypad, 4 figures | four gauges | read each instrument by its own scale |
+| | jar rack — five jars | a chalkboard of weighings | put in order from comparisons |
+| | dumbwaiter — 4 colour wheels: head, heart, hand, foot | the slab, once the jars wake it | match each clamp to where it lay |
+| R4 | winch — six clutches: clockwise, anticlockwise or still | the drive gears | work out which way each gear turns |
+| | capacitor — 3 jars | the Baron's photograph of it | read a negative: every colour its opposite |
+| | great clock | the telescope on the village church | read a clock that is upside down |
+| | lightning rod | (itself) | sweep the dial until the coil sings |
+
+### The other two
+
+Erebus and Midnight are being rebuilt on this grammar one at a
 time. Until each one is, it is still built — and still audited — to the
 standard before this one: the rule lives on a prop, no prop states the method,
 and every answer is in the room's chain. Their mechanics, so that nothing
 built for their successors repeats them by accident:
 
-| Slot | Vorstag (castle) | Erebus (ice) | Midnight (train) |
-|---|---|---|---|
-| R1 opener | shield anagram + well-house plaque | flag channel numbers (A=1) | book cipher + the porter's own working |
-| R1 code lock | seasons tapestry + well rim | resupply notice + drum glyphs | fare card + punch chart |
-| R1 word lock | canonical hours + the gatekeeper's card | polar signpost + re-keying notice | nightly seal register + tag date |
-| R1 number | ledger: departed vs not | sitrep + winter-over sheet | waybill: crates short, sacks aboard |
-| R2 tuning | hymn board + psalter verse | sked card matched on its hours | diary: speed and track |
-| R2 code | pigpen | braille | Cyrillic |
-| R2 second | Atbash | Vigenère | rail fence |
-| R2 deduction | numeral weights | halving chain | boarding order |
-| R3 filter | **provenance** — the Baron's own wax | **date range** — drilled before the store failed | **cross-reference** — covers that settled |
-| R3 number | even factors of 48 on named ways | multiples of three | money addition |
-| R4 order | the Baron's reasons | the engineer's reasons | the fireman's reasons |
-| R4 locks | fuse chart · counterweight chain | approach plate · bins vs stock card | builder's plate · consist order |
-| Finale | lightning hold | runway dial | whistle and lamp together |
+| Slot | Erebus (ice) | Midnight (train) |
+|---|---|---|
+| R1 opener | flag channel numbers (A=1) | book cipher + the porter's own working |
+| R1 code lock | resupply notice + drum glyphs | fare card + punch chart |
+| R1 word lock | polar signpost + re-keying notice | nightly seal register + tag date |
+| R1 number | sitrep + winter-over sheet | waybill: crates short, sacks aboard |
+| R2 tuning | sked card matched on its hours | diary: speed and track |
+| R2 code | braille | Cyrillic |
+| R2 second | Vigenère | rail fence |
+| R2 deduction | halving chain | boarding order |
+| R3 filter | **date range** — drilled before the store failed | **cross-reference** — covers that settled |
+| R3 number | multiples of three | money addition |
+| R4 order | the engineer's reasons | the fireman's reasons |
+| R4 locks | approach plate · bins vs stock card | builder's plate · consist order |
+| Finale | runway dial | whistle and lamp together |
 
 ## Writing one
 

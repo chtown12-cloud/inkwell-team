@@ -3,33 +3,14 @@
    Your carriage broke down. The castle took you in.
    The slab in the laboratory is empty. Charge the tower,
    raise the portcullis, and go — it knows the halls better.
+
+   Built on the reset grammar (see PUZZLES.md): locks that look like locks,
+   and whatever opens them somewhere else in the room. Each object carries
+   its own art into the room as `sprite`; the backdrops below are only the
+   place.
    ============================================================ */
 (function(){
 const SCENES={};
-
-/* pigpen cipher glyphs — standard key: A-I grid, J-R grid+dot, S-V X, W-Z X+dot */
-const PIG=(()=>{
-  const grid=(i,dot)=>{
-    const r=Math.floor(i/3),c=i%3;
-    let d='';
-    if(r>0) d+='M7 7 H29 ';
-    if(r<2) d+='M7 31 H29 ';
-    if(c>0) d+='M7 7 V31 ';
-    if(c<2) d+='M29 7 V31 ';
-    return `<path d="${d}"/>`+(dot?'<circle cx="18" cy="19" r="2.7" fill="currentColor" stroke="none"/>':'');
-  };
-  const vee=(i,dot)=>{
-    const d=['M7 7 L18 30 L29 7','M7 7 L30 19 L7 31','M29 7 L6 19 L29 31','M7 31 L18 8 L29 31'][i];
-    const dp=[[18,13],[13,19],[23,19],[18,25]][i];
-    return `<path d="${d}"/>`+(dot?`<circle cx="${dp[0]}" cy="${dp[1]}" r="2.7" fill="currentColor" stroke="none"/>`:'');
-  };
-  const glyph=ch=>{
-    const a='ABCDEFGHI'.indexOf(ch), j='JKLMNOPQR'.indexOf(ch), x='STUV'.indexOf(ch), w='WXYZ'.indexOf(ch);
-    const inner = a>=0?grid(a,false) : j>=0?grid(j,true) : x>=0?vee(x,false) : vee(w,true);
-    return `<svg width="31" height="34" viewBox="0 0 36 38" style="vertical-align:middle;margin:0 4px;overflow:visible"><g stroke="currentColor" stroke-width="2.8" fill="none" stroke-linecap="square">${inner}</g></svg>`;
-  };
-  return word=>'<span style="color:var(--sand)">'+word.split(' ').map(w=>w.split('').map(glyph).join('')).join('<span style="display:inline-block;width:36px"></span>')+'</span>';
-})();
 
 /* ---------- Room 1: The Gatehouse Court ---------- */
 SCENES.gatehouse=()=>`
@@ -50,7 +31,7 @@ SCENES.gatehouse=()=>`
 <g class="batfly"><path d="M0 0 q8 -9 15 0 q8 -9 15 0" stroke="#080614" stroke-width="4" fill="none" stroke-linecap="round"/></g>
 <g class="batfly b2"><path d="M0 0 q6 -7 12 0 q6 -7 12 0" stroke="#080614" stroke-width="3.5" fill="none" stroke-linecap="round"/></g>
 <!-- castle keep behind -->
-<g class="plx" data-depth="4" fill="#120d1e">
+<g class="plx" data-depth="4" fill="#1b1530" stroke="#2c2444" stroke-width="2">
   <rect x="1080" y="150" width="140" height="420"/>
   <path d="M1080 150 h140 l0 -30 -20 0 0 16 -25 0 0 -16 -25 0 0 16 -25 0 0 -16 -25 0 0 16 -20 0z"/>
   <rect x="1250" y="240" width="200" height="330"/>
@@ -64,57 +45,29 @@ SCENES.gatehouse=()=>`
   <path d="M0 240 h360 l0 -34 -30 0 0 18 -42 0 0 -18 -42 0 0 18 -42 0 0 -18 -42 0 0 18 -42 0 0 -18 -42 0 0 18 -42 0 0 -18 -36 0z"/>
 </g>
 ${[0,1,2,3,4].map(i=>`<line x1="${40+i*70}" y1="300" x2="${40+i*70}" y2="640" stroke="#0d0a16" stroke-width="3" opacity=".6"/>`).join('')}
+<!-- the curtain wall, with a walk along the top of it -->
+<rect x="360" y="344" width="1240" height="316" fill="#1f1929"/>
+<rect x="360" y="318" width="38" height="26" fill="#231d2f"/><rect x="422" y="318" width="38" height="26" fill="#231d2f"/><rect x="484" y="318" width="38" height="26" fill="#231d2f"/><rect x="546" y="318" width="38" height="26" fill="#231d2f"/><rect x="608" y="318" width="38" height="26" fill="#231d2f"/><rect x="670" y="318" width="38" height="26" fill="#231d2f"/><rect x="732" y="318" width="38" height="26" fill="#231d2f"/><rect x="794" y="318" width="38" height="26" fill="#231d2f"/><rect x="856" y="318" width="38" height="26" fill="#231d2f"/><rect x="918" y="318" width="38" height="26" fill="#231d2f"/><rect x="980" y="318" width="38" height="26" fill="#231d2f"/><rect x="1042" y="318" width="38" height="26" fill="#231d2f"/><rect x="1104" y="318" width="38" height="26" fill="#231d2f"/><rect x="1166" y="318" width="38" height="26" fill="#231d2f"/><rect x="1228" y="318" width="38" height="26" fill="#231d2f"/><rect x="1290" y="318" width="38" height="26" fill="#231d2f"/><rect x="1352" y="318" width="38" height="26" fill="#231d2f"/><rect x="1414" y="318" width="38" height="26" fill="#231d2f"/><rect x="1476" y="318" width="38" height="26" fill="#231d2f"/><rect x="1538" y="318" width="38" height="26" fill="#231d2f"/>
+<path d="M360 344H1600" stroke="#3a3350" stroke-width="3" opacity=".8"/>
+<path d="M360 400H1600" stroke="#0d0a16" stroke-width="2" opacity=".5"/><path d="M360 460H1600" stroke="#0d0a16" stroke-width="2" opacity=".5"/><path d="M360 520H1600" stroke="#0d0a16" stroke-width="2" opacity=".5"/><path d="M360 580H1600" stroke="#0d0a16" stroke-width="2" opacity=".5"/><path d="M400 344v56" stroke="#0d0a16" stroke-width="2" opacity=".35"/><path d="M496 344v56" stroke="#0d0a16" stroke-width="2" opacity=".35"/><path d="M592 344v56" stroke="#0d0a16" stroke-width="2" opacity=".35"/><path d="M688 344v56" stroke="#0d0a16" stroke-width="2" opacity=".35"/><path d="M784 344v56" stroke="#0d0a16" stroke-width="2" opacity=".35"/><path d="M880 344v56" stroke="#0d0a16" stroke-width="2" opacity=".35"/><path d="M976 344v56" stroke="#0d0a16" stroke-width="2" opacity=".35"/><path d="M1072 344v56" stroke="#0d0a16" stroke-width="2" opacity=".35"/><path d="M1168 344v56" stroke="#0d0a16" stroke-width="2" opacity=".35"/><path d="M1264 344v56" stroke="#0d0a16" stroke-width="2" opacity=".35"/><path d="M1360 344v56" stroke="#0d0a16" stroke-width="2" opacity=".35"/><path d="M1456 344v56" stroke="#0d0a16" stroke-width="2" opacity=".35"/><path d="M1552 344v56" stroke="#0d0a16" stroke-width="2" opacity=".35"/><path d="M448 404v56" stroke="#0d0a16" stroke-width="2" opacity=".35"/><path d="M544 404v56" stroke="#0d0a16" stroke-width="2" opacity=".35"/><path d="M640 404v56" stroke="#0d0a16" stroke-width="2" opacity=".35"/><path d="M736 404v56" stroke="#0d0a16" stroke-width="2" opacity=".35"/><path d="M832 404v56" stroke="#0d0a16" stroke-width="2" opacity=".35"/><path d="M928 404v56" stroke="#0d0a16" stroke-width="2" opacity=".35"/><path d="M1024 404v56" stroke="#0d0a16" stroke-width="2" opacity=".35"/><path d="M1120 404v56" stroke="#0d0a16" stroke-width="2" opacity=".35"/><path d="M1216 404v56" stroke="#0d0a16" stroke-width="2" opacity=".35"/><path d="M1312 404v56" stroke="#0d0a16" stroke-width="2" opacity=".35"/><path d="M1408 404v56" stroke="#0d0a16" stroke-width="2" opacity=".35"/><path d="M1504 404v56" stroke="#0d0a16" stroke-width="2" opacity=".35"/><path d="M1600 404v56" stroke="#0d0a16" stroke-width="2" opacity=".35"/><path d="M400 464v56" stroke="#0d0a16" stroke-width="2" opacity=".35"/><path d="M496 464v56" stroke="#0d0a16" stroke-width="2" opacity=".35"/><path d="M592 464v56" stroke="#0d0a16" stroke-width="2" opacity=".35"/><path d="M688 464v56" stroke="#0d0a16" stroke-width="2" opacity=".35"/><path d="M784 464v56" stroke="#0d0a16" stroke-width="2" opacity=".35"/><path d="M880 464v56" stroke="#0d0a16" stroke-width="2" opacity=".35"/><path d="M976 464v56" stroke="#0d0a16" stroke-width="2" opacity=".35"/><path d="M1072 464v56" stroke="#0d0a16" stroke-width="2" opacity=".35"/><path d="M1168 464v56" stroke="#0d0a16" stroke-width="2" opacity=".35"/><path d="M1264 464v56" stroke="#0d0a16" stroke-width="2" opacity=".35"/><path d="M1360 464v56" stroke="#0d0a16" stroke-width="2" opacity=".35"/><path d="M1456 464v56" stroke="#0d0a16" stroke-width="2" opacity=".35"/><path d="M1552 464v56" stroke="#0d0a16" stroke-width="2" opacity=".35"/><path d="M448 524v56" stroke="#0d0a16" stroke-width="2" opacity=".35"/><path d="M544 524v56" stroke="#0d0a16" stroke-width="2" opacity=".35"/><path d="M640 524v56" stroke="#0d0a16" stroke-width="2" opacity=".35"/><path d="M736 524v56" stroke="#0d0a16" stroke-width="2" opacity=".35"/><path d="M832 524v56" stroke="#0d0a16" stroke-width="2" opacity=".35"/><path d="M928 524v56" stroke="#0d0a16" stroke-width="2" opacity=".35"/><path d="M1024 524v56" stroke="#0d0a16" stroke-width="2" opacity=".35"/><path d="M1120 524v56" stroke="#0d0a16" stroke-width="2" opacity=".35"/><path d="M1216 524v56" stroke="#0d0a16" stroke-width="2" opacity=".35"/><path d="M1312 524v56" stroke="#0d0a16" stroke-width="2" opacity=".35"/><path d="M1408 524v56" stroke="#0d0a16" stroke-width="2" opacity=".35"/><path d="M1504 524v56" stroke="#0d0a16" stroke-width="2" opacity=".35"/><path d="M1600 524v56" stroke="#0d0a16" stroke-width="2" opacity=".35"/><path d="M400 584v56" stroke="#0d0a16" stroke-width="2" opacity=".35"/><path d="M496 584v56" stroke="#0d0a16" stroke-width="2" opacity=".35"/><path d="M592 584v56" stroke="#0d0a16" stroke-width="2" opacity=".35"/><path d="M688 584v56" stroke="#0d0a16" stroke-width="2" opacity=".35"/><path d="M784 584v56" stroke="#0d0a16" stroke-width="2" opacity=".35"/><path d="M880 584v56" stroke="#0d0a16" stroke-width="2" opacity=".35"/><path d="M976 584v56" stroke="#0d0a16" stroke-width="2" opacity=".35"/><path d="M1072 584v56" stroke="#0d0a16" stroke-width="2" opacity=".35"/><path d="M1168 584v56" stroke="#0d0a16" stroke-width="2" opacity=".35"/><path d="M1264 584v56" stroke="#0d0a16" stroke-width="2" opacity=".35"/><path d="M1360 584v56" stroke="#0d0a16" stroke-width="2" opacity=".35"/><path d="M1456 584v56" stroke="#0d0a16" stroke-width="2" opacity=".35"/><path d="M1552 584v56" stroke="#0d0a16" stroke-width="2" opacity=".35"/>
+<rect x="360" y="352" width="1240" height="10" fill="#0d0a16" opacity=".45"/>
+<path d="M1392 660V500Q1392 428 1485 428T1578 500V660Z" fill="#2f2840" stroke="#0d0a16" stroke-width="5"/>
+<path d="M1406 660V504Q1406 444 1485 444T1564 504V660Z" fill="#07060c"/>
+<path d="M1420 452V660" stroke="#3a3350" stroke-width="6"/><path d="M1446 452V660" stroke="#3a3350" stroke-width="6"/><path d="M1472 452V660" stroke="#3a3350" stroke-width="6"/><path d="M1498 452V660" stroke="#3a3350" stroke-width="6"/><path d="M1524 452V660" stroke="#3a3350" stroke-width="6"/><path d="M1550 452V660" stroke="#3a3350" stroke-width="6"/><path d="M1404 490H1566" stroke="#3a3350" stroke-width="6"/><path d="M1404 534H1566" stroke="#3a3350" stroke-width="6"/><path d="M1404 578H1566" stroke="#3a3350" stroke-width="6"/><path d="M1404 622H1566" stroke="#3a3350" stroke-width="6"/>
 <!-- torch on wall -->
 <g>
   <rect x="320" y="330" width="10" height="52" fill="#241a10"/>
   <circle cx="325" cy="316" r="70" fill="url(#vTorch)"/>
   <path class="flame" d="M325 322 q-14 -24 0 -44 q14 22 0 44z" fill="#ffb45e"/>
 </g>
-<!-- family crest shields -->
-<g id="art-crests">
-${[['L',90,420],['W',196,420],['L',302,420],['E',154,540]].map(([ch,x,y])=>
- `<g><path d="M${x-34} ${y} h68 v54 q0 26 -34 40 q-34 -14 -34 -40z" fill="#3a2d4a" stroke="#5c4a74" stroke-width="4"/>
-  <text x="${x}" y="${y+52}" text-anchor="middle" font-family="Special Elite" font-size="30" fill="#e0cfa2">${ch}</text></g>`).join('')}
-</g>
 <!-- courtyard flagstones -->
 <path d="M0 660 h1600 v240 h-1600z" fill="#1c1626"/>
 ${[0,1,2,3,4,5,6].map(i=>`<line x1="${i*260-80}" y1="660" x2="${i*300-200}" y2="900" stroke="#0d0a16" stroke-width="4"/>`).join('')}
 <line x1="0" y1="660" x2="1600" y2="660" stroke="#0a0812" stroke-width="6"/>
-<!-- the well -->
-<g id="art-well">
-  <ellipse cx="700" cy="700" rx="120" ry="34" fill="#0d0a16"/>
-  <path d="M580 700 q0 -44 120 -44 q120 0 120 44 l0 26 q0 -40 -120 -40 q-120 0 -120 40z" fill="#3a3244"/>
-  <rect x="600" y="540" width="12" height="130" fill="#241a10"/><rect x="788" y="540" width="12" height="130" fill="#241a10"/>
-  <path d="M590 540 h220 l-20 -34 h-180z" fill="#171126"/>
-  <rect x="660" y="590" width="80" height="22" rx="10" fill="#5c4a30"/>
-  <text x="700" y="760" text-anchor="middle" font-size="17" fill="#8f7fa8">☾7 ✠3 ⚘9 ♜5</text>
-</g>
-<!-- the sealed doors -->
-<g id="art-doors">
-  <path d="M1030 420 q0 -70 90 -70 q90 0 90 70 l0 240 h-180z" fill="#241a10" stroke="#171126" stroke-width="8"/>
-  <line x1="1120" y1="352" x2="1120" y2="660" stroke="#171126" stroke-width="6"/>
-  ${[0,1,2].map(i=>`<circle cx="${1075+i*45}" cy="${470+i*8}" r="4" fill="#5c4a30"/>`).join('')}
-  <circle cx="1102" cy="540" r="9" fill="#0d0a16" stroke="#8a7430" stroke-width="3"/>
-  <rect x="1064" y="440" width="112" height="30" rx="4" fill="#171126"/>
-</g>
-<!-- tapestry -->
-<g id="art-tapestry">
-  <rect x="440" y="300" width="150" height="230" fill="#3a1d2a" stroke="#5c3244" stroke-width="6"/>
-  <path d="M448 320 q66 30 134 0 M448 380 q66 30 134 0 M448 440 q66 30 134 0" stroke="#8a5c30" stroke-width="4" fill="none"/>
-  <text x="515" y="360" text-anchor="middle" font-size="15" fill="#e0cfa2">⚘</text>
-  <text x="515" y="420" text-anchor="middle" font-size="15" fill="#e0cfa2">✠</text>
-  <text x="515" y="480" text-anchor="middle" font-size="15" fill="#e0cfa2">♜</text>
-  <text x="552" y="360" text-anchor="middle" font-size="11" fill="#c9bde0">SPRING</text>
-  <text x="552" y="420" text-anchor="middle" font-size="11" fill="#c9bde0">SUMMER</text>
-  <text x="552" y="480" text-anchor="middle" font-size="11" fill="#c9bde0">AUTUMN</text>
-</g>
-<!-- gatekeeper's ledger stand -->
-<g id="el-ledger">
-  <rect x="880" y="600" width="16" height="90" fill="#241a10"/>
-  <path d="M830 596 l66 -14 66 14 -66 12z" fill="#3a2d1a"/>
-  <path d="M836 592 l60 -12 0 8 -60 12z" fill="#d9cba6"/>
-  <path d="M896 580 l60 12 0 8 -60 -12z" fill="#cfc0a0"/>
-</g>
+<ellipse cx="300" cy="790" rx="90" ry="12" fill="#2a2440" opacity=".55"/><ellipse cx="273" cy="788" rx="31" ry="4" fill="#8f86b8" opacity=".12"/><ellipse cx="980" cy="760" rx="120" ry="13" fill="#2a2440" opacity=".55"/><ellipse cx="944" cy="758" rx="42" ry="4" fill="#8f86b8" opacity=".12"/><ellipse cx="1240" cy="840" rx="80" ry="10" fill="#2a2440" opacity=".55"/><ellipse cx="1216" cy="838" rx="28" ry="3" fill="#8f86b8" opacity=".12"/><ellipse cx="520" cy="850" rx="70" ry="9" fill="#2a2440" opacity=".55"/><ellipse cx="499" cy="848" rx="24" ry="3" fill="#8f86b8" opacity=".12"/>
+<!-- a stone bench under the torch -->
+<rect x="384" y="672" width="170" height="16" fill="#2f2840" stroke="#0d0a16" stroke-width="3"/><rect x="396" y="688" width="18" height="34" fill="#231d2f"/><rect x="524" y="688" width="18" height="34" fill="#231d2f"/>
+<!--SPRITES-->
 <!-- broken carriage at edge -->
 <g opacity=".9">
   <ellipse cx="1420" cy="820" rx="130" ry="16" fill="#0a0812"/>
@@ -148,6 +101,9 @@ SCENES.library=()=>`
 <rect width="1600" height="640" fill="url(#vLib)"/>
 <rect y="640" width="1600" height="260" fill="#1a1010"/>
 ${[0,1,2,3,4,5].map(i=>`<line x1="${i*300-100}" y1="640" x2="${i*340-200}" y2="900" stroke="#0d0806" stroke-width="5"/>`).join('')}
+<!-- the cornice the ceiling is painted above -->
+<rect x="0" y="198" width="1600" height="12" fill="#2a1d2e"/><rect x="0" y="210" width="1600" height="4" fill="#0d0806" opacity=".6"/>
+<path d="M1220 640V250Q1220 214 1256 214H1530Q1566 214 1566 250V640Z" fill="#140c16" stroke="#2a1d2e" stroke-width="6"/>
 <!-- bookshelves -->
 ${[0,1].map(s=>`<g transform="translate(${40+s*270},0)">
   <rect x="0" y="150" width="230" height="490" fill="#241626"/>
@@ -167,47 +123,6 @@ ${[0,1].map(s=>`<g transform="translate(${40+s*270},0)">
   <circle class="sparkup s2" cx="748" cy="606" r="2.2" fill="#ffd894"/>
   <circle class="sparkup s3" cx="762" cy="596" r="2" fill="#ff9a4a"/>
 </g>
-<!-- the pipe organ -->
-<g id="art-organ">
-  <rect x="1220" y="220" width="330" height="420" fill="#241626" stroke="#3a2d4a" stroke-width="6"/>
-  ${[0,1,2,3,4,5,6].map(i=>`<rect x="${1250+i*40}" y="${250+Math.abs(3-i)*24}" width="26" height="${240-Math.abs(3-i)*40}" rx="8" fill="#6a5a7c"/>`).join('')}
-  <rect x="1240" y="520" width="290" height="50" fill="#171021"/>
-  ${[...Array(14)].map((_,i)=>`<rect x="${1252+i*19}" y="526" width="15" height="38" fill="${i%7===2||i%7===5?'#171021':'#d9cba6'}" stroke="#0d0a16" stroke-width="1"/>`).join('')}
-  <rect x="1300" y="580" width="170" height="34" rx="6" fill="#0d0a16"/>
-  <text class="flick" x="1385" y="603" text-anchor="middle" font-family="Special Elite" font-size="17" fill="#c9a04a">STOP ---.-</text>
-</g>
-<!-- hymn board -->
-<g id="art-hymnboard">
-  <rect x="1080" y="260" width="110" height="150" fill="#241a10" stroke="#3a2d1a" stroke-width="5"/>
-  <text x="1135" y="292" text-anchor="middle" font-family="Special Elite" font-size="13" fill="#d9cba6">HYMN</text>
-  <rect x="1096" y="304" width="78" height="34" fill="#d9cba6"/>
-  <text x="1135" y="328" text-anchor="middle" font-family="Special Elite" font-size="19" fill="#3a2d1c">CXIX</text>
-  <rect x="1096" y="348" width="78" height="26" fill="#cfc0a0"/>
-  <text x="1135" y="366" text-anchor="middle" font-family="Special Elite" font-size="11" fill="#3a2d1c">VERSE ?</text>
-</g>
-<!-- hidden panel behind organ (the chimes) -->
-<g id="el-chimes">
-  <rect x="1130" y="470" width="80" height="120" fill="#120a14" stroke="#5c4a74" stroke-width="4"/>
-  ${[0,1,2].map(i=>`<circle class="flick" cx="1170" cy="${500+i*32}" r="10" fill="none" stroke="#c9a04a" stroke-width="3" style="animation-delay:${i*.4}s"/>`).join('')}
-</g>
-<!-- folio desk -->
-<g id="el-folio">
-  <rect x="360" y="560" width="220" height="18" fill="#3a2d1a"/>
-  <rect x="376" y="578" width="188 " height="90" fill="#241a10"/>
-  <path d="M400 552 l70 -12 6 26 -70 13z" fill="#d9cba6"/>
-  <path d="M470 540 l66 8 -2 26 -66 -8z" fill="#cfc0a0"/>
-  <text x="470" y="536" text-anchor="middle" font-family="Special Elite" font-size="11" fill="#8f7fa8">XLI HSSV...</text>
-  <circle cx="404" cy="536" r="12" fill="#0d0a16"/><path class="flame" d="M404 528 q-5 -10 0 -16 q5 8 0 16z" fill="#ffd894"/>
-</g>
-<!-- the orrery -->
-<g id="el-orrery">
-  <rect x="700" y="700 " width="14" height="110" fill="#241a10"/>
-  <circle cx="707" cy="690" r="9" fill="#c9a04a"/>
-  ${[[34,'#8f7fa8'],[58,'#6a5a7c'],[84,'#4a3a5c']].map(([r,c],i)=>`<g><circle cx="707" cy="690" r="${r}" fill="none" stroke="${c}" stroke-width="2"/>
-   <circle class="bob" cx="${707+r}" cy="690" r="${5+i*2}" fill="${c}" style="animation-delay:${i*.7}s"/></g>`).join('')}
-  <rect x="640" y="806" width="140" height="22" rx="6" fill="#171021"/>
-  ${[0,1,2].map(i=>`<circle cx="${676+i*32}" cy="817" r="7" fill="#0d0a16" stroke="#5c4a74" stroke-width="2"/>`).join('')}
-</g>
 <!-- portrait with followed eyes -->
 <g>
   <rect x="900" y="230" width="130" height="170" fill="#0d0806" stroke="#5c4a30" stroke-width="8"/>
@@ -221,6 +136,7 @@ ${[0,1].map(s=>`<g transform="translate(${40+s*270},0)">
   ${[-24,0,24].map((dx,i)=>`<g><rect x="${201+dx}" y="${690-Math.abs(dx)*.3}" width="8" height="20" fill="#d9cba6"/>
   <path class="flame" d="M${205+dx} ${684-Math.abs(dx)*.3} q-4 -9 0 -14 q4 7 0 14z" fill="#ffd894" style="animation-delay:${i*.3}s"/></g>`).join('')}
 </g>
+<!--SPRITES-->
 <g class="atmo">
 <!-- something in here is still running -->
 <circle id="rl-library" cx="230" cy="210" r="6" fill="#ffb45e" opacity=".12"/>
@@ -250,6 +166,9 @@ SCENES.laboratory=()=>`
 <rect width="1600" height="620" fill="url(#vLab)"/>
 <rect y="620" width="1600" height="280" fill="#101414"/>
 ${[0,1,2,3,4,5].map(i=>`<line x1="${i*300-120}" y1="620" x2="${i*340-220}" y2="900" stroke="#070a09" stroke-width="5"/>`).join('')}
+<rect x="0" y="360" width="1600" height="260" fill="#142220" opacity=".85"/>
+<path d="M0 360H1600" stroke="#2a3a36" stroke-width="5"/><path d="M0 380H1600" stroke="#1d2a28" stroke-width="2"/><path d="M0 420H1600" stroke="#1d2a28" stroke-width="2"/><path d="M0 460H1600" stroke="#1d2a28" stroke-width="2"/><path d="M0 500H1600" stroke="#1d2a28" stroke-width="2"/><path d="M0 540H1600" stroke="#1d2a28" stroke-width="2"/><path d="M0 580H1600" stroke="#1d2a28" stroke-width="2"/><path d="M40 360V620" stroke="#1d2a28" stroke-width="2"/><path d="M120 360V620" stroke="#1d2a28" stroke-width="2"/><path d="M200 360V620" stroke="#1d2a28" stroke-width="2"/><path d="M280 360V620" stroke="#1d2a28" stroke-width="2"/><path d="M360 360V620" stroke="#1d2a28" stroke-width="2"/><path d="M440 360V620" stroke="#1d2a28" stroke-width="2"/><path d="M520 360V620" stroke="#1d2a28" stroke-width="2"/><path d="M600 360V620" stroke="#1d2a28" stroke-width="2"/><path d="M680 360V620" stroke="#1d2a28" stroke-width="2"/><path d="M760 360V620" stroke="#1d2a28" stroke-width="2"/><path d="M840 360V620" stroke="#1d2a28" stroke-width="2"/><path d="M920 360V620" stroke="#1d2a28" stroke-width="2"/><path d="M1000 360V620" stroke="#1d2a28" stroke-width="2"/><path d="M1080 360V620" stroke="#1d2a28" stroke-width="2"/><path d="M1160 360V620" stroke="#1d2a28" stroke-width="2"/><path d="M1240 360V620" stroke="#1d2a28" stroke-width="2"/><path d="M1320 360V620" stroke="#1d2a28" stroke-width="2"/><path d="M1400 360V620" stroke="#1d2a28" stroke-width="2"/><path d="M1480 360V620" stroke="#1d2a28" stroke-width="2"/><path d="M1560 360V620" stroke="#1d2a28" stroke-width="2"/>
+<ellipse cx="800" cy="720" rx="60" ry="14" fill="#070a09"/><path d="M760 720h80M772 714h56M772 726h56" stroke="#1d2a28" stroke-width="3"/>
 <!-- chains from the ceiling -->
 ${[380,520,1060,1200].map((x,i)=>`<g class="lampswing" style="animation-delay:${i*.8}s">
  <line x1="${x}" y1="0" x2="${x}" y2="${150+(i%2)*60}" stroke="#26313a" stroke-width="7" stroke-dasharray="12 6"/>
@@ -257,30 +176,6 @@ ${[380,520,1060,1200].map((x,i)=>`<g class="lampswing" style="animation-delay:${
 <!-- stray voltage arcing between the ceiling chains -->
 <path class="arcflick" d="M380 190 l24 10 -14 12 30 8 -16 14 28 10" stroke="#9fb8e8" stroke-width="2.5" fill="none"/>
 <path class="arcflick a2" d="M1060 210 l-22 12 16 10 -28 10 18 12 -24 10" stroke="#9fb8e8" stroke-width="2.5" fill="none"/>
-<!-- the empty slab -->
-<g id="art-slab">
-  <ellipse cx="800" cy="600" rx="270" ry="26" fill="#070a09"/>
-  <path d="M560 480 l480 0 24 100 -528 0z" fill="#3a4448" stroke="#26313a" stroke-width="5"/>
-  <rect x="600" y="452" width="400" height="34" rx="8" fill="#4a565c"/>
-  ${[0,1,2,3].map(i=>`<g><rect x="${640+i*90}" y="440" width="34" height="14" rx="6" fill="#26313a"/>
-   <path d="M${657+i*90} 454 q${(i%2?14:-14)} 20 0 34" stroke="#26313a" stroke-width="6" fill="none"/></g>`).join('')}
-  <ellipse class="flick" cx="800" cy="470" rx="190" ry="20" fill="url(#vGreen)"/>
-</g>
-<!-- leyden jar rack -->
-<g id="el-jars">
-  <rect x="120" y="330" width="560" height="16" fill="#26313a"/>
-  ${[['R',160],['M',226],['I',292],['U',358],['S',424],['E',490],['D',556],['N',622]].map(([ch,x],i)=>
-  `<g><rect x="${x-22}" y="240" width="44" height="90" rx="10" fill="#1c2e34" stroke="#3a565c" stroke-width="3"/>
-   <rect class="flick" x="${x-14}" y="254" width="28" height="40" rx="6" fill="#2a4a42" style="animation-delay:${i*.35}s"/>
-   <text x="${x}" y="320" text-anchor="middle" font-family="Special Elite" font-size="17" fill="#9fc8ae">${ch}</text></g>`).join('')}
-</g>
-<!-- galvanic switchboard -->
-<g id="el-switchboard">
-  <rect x="1240" y="280" width="260" height="300" rx="10" fill="#1a2426" stroke="#3a4a44" stroke-width="6"/>
-  ${[0,1,2].map(r=>[0,1,2].map(c=>`<g><circle cx="${1290+c*80}" cy="${330+r*80}" r="18" fill="#0d1416" stroke="#4a5a52" stroke-width="4"/>
-   <line x1="${1290+c*80}" y1="${330+r*80}" x2="${1290+c*80+((r+c)%2?11:-9)}" y2="${318+r*80}" stroke="#c9a04a" stroke-width="4"/></g>`).join('')).join('')}
-  <rect x="1290" y="536" width="160" height="26" rx="6" fill="#0d1416"/>
-</g>
 <!-- workbench with glassware -->
 <g>
   <rect x="80" y="560" width="480" height="20" fill="#3a2d1a"/>
@@ -288,20 +183,13 @@ ${[380,520,1060,1200].map((x,i)=>`<g class="lampswing" style="animation-delay:${
   ${[0,1,2].map(i=>`<g><path d="M${150+i*130} 560 v-40 q0 -14 14 -14 q14 0 14 14 v40z" fill="#1c3a34" opacity=".9"/>
    <ellipse class="steam" cx="${164+i*130}" cy="500" rx="9" ry="5" fill="#9fc8ae" opacity=".3" style="animation-delay:${i*1.2}s"/></g>`).join('')}
 </g>
-<!-- dumbwaiter with bell -->
-<g id="el-dumbwaiter">
-  <rect x="880 " y="640" width="170" height="200" fill="#1a1416" stroke="#3a2d1a" stroke-width="8"/>
-  <rect x="900" y="660" width="130" height="130" fill="#070a09"/>
-  <path d="M946 720 a20 20 0 0 1 40 0 l4 16 h-48z" fill="#c9a04a"/>
-  <circle id="dumb-lamp" cx="966" cy="748" r="8" fill="#ffdf9c" opacity=".1"/>
-  <text x="966" y="830" text-anchor="middle" font-family="Special Elite" font-size="11" fill="#8fa596">FROM THE CELLAR</text>
-</g>
 <!-- specimen shelf -->
 <g opacity=".9">
   <rect x="700" y="200 " width="240" height="12" fill="#26313a"/>
   ${[0,1,2].map(i=>`<g><rect x="${726+i*72}" y="140" width="46" height="60" rx="8" fill="#16211f" stroke="#2a4a42" stroke-width="3"/>
    <ellipse class="bob" cx="${749+i*72}" cy="172" rx="12" ry="${14+i*3}" fill="#2a4a42" style="animation-delay:${i*.9}s"/></g>`).join('')}
 </g>
+<!--SPRITES-->
 <g class="atmo">
 <!-- something in here is still running -->
 <circle id="rl-laboratory" cx="900" cy="210" r="6" fill="#ffb45e" opacity=".12"/>
@@ -342,61 +230,22 @@ SCENES.tower=()=>`
 <ellipse class="cloud c3" cx="760" cy="60" rx="300" ry="40" fill="#0a0818" opacity=".85"/>
 <path class="flick" d="M1120 150 l-36 84 30 -8 -44 108" stroke="#cfd6ff" stroke-width="5" fill="none" opacity=".6"/>
 <path class="flick" d="M330 130 l-24 60 20 -6 -30 76" stroke="#cfd6ff" stroke-width="4" fill="none" opacity=".45" style="animation-delay:1.7s"/>
+<!-- the clock turret, and the stair head behind you -->
+<g fill="#1d1430" stroke="#2c2444" stroke-width="3">
+  <rect x="1240" y="120" width="290" height="500"/>
+  <path d="M1240 120h290l0 -34 -32 0 0 18 -40 0 0 -18 -40 0 0 18 -40 0 0 -18 -40 0 0 18 -40 0 0 -18 -58 0z"/>
+</g>
+<path d="M1240 300H1530M1240 460H1530" stroke="#120d1e" stroke-width="3" opacity=".7"/>
+<path d="M40 640V470Q40 420 90 420T140 470V640Z" fill="#120d1e" stroke="#2c2444" stroke-width="4"/>
 <!-- tower battlements -->
 <path d="M0 640 h1600 v260 h-1600z" fill="#221a33"/>
 <path d="M0 640 h1600 l0 -36 -60 0 0 20 -80 0 0 -20 -80 0 0 20 -80 0 0 -20 -80 0 0 20 -80 0 0 -20 -80 0 0 20 -80 0 0 -20 -80 0 0 20 -80 0 0 -20 -80 0 0 20 -80 0 0 -20 -80 0 0 20 -80 0 0 -20 -80 0 0 20 -80 0 0 -20 -80 0 0 20 -80 0 0 -20 -76 0z" fill="#171126"/>
 ${[0,1,2,3,4].map(i=>`<line x1="${i*380-60}" y1="660" x2="${i*400-120}" y2="900" stroke="#0d0a16" stroke-width="4" opacity=".7"/>`).join('')}
-<!-- the lightning rod -->
-<g id="el-rod">
-  <rect x="770" y="150" width="18" height="440" fill="#26313a"/>
-  <path d="M779 150 l0 -70" stroke="#4a5a62" stroke-width="8"/>
-  <circle cx="779" cy="72" r="10" fill="#8fa8c8"/>
-  ${[0,1,2].map(i=>`<line x1="779" y1="${220+i*110}" x2="${820+i*24}" y2="${250+i*110}" stroke="#26313a" stroke-width="7"/>`).join('')}
-  <circle class="slowblink" cx="779" cy="600" r="12" fill="#c9d6ff"/>
-</g>
-<!-- the coil spitting early sparks -->
-<path class="arcflick" d="M515 400 l14 -16 -8 -6 16 -14" stroke="#c9d6ff" stroke-width="3" fill="none"/>
-<path class="arcflick a2" d="M515 404 l-16 -14 10 -6 -14 -16" stroke="#c9d6ff" stroke-width="2.5" fill="none"/>
-<!-- the great coil -->
-<g id="art-coil">
-  <rect x="440" y="430" width="150 " height="180" rx="16" fill="#2a2436" stroke="#3a2d4a" stroke-width="5"/>
-  ${[0,1,2,3,4,5].map(i=>`<ellipse cx="515" cy="${450+i*28}" rx="66" ry="9" fill="none" stroke="#8a6f52" stroke-width="5"/>`).join('')}
-  <circle class="flick" cx="515" cy="416" r="16" fill="#9fb8e8"/>
-</g>
-<!-- capacitor bank -->
-<g id="art-capacitor">
-  <rect x="1050" y="450" width="220" height="160" rx="12" fill="#1d1430" stroke="#3a2d4a" stroke-width="6"/>
-  ${[0,1,2].map(i=>`<rect class="flick" x="${1072+i*62}" y="472" width="42" height="80" rx="8" fill="#0d0a16" stroke="#5c4a74" stroke-width="3" style="animation-delay:${i*.5}s"/>`).join('')}
-  <rect x="1080" y="566" width="160" height="24" rx="6" fill="#0d0a16"/>
-  <line x1="1160" y1="450" x2="900 " y2="240" stroke="#26313a" stroke-width="5"/>
-</g>
-<!-- chapel fuse box -->
-<g id="el-fusebox">
-  <rect x="220" y="470" width="120" height="150" rx="8" fill="#241a10" stroke="#3a2d1a" stroke-width="6"/>
-  <line x1="280" y1="470" x2="280" y2="620" stroke="#3a2d1a" stroke-width="4"/>
-  <text x="280" y="456" text-anchor="middle" font-family="Special Elite" font-size="12" fill="#c9bde0">CHAPEL MAINS</text>
-  ${[0,1,2,3].map(i=>`<circle cx="${252+(i%2)*56}" cy="${510+Math.floor(i/2)*56}" r="10" fill="#0d0a16" stroke="#8a7430" stroke-width="3"/>`).join('')}
-</g>
-<!-- storm-glass table -->
-<g id="el-barometer">
-  <rect x="640" y="690 " width="14" height="120" fill="#241a10"/>
-  <ellipse cx="647" cy="690" rx="90" ry="18" fill="#2a2436"/>
-  <path d="M620 676 v-50 q0 -16 16 -16 q16 0 16 16 v50z" fill="#1c2e3a" opacity=".95"/>
-  <path class="bob" d="M628 650 q8 -10 16 0 q-8 8 -16 0z" fill="#9fb8e8"/>
-  <rect x="680" y="646" width="66" height="44" rx="4" fill="#d9cba6" transform="rotate(6 713 668)"/>
-</g>
-<!-- portcullis winch glyphs -->
-<g id="el-portcullis">
-  <rect x="1380" y="660" width="160" height="180" rx="10" fill="#2a2436" stroke="#3a2d4a" stroke-width="6"/>
-  <circle cx="1460" cy="720" r="34" fill="#171126" stroke="#5c4a74" stroke-width="6"/>
-  ${[0,1,2,3].map(i=>`<line x1="1460" y1="720" x2="${Math.round(1460+40*Math.cos(i*Math.PI/2+0.6))}" y2="${Math.round(720+40*Math.sin(i*Math.PI/2+0.6))}" stroke="#5c4a74" stroke-width="6"/>`).join('')}
-  <text x="1460" y="790" text-anchor="middle" font-size="16" fill="#e0cfa2">☾ ✠ ⚘ ♜</text>
-  <text x="1460" y="816" text-anchor="middle" font-family="Special Elite" font-size="10" fill="#8f7fa8">FOLLOW THE CHAIN</text>
-</g>
 <!-- valley below, tiny village lights -->
 <g class="plx" data-depth="5">
   ${[0,1,2,3,4].map(i=>`<circle class="tw" cx="${140+i*90}" cy="${856+((i*13)%18)}" r="2.5" fill="#ffd98c" style="animation-delay:${i*.8}s"/>`).join('')}
 </g>
+<!--SPRITES-->
 <g class="atmo">
 <!-- something in here is still running -->
 <circle id="rl-tower" cx="230" cy="210" r="6" fill="#ffb45e" opacity=".12"/>
@@ -427,156 +276,608 @@ const WRONG_BEATS=[
 ];
 const WRONG_SOUNDS=['knock','hiss','clank','clank','growl'];
 
-const ROOMS=[
-/* ============ ROOM 1 — THE GATEHOUSE COURT ============ */
-{
+/* ============================================================
+   THE DRAWINGS, AND THE ROOMS THEY STAND IN
+
+   Every prop is drawn once and used twice: large in the close-up, and small
+   standing in the room, so what you can see from across the court is exactly
+   what you read when you lean in.
+   ============================================================ */
+const C = ART.COL, I = ART.INK, W = ART.words, GL = ART.glyph;
+
+/* ============================================================
+   ROOM 1 — THE GATEHOUSE COURT
+   Six gargoyles on the wall-walk, and a stone face in the well cover whose
+   eyes roll four ways. A wall of shields with one taken down from every row,
+   and a strongbox that wants four of them. And the keep door: five pins, a
+   raven, and a ring of keys that only fits if you think about which end of a
+   key goes in first.
+   ============================================================ */
+const V = { stone: '#2a2436', stoneLight: '#4a4458', stoneEdge: '#6a6380', dark: '#0d0a16', deep: '#171126', wall: '#1f1929',
+            wood: '#4a3823', woodDark: '#241a10', woodLip: '#6b5334', brass: '#c9a04a', brassDark: '#8a7430', gold: '#e6c66a',
+            parch: '#d9cba6', ink: '#3a2d1c', iron: '#3a3244', ironLight: '#5c5470', glint: '#e0d0a0', glow: '#ffb45e', bolt: '#cfd6ff' };
+
+/* ---- the parapet: six gargoyles, each with something different to stare at ---- */
+const GAZE = 'ESWWNE';
+function gargoyle(dir) {
+  // the body never changes; only where it is looking
+  const body = `<rect x="12" y="92" width="76" height="18" fill="${V.stone}" stroke="${V.dark}" stroke-width="3"/>`
+    + `<path d="M26 62L4 38L20 78ZM74 62L96 38L80 78Z" fill="${V.stone}" stroke="${V.dark}" stroke-width="3" stroke-linejoin="round"/>`
+    + `<path d="M22 94Q14 60 34 52H66Q86 60 78 94Z" fill="${V.stoneLight}" stroke="${V.dark}" stroke-width="3" stroke-linejoin="round"/>`
+    + `<path d="M38 94V76M62 94V76" stroke="${V.dark}" stroke-width="3"/><path d="M30 94h14M56 94h14" stroke="${V.dark}" stroke-width="5" stroke-linecap="round"/>`;
+  const head = `<path d="M-19 -13Q-21 -25 -8 -23L-13 -37L3 -23Q14 -23 20 -13L40 -6Q45 0 40 7L20 12Q10 22 -8 20Q-22 16 -19 -13Z" fill="${V.stoneEdge}" stroke="${V.dark}" stroke-width="3" stroke-linejoin="round"/>`
+    + `<circle cx="9" cy="-7" r="5.5" fill="${V.dark}"/><circle cx="10.5" cy="-8" r="2.2" fill="${V.glint}"/><path d="M24 7L40 4" stroke="${V.dark}" stroke-width="2.5" stroke-linecap="round"/>`;
+  const turn = { E: '', W: 'scale(-1 1)', N: 'rotate(-82)', S: 'rotate(82)' }[dir];
+  return body + `<g transform="translate(50 38) ${turn}">${head}</g>`;
+}
+const gargRow = GAZE.split('').map((d, i) => `<g transform="translate(${i * 112} 0)">${gargoyle(d)}</g>`).join('');   // 660 x 110
+const gargArt = { w: 720, h: 230, body: (() => {
+  let b = `<rect width="720" height="230" fill="#141026"/><ellipse cx="200" cy="40" rx="260" ry="40" fill="#0a0818" opacity=".9"/><ellipse cx="560" cy="24" rx="240" ry="30" fill="#0a0818" opacity=".8"/>`;
+  for (let i = 0; i < 26; i++) b += `<path d="M${20 + (i * 137) % 690} ${(i * 53) % 150}l-5 26" stroke="#b8d4ea" stroke-width="1.6" opacity=".35"/>`;
+  b += `<rect x="0" y="174" width="720" height="56" fill="${V.wall}"/><path d="M0 174H720" stroke="${V.stoneEdge}" stroke-width="3" opacity=".6"/>`;
+  for (let i = 0; i < 9; i++) b += `<path d="M${40 + i * 84} 176v54" stroke="${V.dark}" stroke-width="2" opacity=".4"/>`;
+  return b + `<g transform="translate(30 66)">${gargRow}</g>`;
+})() };
+
+/* ---- the shield wall: four rows, each a pattern with one shield gone ---- */
+const TINCT = { crown: ['red', V.gold], tower: ['blue', V.gold], raven: ['white', '#24282c'], key: ['green', V.gold], cross: ['black', '#efe9da'], star: ['purple', V.gold] };
+const ROWS = [
+  ['crown', 'tower', 'crown', 'tower', null, 'tower'],
+  ['raven', 'raven', 'key', 'raven', 'raven', null],
+  ['star', 'cross', 'tower', null, 'cross', 'star'],
+  ['raven', 'star', 'cross', null, 'star', 'cross'],
+];
+const MISSING = ['crown', 'key', 'tower', 'raven'];             // what would finish each row, top row first
+const shieldPath = (x, y, w, h) => `M${x} ${y}h${w}v${(h * .5).toFixed(1)}q0 ${(h * .3).toFixed(1)} ${-w / 2} ${(h * .5).toFixed(1)}q${-w / 2} ${(-h * .2).toFixed(1)} ${-w / 2} ${(-h * .5).toFixed(1)}Z`;
+const shield = (x, y, w, h, charge) => {
+  const [field, ink] = TINCT[charge];
+  return `<path d="${shieldPath(x, y, w, h)}" fill="${C[field]}" stroke="${V.dark}" stroke-width="${(w * .06).toFixed(1)}" stroke-linejoin="round"/>`
+    + `<path d="${shieldPath(x + w * .09, y + h * .07, w * .82, h * .84)}" fill="none" stroke="#000" stroke-opacity=".22" stroke-width="${(w * .03).toFixed(1)}"/>`
+    + GL(charge, x + w * .21, y + h * .13, w * .58, ink);
+};
+const shieldsArt = { w: 640, h: 700, body: (() => {
+  let b = `<rect width="640" height="700" fill="${V.stone}"/>`;
+  for (let j = 0; j < 9; j++) { b += `<path d="M0 ${j * 80}H640" stroke="${V.dark}" stroke-width="2" opacity=".5"/>`; for (let i = 0; i < 7; i++) b += `<path d="M${i * 104 + (j % 2) * 52} ${j * 80}v80" stroke="${V.dark}" stroke-width="2" opacity=".32"/>`; }
+  ROWS.forEach((row, r) => {
+    const y = 34 + r * 166;
+    b += `<rect x="16" y="${y + 30}" width="54" height="44" rx="4" fill="${V.brassDark}" stroke="${V.dark}" stroke-width="3"/>` + W(43, y + 63, ['I', 'II', 'III', 'IV'][r], { size: 28, fill: '#1c1408', weight: 700 });
+    b += `<path d="M84 ${y - 8}H624" stroke="${V.woodDark}" stroke-width="9" stroke-linecap="round"/>`;
+    row.forEach((ch, c) => {
+      const x = 92 + c * 90;
+      b += `<path d="M${x + 39} ${y - 8}v10" stroke="${V.ironLight}" stroke-width="4"/>`;
+      // a shield that is gone leaves its hook, and the clean stone it kept the weather off
+      b += ch ? shield(x, y, 78, 104, ch) : `<path d="${shieldPath(x, y, 78, 104)}" fill="#3f3852" stroke="#5a5272" stroke-width="2.5" stroke-dasharray="7 6"/>`;
+    });
+  });
+  return b;
+})() };
+
+/* ---- the strongbox: six enamel shields, and it takes four ---- */
+const STUDS = ['crown', 'tower', 'raven', 'key', 'cross', 'star'];
+const boxFig = ART.svg(620, 360, (() => {
+  let b = `<rect x="14" y="18" width="592" height="330" rx="18" fill="#000" opacity=".3"/><rect x="8" y="8" width="592" height="330" rx="18" fill="${V.wood}" stroke="${V.dark}" stroke-width="6"/>`;
+  [70, 304, 538].forEach(x => b += `<rect x="${x - 22}" y="8" width="44" height="330" fill="${V.iron}" stroke="${V.dark}" stroke-width="3"/>` + [40, 170, 306].map(y => `<circle cx="${x}" cy="${y}" r="6" fill="${V.ironLight}"/>`).join(''));
+  STUDS.forEach((ch, i) => {
+    const x = 118 + (i % 3) * 234 - (i % 3) * 78, y = 52 + Math.floor(i / 3) * 146, cx = 118 + (i % 3) * 156;
+    b += `<g data-key="${ch}"><rect x="${cx - 8}" y="${y - 10}" width="110" height="132" rx="12" fill="${V.woodDark}" stroke="${V.dark}" stroke-width="3"/>${shield(cx + 8, y, 78, 104, ch)}`
+      + `<rect class="hit-show" x="${cx - 8}" y="${y - 10}" width="110" height="132" rx="12" fill="none" stroke="${V.gold}" stroke-width="5"/></g>`;
+  });
+  return b;
+})());
+function boxBody(open) {
+  let b = `<rect x="6" y="34" width="118" height="52" rx="5" fill="${V.wood}" stroke="${V.dark}" stroke-width="4"/>`;
+  [22, 65, 108].forEach(x => b += `<rect x="${x - 6}" y="34" width="12" height="52" fill="${V.iron}"/>`);
+  if (open) b += `<path d="M2 34L14 2H116L128 34Z" fill="${V.woodLip}" stroke="${V.dark}" stroke-width="4" stroke-linejoin="round"/><rect x="12" y="34" width="106" height="12" fill="${V.dark}"/><path d="M40 40l40 -10" stroke="${V.ironLight}" stroke-width="5" stroke-linecap="round"/>`;
+  else {
+    b += `<rect x="2" y="14" width="126" height="24" rx="6" fill="${V.woodLip}" stroke="${V.dark}" stroke-width="4"/>`;
+    STUDS.forEach((ch, i) => b += `<rect x="${17 + i * 17}" y="19" width="11" height="13" rx="2" fill="${C[TINCT[ch][0]]}" stroke="${V.dark}" stroke-width="1.5"/>`);
+  }
+  return b;
+}
+
+/* ---- the well, the face in its cover, and what the bucket brings up ---- */
+function wellBody(open) {
+  let b = `<path d="M8 66L110 8L212 66Z" fill="${V.deep}" stroke="${V.dark}" stroke-width="4" stroke-linejoin="round"/><rect x="30" y="64" width="13" height="124" fill="${V.woodDark}"/><rect x="177" y="64" width="13" height="124" fill="${V.woodDark}"/>`;
+  b += `<rect x="40" y="88" width="140" height="15" rx="7" fill="${V.wood}" stroke="${V.dark}" stroke-width="3"/><path d="M186 95h20v26" fill="none" stroke="${V.ironLight}" stroke-width="5" stroke-linecap="round"/>`;
+  b += `<path d="M110 103V${open ? 150 : 176}" stroke="#b79a63" stroke-width="4"/>`;
+  b += `<path d="M6 196v26q0 18 104 18t104 -18v-26Z" fill="${V.stoneLight}" stroke="${V.dark}" stroke-width="4"/><ellipse cx="110" cy="196" rx="104" ry="30" fill="${V.stoneEdge}" stroke="${V.dark}" stroke-width="4"/>`;
+  for (let i = 0; i < 6; i++) b += `<path d="M${24 + i * 36} ${216 + (i % 2) * 4}v18" stroke="${V.dark}" stroke-width="2" opacity=".5"/>`;
+  if (open) {
+    b += `<ellipse cx="110" cy="196" rx="84" ry="21" fill="#05040a"/><ellipse cx="176" cy="204" rx="56" ry="15" fill="${V.wood}" stroke="${V.dark}" stroke-width="3" transform="rotate(14 176 204)"/>`;
+    b += `<path d="M92 150h36l-5 34h-26Z" fill="${V.woodLip}" stroke="${V.dark}" stroke-width="3"/><path d="M92 152q18 -22 36 0" fill="none" stroke="${V.ironLight}" stroke-width="3"/><circle cx="110" cy="160" r="7" fill="none" stroke="${V.gold}" stroke-width="3"/>`;
+  } else {
+    b += `<ellipse cx="110" cy="196" rx="84" ry="21" fill="${V.wood}" stroke="${V.dark}" stroke-width="3"/><path d="M56 182v28M92 177v38M128 177v38M164 182v28" stroke="${V.dark}" stroke-width="2" opacity=".55"/>`;
+    b += `<ellipse cx="110" cy="196" rx="26" ry="13" fill="${V.stoneEdge}" stroke="${V.dark}" stroke-width="3"/><circle cx="100" cy="194" r="4" fill="${V.dark}"/><circle cx="120" cy="194" r="4" fill="${V.dark}"/><path d="M102 202q8 4 16 0" fill="none" stroke="${V.dark}" stroke-width="2"/>`;
+  }
+  return b;
+}
+const KEYS = { crown: [3, 1, 4, 2, 5], raven: [2, 5, 1, 4, 3], tower: [4, 2, 5, 1, 3], skull: [1, 3, 2, 5, 4], bell: [5, 4, 2, 3, 1] };   // teeth, bow to tip
+const DOOR_KEY = 'raven';
+const PINS = KEYS[DOOR_KEY].slice().reverse();                  // the keyhole is at the right-hand end: the tip goes in first, to the far pin
+const keysFig = ART.svg(680, 470, (() => {
+  let b = `<rect width="680" height="470" rx="14" fill="#1a1524"/><path d="M60 50Q340 -6 620 50" fill="none" stroke="${V.ironLight}" stroke-width="9" stroke-linecap="round"/>`;
+  Object.keys(KEYS).forEach((id, i) => {
+    const x = 92 + i * 124;
+    b += `<path d="M${x} 44V78" stroke="${V.ironLight}" stroke-width="5"/><circle cx="${x}" cy="118" r="42" fill="${V.brass}" stroke="${V.dark}" stroke-width="5"/><circle cx="${x}" cy="118" r="30" fill="${V.brassDark}"/>` + GL(id, x - 20, 98, 40, '#1c1408');
+    b += `<rect x="${x - 9}" y="156" width="18" height="272" rx="5" fill="${V.brass}" stroke="${V.dark}" stroke-width="4"/>`;
+    KEYS[id].forEach((n, k) => b += `<rect x="${x + 7}" y="${214 + k * 42}" width="${n * 13 + 4}" height="24" rx="3" fill="${V.brass}" stroke="${V.dark}" stroke-width="4"/>`);
+  });
+  return b;
+})());
+const lockPlate = `<svg viewBox="0 0 420 96" style="display:block;width:min(100%,420px);margin:0 auto 6px">`
+  + `<rect x="4" y="6" width="412" height="84" rx="12" fill="${V.iron}" stroke="${V.dark}" stroke-width="5"/>`
+  + `<circle cx="64" cy="48" r="32" fill="${V.brassDark}" stroke="${V.dark}" stroke-width="4"/>` + GL(DOOR_KEY, 42, 26, 44, '#1c1408')
+  + [0, 1, 2, 3, 4].map(i => `<rect x="${118 + i * 40}" y="26" width="22" height="44" rx="5" fill="${V.dark}" stroke="${V.ironLight}" stroke-width="2.5"/>`).join('')
+  + `<circle cx="366" cy="40" r="13" fill="${V.dark}"/><path d="M359 44h14l5 30h-24Z" fill="${V.dark}"/>`
+  + `<path d="M404 16h-34" stroke="${V.gold}" stroke-width="4" stroke-linecap="round"/><path d="M372 8l-12 8l12 8Z" fill="${V.gold}"/></svg>`;
+function doorBody(st) {
+  let b = `<path d="M6 250V84Q6 8 80 8T154 84V250Z" fill="${V.stoneEdge}" stroke="${V.dark}" stroke-width="5"/>`;
+  if (st.solved) b += `<path d="M20 250V88Q20 22 80 22T140 88V250Z" fill="#05040a"/><path d="M20 250V88Q20 22 80 22V250Z" fill="${V.woodDark}" stroke="${V.dark}" stroke-width="4" transform="skewY(-8) translate(0 12)"/><ellipse cx="96" cy="216" rx="34" ry="40" fill="${V.glow}" opacity=".12"/>`;
+  else {
+    b += `<path d="M20 250V88Q20 22 80 22T140 88V250Z" fill="${V.woodDark}" stroke="${V.dark}" stroke-width="4"/><path d="M50 250V36M80 250V22M110 250V36" stroke="${V.dark}" stroke-width="3" opacity=".6"/>`;
+    [96, 196].forEach(y => b += `<rect x="20" y="${y}" width="120" height="13" fill="${V.iron}" stroke="${V.dark}" stroke-width="2.5"/>`);
+    b += `<rect x="92" y="128" width="42" height="56" rx="5" fill="${V.iron}" stroke="${V.dark}" stroke-width="3"/><circle cx="113" cy="146" r="11" fill="${V.brassDark}"/>` + GL(DOOR_KEY, 105, 138, 16, '#1c1408') + `<circle cx="113" cy="170" r="4" fill="${V.dark}"/>`;
+    // the bar's crank: a bare socket until the handle is found
+    b += st.live ? `<path d="M42 150h22v-22" fill="none" stroke="${V.ironLight}" stroke-width="7" stroke-linecap="round"/>` : `<rect x="36" y="142" width="16" height="16" fill="${V.dark}" stroke="${V.ironLight}" stroke-width="2.5"/>`;
+  }
+  return b;
+}
+
+const POS1 = {
+  shields:   { x: 1.5,   y: 31.8, w: 19.5, h: 39 },
+  gargoyles: { x: 24.5,  y: 22.9, w: 41.25, h: 12.2 },
+  strongbox: { x: 25.2,  y: 64.4, w: 8.1,  h: 10 },
+  wellcover: { x: 39.4,  y: 54.4, w: 13.75, h: 26.7 },
+  keepdoor:  { x: 68.75, y: 45.6, w: 10,   h: 27.8 },
+};
+
+const ROOM1 = {
   id:'gatehouse', name:'Room 1 — The Gatehouse Court', scene:'gatehouse',
   stageFx:'shudder',
   relays:[{el:'rl-gatehouse',mode:'pulse',period:3.6}],
   wrongSound:'thunder',
   wrongVfx:'flash',
   intro:"The castle took you in from the storm. Then the portcullis came down behind you.",
-  objective:"Find your way into the keep — <b>glowing rings</b> mark what will speak to you. The Baron's household loved its riddles.",
+  objective:"Find your way into the keep — <b>glowing rings</b> mark what there is to look at. Whatever opens a lock is somewhere else in the court.",
   entryBeat:"As the portcullis seats itself into the stone, every window in the keep goes dark at once — except one, high in the tower, which comes on.",
   entrySound:'thunder',
-  completeText:"The sealed doors accept the old word and swing inward on a hall of cold candles. Behind you in the court, the well rope creaks — paying out, slowly, though no one is drawing water.",
-  chain:"The four gatehouse shields were rehung in the wrong order and the plaque under them says what they hold between them — the court drinks from the WELL → the well rim pairs four symbols with digits and the crossbeam says wind the year from spring; the tapestry names spring, summer and autumn, and its cut-out winter panel leaves the moon nowhere else to be: 9357 → the bucket brings up the gatekeeper's duty card, which says the keep is barred at the dead hours, and the doorframe gives that hour its Latin name: NOCTIS → the ledger's feast-night page has five names marked departed and six not, and the lectern sets the wheel to those who left then those who did not: 56.",
+  completeText:"Five pins lift, and the keep door swings in on a hall of cold candles. Behind you in the court the well rope creaks — paying out, slowly, though no one is drawing water.",
+  chain:`The six gargoyles on the wall-walk each look a different way, and the stone face in the well cover is shown the same six looks: ${GAZE.split('').join(', ')} → the bucket brings up a ring of five keys → every row of the shield wall runs to a pattern with one shield taken down, and the strongbox takes the four that are missing, top row first: ${MISSING.join(', ')} — it holds the crank for the keep door's bar → the door's lock wears a raven; the raven key's teeth, bow to tip, are ${KEYS[DOOR_KEY].join(', ')}, and since the keyhole is at the right-hand end the tip goes to the far pin: ${PINS.join(', ')}.`,
   objects:[
-    { id:'crests', icon:'🛡️', name:'Family Crests', pos:{x:3,y:42,w:19,h:28},
-      desc:"Four blank shields hang on the gatehouse wall, the family names chiselled off them long ago. Each carries one carved letter now, and nothing else. Left to right:\n\n   L   ·   W   ·   L   ·   E\n\nThey were taken down for cleaning at some point and put back by somebody who could not read, because the iron plaque beneath them has not moved in three hundred years:\n\n   “WHAT THESE FOUR HOLD BETWEEN THEM, THE COURT DRINKS.”",
-      puzzle:{
-        prompt:"Four letters, hung wrong. What do the shields hold between them?",
-        placeholder:"FOUR LETTERS", answers:['WELL'],
+    { id:'gargoyles', icon:'🗿', name:'The Parapet', pos:POS1.gargoyles,
+      desc:"Six of them along the wall-walk, spouting rain. The mason gave each one something different to stare at.",
+      figure:ART.svg(gargArt.w, gargArt.h, gargArt.body),
+      sprite:ART.sprite(POS1.gargoyles, 660, 110, gargRow) },
+    { id:'wellcover', icon:'🪣', name:'The Well', pos:POS1.wellcover, ringAt:[50,80],
+      desc:"A stone face is set into the well's oak cover. Its eyes roll four ways, and it wants to be shown six looks.",
+      sprite:st=>ART.sprite(POS1.wellcover, 220, 244, wellBody(st.solved)),
+      puzzle:{ type:'dirpad', from:['gargoyles'], slots:GAZE.length, answer:GAZE, labels:false,
+        miss:"The stone eyes roll back to the middle. That is not what it wanted to see.",
         hints:[
-          "The plaque tells you what kind of word you are looking for: something in this courtyard that the household drinks from.",
-          "Four letters — L, W, L, E — and only one four-letter word about water can be built from them.",
-          "W, E, L, L. It is the well in the middle of the court."
+          "A face whose eyes roll four ways, and six places to fill. Something else in this court is looking at things — six of them, up on the wall.",
+          "Each gargoyle on the parapet looks its own way: left, right, up at the sky, or down at you. Show the face each look in turn, from the left-hand gargoyle to the right-hand one.",
+          `Right, down, left, left, up, right: ${GAZE.split('').join(', ')}.`
         ],
-        solvedText:"W-E-L-L. The courtyard well: its crank bound by a four-digit mechanism, and its rim carved all the way round with symbols."
-      }
-    },
-    { id:'well', onSolve:{el:'rx-gatehouse',op:.2,fx:'surge'}, icon:'⛲', name:'The Courtyard Well', pos:{x:34,y:66,w:18,h:18},
-      desc:"The well crank is bound by a four-digit lock. Four symbols are chiselled around the rim, each with a digit against it, cut wherever the stone allowed:\n\n   ☾ 7        ✠ 3        ⚘ 9        ♜ 5\n\nAnd on the crossbeam above, the line the household cut there when the well was dug:\n\n   “WIND THE YEAR FROM SPRING.”",
-      puzzle:{
-        type:'keypad',
-        prompt:"Enter the 4-digit crank code.", answers:['9357'],
+        solvedText:"The stone eyes settle and the cover slides aside. The bucket comes up heavy: a ring of five keys, hung down there out of the rain.",
+        inside:{ name:"The gatekeeper's keys", figure:keysFig } } },
+    { id:'shields', icon:'🛡️', name:'The Shield Wall', pos:POS1.shields,
+      desc:"Four rows of the household's arms. Somebody has taken one shield down from every row, and the wall has kept its shape.",
+      figure:ART.svg(shieldsArt.w, shieldsArt.h, shieldsArt.body),
+      sprite:ART.sprite(POS1.shields, shieldsArt.w, shieldsArt.h, shieldsArt.body) },
+    { id:'strongbox', icon:'🧰', name:"Gatekeeper's Strongbox", pos:POS1.strongbox,
+      desc:"Iron-bound, and no keyhole anywhere on it: six enamel shields on the lid, and it will take four of them.",
+      sprite:st=>ART.sprite(POS1.strongbox, 130, 90, boxBody(st.solved)),
+      puzzle:{ type:'press', from:['shields'], figure:boxFig, slots:MISSING.length, repeat:true, answer:MISSING,
+        miss:"The lid stays down, and the four you pressed spring back.",
         hints:[
-          "The rim gives you four symbols and four digits but no order. The order is a year — so you need something that says which symbol belongs to which season.",
-          "The seasons tapestry pairs three of them: ⚘ spring, ✠ summer, ♜ autumn. Its winter panel has been cut out, which leaves the moon ☾ with nowhere else to be.",
-          "Winding from spring: ⚘ 9, ✠ 3, ♜ 5, ☾ 7. Enter 9357."
+          "Six little shields to press, four at a time. The same six devices hang on the wall by the gate — or most of them do.",
+          "Each row of the shield wall runs to a pattern, and each has a pale patch where a shield is gone. Work out which shield would finish each row, and press them top row first.",
+          `${MISSING.map((m, i) => i ? m : m[0].toUpperCase() + m.slice(1)).join(', ')}.`
         ],
-        solvedText:"The crank turns on 9-3-5-7 and hauls the bucket up. Inside, dry as bone and weighted with a stone: the gatekeeper's duty card, lettered in a careful hand — THE KEEP IS BARRED AT THE DEAD HOURS AND OPENED AT PRIME. NO EXCEPTIONS. NOT FOR THE BARON HIMSELF.",
-        solveBeat:"Far below, the well answers the crank with a sound. Wells echo. They do not clear their throats.",
-        beatSound:'growl'
-      }
-    },
-    { id:'tapestry', icon:'🧵', name:'The Seasons Tapestry', pos:{x:26,y:32,w:12,h:26},
-      desc:"A moth-eaten tapestry of the Vorstag lands through the year, symbols woven beside each panel:\n\n⚘ — the SPRING planting\n✠ — the SUMMER pilgrimage\n♜ — the AUTUMN levy\n\nThe winter panel has been cut out of the cloth entirely. Whatever symbol winter carried, someone did not want it hanging here after dark." },
-    { id:'doors', icon:'🚪', name:'The Sealed Doors', pos:{x:63,y:42,w:13,h:28},
-      desc:"The keep's doors are shut, and the letter-lock set into them takes six.\n\nCarved around the doorframe, the way a household that lived by bells would carve them, the canonical hours with their Latin names:\n\n   PRIMA ....... first light\n   TERTIA ...... the working morning\n   SEXTA ....... midday\n   VESPERA ..... evening\n   NOCTIS ...... the dead hours\n\nAnd on the lock plate itself, worn almost smooth:\n\n   “THE HOUR THIS DOOR IS BARRED.”",
-      puzzle:{
-        prompt:"Set the six letter dials.", placeholder:"SIX LETTERS", answers:['NOCTIS'],
+        solvedText:"The lid lifts on a bed of straw with one thing in it: the crank handle for the keep door's bar." } },
+    { id:'keepdoor', icon:'🚪', name:'The Keep Door', pos:POS1.keepdoor, needs:'strongbox',
+      desc:"The bar is cranked back. What holds the door now is its lock: five pins behind a raven, and the keyhole at the right-hand end.",
+      deadDesc:"Barred from the inside. There is a square socket where a crank handle belongs, and no handle in it.",
+      sprite:st=>ART.sprite(POS1.keepdoor, 160, 252, doorBody(st)),
+      puzzle:{ type:'levels', from:['wellcover'], cols:5, max:5, answer:PINS, plate:lockPlate, scale:false, tryLabel:'TRY THE DOOR',
+        miss:"The pins drop back. Nothing gave.",
         hints:[
-          "The doorframe gives you five hours by name. All you need is which of them this door is barred at — and that is written down somewhere in this court.",
-          "The gatekeeper's duty card from the well: barred at the dead hours, opened at prime.",
-          "The dead hours are NOCTIS on the frame. Enter NOCTIS."
+          "Five pins to lift, under a raven. The keys from the well each carry a different device on the bow.",
+          "The raven key has five teeth, each a different length: that is how high each pin has to go. But look where the keyhole is — a key goes in tip first, so its tip ends up under the far pin.",
+          `From the left: ${PINS.join(', ')}.`
         ],
-        solvedText:"N-O-C-T-I-S. The tumblers fall like a sigh and the doors to the keep stand open. Inside, a great chandelier hangs over the hall — eight candles, three long dead under fossilised wax. The living five are cold. The wax is soft."
-      }
-    },
-    { id:'ledger', icon:'📒', name:"Gatekeeper's Ledger", pos:{x:53,y:64,w:10,h:14}, hiddenUntil:'doors',
-      desc:"Inside the doors, a lectern, and the gatekeeper's ledger open at the night of the last feast. A two-digit wheel bars the inner hall, and the instruction above it is printed into the lectern itself, because the gatekeeper set this wheel every night of his working life:\n\n   “INNER HALL — SET TO THOSE WHO LEFT, THEN THOSE WHO DID NOT.”\n\nThe page lists everyone admitted at the gate that night. Five of the names have “dep. dawn” written beside them in the gatekeeper's hand. The rest have nothing written beside them at all.\n\n   Hollar        Brettin — dep. dawn      Vásáry\n   Maros — dep. dawn                      Emrich\n   Széll — dep. dawn                      Dănilă\n   Orbán — dep. dawn                      Keszler\n   Lukács — dep. dawn                     Tarnow\n\nEleven came in. The gatekeeper never finished the page.",
-      puzzle:{
-        prompt:"Enter the 2-digit code.", placeholder:"TWO DIGITS", answers:['56'],
-        hints:[
-          "Two counts off this one page, and the lectern tells you which order the wheel wants them in. Split the names between you and count twice.",
-          "Count the names marked “dep. dawn”, then count the names that are not marked at all.",
-          "Five left. Six did not. Enter 56."
-        ],
-        solvedText:"5-6. The wheel turns and the inner hall opens toward the library. Six people walked into this house and never walked out of it, and the chandelier overhead sways once, gently, as though something crossed the floor above.",
-        solveBeat:"From the top of the stair, unhurried: a footstep. Then the long, soft drag of something that has learned to walk but not yet to lift its feet.",
-        beatSound:'knock'
-      }
-    }
+        solvedText:"Five pins lift together, and a door that has not opened in forty years opens." } },
   ]
-},
-/* ============ ROOM 2 — THE LIBRARY ============ */
-{
+};
+
+/* ============================================================
+   ROOM 2 — THE LIBRARY
+   A game of chess left standing, and a cabinet whose letter wheels wear the
+   white pieces. A music box in the cabinet, and an organ whose five pipes
+   are its five teeth in another order. Nine volumes on the mantel with four
+   gone, a ribbon in each gap, and a lectern ringed in the ribbons' colours.
+   And a painted ceiling with something too small to see beside four of its
+   beasts — until the lectern gives up its opera glass.
+   ============================================================ */
+
+/* ---- the chess table: a game left standing ---- */
+const FILES = 'abcdefgh';
+const BOARD = [   // piece, side, file, rank
+  ['pawn', 'w', 'c', 4], ['knight', 'w', 'a', 3], ['bishop', 'w', 'g', 5], ['rook', 'w', 'e', 1], ['queen', 'w', 'd', 7], ['king', 'w', 'h', 1],
+  ['pawn', 'b', 'f', 6], ['knight', 'b', 'h', 6], ['bishop', 'b', 'b', 2], ['rook', 'b', 'c', 8], ['queen', 'b', 'g', 2], ['king', 'b', 'e', 8],
+];
+const CABINET_PIECES = ['pawn', 'knight', 'bishop', 'rook', 'queen'];
+const CABINET = CABINET_PIECES.map(pc => BOARD.find(x => x[0] === pc && x[1] === 'w')[2].toUpperCase()).join('');
+const SQ = 54, BOARD_W = SQ * 8 + 60;
+const boardBody = (() => {
+  const ox = 44, oy = 12;
+  let b = `<rect x="0" y="0" width="${BOARD_W}" height="${BOARD_W}" rx="12" fill="#3a2614" stroke="${V.dark}" stroke-width="5"/>`;
+  for (let r = 0; r < 8; r++) for (let f = 0; f < 8; f++) b += `<rect x="${ox + f * SQ}" y="${oy + r * SQ}" width="${SQ}" height="${SQ}" fill="${(r + f) % 2 ? '#7a5634' : '#dcc9a0'}"/>`;
+  b += `<rect x="${ox}" y="${oy}" width="${SQ * 8}" height="${SQ * 8}" fill="none" stroke="${V.dark}" stroke-width="3"/>`;
+  // ranks up the side and files along the bottom, as on any board
+  for (let i = 0; i < 8; i++) {
+    b += W(ox - 20, oy + i * SQ + SQ / 2 + 8, String(8 - i), { size: 22, fill: '#e6d6ae', weight: 700 });
+    b += W(ox + i * SQ + SQ / 2, oy + 8 * SQ + 33, FILES[i], { size: 26, fill: '#e6d6ae', weight: 700 });
+  }
+  BOARD.forEach(([pc, side, f, r]) => {
+    const x = ox + FILES.indexOf(f) * SQ + 5, y = oy + (8 - r) * SQ + 4;
+    b += `<g stroke="${side === 'w' ? '#1c1408' : '#e6d6ae'}" stroke-width="1.2" stroke-linejoin="round">${GL(pc, x, y, SQ - 10, side === 'w' ? '#f8f1df' : '#1c1408')}</g>`;
+  });
+  return b;
+})();
+const chessBody = `<ellipse cx="105" cy="204" rx="80" ry="6" fill="#000" opacity=".35"/><path d="M40 150L28 202M170 150L182 202M105 150V202" stroke="${V.woodDark}" stroke-width="9" stroke-linecap="round"/>`
+  + `<rect x="8" y="138" width="194" height="16" rx="5" fill="${V.wood}" stroke="${V.dark}" stroke-width="3"/>` + ART.inset(30, 0, 150, 150, BOARD_W, BOARD_W, boardBody);
+
+/* ---- the curio cabinet, and the music box in it ---- */
+function cabinetBody(open) {
+  let b = `<path d="M6 150h98l-12 10H18Z" fill="${V.woodDark}"/><rect x="6" y="14" width="98" height="136" rx="6" fill="${V.wood}" stroke="${V.dark}" stroke-width="4"/><path d="M2 14h106l-8 -10H10Z" fill="${V.woodLip}" stroke="${V.dark}" stroke-width="3"/>`;
+  if (open) {
+    b += `<rect x="14" y="22" width="82" height="120" fill="#120a14"/><path d="M14 22l-12 6v110l12 4Z" fill="#3a2d4a" opacity=".7" stroke="${V.dark}" stroke-width="2"/><path d="M96 22l12 6v110l-12 4Z" fill="#3a2d4a" opacity=".7" stroke="${V.dark}" stroke-width="2"/>`;
+    b += `<rect x="26" y="96" width="58" height="30" rx="3" fill="${V.woodLip}" stroke="${V.dark}" stroke-width="2"/><rect x="34" y="88" width="42" height="12" fill="${V.brass}"/>`;
+  } else {
+    b += `<rect x="14" y="22" width="40" height="120" fill="#2a2038" opacity=".85"/><rect x="56" y="22" width="40" height="120" fill="#2a2038" opacity=".85"/><path d="M20 30l14 30M62 30l14 30" stroke="#8f86b8" stroke-width="2" opacity=".35"/>`;
+    b += `<rect x="30" y="72" width="50" height="16" rx="3" fill="${V.brass}" stroke="${V.dark}" stroke-width="2"/>` + [0, 1, 2, 3, 4].map(i => `<rect x="${33 + i * 9.4}" y="75" width="7" height="10" rx="1.5" fill="#1c1408"/>`).join('');
+  }
+  return b;
+}
+const TEETH = [3, 5, 1, 4, 2];                        // how long each lane's tooth is, top lane first (1 is the shortest)
+const STRIP = [2, 0, 3, 1, 4, 0, 2];                 // which lane is punched, column by column, in the order they reach the comb
+const PITCH = { 1: 784, 2: 659, 3: 587, 4: 523, 5: 440 };      // the shorter the tooth (or the pipe), the higher the note
+const musicFig = ART.svg(700, 330, (() => {
+  let b = `<rect x="10" y="40" width="200" height="250" rx="12" fill="${V.wood}" stroke="${V.dark}" stroke-width="5"/><rect x="24" y="54" width="172" height="222" rx="6" fill="${V.woodDark}"/>`;
+  // the crank, and which way it turns
+  b += `<circle cx="60" cy="24" r="10" fill="${V.brass}" stroke="${V.dark}" stroke-width="3"/><path d="M60 24H110" stroke="${V.brass}" stroke-width="7" stroke-linecap="round"/><circle cx="110" cy="24" r="8" fill="${V.woodLip}" stroke="${V.dark}" stroke-width="3"/>`;
+  const lane = (i) => 92 + i * 42;
+  // the comb: one steel tooth to a lane, five lengths
+  b += `<rect x="40" y="70" width="26" height="206" rx="4" fill="#9aa3a7" stroke="${V.dark}" stroke-width="3"/>`;
+  TEETH.forEach((len, i) => b += `<rect x="64" y="${lane(i) - 7}" width="${24 + len * 22}" height="14" rx="4" fill="#c9d0d4" stroke="${V.dark}" stroke-width="2.5"/>`);
+  // the paper strip, feeding in towards the comb
+  b += `<rect x="200" y="66" width="486" height="210" fill="#e9dfc4" stroke="#b9a57c" stroke-width="2"/>`;
+  for (let c = 0; c < STRIP.length; c++) b += `<path d="M${238 + c * 62} 68V274" stroke="#b9a57c" stroke-width="1.5" stroke-dasharray="3 6" opacity=".7"/>`;
+  for (let i = 0; i < 5; i++) b += `<path d="M202 ${lane(i)}H684" stroke="#cbbd98" stroke-width="1.5"/>`;
+  STRIP.forEach((ln, c) => b += `<rect x="${226 + c * 62}" y="${lane(ln) - 9}" width="24" height="18" rx="5" fill="#2a1d10"/>`);
+  b += `<path d="M640 300H560" stroke="${V.ink}" stroke-width="5" stroke-linecap="round"/><path d="M556 300l16 -10v20Z" fill="${V.ink}"/>`;
+  return b;
+})());
+const ORGAN_PIPES = [4, 1, 5, 2, 3];                  // each pipe's length, left to right (1 is the shortest)
+const ORGAN = STRIP.map(ln => ORGAN_PIPES.indexOf(TEETH[ln]) + 1).join('');
+const TUNE = STRIP.map(ln => PITCH[TEETH[ln]]);
+const organBody = (() => {
+  let b = `<path d="M8 120L160 64L312 120V420H8Z" fill="#241626" stroke="#3a2d4a" stroke-width="6" stroke-linejoin="round"/>`;
+  ORGAN_PIPES.forEach((len, i) => {
+    const x = 34 + i * 56, h = 110 + (len - 1) * 52, top = 316 - h;
+    b += `<g data-key="${i + 1}"><rect x="${x}" y="${top}" width="40" height="${h}" rx="9" fill="#8a7a9c" stroke="${V.dark}" stroke-width="3"/>`
+      + `<rect x="${x + 6}" y="${top + 6}" width="7" height="${h - 20}" rx="3" fill="#c9bde0" opacity=".45"/>`
+      + `<path d="M${x + 8} ${top + h - 46}h24l-4 12h-16Z" fill="${V.dark}"/>`
+      + `<path d="M${x + 6} 316h28l-8 30h-12Z" fill="#6a5a7c" stroke="${V.dark}" stroke-width="3"/></g>`;
+  });
+  b += `<rect x="20" y="346" width="280" height="22" rx="3" fill="${V.woodDark}"/><rect x="20" y="368" width="280" height="34" fill="#171021"/>`;
+  for (let k = 0; k < 14; k++) b += `<rect x="${24 + k * 19.6}" y="372" width="16" height="28" fill="${[2, 5, 9, 12].includes(k) ? '#171021' : '#e6d6ae'}" stroke="${V.dark}" stroke-width="1"/>`;
+  return b;
+})();
+const organFig = ART.svg(320, 426, organBody);
+
+/* ---- the mantel: nine volumes, four gone, a ribbon left in every gap ---- */
+const VOLUMES = { 1: '#5c3244', 2: '#2d3a4a', 4: '#4a3a2d', 5: '#3a2d4a', 8: '#2d4a3a' };
+const RIBBONS = { 3: 'red', 6: 'blue', 7: 'green', 9: 'yellow' };
+const LECTERN_RINGS = ['yellow', 'red', 'green', 'blue'];
+const LECTERN = LECTERN_RINGS.map(c => Object.keys(RIBBONS).find(n => RIBBONS[n] === c)).join('');
+const ROMAN = ['', 'I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX'];
+const mantelArt = { w: 560, h: 160, body: (() => {
+  let b = `<rect x="0" y="146" width="560" height="14" fill="#3a3244"/>`;
+  b += `<path d="M6 146V70h22v76Z" fill="${V.iron}" stroke="${V.dark}" stroke-width="3"/><path d="M554 146V70h-22v76Z" fill="${V.iron}" stroke="${V.dark}" stroke-width="3"/>`;
+  for (let n = 1; n <= 9; n++) {
+    const x = 34 + (n - 1) * 55;
+    if (VOLUMES[n]) {
+      b += `<rect x="${x}" y="${30 + (n % 3) * 8}" width="50" height="${116 - (n % 3) * 8}" rx="3" fill="${VOLUMES[n]}" stroke="${V.dark}" stroke-width="3"/>`
+        + `<path d="M${x + 4} ${44 + (n % 3) * 8}h42M${x + 4} 132h42" stroke="${V.brass}" stroke-width="3" opacity=".8"/>`
+        + W(x + 25, 98, ROMAN[n], { size: 24, fill: V.gold, weight: 700, face: 'body' });   // the book face: a blackletter V reads as a U
+    } else {
+      // where a book stood: clean wood, and a ribbon tied in a bow, lying where the book was
+      const c = C[RIBBONS[n]], cx = x + 25, cy = 116;
+      b += `<rect x="${x + 3}" y="140" width="44" height="6" fill="#4a4458" opacity=".7"/>`
+        + `<path d="M${cx - 3} ${cy + 4}L${cx - 12} 144l5 -2l3 4ZM${cx + 3} ${cy + 4}L${cx + 12} 144l-5 -2l-3 4Z" fill="${c}" stroke="${V.dark}" stroke-width="1.5" stroke-linejoin="round"/>`
+        + `<path d="M${cx} ${cy}C${cx - 8} ${cy - 16} ${cx - 22} ${cy - 10} ${cx - 18} ${cy}C${cx - 22} ${cy + 10} ${cx - 8} ${cy + 14} ${cx} ${cy}Z`
+        + `M${cx} ${cy}C${cx + 8} ${cy - 16} ${cx + 22} ${cy - 10} ${cx + 18} ${cy}C${cx + 22} ${cy + 10} ${cx + 8} ${cy + 14} ${cx} ${cy}Z" fill="${c}" stroke="${V.dark}" stroke-width="1.8" stroke-linejoin="round"/>`
+        + `<circle cx="${cx}" cy="${cy}" r="4.5" fill="${c}" stroke="${V.dark}" stroke-width="1.8"/>`;
+    }
+  }
+  return b;
+})() };
+
+/* ---- the lectern, and the opera glass in its book ---- */
+function lecternBody(open) {
+  let b = `<path d="M38 250h24l-4 -110h-16Z" fill="${V.woodDark}"/><rect x="22" y="240" width="56" height="10" rx="3" fill="${V.wood}"/>`;
+  b += `<path d="M4 64L96 44L92 120L8 140Z" fill="${V.wood}" stroke="${V.dark}" stroke-width="4" stroke-linejoin="round"/>`;
+  if (open) b += `<path d="M14 66L50 58L52 120L16 128Z" fill="#e9dfc4"/><path d="M50 58L88 50L86 112L52 120Z" fill="#ddd0ae"/><circle cx="62" cy="88" r="8" fill="${V.brass}" stroke="${V.dark}" stroke-width="2"/><circle cx="76" cy="85" r="8" fill="${V.brass}" stroke="${V.dark}" stroke-width="2"/>`;
+  else b += `<path d="M14 66L86 50L84 112L16 128Z" fill="#5c3244" stroke="${V.dark}" stroke-width="3"/><rect x="40" y="76" width="22" height="20" rx="3" fill="${V.brass}" stroke="${V.dark}" stroke-width="2"/>`
+    + LECTERN_RINGS.map((c, i) => `<rect x="${42 + i * 4.6}" y="80" width="3.4" height="12" fill="${C[c]}"/>`).join('');
+  return b;
+}
+const glassFig = ART.svg(420, 220, `<path d="M40 110h340" stroke="${V.woodDark}" stroke-width="8" stroke-linecap="round"/>`
+  + [130, 290].map(x => `<circle cx="${x}" cy="110" r="64" fill="#1c2e3a" stroke="${V.brass}" stroke-width="14"/><circle cx="${x - 18}" cy="90" r="16" fill="#cfe4ee" opacity=".3"/>`).join('')
+  + `<rect x="186" y="96" width="48" height="28" rx="8" fill="${V.brassDark}" stroke="${V.dark}" stroke-width="3"/><path d="M210 124V196" stroke="${V.brass}" stroke-width="8" stroke-linecap="round"/>`);
+
+/* ---- the painted ceiling: eight beasts, and something tiny beside four of them ---- */
+const BEASTS = ['raven', 'snake', 'frog', 'crab', 'fish', 'beetle', 'bird', 'paw'];
+const TINY = { sun: 'snake', moon: 'crab', star: 'raven', comet: 'beetle' };
+const ORRERY_MARKS = ['sun', 'moon', 'star', 'comet'];
+const ORRERY = ORRERY_MARKS.map(m => TINY[m]);
+const ceilingArt = { w: 1000, h: 170, body: (() => {
+  let b = `<rect width="1000" height="170" fill="#2a1d2e"/><rect x="6" y="6" width="988" height="158" fill="#3a2a3e" stroke="${V.brassDark}" stroke-width="4"/>`;
+  b += `<path d="M10 85Q60 40 120 85T240 85T360 85T480 85T600 85T720 85T840 85T960 85" fill="none" stroke="#5c4a3a" stroke-width="5" opacity=".7"/>`;
+  BEASTS.forEach((beast, i) => {
+    const cx = 64 + i * 124;
+    b += `<circle cx="${cx}" cy="85" r="52" fill="#d8c9a6" stroke="${V.brassDark}" stroke-width="5"/>` + GL(beast, cx - 30, 55, 60, '#3a2a3e');
+    const mark = Object.keys(TINY).find(m => TINY[m] === beast);
+    // painted in by a fine brush, in the same brown as the vine: nobody was meant to see it from the floor
+    if (mark) b += GL(mark, cx + 30, 105, 6, '#7a6247');
+  });
+  return b;
+})() };
+
+/* ---- the orrery ---- */
+function orreryBody(st) {
+  let b = `<ellipse cx="90" cy="232" rx="70" ry="7" fill="#000" opacity=".35"/><path d="M60 230h60l-10 -60h-40Z" fill="${V.woodDark}" stroke="${V.dark}" stroke-width="3"/><rect x="84" y="96" width="12" height="80" fill="${V.brassDark}"/>`;
+  b += `<circle cx="90" cy="90" r="16" fill="${V.gold}" stroke="${V.dark}" stroke-width="3"/>`;
+  [[36, 0], [56, 1], [80, 2]].forEach(([r, i]) => {
+    const a = st.solved ? -90 : [-30, 140, 210][i], x = 90 + Math.cos(a * Math.PI / 180) * r, y = 90 + Math.sin(a * Math.PI / 180) * r * .55;
+    b += `<ellipse cx="90" cy="90" rx="${r}" ry="${(r * .55).toFixed(1)}" fill="none" stroke="${V.brass}" stroke-width="3"/><path d="M90 90L${x.toFixed(1)} ${y.toFixed(1)}" stroke="${V.brassDark}" stroke-width="2.5"/>`
+      + `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${6 + i * 2}" fill="${['#8f7fa8', '#4a7a9c', '#9c5a4a'][i]}" stroke="${V.dark}" stroke-width="2"/>`;
+  });
+  if (!st.live) b += `<rect x="70" y="182" width="40" height="12" rx="4" fill="${V.iron}" stroke="${V.dark}" stroke-width="2"/><path d="M110 188h40" stroke="${V.ironLight}" stroke-width="4"/>`;
+  return b;
+}
+
+const POS2 = {
+  ceiling:  { x: 17.5,  y: 2,    w: 65,    h: 19.7 },
+  mantel:   { x: 37.5,  y: 36.7, w: 17.5,  h: 8.9 },
+  organ:    { x: 77.25, y: 23.8, w: 20,    h: 47.3 },
+  cabinet:  { x: 66.9,  y: 48.9, w: 6.9,   h: 17.8 },
+  lectern:  { x: 57.4,  y: 60.9, w: 6.25,  h: 28 },
+  chess:    { x: 20.6,  y: 67.8, w: 13.1,  h: 23.3 },
+  orrery:   { x: 40.6,  y: 66.7, w: 11.25, h: 26.7 },
+};
+
+const ROOM2 = {
   id:'library', name:'Room 2 — The Library', scene:'library',
   relays:[{el:'rl-library',mode:'pulse',period:4.0}],
   wrongSound:'creak',
   wrongVfx:'shadow',
   intro:"Ten thousand books, one cold hearth relit by nobody, and the Baron's organ waiting mid-hymn.",
-  objective:"The Baron hid his laboratory behind music and mathematics. <b>Play the room.</b>",
+  objective:"The Baron hid his laboratory behind a game, a tune and the stars. <b>Play the room.</b>",
   entryBeat:"The fire in the hearth is burning. It was not burning when the household died, and no one has been here since. Something keeps this room warm. Something likes it here.",
   entrySound:'knock',
-  completeText:"The orrery clicks into alignment and a bookcase rolls aside on iron rails, breathing out forty years of cold air and the smell of a hospital. The laboratory stair leads down.",
-  chain:"Hymn board (CXIX = 119) + psalter margin (third verse) → set the organ stop to 119.3 → the hidden panel's vellum strip is pigpen cipher = STAY INSIDE → the Baron's folio Atbash mirror-script (GSV = THE) = SPARK → orrery planet-weights (Roman numerals, heaviest sunward) = 763.",
+  completeText:"The orrery's arms swing into line, and a bookcase rolls aside on iron rails, breathing out forty years of cold air and the smell of a hospital. The laboratory stair leads down.",
+  chain:`The white pieces on the chessboard stand on files c, a, g, e and d, and the cabinet's five letter wheels wear a white pawn, knight, bishop, rook and queen: ${CABINET} → the cabinet holds a music box whose paper strip punches seven notes; each lane has its own tooth, and the organ's five pipes are the comb's five lengths in another order — short tooth, short pipe — so, counting pipes from the left: ${ORGAN.split('').join(', ')} → the volumes on the mantel run I to IX with four gone and a ribbon in each gap, red III, blue VI, green VII, gold IX, and the lectern's wheels are ringed gold, red, green, blue: ${LECTERN} → the lectern's book holds an opera glass, and through it the painted ceiling shows a tiny sun by the snake, a moon by the crab, a star by the raven and a comet by the beetle → with the organ played the orrery's brake lets go, and its arms are set ${ORRERY.join(', ')}.`,
   objects:[
-    { id:'hymnboard', icon:'🎼', name:'Hymn Board', pos:{x:66,y:26,w:9,h:20},
-      desc:"The chapel hymn board, its brass letters furred with dust:\n\nHYMN: CXIX\nVERSE: (the tile is missing)\n\nTucked behind the board, a psalter falls open to a dog-eared page. In the margin, the Baron's hand: “Father sang only the third verse when the storm came close. Only ever the third.”" },
-    { id:'organ', icon:'🎹', name:'The Pipe Organ', pos:{x:77,y:26,w:20,h:40},
-      desc:"The great organ dominates the east wall. Its stop dial is a strange one — numbered like an instrument of science, not music — and a small plate reads: HYMN · VERSE.\n\nThe Baron's household hid its secrets behind music. Set the stop, and the room will answer.",
-      puzzle:{
-        type:'dial',
-        prompt:"Set the stop to the hymn and verse, then work the voicing knobs until the pipes ring true.",
-        answers:['1193'],
-        dial:{min:1000,max:1300,div:10,target:1193,pad:5,meter:'RESONANCE',lock:'PULL THE STOP',miss:'the pipes moan and fall silent.',
-          knobs:[{label:'SWELL',target:66},{label:'TREMULANT',target:23},{label:'MIXTURE',target:88}]},
+    { id:'chess', icon:'♟️', name:'The Chess Table', pos:POS2.chess,
+      desc:"A game nobody finished. The Baron played white.",
+      figure:ART.svg(BOARD_W, BOARD_W, boardBody),
+      sprite:ART.sprite(POS2.chess, 210, 210, chessBody) },
+    { id:'cabinet', icon:'🗝️', name:'Curio Cabinet', pos:POS2.cabinet,
+      desc:"Glass doors and a brass clasp: five wheels of letters, A to H, and a little ivory chessman on each.",
+      sprite:st=>ART.sprite(POS2.cabinet, 110, 160, cabinetBody(st.solved)),
+      puzzle:{ type:'combo', from:['chess'], faces:'ABCDEFGH', wheels:CABINET_PIECES.map(g=>({ mark:{ glyph:g } })), answer:CABINET, tryLabel:'TRY THE CLASP',
+        miss:"The clasp holds. Somewhere in the walls, a pipe sighs.",
         hints:[
-          "The stop wants a hymn and a verse — one number, then a point, then another.",
-          "The hymn board says CXIX — Roman numerals for 119. The psalter margin says only the third verse.",
-          "Set the stop to exactly 119.3, then work the three voicing knobs one at a time until the panel reads LOCKED IN."
+          "Five wheels of letters, A to H, and a chess piece over each. There is a game on the table by the shelves.",
+          "Along the bottom of a chessboard the columns are lettered a to h. Find the white pawn, knight, bishop, rook and queen, and read which column each one stands in.",
+          `Pawn C, knight A, bishop G, rook E, queen D: ${CABINET.split('').join(', ')}.`
         ],
-        solvedText:"At 119.3 a chord swells that has waited forty years — and behind the pipes, a hidden panel cracks open. Inside hangs a narrow strip of vellum, stitched edge to edge with small angular marks. Lodge-work. The Baron's people wrote the things they feared in the masons' cipher."
-      }
-    },
-    { id:'chimes', onSolve:{el:'rx-library',op:.2,fx:'surge'}, icon:'📜', name:'The Vellum Strip', pos:{x:69,y:50,w:8,h:16}, hiddenUntil:'organ',
-      desc:"Ten symbols are stitched into the vellum in black thread — two words. Angular boxes, corners and wedges, some carrying a single dot:\n\n"+PIG("STAY INSIDE")+"\n\nThe Baron's household wrote its warnings in the masons' cipher, sure that no servant could read them. Divide the symbols among the crew and work them out.",
-      puzzle:{
-        prompt:"Decode the stitched symbols (two words).",
-        placeholder:"TWO WORDS", answers:['STAYINSIDE'],
+        solvedText:"The clasp lets go. On the cabinet's one shelf sits a music box with a crank, and a strip of punched paper already fed into it.",
+        inside:{ name:'The music box', figure:musicFig, tool:{ type:'listen', notes:TUNE, label:'▶ turn the crank' } } } },
+    { id:'organ', icon:'🎹', name:'The Organ', pos:POS2.organ,
+      desc:"Five great pipes, no two the same length, and nobody has stood them in order.",
+      sprite:st=>ART.sprite(POS2.organ, 320, 426, organBody + (st.solved ? `<ellipse cx="160" cy="200" rx="150" ry="170" fill="#ffd894" opacity=".09"/><path d="M40 330H280" stroke="#ffd894" stroke-width="3" opacity=".5"/>` : '')),
+      puzzle:{ type:'press', from:['cabinet'], figure:organFig, slots:STRIP.length, repeat:true, answer:ORGAN, tones:Object.fromEntries(ORGAN_PIPES.map((len, i) => [String(i + 1), PITCH[len]])),
+        gm:`pipes counted from the left: ${ORGAN.split('').join(', ')}`,
+        miss:"The organ wheezes the wrong tune at you, and stops.",
         hints:[
-          "Boxes, corners and dots — that's the pigpen cipher, the old Freemasons' code. Look up a pigpen key: each letter lives in a grid or an X, and the lines around its cell become its symbol.",
-          "Use the standard key: A–I fill a tic-tac-toe grid, J–R repeat it with a dot, S–V fill an X, W–Z repeat the X with a dot. The first symbol — a wedge — is S.",
-          "The two words are STAY and INSIDE. Enter STAYINSIDE."
+          "Seven notes on five pipes. The music box in the cabinet knows a tune of seven notes.",
+          "On the music box, each lane of the paper strip has its own tooth on the comb, and the teeth are five lengths. The pipes are the same five lengths in a different order: a short tooth is a short pipe. Play the strip from the end nearest the comb.",
+          `Counting pipes from the left: ${ORGAN.split('').join(', ')}.`
         ],
-        solvedText:"STAY INSIDE. The Baron's lodge stitched one warning into the organ itself, and this is it. You think of the wolves. You think of what the hounds were really counting. You stay inside.",
-        solveBeat:"Outside the tall windows, against the lightning, something crosses the courtyard below in four strides. The courtyard is sixty feet wide.",
-        beatSound:'thunder'
-      }
-    },
-    { id:'folio', icon:'📜', name:"The Baron's Folio", pos:{x:22,y:56,w:14,h:16},
-      desc:"The Baron's working folio lies chained to its desk, the last page in his alchemist's mirror-script. His own key to the script is pinned above the page:\n\n“THE MIRROR ALPHABET — A becomes Z, B becomes Y, C becomes X… and back again.”\n\nThe final line reads:\n\nGSV  WLLI  LKVMH  GL:  HKZIP",
-      puzzle:{
-        prompt:"Enter the deciphered word.", placeholder:"FIVE LETTERS", answers:['SPARK'],
+        solvedText:"The last note holds, and holds — and under the floor, a valve opens with a long breath of air. Something in the room has been let go." } },
+    { id:'mantel', icon:'📚', name:'The Mantelpiece', pos:POS2.mantel,
+      desc:"A set of nine volumes between two iron bookends, and four of them gone. Whoever took them left a ribbon where each one stood.",
+      figure:ART.svg(mantelArt.w, mantelArt.h, mantelArt.body),
+      sprite:ART.sprite(POS2.mantel, mantelArt.w, mantelArt.h, mantelArt.body) },
+    { id:'lectern', icon:'📖', name:'The Lectern', pos:POS2.lectern,
+      desc:"A heavy book chained to a lectern, shut with a clasp of four wheels ringed in gold, red, green and blue.",
+      sprite:st=>ART.sprite(POS2.lectern, 100, 252, lecternBody(st.solved)),
+      puzzle:{ type:'combo', from:['mantel'], wheels:LECTERN_RINGS.map(c=>({ mark:{ color:c } })), answer:LECTERN, tryLabel:'OPEN THE BOOK',
+        miss:"The clasp does not give.",
         hints:[
-          "It's an Atbash mirror: A↔Z, B↔Y, C↔X. Each letter swaps with its opposite end of the alphabet. GSV decodes to THE, confirming it.",
-          "Mirror the last word: H↔S, K↔P, Z↔A, I↔R, P↔K.",
-          "HKZIP mirrors to SPARK. THE DOOR OPENS TO: SPARK."
+          "Four wheels of figures, each ringed in a colour. The same four colours are on the mantelpiece.",
+          "The volumes on the mantel run one to nine, in Roman figures, with four gone and a coloured ribbon in each gap. Work out which volume each ribbon stands in for.",
+          `Gold is IX, red is III, green is VII, blue is VI: ${LECTERN.split('').join(', ')}.`
         ],
-        solvedText:"S-P-A-R-K. Of course. The whole castle is a machine for catching one, and the folio's last legible line: “it only ever feared the same thing that made it.”"
-      }
-    },
-    { id:'orrery', icon:'🪐', name:'The Orrery Lock', pos:{x:38,y:70,w:12,h:20}, hiddenUntil:'folio',
-      desc:"A brass orrery guards the bookcase mechanism. Three planet-weights hang loose beside it, each stamped in the Baron's beloved Roman numerals:\n\n⬤ VII      ⬤ III      ⬤ VI\n\nThe rule plate on the pedestal reads:\n\n“HANG THE HEAVIEST NEAREST THE SUN,\nTHE LIGHTEST FARTHEST OUT.\nTHEN READ THE ARMS SUNWARD-OUT,\nAND GIVE THE ORRERY ITS NUMBER.”",
-      puzzle:{
-        type:'keypad',
-        prompt:"Convert the numerals, hang the weights heaviest-to-lightest, and type the three digits from the sun outward.", answers:['763'],
+        solvedText:"The book falls open on a hollow cut into its pages. In the hollow: an opera glass, brass and mother-of-pearl.",
+        inside:{ name:'An opera glass', figure:glassFig } } },
+    { id:'ceiling', icon:'🎨', name:'The Painted Ceiling', pos:POS2.ceiling,
+      desc:"Eight beasts in roundels above the cornice, joined by a painted vine. The painter took more care over some of them than anyone below could ever see.",
+      figure:ART.svg(ceilingArt.w, ceilingArt.h, ceilingArt.body),
+      lens:{ needs:'lectern', zoom:5, r:90, tint:V.brass, bg:'#3a2a3e' },
+      sprite:ART.sprite(POS2.ceiling, ceilingArt.w, ceilingArt.h, ceilingArt.body) },
+    { id:'orrery', icon:'🪐', name:'The Orrery', pos:POS2.orrery, needs:'organ',
+      desc:"Brass worlds on brass arms, free to turn now. Each arm carries a wheel of beasts, and each wheel a little heavenly body.",
+      deadDesc:"Brass worlds on brass arms, and every arm held fast by a brake. A thin pipe runs from the brake, under the floor, to the organ.",
+      deadFigure:st=>ART.svg(180, 240, orreryBody(st)),
+      sprite:st=>ART.sprite(POS2.orrery, 180, 240, orreryBody(st)),
+      puzzle:{ type:'combo', from:['ceiling'], wheels:ORRERY_MARKS.map(g=>({ faces:{ glyphs:BEASTS }, mark:{ glyph:g } })), answer:ORRERY, tryLabel:'ALIGN THE ARMS',
+        miss:"The arms swing, and drift apart again.",
         hints:[
-          "First convert the Roman numerals: VII, VI and III.",
-          "That's 7, 6 and 3. Heaviest hangs nearest the sun, lightest farthest — so read them largest to smallest.",
-          "7, 6, 3 — enter 763."
+          "Four wheels of beasts, each marked with a sun, a moon, a star or a comet. The same eight beasts are painted on the ceiling.",
+          "From the floor the ceiling is just beasts. Through the opera glass from the lectern, four of them have something tiny painted beside them.",
+          `Sun snake, moon crab, star raven, comet beetle: ${ORRERY.join(', ')}.`
         ],
-        solvedText:"7-6-3. The planets align over a house that never once looked up at the real ones, and the bookcase rolls aside. Cold air. Iron stairs. Down.",
-        solveBeat:"As the passage opens, every candle in the library leans toward it — and somewhere below, something politely, deliberately, blows one out.",
-        beatSound:'hiss'
-      }
-    }
+        solvedText:"The arms swing round into one line, sun to the far world, and lock there with a click you feel in the floor." } },
   ]
-},
-/* ============ ROOM 3 — THE LABORATORY ============ */
-{
+};
+
+/* ============================================================
+   ROOM 3 — THE LABORATORY
+   Four gauges on the wall, no two of them read the same way, and a locker
+   that wants four figures. A chalkboard of weighings and a rack of five
+   jars with a feather at one end and an anvil at the other. Rack them
+   right and the slab wakes: four clamps glow where a head, a heart, a hand
+   and a foot once lay — and the dumbwaiter's call wheels are marked with
+   exactly those.
+   ============================================================ */
+
+/* ---- four gauges, four ways of reading one ---- */
+const GAUGES = [6, 2, 8, 4];
+const LOCKER_CODE = GAUGES.join('');
+const dialAt = (cx, cy, r, deg) => [cx + Math.sin(deg * Math.PI / 180) * r, cy - Math.cos(deg * Math.PI / 180) * r];
+function gaugeFace(cx, cy, kind, value) {
+  let b = `<circle cx="${cx}" cy="${cy}" r="62" fill="${V.brassDark}" stroke="${V.dark}" stroke-width="4"/><circle cx="${cx}" cy="${cy}" r="54" fill="#e9dfc4"/>`;
+  let needle = 0;
+  if (kind === 'plain' || kind === 'backward') {
+    // ten numerals over three-quarters of a turn; one dial runs the other way round
+    for (let n = 0; n <= 9; n++) {
+      const deg = kind === 'plain' ? -135 + n * 30 : 135 - n * 30, [tx, ty] = dialAt(cx, cy, 40, deg), [a1, b1] = dialAt(cx, cy, 49, deg), [a2, b2] = dialAt(cx, cy, 54, deg);
+      b += `<path d="M${a1.toFixed(1)} ${b1.toFixed(1)}L${a2.toFixed(1)} ${b2.toFixed(1)}" stroke="${V.ink}" stroke-width="2.5"/>` + W(tx, ty + 6, String(n), { size: 16, fill: V.ink, weight: 700, face: 'num' });
+    }
+    needle = kind === 'plain' ? -135 + value * 30 : 135 - value * 30;
+  } else if (kind === 'fives') {
+    // eleven marks, and only every fifth one numbered
+    for (let n = 0; n <= 10; n++) {
+      const deg = -135 + n * 27, [a1, b1] = dialAt(cx, cy, n % 5 ? 46 : 42, deg), [a2, b2] = dialAt(cx, cy, 54, deg);
+      b += `<path d="M${a1.toFixed(1)} ${b1.toFixed(1)}L${a2.toFixed(1)} ${b2.toFixed(1)}" stroke="${V.ink}" stroke-width="${n % 5 ? 2 : 3.5}"/>`;
+      if (n % 5 === 0) { const [tx, ty] = dialAt(cx, cy, 31, deg); b += W(tx, ty + 6, String(n), { size: 17, fill: V.ink, weight: 700, face: 'num' }); }
+    }
+    needle = -135 + value * 27;
+  }
+  if (kind !== 'column') {
+    const [nx, ny] = dialAt(cx, cy, 46, needle);
+    b += `<path d="M${cx} ${cy}L${nx.toFixed(1)} ${ny.toFixed(1)}" stroke="#a13a2e" stroke-width="4" stroke-linecap="round"/><circle cx="${cx}" cy="${cy}" r="6" fill="${V.dark}"/>`;
+  }
+  return b;
+}
+function columnGauge(x, y, value) {
+  // a level gauge numbered from the top down, with a brass pointer on the side
+  let b = `<rect x="${x}" y="${y}" width="64" height="200" rx="10" fill="${V.brassDark}" stroke="${V.dark}" stroke-width="4"/><rect x="${x + 8}" y="${y + 8}" width="48" height="184" rx="6" fill="#e9dfc4"/>`;
+  for (let n = 0; n <= 9; n++) {
+    const yy = y + 20 + n * 17.5;
+    b += `<path d="M${x + 36} ${yy}H${x + 54}" stroke="${V.ink}" stroke-width="2.5"/>` + W(x + 24, yy + 6, String(n), { size: 15, fill: V.ink, weight: 700, face: 'num' });
+  }
+  const py = y + 20 + value * 17.5;
+  return b + `<path d="M${x + 76} ${py}l14 -9v18Z" fill="#a13a2e" stroke="${V.dark}" stroke-width="2"/><path d="M${x + 54} ${py}H${x + 76}" stroke="#a13a2e" stroke-width="3"/>`;
+}
+const gaugesArt = { w: 600, h: 280, body: (() => {
+  let b = `<rect x="4" y="4" width="592" height="272" rx="12" fill="#1a2426" stroke="#3a4a44" stroke-width="6"/>`;
+  [[0, 'plain'], [1, 'backward'], [2, 'fives']].forEach(([i, kind]) => b += `<path d="M${84 + i * 150} 210v56" stroke="#3a4a44" stroke-width="8"/>` + gaugeFace(84 + i * 150, 140, kind, GAUGES[i]));
+  return b + columnGauge(478, 40, GAUGES[3]);
+})() };
+
+/* ---- the locker, and the fuse in it ---- */
+function lockerBody(open) {
+  let b = `<rect x="4" y="4" width="132" height="232" rx="6" fill="#26313a" stroke="${V.dark}" stroke-width="4"/>`;
+  if (open) b += `<rect x="12" y="12" width="116" height="216" fill="#070a09"/><path d="M12 12l-14 8v196l14 12Z" fill="#3a4a54" stroke="${V.dark}" stroke-width="3"/><rect x="50" y="110" width="40" height="18" rx="6" fill="#e9dfc4" stroke="${V.dark}" stroke-width="2"/><rect x="44" y="114" width="6" height="10" fill="${V.brass}"/><rect x="90" y="114" width="6" height="10" fill="${V.brass}"/>`;
+  else {
+    b += `<path d="M20 30h100M20 42h100M20 54h100" stroke="#3a4a54" stroke-width="5"/><rect x="40" y="96" width="60" height="78" rx="6" fill="#1a2426" stroke="${V.dark}" stroke-width="3"/>`;
+    for (let r = 0; r < 4; r++) for (let c = 0; c < 3; c++) b += `<rect x="${48 + c * 16}" y="${104 + r * 16}" width="12" height="12" rx="2" fill="#5a6a72"/>`;
+  }
+  return b;
+}
+const fuseFig = ART.svg(420, 200, `<rect x="90" y="60" width="240" height="80" rx="30" fill="#e9dfc4" stroke="${V.dark}" stroke-width="5"/><rect x="50" y="72" width="44" height="56" rx="6" fill="${V.brass}" stroke="${V.dark}" stroke-width="4"/><rect x="326" y="72" width="44" height="56" rx="6" fill="${V.brass}" stroke="${V.dark}" stroke-width="4"/><path d="M120 100h180" stroke="#b9a57c" stroke-width="4" stroke-dasharray="10 8"/>`);
+
+/* ---- the weighings, and the rack the jars stand in ---- */
+const LIGHT_TO_HEAVY = ['green', 'yellow', 'purple', 'red', 'blue'];
+const WEIGHINGS = [['purple', 'red'], ['blue', 'red'], ['yellow', 'green'], ['yellow', 'purple']];      // left pan, right pan
+const jarShape = (x, y, s, col) => `<path d="M${x - 9 * s} ${y - 48 * s}h${18 * s}v${8 * s}l${9 * s} ${10 * s}v${24 * s}q0 ${6 * s} ${-6 * s} ${6 * s}h${-24 * s}q${-6 * s} 0 ${-6 * s} ${-6 * s}v${-24 * s}l${9 * s} ${-10 * s}Z" fill="${C[col]}" stroke="#e9e4d4" stroke-width="${2.2 * s}" stroke-linejoin="round"/>`;
+const boardArt = { w: 520, h: 360, body: (() => {
+  let b = `<rect x="4" y="4" width="512" height="352" rx="8" fill="${V.woodDark}"/><rect x="18" y="18" width="484" height="324" fill="#1b2420"/>`;
+  b += `<path d="M30 300q60 -16 140 -6M300 60q60 10 120 -4" stroke="#e9e4d4" stroke-width="2" opacity=".12" fill="none"/>`;
+  WEIGHINGS.forEach(([l, r], i) => {
+    const cx = 140 + (i % 2) * 240, cy = 104 + Math.floor(i / 2) * 150;
+    const heavierLeft = LIGHT_TO_HEAVY.indexOf(l) > LIGHT_TO_HEAVY.indexOf(r), tilt = heavierLeft ? -14 : 14;
+    const dx = 76, dy = Math.sin(tilt * Math.PI / 180) * dx;
+    // the heavier pan rides lower, as it would
+    b += `<path d="M${cx} ${cy + 64}l-16 18h32Z" fill="none" stroke="#e9e4d4" stroke-width="3" stroke-linejoin="round"/><path d="M${cx} ${cy}V${cy + 64}" stroke="#e9e4d4" stroke-width="3"/>`;
+    b += `<path d="M${cx - dx} ${(cy - dy).toFixed(1)}L${cx + dx} ${(cy + dy).toFixed(1)}" stroke="#e9e4d4" stroke-width="4" stroke-linecap="round"/>`;
+    [[-1, l], [1, r]].forEach(([side, col]) => {
+      const px = cx + side * dx, py = cy + side * dy;
+      b += `<path d="M${px} ${py.toFixed(1)}l-22 34h44Z" fill="none" stroke="#e9e4d4" stroke-width="2"/><path d="M${px - 28} ${(py + 34).toFixed(1)}h56" stroke="#e9e4d4" stroke-width="3.5" stroke-linecap="round"/>`
+        + jarShape(px, py + 34, .95, col);
+    });
+  });
+  return b;
+})() };
+const JAR_PIECES = LIGHT_TO_HEAVY.map(col => ({ id: col, w: 90, h: 150, body: `<rect width="90" height="150" fill="#16211f"/><path d="M0 141H90" stroke="#3a4a44" stroke-width="6"/>` + jarShape(45, 138, 2.1, col) }));
+const rackPlate = `<svg viewBox="0 0 520 70" style="display:block;width:min(100%,520px);margin:0 auto 4px">`
+  + `<rect x="4" y="8" width="512" height="54" rx="10" fill="${V.woodDark}" stroke="${V.dark}" stroke-width="4"/>`
+  + `<path d="M40 50C52 26 76 14 104 12C90 30 72 44 40 50ZM40 50L98 18" fill="#e9e4d4" stroke="${V.dark}" stroke-width="2.5" stroke-linejoin="round"/>`
+  + `<path d="M430 28h56l-6 10h-8v8h12v10h-52v-10h12v-8h-8Z" fill="#5a6a72" stroke="${V.dark}" stroke-width="2.5" stroke-linejoin="round"/>`
+  + `<path d="M140 35H390" stroke="${V.woodLip}" stroke-width="4" stroke-dasharray="2 12" stroke-linecap="round"/></svg>`;
+function rackBody(done) {
+  const order = done ? LIGHT_TO_HEAVY : ['red', 'green', 'blue', 'yellow', 'purple'];
+  let b = `<rect x="4" y="90" width="352" height="16" rx="5" fill="${V.woodDark}" stroke="${V.dark}" stroke-width="3"/><path d="M24 106v14M336 106v14" stroke="${V.woodDark}" stroke-width="8"/>`;
+  b += `<path d="M14 88C20 76 30 70 42 69C36 78 28 85 14 88Z" fill="#e9e4d4" opacity=".8"/><path d="M316 76h28l-3 5h-4v4h6v5h-26v-5h6v-4h-4Z" fill="#5a6a72"/>`;
+  order.forEach((col, i) => b += jarShape(74 + i * 54, 90, 1.05, col) + (done ? `<ellipse cx="${74 + i * 54}" cy="64" rx="16" ry="22" fill="${C[col]}" opacity=".18"/>` : ''));
+  return b;
+}
+
+/* ---- the slab, and where the four clamps lie ---- */
+const CLAMPS = [['skull', 'blue', 72, 76], ['heart', 'red', 160, 68], ['hand', 'yellow', 244, 100], ['foot', 'green', 470, 64]];
+const DUMB_MARKS = ['skull', 'heart', 'hand', 'foot'];
+const DUMB = DUMB_MARKS.map(m => CLAMPS.find(c => c[0] === m)[1]);
+function slabBody(live) {
+  let b = `<ellipse cx="260" cy="168" rx="250" ry="12" fill="#000" opacity=".4"/><path d="M14 108L36 150H484L506 108Z" fill="#3a4448" stroke="#26313a" stroke-width="4"/>`;
+  b += `<rect x="20" y="40" width="480" height="70" rx="12" fill="#5a666c" stroke="#26313a" stroke-width="4"/><rect x="30" y="48" width="460" height="56" rx="8" fill="#cfc6ae"/>`;
+  // where it lay: scorched into the sheet, head to the left, arms at its sides
+  b += `<g fill="#5a4a32" opacity=".55"><circle cx="72" cy="76" r="17"/><rect x="86" y="70" width="14" height="12" rx="3"/><rect x="98" y="56" width="150" height="40" rx="14"/>`
+    + `<path d="M104 58L238 50L242 58L104 66ZM104 94L238 102L242 94L104 86Z"/><path d="M244 62L458 58L460 70L244 76ZM244 80L458 86L460 98L244 92Z"/>`
+    + `<ellipse cx="470" cy="64" rx="10" ry="7"/><ellipse cx="470" cy="92" rx="10" ry="7"/></g>`;
+  [130, 330].forEach(x => b += `<rect x="${x - 8}" y="36" width="16" height="78" rx="4" fill="#4a3823" opacity=".7"/><rect x="${x - 10}" y="104" width="20" height="10" rx="2" fill="${V.brass}"/>`);
+  CLAMPS.forEach(([part, col, x, y]) => {
+    b += `<path d="M${x} ${y}l0 -40" stroke="#26313a" stroke-width="4"/><rect x="${x - 9}" y="${y - 8}" width="18" height="16" rx="4" fill="${live ? C[col] : '#3a4448'}" stroke="${V.dark}" stroke-width="2.5"/>`;
+    if (live) b += `<circle cx="${x}" cy="${y}" r="20" fill="${C[col]}" opacity=".22"/>`;
+  });
+  return b;
+}
+
+/* ---- the dumbwaiter ---- */
+function dumbBody(st) {
+  let b = `<rect x="4" y="30" width="172" height="206" fill="#1a1416" stroke="${V.woodDark}" stroke-width="8"/><rect x="18" y="44" width="144" height="150" fill="#070a09"/>`;
+  if (st.solved) b += `<rect x="18" y="44" width="144" height="150" fill="#ffdf9c" opacity=".08"/><path d="M60 140a30 30 0 0 1 60 0l6 20H54Z" fill="${V.brass}"/><rect x="72" y="160" width="36" height="26" rx="4" fill="${V.iron}" stroke="${V.dark}" stroke-width="2"/>`;
+  else b += [0, 1, 2, 3, 4, 5].map(i => `<path d="M18 ${58 + i * 24}H162" stroke="#241a10" stroke-width="10"/>`).join('');
+  b += `<rect x="40" y="200" width="100" height="30" rx="5" fill="${V.iron}" stroke="${V.dark}" stroke-width="3"/>`
+    + DUMB_MARKS.map((m, i) => `<rect x="${48 + i * 22}" y="206" width="16" height="18" rx="2" fill="${st.live ? '#5a6a72' : '#26313a'}"/>`).join('');
+  return b + `<circle cx="90" cy="16" r="10" fill="${st.solved ? '#5fd08a' : st.live ? V.glow : '#26313a'}" stroke="${V.dark}" stroke-width="3"/>`;
+}
+
+const POS3 = {
+  board:    { x: 68.1,  y: 15.6, w: 16.25, h: 20 },
+  rack:     { x: 6.9,   y: 25.6, w: 22.5,  h: 13.3 },
+  slab:     { x: 33.75, y: 48.9, w: 32.5,  h: 20 },
+  gauges:   { x: 77.5,  y: 42.2, w: 18.75, h: 15.6 },
+  locker:   { x: 86.9,  y: 62.2, w: 8.75,  h: 26.7 },
+  dumb:     { x: 69.4,  y: 66.1, w: 11.25, h: 26.7 },
+};
+
+const ROOM3 = {
   id:'laboratory', name:'Room 3 — The Laboratory', scene:'laboratory',
   relays:[{el:'rl-laboratory',mode:'pulse',period:2.8}],
   wrongSound:'clank',
@@ -585,159 +886,285 @@ const ROOMS=[
   objective:"Wake the Baron's machinery. Whatever he made here, <b>you need what powered it.</b>",
   entryBeat:"On the slab, the leather straps lie neatly unbuckled — not torn. It took its time. It folded them.",
   entrySound:'clank',
-  completeText:"The dumbwaiter's word hangs in the air as you climb the tower stair. Below you, in the dark of the cellar, something begins — slowly, tunelessly, in a voice like wet gravel — to hum the Baron's hymn.",
-  chain:"The slab's chalked riddle names the Baron's oldest servant: LIGHTNING → the jar rack holds only under the Baron's own seal, which rules out one cracked, one resealed and one carrying a mark nobody knows, leaving RISEN → the switchboard wants three even figures multiplying to forty-eight, placed on the ways as the Baron assigns them — heaviest to the coil, lightest to the earth: 624 → the dumbwaiter brings up a mourning card in the same masons' cipher as the vellum: ALIVE.",
+  completeText:"The dumbwaiter rattles down to you with the tower key on its shelf. Somewhere below, in the dark of the cellar, something begins — slowly, in a voice like wet gravel — to hum the tune you played on the organ.",
+  chain:`The four gauges read ${GAUGES.join(', ')} from the left — one is plain, one is numbered the other way round, one only at every fifth mark, and one from the top down: the locker's keypad takes ${LOCKER_CODE}, and in the locker is the fuse the dumbwaiter's call box is missing → on the chalkboard the heavier pan always rides lower: green is lighter than yellow, yellow than purple, purple than red and red than blue, and the jar rack has a feather at one end and an anvil at the other: ${LIGHT_TO_HEAVY.join(', ')} → with the jars racked the slab wakes, and its four clamps glow blue at the head, red at the heart, yellow at the hand and green at the foot → the dumbwaiter's call wheels are marked head, heart, hand and foot: ${DUMB.join(', ')}.`,
   objects:[
-    { id:'slab', icon:'⛓️', name:'The Empty Slab', pos:{x:33,y:47,w:34,h:22},
-      desc:"The slab itself — scorched, strapped, and empty. A riddle is chalked along its edge in the Baron's hand — one he wrote for his own machinery:\n\n“I am the Baron's oldest servant.\nI climb the tower without legs.\nI speak exactly once,\nand the sky breaks when I do.\nWhat am I?”",
-      puzzle:{
-        prompt:"Name the Baron's oldest servant.", placeholder:"ANSWER", answers:['LIGHTNING','THELIGHTNING','ABOLT','BOLT','LIGHTNINGBOLT'],
+    { id:'gauges', icon:'⏲️', name:'The Gauges', pos:POS3.gauges,
+      desc:"Four gauges on one panel, made by four different hands, and each one reads its own way.",
+      figure:ART.svg(gaugesArt.w, gaugesArt.h, gaugesArt.body),
+      sprite:ART.sprite(POS3.gauges, gaugesArt.w, gaugesArt.h, gaugesArt.body) },
+    { id:'locker', icon:'🗄️', name:'Steel Locker', pos:POS3.locker,
+      desc:"A steel locker with a twelve-key pad, and four places on its little window.",
+      sprite:st=>ART.sprite(POS3.locker, 140, 240, lockerBody(st.solved)),
+      puzzle:{ type:'keypad', from:['gauges'], answer:LOCKER_CODE,
+        miss:"The pad clicks its tongue at you and clears.",
         hints:[
-          "Not a person. Something the tower was built to catch.",
-          "It climbs the conductor rod without legs, speaks once — a crack — and splits the sky.",
-          "LIGHTNING. Everything in this room drinks it."
+          "Four figures, and four gauges on the panel beside it.",
+          "Read each gauge by its own scale: the second is numbered the other way round, the third only at every fifth mark, and the fourth from the top down. Left to right.",
+          `The gauges read ${LOCKER_CODE.split('').join(', ')}, left to right.`
         ],
-        solvedText:"LIGHTNING. The chalk answer unlocks nothing mechanical — but it tells you how to read the room: everything here is a vessel for the storm. Starting with the rack of jars along the wall."
-      }
-    },
-    { id:'jars', onSolve:{el:'rx-laboratory',op:.2,fx:'surge'}, icon:'⚡', name:'Leyden Jar Rack', pos:{x:6,y:24,w:38,h:16}, hiddenUntil:'slab',
-      desc:"Eight Leyden jars stand in the rack, each chalked with a letter and each stoppered under wax. The Baron's own notice is nailed above them, and he was not a man who wrote twice:\n\n   “A JAR HOLDS ONLY UNDER MY OWN SEAL. ANYTHING RESEALED HAS BEEN OPENED,\n    ANYTHING OPENED HAS EARTHED ITSELF, AND ANYTHING EARTHED WILL KILL\n    THE COIL AND NOT THE THING.”\n\nLeft to right along the rack:",
-      puzzle:{
-        type:'select',
-        select:{commit:"⚡ THESE JARS HOLD CHARGE", wrong:"The rack stays dead.",
-          items:[{letter:"R",value:"wax whole · the Baron's mark"},{letter:"M",value:"wax cracked clean through"},{letter:"I",value:"wax whole · the Baron's mark"},{letter:"U",value:"resealed in plain candle wax"},{letter:"S",value:"wax whole · the Baron's mark"},{letter:"E",value:"wax whole · the Baron's mark"},{letter:"D",value:"wax whole · a mark you do not know"},{letter:"N",value:"wax whole · the Baron's mark"}]},
-        prompt:"Which jars still hold? Tap the ones under the Baron's own seal.", answers:['RISEN'],
+        solvedText:"The door swings open on an empty locker, save for one ceramic fuse lying on the shelf.",
+        inside:{ name:'A fuse', figure:fuseFig } } },
+    { id:'board', icon:'⚖️', name:'The Chalkboard', pos:POS3.board,
+      desc:"Four sets of scales chalked up in the Baron's hand, a jar on every pan.",
+      figure:ART.svg(boardArt.w, boardArt.h, boardArt.body),
+      sprite:ART.sprite(POS3.board, boardArt.w, boardArt.h, boardArt.body) },
+    { id:'rack', icon:'🧪', name:'The Jar Rack', pos:POS3.rack,
+      desc:"Five jars in a rack with a feather carved at one end and an anvil at the other. They are not standing the way the Baron left them.",
+      sprite:st=>ART.sprite(POS3.rack, 360, 120, rackBody(st.solved)),
+      puzzle:{ type:'tiles', from:['board'], cols:5, pieces:JAR_PIECES, start:['red', 'green', 'blue', 'yellow', 'purple'], answer:LIGHT_TO_HEAVY, plate:rackPlate,
+        gm:`left to right: ${LIGHT_TO_HEAVY.join(', ')}`,
         hints:[
-          "Go jar by jar and read the wax, not the letter. Eight of them, so split the rack between you.",
-          "Cracked is out and resealed is out — but look harder at the whole ones too. One of them is sealed with a mark that is not his.",
-          "R, I, S, E and N are under the Baron's own mark. M is cracked, U is resealed, and D carries a mark you do not know. The rack spells RISEN."
+          "Tap one jar, then another, to swap them. The rack has a feather at one end and an anvil at the other.",
+          "The chalkboard weighs the jars two at a time, and the heavier pan always rides lower. Put them in order from the lightest, at the feather, to the heaviest, at the anvil.",
+          `Feather to anvil: ${LIGHT_TO_HEAVY.join(', ')}.`
         ],
-        solvedText:"R-I-S-E-N. Nobody says it twice. Five jars still hold their charge — enough to wake the switchboard, if you can find what it wants.",
-        solveBeat:"The chains overhead swing, all four at once, in a room with no wind. Then they still themselves — carefully — as if embarrassed.",
-        beatSound:'clank'
-      }
-    },
-    { id:'switchboard', icon:'🎛️', name:'Galvanic Switchboard', pos:{x:76,y:28,w:18,h:38},
-      desc:"The master switchboard is locked behind three fuse dials, 0–9 each. The three fuse-ways are stamped with the circuits they feed, left to right across the board:\n\n   COIL          EARTH          BANK\n\nAnd the Baron's tag swings from the lever below them:\n\n   “THREE EVEN FIGURES WAKE THE BOARD, AND MULTIPLIED TOGETHER THEY MAKE\n    FORTY-EIGHT. THE COIL TAKES THE HEAVIEST OF THEM. THE EARTH TAKES THE\n    LIGHTEST. THE BANK TAKES WHAT IS LEFT.”",
-      puzzle:{
-        type:'keypad',
-        prompt:"Work out the three fuses, then dial them in the order the ways are stamped.", answers:['624'],
+        solvedText:"The last jar seats, and the rack hums. Across the room, something on the slab answers." } },
+    { id:'slab', icon:'⚡', name:'The Slab', pos:POS3.slab, needs:'rack',
+      desc:"Four clamps on the slab are glowing, each where a part of something once lay — and each a different colour.",
+      deadDesc:"The slab, empty. Four dead clamps on wires lie where a head, a heart, a hand and a foot were strapped. Nothing is feeding them.",
+      figure:ART.svg(520, 180, slabBody(true)), deadFigure:ART.svg(520, 180, slabBody(false)),
+      sprite:st=>ART.sprite(POS3.slab, 520, 180, slabBody(st.live)) },
+    { id:'dumb', icon:'🛗', name:'The Dumbwaiter', pos:POS3.dumb, needs:'locker',
+      desc:"Its call box has a fuse again: four wheels of colours, each marked with a part of a body.",
+      deadDesc:"A dumbwaiter from the cellar. Its call box is dead, and its fuse socket is empty.",
+      deadFigure:st=>ART.svg(180, 240, dumbBody(st)),
+      sprite:st=>ART.sprite(POS3.dumb, 180, 240, dumbBody(st)),
+      puzzle:{ type:'combo', from:['slab'], faces:{ colors:['red', 'yellow', 'green', 'blue', 'purple', 'white'] }, wheels:DUMB_MARKS.map(g=>({ mark:{ glyph:g } })), answer:DUMB, tryLabel:'CALL IT UP',
+        miss:"Far below, a bell rings once, and nothing comes.",
         hints:[
-          "Two jobs. First find three even digits that multiply to forty-eight; then put each one on the way the Baron assigns it.",
-          "48 is 2 × 4 × 6, and no other three even digits will do it.",
-          "Coil takes the heaviest (6), earth the lightest (2), bank what is left (4). The ways run COIL, EARTH, BANK: enter 624."
+          "Four wheels of colours: a head, a heart, a hand and a foot. Something in this room was put together from exactly those.",
+          "The slab's four clamps are dead until the jar rack is set right. Then each one glows its own colour, where a head, a heart, a hand and a foot lay.",
+          `Head ${DUMB[0]}, heart ${DUMB[1]}, hand ${DUMB[2]}, foot ${DUMB[3]}.`
         ],
-        solvedText:"6-2-4. The board wakes with a rising whine and the needles climb — and at the back of the laboratory the dumbwaiter begins to climb too. Slowly. Unbidden. From the cellar. Where the rope is cut."
-      }
-    },
-    { id:'dumbwaiter', icon:'🛎️', name:'The Dumbwaiter Card', pos:{x:54,y:70,w:12,h:24}, hiddenUntil:'switchboard',
-      desc:"The dumbwaiter arrives from the cellar on its cut rope, breathing cold air — carrying one thing. A mourning card, and on it, five symbols in the same stitched cipher as the organ's vellum:\n\n"+PIG("ALIVE")+"\n\nThe tower stair's letter-lock waits for five letters.",
-      puzzle:{
-        prompt:"Enter the 5-letter word the bell is ringing.", placeholder:"5 LETTERS", answers:['ALIVE'],
-        hints:[
-          "The same masons' pigpen cipher as the vellum — grid letters, X letters, a dot for the second round.",
-          "Five letters. The first is the grid's top-left corner: A. The last is the grid's boxed-in centre: E. It's a status report.",
-          "The card reads ALIVE. It wants you to know."
-        ],
-        solvedText:"A-L-I-V-E. Nobody asks who sent the card up. The tower stair unlocks. Up — away from the cellar. Go.",
-        solveBeat:"From the bottom of the dumbwaiter shaft, very quietly, something tugs the bell-rope twice more. You already answered. It just wanted to hear you again.",
-        beatSound:'bell'
-      }
-    }
+        solvedText:"Chains rattle in the shaft, and the dumbwaiter comes up out of the dark with one thing on its shelf: the key to the tower stair." } },
   ]
-},
-/* ============ ROOM 4 — THE TOWER ============ */
-{
+};
+
+/* ============================================================
+   ROOM 4 — THE TOWER
+   The portcullis winch has four clutches, one per shaft, and each can be
+   set to turn one way, the other, or not at all: the drive gears on the
+   wall say which. The capacitor wants its three jars charged as they were
+   the night the Baron photographed them — on a glass negative. The great
+   clock stopped; the village church still keeps time, if you can read it
+   through a telescope that turns the whole world upside down. Then the rod
+   goes up into the storm.
+   ============================================================ */
+
+/* ---- the drive gears: a crank, five gears, and one of them slid out of mesh ---- */
+const GEARS = [   // id, x, y, r, emblem
+  ['crank', 90, 250, 62, null], ['g1', 177, 189, 44, 'sun'], ['g2', 272, 215, 54, 'moon'], ['g3', 337, 150, 38, 'bell'],
+  ['g4', 419, 180, 30, 'star'], ['g5', 263, 308, 40, 'crown'], ['g6', 332, 320, 30, 'key'],
+];
+// the crank turns sunwise; gears in mesh turn opposite ways; the star gear has been slid out of mesh
+const SPIN = { g1: 'anticlockwise', g2: 'clockwise', g3: 'anticlockwise', g4: 'still', g5: 'anticlockwise', g6: 'clockwise' };
+const CLUTCH_MARKS = ['sun', 'moon', 'star', 'bell', 'crown', 'key'];
+const CLUTCHES = CLUTCH_MARKS.map(m => SPIN[GEARS.find(g => g[4] === m)[0]]);
+const gear = (cx, cy, r, emblem) => {
+  const n = Math.round(r / 6.5);
+  let teeth = '';
+  for (let i = 0; i < n; i++) teeth += `<rect x="${cx - 5}" y="${cy - r - 9}" width="10" height="14" rx="2" fill="#8a7a5a" stroke="${V.dark}" stroke-width="2" transform="rotate(${(i * 360 / n).toFixed(1)} ${cx} ${cy})"/>`;
+  return teeth + `<circle cx="${cx}" cy="${cy}" r="${r}" fill="#8a7a5a" stroke="${V.dark}" stroke-width="3"/><circle cx="${cx}" cy="${cy}" r="${r * .62}" fill="#6a5c40" stroke="${V.dark}" stroke-width="2"/>`
+    + `<circle cx="${cx}" cy="${cy}" r="16" fill="#2a2436" stroke="${V.dark}" stroke-width="2.5"/>` + (emblem ? GL(emblem, cx - 11, cy - 11, 22, V.gold) : '');
+};
+const gearsArt = { w: 520, h: 400, body: (() => {
+  let b = `<rect x="2" y="2" width="516" height="396" rx="10" fill="#2a2436" stroke="${V.dark}" stroke-width="4"/>`;
+  for (let i = 0; i < 7; i++) b += `<path d="M2 ${50 + i * 50}H518" stroke="${V.dark}" stroke-width="2" opacity=".35"/>`;
+  // the star gear's bracket is slotted, and it has been slid along to the far end of its slot
+  b += `<path d="M386 168L452 192" stroke="#1c1626" stroke-width="22" stroke-linecap="round"/><path d="M386 168L452 192" stroke="#5c5470" stroke-width="2" stroke-linecap="round" opacity=".8"/>`;
+  GEARS.forEach(([id, x, y, r, em]) => b += gear(x, y, r, em));
+  // the crank, and which way it is wound
+  b += `<path d="M90 250L90 176" stroke="${V.ironLight}" stroke-width="10" stroke-linecap="round"/><circle cx="90" cy="172" r="11" fill="${V.woodLip}" stroke="${V.dark}" stroke-width="3"/>`;
+  b += `<path d="M26 196A84 84 0 0 1 112 160" fill="none" stroke="#efe9da" stroke-width="5" stroke-linecap="round"/><path d="M112 160l-4 -16l16 10Z" fill="#efe9da" transform="rotate(20 112 160)"/>`;
+  return b;
+})() };
+const spinArt = (id) => `<svg viewBox="0 0 24 24" width="100%" height="100%">${id === 'still'
+  ? `<path d="M5 12h14" stroke="currentColor" stroke-width="3" stroke-linecap="round"/><circle cx="12" cy="12" r="3.4" fill="currentColor"/>`
+  : `<path d="${id === 'clockwise' ? 'M6.2 7.4A7.4 7.4 0 1 1 5 15' : 'M17.8 7.4A7.4 7.4 0 1 0 19 15'}" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/>`
+    + `<path d="${id === 'clockwise' ? 'M2.8 4.6l4.4 3.2-4.6 2.4z' : 'M21.2 4.6l-4.4 3.2 4.6 2.4z'}" fill="currentColor"/>`}</svg>`;
+const SPIN_FACES = ['clockwise', 'anticlockwise', 'still'].map(id => ({ id, art: spinArt(id) }));
+function winchBody(st) {
+  let b = `<rect x="6" y="60" width="248" height="190" rx="10" fill="#2a2436" stroke="${V.dark}" stroke-width="5"/>`;
+  b += `<ellipse cx="130" cy="120" rx="70" ry="34" fill="#3a3244" stroke="${V.dark}" stroke-width="4"/><rect x="60" y="86" width="140" height="68" fill="#3a3244"/><ellipse cx="130" cy="154" rx="70" ry="34" fill="#4a4458" stroke="${V.dark}" stroke-width="4"/>`;
+  for (let i = 0; i < 5; i++) b += `<path d="M66 ${96 + i * 13}H194" stroke="#5c5470" stroke-width="4"/>`;
+  b += `<path d="M130 86V${st.solved ? 0 : 20}" stroke="#5c5470" stroke-width="9" stroke-dasharray="10 6"/>`;
+  CLUTCH_MARKS.forEach((m, i) => {
+    const x = 30 + i * 40;
+    b += `<rect x="${x - 16}" y="196" width="32" height="44" rx="6" fill="#1c1626" stroke="#5c5470" stroke-width="2"/>` + GL(m, x - 8, 202, 16, V.gold)
+      + `<path d="M${x} 236l${st.solved ? { clockwise: 8, anticlockwise: -8, still: 0 }[CLUTCHES[i]] : 0} -10" stroke="${V.ironLight}" stroke-width="4" stroke-linecap="round"/>`;
+  });
+  return b;
+}
+
+/* ---- the Baron's photograph of the capacitor: a glass negative ---- */
+const CHARGE = { red: 4, yellow: 1, blue: 3 };
+const BANK = ['red', 'yellow', 'blue'];
+const PHOTO_ORDER = ['blue', 'red', 'yellow'];          // he stood the jars differently that night
+const CAPACITOR = BANK.map(c => CHARGE[c]);
+const inv = (hex) => '#' + (0xffffff - parseInt(hex.slice(1), 16)).toString(16).padStart(6, '0');
+const plateArt = { w: 560, h: 420, body: (() => {
+  // everything on a negative is the other way about: the night sky pale, the bolt and the moon black, every colour its opposite
+  let b = `<rect x="6" y="10" width="548" height="404" rx="8" fill="#000" opacity=".35"/><rect x="2" y="2" width="548" height="404" rx="8" fill="#c9c2ad" stroke="#5c5470" stroke-width="5"/>`;
+  b += `<rect x="20" y="20" width="512" height="368" fill="${inv('#120d1e')}"/><ellipse cx="160" cy="70" rx="160" ry="24" fill="${inv('#060412')}" opacity=".6"/>`;
+  b += `<circle cx="452" cy="74" r="26" fill="${inv('#e8e2c8')}"/><path d="M262 30l-26 62 22 -6 -32 78" stroke="${inv('#cfd6ff')}" stroke-width="6" fill="none" stroke-linejoin="round"/>`;
+  b += `<rect x="20" y="300" width="512" height="88" fill="${inv('#221a33')}"/><path d="M20 300h512" stroke="${inv('#0d0a16')}" stroke-width="4"/>`;
+  PHOTO_ORDER.forEach((col, i) => {
+    const x = 120 + i * 140, top = 150, h = 150, lvl = CHARGE[col];
+    b += `<rect x="${x - 36}" y="${top}" width="72" height="${h}" rx="14" fill="${inv('#0d0a16')}" stroke="${inv('#5c5470')}" stroke-width="4"/>`;
+    for (let k = 1; k <= 5; k++) b += `<path d="M${x + 22} ${top + h - 8 - k * 27}h12" stroke="${inv('#8f86b8')}" stroke-width="3"/>`;
+    b += `<rect x="${x - 28}" y="${top + h - 8 - lvl * 27}" width="56" height="${lvl * 27}" rx="6" fill="${inv('#bfe0ff')}"/>`;
+    b += `<rect x="${x - 26}" y="${top - 22}" width="52" height="24" rx="6" fill="${inv(C[col])}" stroke="${inv('#0d0a16')}" stroke-width="3"/>`;
+  });
+  return b;
+})() };
+// the camera up on its legs, and the plate leaning against one of them where you can see it
+const cameraBody = `<path d="M60 120L24 330M60 120L96 330M60 120V330" stroke="${V.woodDark}" stroke-width="7" stroke-linecap="round"/>`
+  + `<rect x="12" y="40" width="96" height="80" rx="6" fill="${V.wood}" stroke="${V.dark}" stroke-width="4"/><path d="M108 58l28 -12v68l-28 -12Z" fill="#241a10" stroke="${V.dark}" stroke-width="3"/><circle cx="136" cy="80" r="11" fill="#1c2e3a" stroke="${V.brass}" stroke-width="4"/>`
+  + `<g transform="rotate(-9 110 300)"><rect x="56" y="230" width="104" height="80" rx="4" fill="#5c5470" stroke="${V.dark}" stroke-width="3"/>`
+  + ART.inset(60, 234, 96, 72, plateArt.w, plateArt.h, plateArt.body) + `</g>`;
+
+/* ---- the capacitor bank ---- */
+function bankBody(open) {
+  let b = `<rect x="6" y="150" width="248" height="40" rx="6" fill="${V.woodDark}" stroke="${V.dark}" stroke-width="4"/><circle cx="40" cy="196" r="12" fill="#241a10"/><circle cx="220" cy="196" r="12" fill="#241a10"/>`;
+  BANK.forEach((col, i) => {
+    const x = 50 + i * 80, n = open ? CHARGE[col] : 0;
+    b += `<rect x="${x - 26}" y="34" width="52" height="116" rx="12" fill="#0d0a16" stroke="#5c5470" stroke-width="3"/>`;
+    if (n) b += `<rect x="${x - 20}" y="${144 - n * 21}" width="40" height="${n * 21}" rx="6" fill="#bfe0ff" opacity=".85"/><ellipse cx="${x}" cy="${144 - n * 10}" rx="34" ry="${n * 14}" fill="#bfe0ff" opacity=".12"/>`;
+    b += `<rect x="${x - 20}" y="16" width="40" height="20" rx="5" fill="${C[col]}" stroke="${V.dark}" stroke-width="3"/><path d="M${x} 16V4" stroke="#5c5470" stroke-width="4"/>`;
+  });
+  return b + `<path d="M50 4H210" stroke="#5c5470" stroke-width="4"/>`;
+}
+
+/* ---- the telescope, and the village it shows you upside down ---- */
+const CHURCH = { h: 8, m: 5 };
+const TOWER_TIME = `${CHURCH.h}:${String(CHURCH.m).padStart(2, '0')}`;
+const scopeArt = { w: 520, h: 520, body: (() => {
+  const village = (() => {
+    let v = `<rect x="0" y="0" width="520" height="520" fill="#2a2a4e"/>`;
+    for (let i = 0; i < 30; i++) v += `<circle cx="${(i * 97) % 520}" cy="${(i * 53) % 210}" r="${1 + (i % 3) * .6}" fill="#e6e0c8"/>`;
+    v += `<path d="M0 330Q130 290 260 320T520 300V520H0Z" fill="#151026"/><path d="M0 380Q140 350 300 372T520 360V520H0Z" fill="#0d0a16"/>`;
+    // the church: a spire, and a clock you could set yours by
+    v += `<rect x="226" y="190" width="80" height="170" fill="#3a3250"/><path d="M220 190L266 80L312 190Z" fill="#2a2440"/><rect x="242" y="300" width="48" height="60" rx="24" fill="#120d1e"/>`;
+    v += ART.clockFace(266, 236, 30, CHURCH.h, CHURCH.m, { face: '#e8dfc2', ink: '#1c1408', rim: '#8a7430' });
+    [[90, 300], [150, 318], [360, 304], [420, 316]].forEach(([x, y], i) => v += `<path d="M${x - 34} ${y + 50}V${y}L${x} ${y - 30}L${x + 34} ${y}V${y + 50}Z" fill="#2a2440"/><rect x="${x - 8}" y="${y + 6}" width="16" height="18" fill="#ffd98c" opacity="${i % 2 ? .9 : .6}"/>`);
+    return v;
+  })();
+  // the eyepiece turns the world over, as a telescope's will
+  return `<rect width="520" height="520" fill="#05040a"/><clipPath id="eye"><circle cx="260" cy="260" r="236"/></clipPath>`
+    + `<g clip-path="url(#eye)"><g transform="rotate(180 260 260)">${village}</g></g><circle cx="260" cy="260" r="236" fill="none" stroke="#2a2436" stroke-width="10"/>`;
+})() };
+const telescopeBody = `<path d="M90 140L50 260M90 140L130 260M90 140V260" stroke="${V.woodDark}" stroke-width="7" stroke-linecap="round"/>`
+  + `<g transform="rotate(-18 90 120)"><rect x="10" y="104" width="170" height="30" rx="8" fill="${V.brass}" stroke="${V.dark}" stroke-width="4"/><rect x="0" y="108" width="22" height="22" rx="4" fill="${V.brassDark}" stroke="${V.dark}" stroke-width="3"/><rect x="170" y="98" width="20" height="42" rx="5" fill="${V.brassDark}" stroke="${V.dark}" stroke-width="3"/></g>`;
+
+/* ---- the great clock ---- */
+function clockBody(open) {
+  const [h, m] = open ? [CHURCH.h, CHURCH.m] : [3, 40];
+  return `<circle cx="120" cy="120" r="114" fill="#2c2444" stroke="${V.dark}" stroke-width="6"/>` + ART.clockFace(120, 120, 98, h, m, { numerals: true, face: '#e8dfc2', ink: '#1c1408', rim: '#8a7430' });
+}
+
+/* ---- the rod ---- */
+const ROD_AT = 73;
+const READY4 = [['winch', 'bell'], ['capacitor', 'bolt'], ['towerclock', 'moon']];
+function rodBody(st) {
+  let b = `<path d="M74 40V430" stroke="#4a5a62" stroke-width="12"/><path d="M74 40V10" stroke="#8fa8c8" stroke-width="6"/><circle cx="74" cy="8" r="8" fill="#cfd6ff"/>`;
+  for (let i = 0; i < 6; i++) b += `<ellipse cx="74" cy="${300 + i * 22}" rx="46" ry="8" fill="none" stroke="#8a6f52" stroke-width="5"/>`;
+  b += `<rect x="14" y="440" width="120" height="96" rx="10" fill="#2a2436" stroke="${V.dark}" stroke-width="4"/>`;
+  READY4.forEach(([id, g], i) => {
+    const on = st.solved || (st.open && st.open[id]);
+    b += `<circle cx="${40 + i * 34}" cy="466" r="9" fill="${on ? '#9fd0ff' : '#120d1e'}" stroke="#5c5470" stroke-width="2"/>` + GL(g, 31 + i * 34, 482, 18, on ? '#9fd0ff' : '#5c5470');
+  });
+  if (st.solved) b += `<path d="M74 0l-18 50 16 -4 -22 60" stroke="#e8f0ff" stroke-width="5" fill="none" stroke-linejoin="round"/>`;
+  return b;
+}
+
+const POS4 = {
+  towerclock: { x: 79,    y: 17.8, w: 14.4,  h: 25.6 },
+  gears:      { x: 64.4,  y: 45.6, w: 14.4,  h: 19.6 },
+  winch:      { x: 81.9,  y: 61.1, w: 16.25, h: 27.8 },
+  telescope:  { x: 54.4,  y: 64.4, w: 11.9,  h: 28.9 },
+  rod:        { x: 44,    y: 6.7,  w: 9.25,  h: 59.6 },
+  camera:     { x: 30,    y: 54.4, w: 10,    h: 37.8 },
+  capacitor:  { x: 9.4,   y: 50,   w: 16.25, h: 21.1 },
+};
+
+const ROOM4 = {
   id:'tower', name:'Room 4 — The Tower', scene:'tower',
   stageFx:'shudder',
   relays:[{el:'rl-tower',mode:'pulse',period:2.6}],
   wrongSound:'thunder',
   wrongVfx:'flash',
   intro:"The storm the Baron waited his whole life for is here. Catch it, and the gate lifts.",
-  objective:"Rig the conductor, charge the coil, and <b>ride the lightning</b> — the portcullis runs on the storm.",
+  objective:"Set the winch, charge the jars, start the clock — and <b>ride the lightning</b>. The portcullis runs on the storm.",
   entryBeat:"The tower door was barred from this side — and the bar now leans against the battlement, set aside as gently as a sleeping child. It wanted you to reach the top. It's the gate it never learned to open.",
   entrySound:'thunder',
-  completeText:"The rig is wound, the fuses hold, and the portcullis is up. The storm is directly overhead — the next strike is yours to take.",
-  chain:"Five ritual tags, each carrying its reason: the chains are grounded first because everything after puts charge in the room, the capacitor is cranked while the rod is still down, the coil can only be coupled once the rod is up, and the master switch is last — EADCB → the fuse box's chart gives each way its rating and the ways are numbered: 2386 → the storm table rules out the six-thousand-volt front and the one that strikes after the bell tolls one, leaving 11:30, less the fifty minutes the charge takes = 10:40 → the portcullis rings are stamped with their own figures and the counterweight chain passes them moon, tower, cross, flower: 7539 → hold the master switch closed and let go on a nine-kilovolt arc.",
+  completeText:"The winch is geared, the jars are full, and the great clock is going again. The storm is directly overhead — the next strike is yours to take.",
+  chain:`The crank on the drive gears is wound sunwise and gears in mesh turn opposite ways, so the sun gear turns anticlockwise, the moon gear clockwise, the bell and crown gears anticlockwise off the moon, the key gear clockwise off the crown, and the star gear has been slid out of mesh and stands still: the winch's clutches are set ${CLUTCHES.join(', ')} → the Baron's photograph of the capacitor is a glass negative — the sky is pale and the bolt is black — so its cyan cap is really red, its blue cap really yellow and its orange cap really blue, and the jars are charged red ${CHARGE.red}, yellow ${CHARGE.yellow}, blue ${CHARGE.blue}: ${CAPACITOR.join(', ')} → the telescope turns the village upside down; the right way up, the church clock says ${TOWER_TIME}, and the great clock is set to it → with all three done the rod goes up, and the coil's dial is swept until the meter fills, at ${ROD_AT}.`,
   objects:[
-    { id:'rig', icon:'🔩', name:'The Ignition Rig', pos:{x:45,y:12,w:12,h:56},
-      desc:"The Baron's ignition ritual, five steps on five scattered vellum tags. He wrote every one of them with its reason attached, because he expected to be doing this alone and frightened:\n\n   TAG A — “Crank the capacitor, and crank it while the rod is still down. I will not have a raised rod standing over a charging bank.”\n\n   TAG B — “Throw the master switch. Last. It is the last thing anyone does in this tower, one way or the other.”\n\n   TAG C — “Couple the coil — and not until the rod is up, because the coupling runs through the rod's own collar and cannot be reached from the floor.”\n\n   TAG D — “Raise the rod.”\n\n   TAG E — “Ground the chains first, before anything else whatever. Everything after this puts charge in the room, and the chains are the only reason it goes into the earth and not into you.”",
-      puzzle:{
-        type:'order', order:{labels:{"A": "Crank the capacitor", "B": "Throw the master switch", "C": "Couple the coil", "D": "Raise the rod", "E": "Ground the chains"}},
-        prompt:"Enter the five tag letters in ritual order.", placeholder:"FIVE LETTERS", answers:['EADCB'],
+    { id:'gears', icon:'⚙️', name:'The Drive Gears', pos:POS4.gears,
+      desc:"The train of gears that drives the winch, behind a broken guard. Every shaft but the crank's wears a little brass emblem.",
+      figure:ART.svg(gearsArt.w, gearsArt.h, gearsArt.body),
+      sprite:ART.sprite(POS4.gears, gearsArt.w, gearsArt.h, gearsArt.body) },
+    { id:'winch', icon:'🏗️', name:'Portcullis Winch', pos:POS4.winch,
+      desc:"The chain to the portcullis comes up through the floor and round this drum. Six clutches, each with an emblem: one way, the other way, or not at all.",
+      sprite:st=>ART.sprite(POS4.winch, 260, 256, winchBody(st)),
+      puzzle:{ type:'combo', from:['gears'], faces:SPIN_FACES, wheels:CLUTCH_MARKS.map(g=>({ mark:{ glyph:g } })), answer:CLUTCHES, tryLabel:'ENGAGE',
+        miss:"The drum lurches, the gears shriek, and the clutches throw themselves out again.",
         hints:[
-          "Every tag carries its reason. Two of them name their own place outright — one insists on being first, one on being last.",
-          "Chains first (E), master switch last (B). The capacitor is cranked while the rod is still down, so the capacitor comes before the rod.",
-          "Chains, capacitor, rod, then the coil once the rod is up, then the switch: enter EADCB."
+          "Six clutches, each marked with an emblem: clockwise, anticlockwise, or still. The same emblems are on the drive gears behind the guard.",
+          "The crank turns the big gear the way its arrow shows, and gears that touch always turn opposite ways. Follow the train along — and look hard at whether every gear really touches its neighbour.",
+          "Sun anticlockwise, moon clockwise, star still, bell anticlockwise, crown anticlockwise, key clockwise."
         ],
-        solvedText:"Chains, capacitor, rod, coil, switch. The rig assents piece by piece, and the whole tower starts to hum like a struck bell in very slow motion.",
-        solveBeat:"Lightning walks the ridge across the valley — one, two, three strikes in a line, closing on the castle like footsteps.",
-        beatSound:'thunder'
-      }
-    },
-    { id:'fusebox', onSolve:{el:'rx-tower',op:.2,fx:'surge'}, icon:'🕯️', name:'Chapel Fuse Box', pos:{x:13,y:50,w:9,h:20},
-      desc:"The chapel mains feed the tower through a four-digit fuse box. Four ways, four dials, and the chart pasted inside the door tells you what each way is allowed to carry:\n\n   WAY 1 — CHAPEL LAMPS ....... 2\n   WAY 2 — TOWER STAIR ........ 3\n   WAY 3 — THE COIL ........... 8\n   WAY 4 — GROUND CHAINS ...... 6\n\nUnderneath, in the Baron's hand:\n\n   “The coil takes eight and nothing under it. It has cost me two fuses\n    and one man who thought he knew better.”",
-      puzzle:{
-        type:'keypad',
-        prompt:"Enter the 4-digit code.", answers:['2386'],
+        solvedText:"Six clutches bite. The drum takes up forty years of slack, and somewhere below, the portcullis shifts in its grooves." } },
+    { id:'camera', icon:'📷', name:"The Baron's Camera", pos:POS4.camera,
+      desc:"His camera, still on its legs, and the last glass plate he ever took leaning against it: the capacitor, the night it was full.",
+      figure:ART.svg(plateArt.w, plateArt.h, plateArt.body),
+      sprite:ART.sprite(POS4.camera, 160, 340, cameraBody) },
+    { id:'capacitor', icon:'🫙', name:'The Capacitor', pos:POS4.capacitor,
+      desc:"Three Leyden jars under three coloured caps, all of them empty. Each takes its charge in five steps.",
+      sprite:st=>ART.sprite(POS4.capacitor, 260, 210, bankBody(st.solved)),
+      puzzle:{ type:'levels', from:['camera'], cols:BANK.map(c=>({ mark:{ color:c } })), max:5, skin:'tanks', answer:CAPACITOR, tryLabel:'CLOSE THE CIRCUIT',
+        miss:"Blue fire crawls up the jars and dies. Not like that.",
         hints:[
-          "No arithmetic here. The chart gives the rating for each way, and the ways are numbered.",
-          "Dial them in way order: chapel lamps, tower stair, coil, ground chains.",
-          "2, 3, 8, 6. Enter 2386."
+          "Three jars to charge, and a photograph of them full. But the caps in the photograph are colours this capacitor doesn't have.",
+          "It is a glass negative: everything is its opposite. The sky is pale and the bolt is black — and so every colour is its opposite too. Cyan is red, blue is yellow, orange is blue.",
+          `Red ${CHARGE.red}, yellow ${CHARGE.yellow}, blue ${CHARGE.blue}: ${CAPACITOR.join(', ')}.`
         ],
-        solvedText:"2-3-8-6. The chapel mains close with a thud you feel through the stone, and the tower's veins fill with potential."
-      }
-    },
-    { id:'barometer', icon:'⛈️', name:'The Storm-Glass Table', pos:{x:37,y:72,w:12,h:18},
-      desc:"The Baron's storm-glass and his strike table for tonight, in a steady hand that gets less steady:\n\n“FRONT ONE — strikes at 10:15 · six thousand volts\nFRONT TWO — strikes at 11:30 · twelve thousand volts\nFRONT THREE — strikes at 1:20 · nine thousand volts\n\nTHE COIL NEEDS NINE THOUSAND OR BETTER.\nAFTER THE CHAPEL BELL TOLLS ONE, THE DOORS BELOW OPEN ON THEIR OWN. WE MUST BE GONE.\nBEGIN THE CHARGE 50 MINUTES BEFORE THE STRIKE.”",
-      puzzle:{
-        prompt:"Set the charge time (hour then minutes, e.g. 730).", placeholder:"H:MM", answers:['1040'],
+        solvedText:"The jars fill with crawling blue light, red to four, yellow to one, blue to three, and the air on the tower top starts to taste of tin." } },
+    { id:'telescope', icon:'🔭', name:'The Telescope', pos:POS4.telescope,
+      desc:"A brass telescope on a tripod, trained on the village in the valley. The church is just in the middle of it.",
+      figure:ART.svg(scopeArt.w, scopeArt.h, scopeArt.body),
+      sprite:ART.sprite(POS4.telescope, 190, 260, telescopeBody) },
+    { id:'towerclock', icon:'🕰️', name:'The Great Clock', pos:POS4.towerclock,
+      desc:"The tower's great clock, stopped. The Baron kept it to the village church to the minute.",
+      sprite:st=>ART.sprite(POS4.towerclock, 240, 240, clockBody(st.solved)),
+      puzzle:{ type:'clock', from:['telescope'], start:{h:3,m:40}, answer:TOWER_TIME, tryLabel:'START THE CLOCK',
+        miss:"The great clock ticks twice and stops again. That is not the village's time.",
         hints:[
-          "Two filters: the coil's voltage floor, and the bell that tolls one.",
-          "10:15 is only six thousand volts. 1:20 is after the bell tolls one — and you must be gone. That leaves 11:30 — count back 50 minutes.",
-          "11:30 minus 0:50 is 10:40. Enter 1040."
+          "A clock to set, and a telescope trained on the village church — which has a clock of its own.",
+          "Look at the church in the telescope: the spire points down and the stars are underneath. A telescope turns everything upside down — the church clock too. Turn it the right way up before you read it.",
+          `The right way up, the church clock says ${TOWER_TIME}.`
         ],
-        solvedText:"10:40. The charge timer arms itself with a sound like a held breath. The storm-glass crystals climb the tube — the front is coming to you."
-      }
-    },
-    { id:'portcullis', icon:'⚙️', name:'Portcullis Winch', pos:{x:85,y:70,w:12,h:22}, hiddenUntil:'barometer',
-      desc:"The portcullis winch answers to four glyph rings, and each ring is stamped with its own figure beside the glyph, so that nobody winding this gate in the dark has to remember anything:\n\n   ☾ 7        ♜ 5        ✠ 3        ⚘ 9\n\nThe rings do not turn independently. The counterweight chain runs from the drum and passes them one after another, and you can follow it with your eye the whole way: the moon first, then the tower, then the cross, and the flower last of all, where the chain goes down into the floor.",
-      puzzle:{
-        type:'keypad',
-        prompt:"Enter the 4-digit release.", answers:['7539'],
+        solvedText:"The great clock catches, and goes. Down in the valley, as if it heard, the church bell starts to ring." } },
+    { id:'rod', icon:'⚡', name:'The Lightning Rod', pos:POS4.rod, ringAt:[50, 88], needs:READY4.map(r=>r[0]),
+      desc:"The rod is up in the storm and the coil at its foot is live. One dial left: sweep it until the coil sings, and the sky will find you.",
+      deadDesc:"The rod lies in its cradle under three dark lamps. The winch, the capacitor and the clock must all be ready before it will rise.",
+      deadFigure:st=>ART.svg(148, 540, rodBody(st)),
+      sprite:st=>ART.sprite(POS4.rod, 148, 540, rodBody(st)),
+      puzzle:{ type:'tune', min:0, max:100, step:1, start:12, at:ROD_AT, tol:1, unit:'',
         hints:[
-          "You do not need anything from the rest of the castle. The figures are stamped on the rings and the chain itself gives the order.",
-          "Follow the chain from the drum: moon, tower, cross, flower.",
-          "☾ 7, ♜ 5, ✠ 3, ⚘ 9. Enter 7539."
+          "Sweep the coil's dial slowly and watch the meter: it climbs as you get close.",
+          "Somewhere past the middle of the dial the meter fills completely. Hold it there.",
+          `The coil sings at ${ROD_AT}.`
         ],
-        solvedText:"7-5-3-9, and the winch pawl lifts. The portcullis is free. All that remains is to bring the lightning down and signal the village to open the valley gate.",
-        solveBeat:"On the battlement behind you — patient, unhurried, close — something sets down its weight. It has climbed the outside of the tower. It always could.",
-        beatSound:'growl'
-      }
-    },
-    { id:'rod', icon:'⚡', name:'The Master Switch', pos:{x:44,y:70,w:14,h:12}, hiddenUntil:'portcullis',
-      desc:"The Baron's master switch, a brass handle the length of your forearm. Hold it closed and the capacitor bank charges; let it go and the charge bleeds away through the ground chains.\n\nThe rig's own plate is explicit, and the storm glass told you the rest:\n\n“THE GATE RELEASES ON A NINE-KILOVOLT ARC. BELOW NINE IT WILL NOT CARRY. ABOVE NINE THE COIL GOES, AND THE COIL IS NOT REPLACEABLE.”\n\nHold it too long and you will take the rig with you. Let go too early and nothing crosses the gap.",
-      puzzle:{
-        type:'hold',
-        hold:{ label:'⚡ HOLD THE SWITCH CLOSED', unit:'kV', max:14, target:9, tolerance:0.5,
-               rate:2.6, fall:3.6, ticks:[3,6,9,12] },
-        prompt:"Hold the switch closed and let go at the arc the gate needs.",
-        hints:[
-          "The plate gives the number outright. The difficulty is not knowing it — it is stopping there.",
-          "The gauge climbs while you hold and falls back the moment you let go. Nine kilovolts, no more.",
-          "Hold until the gauge reads 9.0 and release. If you overshoot, let it fall and come up again."
-        ],
-        solvedText:"",
-        solveBeat:"Nine kilovolts crosses the gap with a crack you feel in your teeth, and somewhere below, iron begins to move.",
-        beatSound:'thunder'
-      }
-    }
+        solvedText:"" } },
   ]
-}
-];
+};
+
+const ROOMS = [ROOM1, ROOM2, ROOM3, ROOM4];
 
 registerScenario({
-  id:'vorstag',
+  id:'vorstag', classic:true,
   title:'Castle Vorstag',
   sub:'the Baron’s castle · the slab is empty · the storm is coming',
   tagline:'Sheltering travelers, a locked portcullis, and a laboratory missing its great work.',
@@ -809,9 +1236,6 @@ registerScenario({
     arrival:'A shadow crosses the far doorway at the height of a man, and the rain goes on falling through where it was.',
     midroom:'The jar you had already settled is standing open. Its wax seal is on the floor beside it.'
   },
-  // One wording for every lock in this fiction: a salt-seized crate and a
-  // frozen hut safe do not fail the same way.
-  padMiss:'The wards grind, catch, and hold.', padHow:'Key in the figures. A wrong set only wakes the mechanism for 5 seconds.',
   wrongBeats:WRONG_BEATS, wrongSounds:WRONG_SOUNDS,
   scenes:SCENES, rooms:ROOMS
 });
