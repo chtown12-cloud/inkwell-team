@@ -224,28 +224,21 @@ here, and a new puzzle is checked against the table before it is built.
 | R4 | flare box — 3 digit wheels | the windsock, over a compass rose painted on the deck | read a bearing on a rose that is not north-up; a wind is where it comes from |
 | | runway — twelve drums, light the ones that make a T | the pilot's card + the runway plan | lay the T into the wind |
 
-### The other one
+### Midnight (the train)
 
-Midnight is the last to be rebuilt on this grammar. Until it is, it is still
-built — and still audited — to the standard before this one: the rule lives on
-a prop, no prop states the method, and every answer is in the room's chain. Its
-mechanics, so that nothing built for its successor repeats them by accident:
-
-| Slot | Midnight (train) |
-|---|---|
-| R1 opener | book cipher + the porter's own working |
-| R1 code lock | fare card + punch chart |
-| R1 word lock | nightly seal register + tag date |
-| R1 number | waybill: crates short, sacks aboard |
-| R2 tuning | diary: speed and track |
-| R2 code | Cyrillic |
-| R2 second | rail fence |
-| R2 deduction | boarding order |
-| R3 filter | **cross-reference** — covers that settled |
-| R3 number | money addition |
-| R4 order | the fireman's reasons |
-| R4 locks | builder's plate · consist order |
-| Finale | whistle and lamp together |
+| | lock | what you find | the step |
+|---|---|---|---|
+| R1 | mail cage — 4 colour wheels, first off to last | four strapped trunks, each labelled for a station + the line on the wall | put luggage in the order its stations come |
+| | strongbox — 3 digit wheels, each under a station | the night's tickets from the cage + the Conductor's punch | find the tickets he punched, by the shape his punch cuts |
+| | gangway — a blank ticket, ten stations to punch (dead until you have a punch) | the line on the wall, with the special's crescent at its stops | punch every stop and nothing else |
+| R2 | berth 13 — a "wake me" clock card | her coat, with her ticket in the pocket + the timetable | read a timetable by its row and its column |
+| | gramophone — a speed dial | (itself) | bring it up until the song comes clear |
+| | call bells — six pushes, 5 rings, each its own note | her record | match each note to its bell by ear |
+| R3 | till — keypad, 3 digits | the last order on the spike + the chef's board | count, price and add |
+| | spirits cabinet — 5 letter wheels | the house cocktail card from the till + the bottles on the bar | match each outline to its bottle, and read its letter |
+| | vestibule — a clock (dead until the cabinet gives up its key) | the station that keeps sliding past the window | catch the time on a clock going by |
+| R4 | ground frame — ten levers | the junction diagram + the driver's route card | set the road: the points that turn off it, and the signals on it |
+| | whistle and regulator | (the crew) | two pairs of hands at once |
 
 ## Writing one
 

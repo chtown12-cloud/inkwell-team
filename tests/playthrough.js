@@ -8,31 +8,16 @@
    lock to check the clock maths, makes sure nothing that should be dead or
    hidden can be worked early, presses the scenario's own final button, and
    confirms the score card and the chains.
-
-   The one scenario not yet rebuilt is still played from the table below.
 */
 const { launch } = require('./browser');
 
 const BASE = 'http://localhost:8787';
 const ALL = ['eldermoor', 'prospero', 'vorstag', 'erebus', 'midnight'];
 
-const SOLUTIONS = {
-  midnight: {
-    finalButton: 'MAKE THE JUNCTION 🚂',
-    emoji: '🎩', victoryText: null, finale: ['whistle', 'SIMUL'],
-    rooms: [
-      [['trunks', 'PORTER'], ['desk', '8253'], ['mailcage', 'COAL'], ['waybill', '49']],
-      [['gramophone', 'DIAL:784'], ['runout', 'WRONG STOP'], ['valise', 'BRAKE'], ['berthlock', '276']],
-      [['menu', 'MIRROR'], ['tables', 'HUNGRY'], ['till', '385'], ['servicebell', 'AGAIN']],
-      [['firebox', 'ORDER:CBEDA'], ['lantern', '1568'], ['timetable', '340'], ['coupling', '3528']],
-    ],
-  },
-};
-
 const only = process.argv.slice(2).filter(a => ALL.includes(a));
 const RUN = only.length ? only : ALL;
 
-/* ---------- what both kinds of run share ---------- */
+/* ---------- shared steps ---------- */
 function helpers(page) {
   // Story beats wait for a click now, and their catcher covers the board.
   const clearBeat = async () => {
@@ -312,120 +297,6 @@ async function runClassic(page, id) {
   console.log(`✅ ${id}: opened by hand (${locks} locks, ${looked} looks at where the answers come from, penalties ${pen}, score card + chains OK)`);
 }
 
-/* ======================================================================
-   NOT YET REBUILT: played from the table at the top
-   ====================================================================== */
-async function run(page, id) {
-  const spec = SOLUTIONS[id];
-  const { clearBeat, clickThrough, openObj } = helpers(page);
-  await begin(page, id, spec.emoji);
-
-  const solve = async (oid, ans) => {
-    await openObj(oid);
-    if (ans === 'SIMUL') {
-      await page.click('#simul-pull', { force: true });
-    } else if (ans.startsWith('PANEL:')) {
-      for (const want of ans.slice(6).split('|')) {
-        await page.click(`.pan-opt:text-is("${want}")`, { force: true });
-      }
-      await page.click('button:has-text("COMMIT")', { force: true });
-    } else if (ans === 'HOLD') {
-      // genuinely hold the control and let go on the number, the way a player
-      // must — driving holdVal directly would prove nothing about the mechanic
-      await page.evaluate(() => new Promise((done) => {
-        const btn = document.getElementById('hold-btn');
-        btn.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true, cancelable: true }));
-        const target = ACTIVE.rooms[S.roomIndex].objects.find(o => o.puzzle && o.puzzle.type === 'hold').puzzle.hold.target;
-        const watch = setInterval(() => {
-          if (holdVal < target) return;
-          clearInterval(watch);
-          btn.dispatchEvent(new PointerEvent('pointerup', { bubbles: true }));
-          done();
-        }, 20);
-      }));
-    } else if (ans.startsWith('ORDER:')) {
-      // arrange the tags by hand, the way a player would
-      const want = ans.slice(6).split('');
-      for (let pos = 0; pos < want.length; pos++) {
-        for (let guard = 0; guard < 8; guard++) {
-          const at = await page.evaluate(() => [...document.querySelectorAll('#ord-list .ord-item')].map(li => li.dataset.ch));
-          if (at[pos] === want[pos]) break;
-          const from = at.indexOf(want[pos]);
-          await page.click(`#ord-list .ord-item:nth-child(${from + 1}) .ord-up`, { force: true });
-          await page.waitForTimeout(60);
-        }
-      }
-      await page.click('button:has-text("LOCK THIS ORDER")', { force: true });
-    } else if (ans.startsWith('DIAL:')) {
-      const v = ans.split(':')[1];
-      await page.evaluate((val) => {
-        const s = document.getElementById('dial-slider'); s.value = val; s.dispatchEvent(new Event('input', { bubbles: true }));
-        document.querySelectorAll('.knob-slider').forEach(k => { k.value = k.dataset.target; k.dispatchEvent(new Event('input', { bubbles: true })); });
-      }, v);
-      await page.click('#dial-lock', { force: true });
-    } else if (await page.locator('#pad-grid').count()) {
-      // a combination lock: key it in
-      for (const d of ans.split('')) await page.click(`.pad-key[data-k="${d}"]`, { force: true });
-      await page.click('.pad-key.go', { force: true });
-    } else if (await page.locator('#sel-grid').count()) {
-      // a rack: tap the ones the rule keeps, in rack order
-      for (const ch of ans.split('')) await page.click(`.sel-chip:has(.sel-letter:text-is("${ch}"))`, { force: true });
-      await page.click('button:has-text("THESE"), button:has-text("HARVEST"), button:has-text("CLEAR")', { force: true });
-    } else {
-      await page.fill('#answer-input', ans);
-      await page.click('.answer-row button', { force: true });
-    }
-    const ended = await Promise.race([
-      page.waitForSelector('.solved-note', { timeout: 12000 }).then(() => 'solved'),
-      page.waitForSelector('.end-card', { timeout: 12000 }).then(() => 'victory'),
-    ]);
-    if (ended === 'victory') return;          // an auto-launch beat us to it
-    await clickThrough('.close-x');
-  };
-
-  // penalties on the first puzzle: wrong(5) + hint1(30) + hint2(60) = 1:35
-  const first = spec.rooms[0][0];
-  await openObj(first[0]);
-  await page.fill('#answer-input', 'XYZZY');
-  await clickThrough('.answer-row button');
-  await page.waitForSelector('.feedback.bad');
-  await clearBeat();
-  await clickThrough('.hint-btn'); await page.waitForSelector('.hint-text');
-  await clickThrough('.hint-btn');
-  await page.waitForFunction(() => document.querySelectorAll('.hint-text').length === 2);
-  await clickThrough('.close-x');
-  const pen = (await page.textContent('#stat-pen')).trim();
-  if (pen !== '+1:35') throw new Error(`[${id}] expected +1:35 penalties, got ${pen}`);
-
-  let puzzles = 0;
-  for (let r = 0; r < spec.rooms.length; r++) {
-    for (const [oid, ans] of spec.rooms[r]) { await solve(oid, ans); puzzles++; }
-    if (r < 3) {
-      await clickThrough('#continue-btn');
-      await page.waitForSelector('#enter-room-btn', { timeout: 6000 });
-      await clickThrough('#enter-room-btn');
-    }
-  }
-  // The last lock being open is not the same as being out: the room card now
-  // comes up with the scenario's own button on it, and somebody presses it.
-  await solve(spec.finale[0], spec.finale[1]);
-  if (!(await page.locator('.end-card').count())) {
-    await page.waitForSelector('#room-complete:not(.hidden)', { timeout: 9000 });
-    const label = (await page.textContent('#continue-btn')).trim();
-    if (!spec.finalButton || label !== spec.finalButton) {
-      throw new Error(`[${id}] expected the final button to read ${spec.finalButton}, got ${label}`);
-    }
-    const note = (await page.textContent('#room-complete-text')).trim();
-    if (note.length < 40) throw new Error(`[${id}] the last room says nothing before you leave`);
-    await clickThrough('#continue-btn');
-  }
-  await page.waitForSelector('.end-card', { timeout: 12000 });
-  const card = await page.textContent('.end-card');
-  if (spec.victoryText && !card.includes(spec.victoryText)) throw new Error(`[${id}] no victory text`);
-  if (!/How it all fitted together/i.test(card)) throw new Error(`[${id}] the chains were not shown`);
-  console.log(`✅ ${id}: full playthrough passed (${puzzles} puzzles, penalties ${pen}, score card + chains OK)`);
-}
-
 (async () => {
   const browser = await launch();
   const page = await browser.newPage({ viewport: { width: 1440, height: 810 } });
@@ -434,7 +305,8 @@ async function run(page, id) {
   for (const id of RUN) {
     await page.goto(BASE + '/?s=' + id);
     const classic = await page.evaluate((id) => !!SCENARIOS.find(s => s.id === id).classic, id);
-    await (classic ? runClassic(page, id) : run(page, id));
+    if (!classic) throw new Error(`[${id}] is not on the reset grammar, and there is no answer key for it here`);
+    await runClassic(page, id);
   }
   if (errs.length) { console.error('JS errors:', errs.slice(0, 5)); process.exit(1); }
   await browser.close();

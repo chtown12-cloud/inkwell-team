@@ -805,8 +805,8 @@ const LEVER_KIND = { 1: 'signal', 2: 'point', 3: 'signal', 4: 'signal', 5: 'poin
 const HOME = 'crown';
 const ROAD_HOME = ['1', '2', '5', '4'];                 // the entry signal, both points reversed, the home signal
 const ink = '#1c140c', track = (d, w = 10) => `<path d="${d}" stroke="${ink}" stroke-width="${w}" fill="none" stroke-linecap="round" stroke-linejoin="round"/>`;
-const leverTag = (n, x, y) => `<circle cx="${x}" cy="${y}" r="16" fill="${LEVER_KIND[n] === 'signal' ? '#a3322a' : ink}" stroke="${M.paper}" stroke-width="2"/>`
-  + W(x, y + 6, String(n), { size: 17, fill: M.paper, weight: 700, face: 'num' });
+const leverTag = (n, x, y) => `<circle cx="${x}" cy="${y}" r="20" fill="${LEVER_KIND[n] === 'signal' ? '#a3322a' : ink}" stroke="${M.paper}" stroke-width="2"/>`
+  + W(x, y + 8, String(n), { size: 23, fill: M.paper, weight: 700, face: 'num' });
 // a signal post standing up from its road (dir -1) or hanging below it (dir 1), its arm, and its lever's number
 const semaphore = (x, y, n, dir = -1) => { const end = y + dir * 46;
   return `<path d="M${x} ${y}V${end}" stroke="${ink}" stroke-width="4"/><rect x="${x}" y="${end - 4}" width="30" height="9" fill="#a3322a" stroke="${ink}" stroke-width="2"/>` + leverTag(n, x - 2, y + dir * 70); };
@@ -824,7 +824,7 @@ const diagramArt = { w: 760, h: 456, body: (() => {
   // where each road goes
   b += roundel(HOME, 652, 92, 24) + roundel('eye', 652, 200, 24) + roundel('mountain', 722, 320, 24) + roundel('wave', 640, 410, 24);
   // the signals, each beside the road it guards
-  b += semaphore(90, 310, 1) + semaphore(580, 102, 4, 1) + semaphore(580, 210, 3, 1) + semaphore(682, 330, 8, 1);
+  b += semaphore(90, 310, 1) + semaphore(580, 102, 4, 1) + semaphore(580, 210, 3, 1) + semaphore(690, 330, 8, 1);
   // the key: a black disc is a point, a red one a signal
   b += `<rect x="30" y="384" width="150" height="46" rx="6" fill="none" stroke="${M.paperDark}" stroke-width="2"/>`
     + `<circle cx="54" cy="407" r="11" fill="${ink}"/><path d="M70 412H104M76 404L96 392" stroke="${ink}" stroke-width="4" fill="none"/>`
@@ -859,9 +859,13 @@ const frame = (keys, pulled = []) => {
 function whistleBody(st) {
   let b = `<rect x="10" y="80" width="220" height="170" rx="14" fill="#241a0c" stroke="#5c4423" stroke-width="6"/>`
     + `<path d="M70 96V30" stroke="${M.brass}" stroke-width="8"/><circle cx="70" cy="24" r="14" fill="${M.brass}"/><path d="M70 30q30 -10 60 4" stroke="#8a7448" stroke-width="3" fill="none"/>`
-    + `<path d="M160 230L190 120" stroke="#3a2a16" stroke-width="16" stroke-linecap="round"/><circle cx="192" cy="114" r="14" fill="#a3322a"/>`
     + `<rect x="120" y="150" width="90" height="56" rx="8" fill="#0d0805"/>`;
-  if (st.live) b += `<ellipse class="steam" cx="70" cy="0" rx="20" ry="10" fill="#c8ccda" opacity=".45"/>`;
+  // worked, the regulator is thrown wide and the whistle is blowing
+  b += st.solved ? `<path d="M160 230L104 132" stroke="#3a2a16" stroke-width="16" stroke-linecap="round"/><circle cx="100" cy="126" r="14" fill="#a3322a"/>`
+      + `<rect x="128" y="158" width="74" height="40" rx="5" fill="${M.lamp}" opacity=".5"/>`
+      + [[70, -6, 30, 14], [96, -26, 38, 18], [130, -44, 46, 22]].map(([x, y, rx, ry]) => `<ellipse cx="${x}" cy="${y}" rx="${rx}" ry="${ry}" fill="#e6e8ee" opacity=".55"/>`).join('')
+    : `<path d="M160 230L190 120" stroke="#3a2a16" stroke-width="16" stroke-linecap="round"/><circle cx="192" cy="114" r="14" fill="#a3322a"/>`
+      + (st.live ? `<ellipse class="steam" cx="70" cy="0" rx="20" ry="10" fill="#c8ccda" opacity=".45"/>` : '');
   return b;
 }
 

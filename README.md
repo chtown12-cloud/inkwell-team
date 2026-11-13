@@ -21,8 +21,7 @@ soundscape with a distinct signature per room (surf and gulls; reactor hum and
 sonar pings; thunder and organ; blizzard and generator chug; rail clack and far
 whistles). No image or audio files — everything is generated in the browser.
 
-**How the puzzles work.** *The Wreck of the Eldermoor*, *Derelict: The
-Prospero*, *Castle Vorstag* and *Station Erebus* are built the way a physical escape room is: locks that look like
+**How the puzzles work.** Every scenario is built the way a physical escape room is: locks that look like
 locks, and whatever opens each one somewhere else in the room. A padlock with
 four wheels ringed in four colours — and, along the hull, a net of glass
 floats in the same four colours. A lift that wants five digits — written
@@ -31,32 +30,13 @@ terminal, and whole in neither place. Nothing is typed. Wheels are turned,
 scraps swapped, clock hands set, breakers thrown, a lantern swept across dark
 water, reactor rods raised, a burn held to the mark, a tune played on an organ,
 an opera glass held up to a painted ceiling, new snow swept off a trail of boot
-prints, a thermal camera held over a keypad; no lock carries
+prints, a thermal camera held over a keypad, a junction's road set on a ground
+frame; no lock carries
 instructions, and no clue says which lock it belongs to. An open lock changes
 the room, not just its own close-up. Expect to be properly stuck now and
 then: a hint or two per room is normal.
 
-The last scenario, *The Midnight Special*, is being rebuilt the same way. Until
-it is, it plays as before — clue documents, ciphers and deductions — with its
-own palette:
-
-| Slot | Midnight |
-|------|----------|
-| Room-1 opener | **book cipher** (line·word) |
-| Room-2 cipher | **rail fence** (zigzag) |
-| Room-2 deduction | **boarding-order** logic |
-| Room-3 filter | **cross-reference** (covers that settled) |
-| Room-3 number lock | **money addition** |
-| Signal code | **Cyrillic** (émigré's hand) |
-| Co-op set piece | **whistle and lamp** together |
-
-It uses a real-world code for its two mid-game signal decodes — phonetic
-Cyrillic — and teams look the alphabet up themselves. Its signature co-op
-moment is the two-stage tuning **console**: the exact frequency comes from
-clues, then three trim knobs are coaxed by watching the meter until the panel
-reads LOCKED IN.
-
-The rules for both kinds of puzzle are written down in
+The rules are written down in
 [PUZZLES.md](PUZZLES.md), and the ones a machine can check are enforced by
 `node tests/audit.js`.
 
@@ -248,15 +228,12 @@ Answers per scenario, in solve order. (Full chains and all hint text: in-game GM
 
 | Room | Answers |
 |------|---------|
-| 1 · The Baggage Car | PORTER (book cipher, line·word) → **8253** (takings, first class → freight) → EMIT (TIME backward) → **49** (11 − 7 crates; 3 sacks × 3) |
-| 2 · The Sleeper Corridor | gramophone **78.4** (78 rpm + fourth song) → WRONG STOP (Cyrillic sleeve) → BRAKE (rail fence) → **276** (boarding order: 7 between, 2 before 6) |
-| 3 · The Dining Car | MIRROR → HUNGRY (perfect-square covers) → **385** (chits total $3.85) → AGAIN (Cyrillic ticket) |
-| 4 · The Locomotive | CBEDA (scheduling, feed 2nd) → **1568** (78.4 × 2) → **340** (4:45 junction − 65 min) → **3528** (8253 reversed) → SOS whistle |
+| 1 · The Baggage Car | mail cage **blue, green, red, yellow** (the trunks in the order their stations come on the line: anchor, key, star, fish) → strongbox **4, 7, 5** (seats on the tickets punched with the Conductor's crescent: fish, anchor, star) → gangway ticket punched at **anchor, key, star, leaf, fish** (the crescent stops on the line) |
+| 2 · The Sleeper Corridor | berth 13 card **2:35** (her ticket says leaf; the timetable's crescent column; anything from 2:25 wakes her in time) → gramophone up to **78** → call bells **12, 15, 11, 16, 14** (her record's five notes) |
+| 3 · The Dining Car | till **295** (two soups, a fish, two pies, three teas) → spirits cabinet **NIGHT** (the cocktail card's bottles in pouring order: square, flask, stubby, long, slim) → vestibule clock **3:10** (the platform clock of the station that keeps going past) |
+| 4 · The Locomotive | ground frame levers **1, 2, 4 and 5** pulled (the entry signal, both points over, the home signal: the road to the crown) → whistle and regulator together |
 
-Every deduction and number-lock puzzle in the scenario not yet rebuilt has a
-solver-verified unique solution, and its scheduling drill has a verified
-unique order. Room transitions hold on a title card until the team
-clicks ENTER.
+Room transitions hold on a title card until the team clicks ENTER.
 
 ## Scoring / ratings
 
@@ -281,7 +258,7 @@ Line):
   flares, film grain, title backdrops: rain/stars/snow/rails), and the game
   logic (hub, hotspots, the examine view and its camera, timer, beats, relay
   lamps, endings, GM panel). It also still carries the typed puzzle kinds
-  (`text`/`dial`/`order`/`panel`…) for the scenarios not yet rebuilt.
+  (`text`/`dial`/`order`/`panel`…) from before the reset; no scenario uses them now.
 - **`lib/locks.js`** — the locks you work with your hands: wheels, a compass
   pad, clock hands, levers, things pressed in order, a picture in pieces, a
   dial swept through static, rods and tanks, a keypad, a handle held against a
