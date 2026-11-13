@@ -190,6 +190,9 @@ SCENES.laboratory=()=>`
 <rect width="1600" height="620" fill="url(#vLab)"/>
 <rect y="620" width="1600" height="280" fill="#101414"/>
 ${[0,1,2,3,4,5].map(i=>`<line x1="${i*300-120}" y1="620" x2="${i*340-220}" y2="900" stroke="#070a09" stroke-width="5"/>`).join('')}
+<rect x="0" y="360" width="1600" height="260" fill="#142220" opacity=".85"/>
+<path d="M0 360H1600" stroke="#2a3a36" stroke-width="5"/><path d="M0 380H1600" stroke="#1d2a28" stroke-width="2"/><path d="M0 420H1600" stroke="#1d2a28" stroke-width="2"/><path d="M0 460H1600" stroke="#1d2a28" stroke-width="2"/><path d="M0 500H1600" stroke="#1d2a28" stroke-width="2"/><path d="M0 540H1600" stroke="#1d2a28" stroke-width="2"/><path d="M0 580H1600" stroke="#1d2a28" stroke-width="2"/><path d="M40 360V620" stroke="#1d2a28" stroke-width="2"/><path d="M120 360V620" stroke="#1d2a28" stroke-width="2"/><path d="M200 360V620" stroke="#1d2a28" stroke-width="2"/><path d="M280 360V620" stroke="#1d2a28" stroke-width="2"/><path d="M360 360V620" stroke="#1d2a28" stroke-width="2"/><path d="M440 360V620" stroke="#1d2a28" stroke-width="2"/><path d="M520 360V620" stroke="#1d2a28" stroke-width="2"/><path d="M600 360V620" stroke="#1d2a28" stroke-width="2"/><path d="M680 360V620" stroke="#1d2a28" stroke-width="2"/><path d="M760 360V620" stroke="#1d2a28" stroke-width="2"/><path d="M840 360V620" stroke="#1d2a28" stroke-width="2"/><path d="M920 360V620" stroke="#1d2a28" stroke-width="2"/><path d="M1000 360V620" stroke="#1d2a28" stroke-width="2"/><path d="M1080 360V620" stroke="#1d2a28" stroke-width="2"/><path d="M1160 360V620" stroke="#1d2a28" stroke-width="2"/><path d="M1240 360V620" stroke="#1d2a28" stroke-width="2"/><path d="M1320 360V620" stroke="#1d2a28" stroke-width="2"/><path d="M1400 360V620" stroke="#1d2a28" stroke-width="2"/><path d="M1480 360V620" stroke="#1d2a28" stroke-width="2"/><path d="M1560 360V620" stroke="#1d2a28" stroke-width="2"/>
+<ellipse cx="800" cy="720" rx="60" ry="14" fill="#070a09"/><path d="M760 720h80M772 714h56M772 726h56" stroke="#1d2a28" stroke-width="3"/>
 <!-- chains from the ceiling -->
 ${[380,520,1060,1200].map((x,i)=>`<g class="lampswing" style="animation-delay:${i*.8}s">
  <line x1="${x}" y1="0" x2="${x}" y2="${150+(i%2)*60}" stroke="#26313a" stroke-width="7" stroke-dasharray="12 6"/>
@@ -197,30 +200,6 @@ ${[380,520,1060,1200].map((x,i)=>`<g class="lampswing" style="animation-delay:${
 <!-- stray voltage arcing between the ceiling chains -->
 <path class="arcflick" d="M380 190 l24 10 -14 12 30 8 -16 14 28 10" stroke="#9fb8e8" stroke-width="2.5" fill="none"/>
 <path class="arcflick a2" d="M1060 210 l-22 12 16 10 -28 10 18 12 -24 10" stroke="#9fb8e8" stroke-width="2.5" fill="none"/>
-<!-- the empty slab -->
-<g id="art-slab">
-  <ellipse cx="800" cy="600" rx="270" ry="26" fill="#070a09"/>
-  <path d="M560 480 l480 0 24 100 -528 0z" fill="#3a4448" stroke="#26313a" stroke-width="5"/>
-  <rect x="600" y="452" width="400" height="34" rx="8" fill="#4a565c"/>
-  ${[0,1,2,3].map(i=>`<g><rect x="${640+i*90}" y="440" width="34" height="14" rx="6" fill="#26313a"/>
-   <path d="M${657+i*90} 454 q${(i%2?14:-14)} 20 0 34" stroke="#26313a" stroke-width="6" fill="none"/></g>`).join('')}
-  <ellipse class="flick" cx="800" cy="470" rx="190" ry="20" fill="url(#vGreen)"/>
-</g>
-<!-- leyden jar rack -->
-<g id="el-jars">
-  <rect x="120" y="330" width="560" height="16" fill="#26313a"/>
-  ${[['R',160],['M',226],['I',292],['U',358],['S',424],['E',490],['D',556],['N',622]].map(([ch,x],i)=>
-  `<g><rect x="${x-22}" y="240" width="44" height="90" rx="10" fill="#1c2e34" stroke="#3a565c" stroke-width="3"/>
-   <rect class="flick" x="${x-14}" y="254" width="28" height="40" rx="6" fill="#2a4a42" style="animation-delay:${i*.35}s"/>
-   <text x="${x}" y="320" text-anchor="middle" font-family="Special Elite" font-size="17" fill="#9fc8ae">${ch}</text></g>`).join('')}
-</g>
-<!-- galvanic switchboard -->
-<g id="el-switchboard">
-  <rect x="1240" y="280" width="260" height="300" rx="10" fill="#1a2426" stroke="#3a4a44" stroke-width="6"/>
-  ${[0,1,2].map(r=>[0,1,2].map(c=>`<g><circle cx="${1290+c*80}" cy="${330+r*80}" r="18" fill="#0d1416" stroke="#4a5a52" stroke-width="4"/>
-   <line x1="${1290+c*80}" y1="${330+r*80}" x2="${1290+c*80+((r+c)%2?11:-9)}" y2="${318+r*80}" stroke="#c9a04a" stroke-width="4"/></g>`).join('')).join('')}
-  <rect x="1290" y="536" width="160" height="26" rx="6" fill="#0d1416"/>
-</g>
 <!-- workbench with glassware -->
 <g>
   <rect x="80" y="560" width="480" height="20" fill="#3a2d1a"/>
@@ -228,20 +207,13 @@ ${[380,520,1060,1200].map((x,i)=>`<g class="lampswing" style="animation-delay:${
   ${[0,1,2].map(i=>`<g><path d="M${150+i*130} 560 v-40 q0 -14 14 -14 q14 0 14 14 v40z" fill="#1c3a34" opacity=".9"/>
    <ellipse class="steam" cx="${164+i*130}" cy="500" rx="9" ry="5" fill="#9fc8ae" opacity=".3" style="animation-delay:${i*1.2}s"/></g>`).join('')}
 </g>
-<!-- dumbwaiter with bell -->
-<g id="el-dumbwaiter">
-  <rect x="880 " y="640" width="170" height="200" fill="#1a1416" stroke="#3a2d1a" stroke-width="8"/>
-  <rect x="900" y="660" width="130" height="130" fill="#070a09"/>
-  <path d="M946 720 a20 20 0 0 1 40 0 l4 16 h-48z" fill="#c9a04a"/>
-  <circle id="dumb-lamp" cx="966" cy="748" r="8" fill="#ffdf9c" opacity=".1"/>
-  <text x="966" y="830" text-anchor="middle" font-family="Special Elite" font-size="11" fill="#8fa596">FROM THE CELLAR</text>
-</g>
 <!-- specimen shelf -->
 <g opacity=".9">
   <rect x="700" y="200 " width="240" height="12" fill="#26313a"/>
   ${[0,1,2].map(i=>`<g><rect x="${726+i*72}" y="140" width="46" height="60" rx="8" fill="#16211f" stroke="#2a4a42" stroke-width="3"/>
    <ellipse class="bob" cx="${749+i*72}" cy="172" rx="12" ry="${14+i*3}" fill="#2a4a42" style="animation-delay:${i*.9}s"/></g>`).join('')}
 </g>
+<!--SPRITES-->
 <g class="atmo">
 <!-- something in here is still running -->
 <circle id="rl-laboratory" cx="900" cy="210" r="6" fill="#ffb45e" opacity=".12"/>
@@ -682,12 +654,15 @@ const mantelArt = { w: 560, h: 160, body: (() => {
     if (VOLUMES[n]) {
       b += `<rect x="${x}" y="${30 + (n % 3) * 8}" width="50" height="${116 - (n % 3) * 8}" rx="3" fill="${VOLUMES[n]}" stroke="${V.dark}" stroke-width="3"/>`
         + `<path d="M${x + 4} ${44 + (n % 3) * 8}h42M${x + 4} 132h42" stroke="${V.brass}" stroke-width="3" opacity=".8"/>`
-        + W(x + 25, 96, ROMAN[n], { size: 22, fill: V.gold, weight: 700 });
+        + W(x + 25, 98, ROMAN[n], { size: 24, fill: V.gold, weight: 700, face: 'body' });   // the book face: a blackletter V reads as a U
     } else {
-      // where a book stood: clean wood, and a ribbon tied to the shelf
+      // where a book stood: clean wood, and a ribbon tied in a bow, lying where the book was
+      const c = C[RIBBONS[n]], cx = x + 25, cy = 116;
       b += `<rect x="${x + 3}" y="140" width="44" height="6" fill="#4a4458" opacity=".7"/>`
-        + `<path d="M${x + 25} 140V${100 + (n % 2) * 10}l-7 14M${x + 25} ${100 + (n % 2) * 10}l7 14" fill="none" stroke="${C[RIBBONS[n]]}" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>`
-        + `<circle cx="${x + 25}" cy="141" r="4" fill="${C[RIBBONS[n]]}"/>`;
+        + `<path d="M${cx - 3} ${cy + 4}L${cx - 12} 144l5 -2l3 4ZM${cx + 3} ${cy + 4}L${cx + 12} 144l-5 -2l-3 4Z" fill="${c}" stroke="${V.dark}" stroke-width="1.5" stroke-linejoin="round"/>`
+        + `<path d="M${cx} ${cy}C${cx - 8} ${cy - 16} ${cx - 22} ${cy - 10} ${cx - 18} ${cy}C${cx - 22} ${cy + 10} ${cx - 8} ${cy + 14} ${cx} ${cy}Z`
+        + `M${cx} ${cy}C${cx + 8} ${cy - 16} ${cx + 22} ${cy - 10} ${cx + 18} ${cy}C${cx + 22} ${cy + 10} ${cx + 8} ${cy + 14} ${cx} ${cy}Z" fill="${c}" stroke="${V.dark}" stroke-width="1.8" stroke-linejoin="round"/>`
+        + `<circle cx="${cx}" cy="${cy}" r="4.5" fill="${c}" stroke="${V.dark}" stroke-width="1.8"/>`;
     }
   }
   return b;
@@ -719,7 +694,7 @@ const ceilingArt = { w: 1000, h: 170, body: (() => {
     b += `<circle cx="${cx}" cy="85" r="52" fill="#d8c9a6" stroke="${V.brassDark}" stroke-width="5"/>` + GL(beast, cx - 30, 55, 60, '#3a2a3e');
     const mark = Object.keys(TINY).find(m => TINY[m] === beast);
     // painted in by a fine brush, in the same brown as the vine: nobody was meant to see it from the floor
-    if (mark) b += GL(mark, cx + 30, 104, 9, '#6b5334');
+    if (mark) b += GL(mark, cx + 30, 105, 6, '#7a6247');
   });
   return b;
 })() };
@@ -806,11 +781,12 @@ const ROOM2 = {
     { id:'ceiling', icon:'🎨', name:'The Painted Ceiling', pos:POS2.ceiling,
       desc:"Eight beasts in roundels above the cornice, joined by a painted vine. The painter took more care over some of them than anyone below could ever see.",
       figure:ART.svg(ceilingArt.w, ceilingArt.h, ceilingArt.body),
-      lens:{ needs:'lectern', zoom:4.5, r:58, tint:V.brass, bg:'#3a2a3e' },
+      lens:{ needs:'lectern', zoom:5, r:90, tint:V.brass, bg:'#3a2a3e' },
       sprite:ART.sprite(POS2.ceiling, ceilingArt.w, ceilingArt.h, ceilingArt.body) },
     { id:'orrery', icon:'🪐', name:'The Orrery', pos:POS2.orrery, needs:'organ',
       desc:"Brass worlds on brass arms, free to turn now. Each arm carries a wheel of beasts, and each wheel a little heavenly body.",
       deadDesc:"Brass worlds on brass arms, and every arm held fast by a brake. A thin pipe runs from the brake, under the floor, to the organ.",
+      deadFigure:st=>ART.svg(180, 240, orreryBody(st)),
       sprite:st=>ART.sprite(POS2.orrery, 180, 240, orreryBody(st)),
       puzzle:{ type:'combo', from:['ceiling'], wheels:ORRERY_MARKS.map(g=>({ faces:{ glyphs:BEASTS }, mark:{ glyph:g } })), answer:ORRERY, tryLabel:'ALIGN THE ARMS',
         miss:"The arms swing, and drift apart again.",
@@ -823,9 +799,148 @@ const ROOM2 = {
   ]
 };
 
-const OLD_ROOMS = [
-/* ============ ROOM 3 — THE LABORATORY ============ */
-{
+/* ============================================================
+   ROOM 3 — THE LABORATORY
+   Four gauges on the wall, no two of them read the same way, and a locker
+   that wants four figures. A chalkboard of weighings and a rack of five
+   jars with a feather at one end and an anvil at the other. Rack them
+   right and the slab wakes: four clamps glow where a head, a heart, a hand
+   and a foot once lay — and the dumbwaiter's call wheels are marked with
+   exactly those.
+   ============================================================ */
+
+/* ---- four gauges, four ways of reading one ---- */
+const GAUGES = [6, 2, 8, 4];
+const LOCKER_CODE = GAUGES.join('');
+const dialAt = (cx, cy, r, deg) => [cx + Math.sin(deg * Math.PI / 180) * r, cy - Math.cos(deg * Math.PI / 180) * r];
+function gaugeFace(cx, cy, kind, value) {
+  let b = `<circle cx="${cx}" cy="${cy}" r="62" fill="${V.brassDark}" stroke="${V.dark}" stroke-width="4"/><circle cx="${cx}" cy="${cy}" r="54" fill="#e9dfc4"/>`;
+  let needle = 0;
+  if (kind === 'plain' || kind === 'backward') {
+    // ten numerals over three-quarters of a turn; one dial runs the other way round
+    for (let n = 0; n <= 9; n++) {
+      const deg = kind === 'plain' ? -135 + n * 30 : 135 - n * 30, [tx, ty] = dialAt(cx, cy, 40, deg), [a1, b1] = dialAt(cx, cy, 49, deg), [a2, b2] = dialAt(cx, cy, 54, deg);
+      b += `<path d="M${a1.toFixed(1)} ${b1.toFixed(1)}L${a2.toFixed(1)} ${b2.toFixed(1)}" stroke="${V.ink}" stroke-width="2.5"/>` + W(tx, ty + 6, String(n), { size: 16, fill: V.ink, weight: 700, face: 'num' });
+    }
+    needle = kind === 'plain' ? -135 + value * 30 : 135 - value * 30;
+  } else if (kind === 'fives') {
+    // eleven marks, and only every fifth one numbered
+    for (let n = 0; n <= 10; n++) {
+      const deg = -135 + n * 27, [a1, b1] = dialAt(cx, cy, n % 5 ? 46 : 42, deg), [a2, b2] = dialAt(cx, cy, 54, deg);
+      b += `<path d="M${a1.toFixed(1)} ${b1.toFixed(1)}L${a2.toFixed(1)} ${b2.toFixed(1)}" stroke="${V.ink}" stroke-width="${n % 5 ? 2 : 3.5}"/>`;
+      if (n % 5 === 0) { const [tx, ty] = dialAt(cx, cy, 31, deg); b += W(tx, ty + 6, String(n), { size: 17, fill: V.ink, weight: 700, face: 'num' }); }
+    }
+    needle = -135 + value * 27;
+  }
+  if (kind !== 'column') {
+    const [nx, ny] = dialAt(cx, cy, 46, needle);
+    b += `<path d="M${cx} ${cy}L${nx.toFixed(1)} ${ny.toFixed(1)}" stroke="#a13a2e" stroke-width="4" stroke-linecap="round"/><circle cx="${cx}" cy="${cy}" r="6" fill="${V.dark}"/>`;
+  }
+  return b;
+}
+function columnGauge(x, y, value) {
+  // a level gauge numbered from the top down, with a brass pointer on the side
+  let b = `<rect x="${x}" y="${y}" width="64" height="200" rx="10" fill="${V.brassDark}" stroke="${V.dark}" stroke-width="4"/><rect x="${x + 8}" y="${y + 8}" width="48" height="184" rx="6" fill="#e9dfc4"/>`;
+  for (let n = 0; n <= 9; n++) {
+    const yy = y + 20 + n * 17.5;
+    b += `<path d="M${x + 36} ${yy}H${x + 54}" stroke="${V.ink}" stroke-width="2.5"/>` + W(x + 24, yy + 6, String(n), { size: 15, fill: V.ink, weight: 700, face: 'num' });
+  }
+  const py = y + 20 + value * 17.5;
+  return b + `<path d="M${x + 76} ${py}l14 -9v18Z" fill="#a13a2e" stroke="${V.dark}" stroke-width="2"/><path d="M${x + 54} ${py}H${x + 76}" stroke="#a13a2e" stroke-width="3"/>`;
+}
+const gaugesArt = { w: 600, h: 280, body: (() => {
+  let b = `<rect x="4" y="4" width="592" height="272" rx="12" fill="#1a2426" stroke="#3a4a44" stroke-width="6"/>`;
+  [[0, 'plain'], [1, 'backward'], [2, 'fives']].forEach(([i, kind]) => b += `<path d="M${84 + i * 150} 210v56" stroke="#3a4a44" stroke-width="8"/>` + gaugeFace(84 + i * 150, 140, kind, GAUGES[i]));
+  return b + columnGauge(478, 40, GAUGES[3]);
+})() };
+
+/* ---- the locker, and the fuse in it ---- */
+function lockerBody(open) {
+  let b = `<rect x="4" y="4" width="132" height="232" rx="6" fill="#26313a" stroke="${V.dark}" stroke-width="4"/>`;
+  if (open) b += `<rect x="12" y="12" width="116" height="216" fill="#070a09"/><path d="M12 12l-14 8v196l14 12Z" fill="#3a4a54" stroke="${V.dark}" stroke-width="3"/><rect x="50" y="110" width="40" height="18" rx="6" fill="#e9dfc4" stroke="${V.dark}" stroke-width="2"/><rect x="44" y="114" width="6" height="10" fill="${V.brass}"/><rect x="90" y="114" width="6" height="10" fill="${V.brass}"/>`;
+  else {
+    b += `<path d="M20 30h100M20 42h100M20 54h100" stroke="#3a4a54" stroke-width="5"/><rect x="40" y="96" width="60" height="78" rx="6" fill="#1a2426" stroke="${V.dark}" stroke-width="3"/>`;
+    for (let r = 0; r < 4; r++) for (let c = 0; c < 3; c++) b += `<rect x="${48 + c * 16}" y="${104 + r * 16}" width="12" height="12" rx="2" fill="#5a6a72"/>`;
+  }
+  return b;
+}
+const fuseFig = ART.svg(420, 200, `<rect x="90" y="60" width="240" height="80" rx="30" fill="#e9dfc4" stroke="${V.dark}" stroke-width="5"/><rect x="50" y="72" width="44" height="56" rx="6" fill="${V.brass}" stroke="${V.dark}" stroke-width="4"/><rect x="326" y="72" width="44" height="56" rx="6" fill="${V.brass}" stroke="${V.dark}" stroke-width="4"/><path d="M120 100h180" stroke="#b9a57c" stroke-width="4" stroke-dasharray="10 8"/>`);
+
+/* ---- the weighings, and the rack the jars stand in ---- */
+const LIGHT_TO_HEAVY = ['green', 'yellow', 'purple', 'red', 'blue'];
+const WEIGHINGS = [['purple', 'red'], ['blue', 'red'], ['yellow', 'green'], ['yellow', 'purple']];      // left pan, right pan
+const jarShape = (x, y, s, col) => `<path d="M${x - 9 * s} ${y - 48 * s}h${18 * s}v${8 * s}l${9 * s} ${10 * s}v${24 * s}q0 ${6 * s} ${-6 * s} ${6 * s}h${-24 * s}q${-6 * s} 0 ${-6 * s} ${-6 * s}v${-24 * s}l${9 * s} ${-10 * s}Z" fill="${C[col]}" stroke="#e9e4d4" stroke-width="${2.2 * s}" stroke-linejoin="round"/>`;
+const boardArt = { w: 520, h: 360, body: (() => {
+  let b = `<rect x="4" y="4" width="512" height="352" rx="8" fill="${V.woodDark}"/><rect x="18" y="18" width="484" height="324" fill="#1b2420"/>`;
+  b += `<path d="M30 300q60 -16 140 -6M300 60q60 10 120 -4" stroke="#e9e4d4" stroke-width="2" opacity=".12" fill="none"/>`;
+  WEIGHINGS.forEach(([l, r], i) => {
+    const cx = 140 + (i % 2) * 240, cy = 104 + Math.floor(i / 2) * 150;
+    const heavierLeft = LIGHT_TO_HEAVY.indexOf(l) > LIGHT_TO_HEAVY.indexOf(r), tilt = heavierLeft ? -14 : 14;
+    const dx = 76, dy = Math.sin(tilt * Math.PI / 180) * dx;
+    // the heavier pan rides lower, as it would
+    b += `<path d="M${cx} ${cy + 64}l-16 18h32Z" fill="none" stroke="#e9e4d4" stroke-width="3" stroke-linejoin="round"/><path d="M${cx} ${cy}V${cy + 64}" stroke="#e9e4d4" stroke-width="3"/>`;
+    b += `<path d="M${cx - dx} ${(cy - dy).toFixed(1)}L${cx + dx} ${(cy + dy).toFixed(1)}" stroke="#e9e4d4" stroke-width="4" stroke-linecap="round"/>`;
+    [[-1, l], [1, r]].forEach(([side, col]) => {
+      const px = cx + side * dx, py = cy + side * dy;
+      b += `<path d="M${px} ${py.toFixed(1)}l-22 34h44Z" fill="none" stroke="#e9e4d4" stroke-width="2"/><path d="M${px - 28} ${(py + 34).toFixed(1)}h56" stroke="#e9e4d4" stroke-width="3.5" stroke-linecap="round"/>`
+        + jarShape(px, py + 34, .95, col);
+    });
+  });
+  return b;
+})() };
+const JAR_PIECES = LIGHT_TO_HEAVY.map(col => ({ id: col, w: 90, h: 150, body: `<rect width="90" height="150" fill="#16211f"/><path d="M0 141H90" stroke="#3a4a44" stroke-width="6"/>` + jarShape(45, 138, 2.1, col) }));
+const rackPlate = `<svg viewBox="0 0 520 70" style="display:block;width:min(100%,520px);margin:0 auto 4px">`
+  + `<rect x="4" y="8" width="512" height="54" rx="10" fill="${V.woodDark}" stroke="${V.dark}" stroke-width="4"/>`
+  + `<path d="M40 50C52 26 76 14 104 12C90 30 72 44 40 50ZM40 50L98 18" fill="#e9e4d4" stroke="${V.dark}" stroke-width="2.5" stroke-linejoin="round"/>`
+  + `<path d="M430 28h56l-6 10h-8v8h12v10h-52v-10h12v-8h-8Z" fill="#5a6a72" stroke="${V.dark}" stroke-width="2.5" stroke-linejoin="round"/>`
+  + `<path d="M140 35H390" stroke="${V.woodLip}" stroke-width="4" stroke-dasharray="2 12" stroke-linecap="round"/></svg>`;
+function rackBody(done) {
+  const order = done ? LIGHT_TO_HEAVY : ['red', 'green', 'blue', 'yellow', 'purple'];
+  let b = `<rect x="4" y="90" width="352" height="16" rx="5" fill="${V.woodDark}" stroke="${V.dark}" stroke-width="3"/><path d="M24 106v14M336 106v14" stroke="${V.woodDark}" stroke-width="8"/>`;
+  b += `<path d="M14 88C20 76 30 70 42 69C36 78 28 85 14 88Z" fill="#e9e4d4" opacity=".8"/><path d="M316 76h28l-3 5h-4v4h6v5h-26v-5h6v-4h-4Z" fill="#5a6a72"/>`;
+  order.forEach((col, i) => b += jarShape(74 + i * 54, 90, 1.05, col) + (done ? `<ellipse cx="${74 + i * 54}" cy="64" rx="16" ry="22" fill="${C[col]}" opacity=".18"/>` : ''));
+  return b;
+}
+
+/* ---- the slab, and where the four clamps lie ---- */
+const CLAMPS = [['skull', 'blue', 72, 76], ['heart', 'red', 160, 68], ['hand', 'yellow', 244, 100], ['foot', 'green', 470, 64]];
+const DUMB_MARKS = ['skull', 'heart', 'hand', 'foot'];
+const DUMB = DUMB_MARKS.map(m => CLAMPS.find(c => c[0] === m)[1]);
+function slabBody(live) {
+  let b = `<ellipse cx="260" cy="168" rx="250" ry="12" fill="#000" opacity=".4"/><path d="M14 108L36 150H484L506 108Z" fill="#3a4448" stroke="#26313a" stroke-width="4"/>`;
+  b += `<rect x="20" y="40" width="480" height="70" rx="12" fill="#5a666c" stroke="#26313a" stroke-width="4"/><rect x="30" y="48" width="460" height="56" rx="8" fill="#cfc6ae"/>`;
+  // where it lay: scorched into the sheet, head to the left, arms at its sides
+  b += `<g fill="#5a4a32" opacity=".55"><circle cx="72" cy="76" r="17"/><rect x="86" y="70" width="14" height="12" rx="3"/><rect x="98" y="56" width="150" height="40" rx="14"/>`
+    + `<path d="M104 58L238 50L242 58L104 66ZM104 94L238 102L242 94L104 86Z"/><path d="M244 62L458 58L460 70L244 76ZM244 80L458 86L460 98L244 92Z"/>`
+    + `<ellipse cx="470" cy="64" rx="10" ry="7"/><ellipse cx="470" cy="92" rx="10" ry="7"/></g>`;
+  [130, 330].forEach(x => b += `<rect x="${x - 8}" y="36" width="16" height="78" rx="4" fill="#4a3823" opacity=".7"/><rect x="${x - 10}" y="104" width="20" height="10" rx="2" fill="${V.brass}"/>`);
+  CLAMPS.forEach(([part, col, x, y]) => {
+    b += `<path d="M${x} ${y}l0 -40" stroke="#26313a" stroke-width="4"/><rect x="${x - 9}" y="${y - 8}" width="18" height="16" rx="4" fill="${live ? C[col] : '#3a4448'}" stroke="${V.dark}" stroke-width="2.5"/>`;
+    if (live) b += `<circle cx="${x}" cy="${y}" r="20" fill="${C[col]}" opacity=".22"/>`;
+  });
+  return b;
+}
+
+/* ---- the dumbwaiter ---- */
+function dumbBody(st) {
+  let b = `<rect x="4" y="30" width="172" height="206" fill="#1a1416" stroke="${V.woodDark}" stroke-width="8"/><rect x="18" y="44" width="144" height="150" fill="#070a09"/>`;
+  if (st.solved) b += `<rect x="18" y="44" width="144" height="150" fill="#ffdf9c" opacity=".08"/><path d="M60 140a30 30 0 0 1 60 0l6 20H54Z" fill="${V.brass}"/><rect x="72" y="160" width="36" height="26" rx="4" fill="${V.iron}" stroke="${V.dark}" stroke-width="2"/>`;
+  else b += [0, 1, 2, 3, 4, 5].map(i => `<path d="M18 ${58 + i * 24}H162" stroke="#241a10" stroke-width="10"/>`).join('');
+  b += `<rect x="40" y="200" width="100" height="30" rx="5" fill="${V.iron}" stroke="${V.dark}" stroke-width="3"/>`
+    + DUMB_MARKS.map((m, i) => `<rect x="${48 + i * 22}" y="206" width="16" height="18" rx="2" fill="${st.live ? '#5a6a72' : '#26313a'}"/>`).join('');
+  return b + `<circle cx="90" cy="16" r="10" fill="${st.solved ? '#5fd08a' : st.live ? V.glow : '#26313a'}" stroke="${V.dark}" stroke-width="3"/>`;
+}
+
+const POS3 = {
+  board:    { x: 68.1,  y: 15.6, w: 16.25, h: 20 },
+  rack:     { x: 6.9,   y: 25.6, w: 22.5,  h: 13.3 },
+  slab:     { x: 33.75, y: 48.9, w: 32.5,  h: 20 },
+  gauges:   { x: 77.5,  y: 42.2, w: 18.75, h: 15.6 },
+  locker:   { x: 86.9,  y: 62.2, w: 8.75,  h: 26.7 },
+  dumb:     { x: 69.4,  y: 66.1, w: 11.25, h: 26.7 },
+};
+
+const ROOM3 = {
   id:'laboratory', name:'Room 3 — The Laboratory', scene:'laboratory',
   relays:[{el:'rl-laboratory',mode:'pulse',period:2.8}],
   wrongSound:'clank',
@@ -834,67 +949,62 @@ const OLD_ROOMS = [
   objective:"Wake the Baron's machinery. Whatever he made here, <b>you need what powered it.</b>",
   entryBeat:"On the slab, the leather straps lie neatly unbuckled — not torn. It took its time. It folded them.",
   entrySound:'clank',
-  completeText:"The dumbwaiter's word hangs in the air as you climb the tower stair. Below you, in the dark of the cellar, something begins — slowly, tunelessly, in a voice like wet gravel — to hum the Baron's hymn.",
-  chain:"The slab's chalked riddle names the Baron's oldest servant: LIGHTNING → the jar rack holds only under the Baron's own seal, which rules out one cracked, one resealed and one carrying a mark nobody knows, leaving RISEN → the switchboard wants three even figures multiplying to forty-eight, placed on the ways as the Baron assigns them — heaviest to the coil, lightest to the earth: 624 → the dumbwaiter brings up a mourning card in the same masons' cipher as the vellum: ALIVE.",
+  completeText:"The dumbwaiter rattles down to you with the tower key on its shelf. Somewhere below, in the dark of the cellar, something begins — slowly, in a voice like wet gravel — to hum the tune you played on the organ.",
+  chain:`The four gauges read ${GAUGES.join(', ')} from the left — one is plain, one is numbered the other way round, one only at every fifth mark, and one from the top down: the locker's keypad takes ${LOCKER_CODE}, and in the locker is the fuse the dumbwaiter's call box is missing → on the chalkboard the heavier pan always rides lower: green is lighter than yellow, yellow than purple, purple than red and red than blue, and the jar rack has a feather at one end and an anvil at the other: ${LIGHT_TO_HEAVY.join(', ')} → with the jars racked the slab wakes, and its four clamps glow blue at the head, red at the heart, yellow at the hand and green at the foot → the dumbwaiter's call wheels are marked head, heart, hand and foot: ${DUMB.join(', ')}.`,
   objects:[
-    { id:'slab', icon:'⛓️', name:'The Empty Slab', pos:{x:33,y:47,w:34,h:22},
-      desc:"The slab itself — scorched, strapped, and empty. A riddle is chalked along its edge in the Baron's hand — one he wrote for his own machinery:\n\n“I am the Baron's oldest servant.\nI climb the tower without legs.\nI speak exactly once,\nand the sky breaks when I do.\nWhat am I?”",
-      puzzle:{
-        prompt:"Name the Baron's oldest servant.", placeholder:"ANSWER", answers:['LIGHTNING','THELIGHTNING','ABOLT','BOLT','LIGHTNINGBOLT'],
+    { id:'gauges', icon:'⏲️', name:'The Gauges', pos:POS3.gauges,
+      desc:"Four gauges on one panel, made by four different hands, and each one reads its own way.",
+      figure:ART.svg(gaugesArt.w, gaugesArt.h, gaugesArt.body),
+      sprite:ART.sprite(POS3.gauges, gaugesArt.w, gaugesArt.h, gaugesArt.body) },
+    { id:'locker', icon:'🗄️', name:'Steel Locker', pos:POS3.locker,
+      desc:"A steel locker with a twelve-key pad, and four places on its little window.",
+      sprite:st=>ART.sprite(POS3.locker, 140, 240, lockerBody(st.solved)),
+      puzzle:{ type:'keypad', from:['gauges'], answer:LOCKER_CODE,
+        miss:"The pad clicks its tongue at you and clears.",
         hints:[
-          "Not a person. Something the tower was built to catch.",
-          "It climbs the conductor rod without legs, speaks once — a crack — and splits the sky.",
-          "LIGHTNING. Everything in this room drinks it."
+          "Four figures, and four gauges on the panel beside it.",
+          "Read each gauge by its own scale: the second is numbered the other way round, the third only at every fifth mark, and the fourth from the top down. Left to right.",
+          `The gauges read ${LOCKER_CODE.split('').join(', ')}, left to right.`
         ],
-        solvedText:"LIGHTNING. The chalk answer unlocks nothing mechanical — but it tells you how to read the room: everything here is a vessel for the storm. Starting with the rack of jars along the wall."
-      }
-    },
-    { id:'jars', onSolve:{el:'rx-laboratory',op:.2,fx:'surge'}, icon:'⚡', name:'Leyden Jar Rack', pos:{x:6,y:24,w:38,h:16}, hiddenUntil:'slab',
-      desc:"Eight Leyden jars stand in the rack, each chalked with a letter and each stoppered under wax. The Baron's own notice is nailed above them, and he was not a man who wrote twice:\n\n   “A JAR HOLDS ONLY UNDER MY OWN SEAL. ANYTHING RESEALED HAS BEEN OPENED,\n    ANYTHING OPENED HAS EARTHED ITSELF, AND ANYTHING EARTHED WILL KILL\n    THE COIL AND NOT THE THING.”\n\nLeft to right along the rack:",
-      puzzle:{
-        type:'select',
-        select:{commit:"⚡ THESE JARS HOLD CHARGE", wrong:"The rack stays dead.",
-          items:[{letter:"R",value:"wax whole · the Baron's mark"},{letter:"M",value:"wax cracked clean through"},{letter:"I",value:"wax whole · the Baron's mark"},{letter:"U",value:"resealed in plain candle wax"},{letter:"S",value:"wax whole · the Baron's mark"},{letter:"E",value:"wax whole · the Baron's mark"},{letter:"D",value:"wax whole · a mark you do not know"},{letter:"N",value:"wax whole · the Baron's mark"}]},
-        prompt:"Which jars still hold? Tap the ones under the Baron's own seal.", answers:['RISEN'],
+        solvedText:"The door swings open on an empty locker, save for one ceramic fuse lying on the shelf.",
+        inside:{ name:'A fuse', figure:fuseFig } } },
+    { id:'board', icon:'⚖️', name:'The Chalkboard', pos:POS3.board,
+      desc:"Four sets of scales chalked up in the Baron's hand, a jar on every pan.",
+      figure:ART.svg(boardArt.w, boardArt.h, boardArt.body),
+      sprite:ART.sprite(POS3.board, boardArt.w, boardArt.h, boardArt.body) },
+    { id:'rack', icon:'🧪', name:'The Jar Rack', pos:POS3.rack,
+      desc:"Five jars in a rack with a feather carved at one end and an anvil at the other. They are not standing the way the Baron left them.",
+      sprite:st=>ART.sprite(POS3.rack, 360, 120, rackBody(st.solved)),
+      puzzle:{ type:'tiles', from:['board'], cols:5, pieces:JAR_PIECES, start:['red', 'green', 'blue', 'yellow', 'purple'], answer:LIGHT_TO_HEAVY, plate:rackPlate,
+        gm:`left to right: ${LIGHT_TO_HEAVY.join(', ')}`,
         hints:[
-          "Go jar by jar and read the wax, not the letter. Eight of them, so split the rack between you.",
-          "Cracked is out and resealed is out — but look harder at the whole ones too. One of them is sealed with a mark that is not his.",
-          "R, I, S, E and N are under the Baron's own mark. M is cracked, U is resealed, and D carries a mark you do not know. The rack spells RISEN."
+          "Tap one jar, then another, to swap them. The rack has a feather at one end and an anvil at the other.",
+          "The chalkboard weighs the jars two at a time, and the heavier pan always rides lower. Put them in order from the lightest, at the feather, to the heaviest, at the anvil.",
+          `Feather to anvil: ${LIGHT_TO_HEAVY.join(', ')}.`
         ],
-        solvedText:"R-I-S-E-N. Nobody says it twice. Five jars still hold their charge — enough to wake the switchboard, if you can find what it wants.",
-        solveBeat:"The chains overhead swing, all four at once, in a room with no wind. Then they still themselves — carefully — as if embarrassed.",
-        beatSound:'clank'
-      }
-    },
-    { id:'switchboard', icon:'🎛️', name:'Galvanic Switchboard', pos:{x:76,y:28,w:18,h:38},
-      desc:"The master switchboard is locked behind three fuse dials, 0–9 each. The three fuse-ways are stamped with the circuits they feed, left to right across the board:\n\n   COIL          EARTH          BANK\n\nAnd the Baron's tag swings from the lever below them:\n\n   “THREE EVEN FIGURES WAKE THE BOARD, AND MULTIPLIED TOGETHER THEY MAKE\n    FORTY-EIGHT. THE COIL TAKES THE HEAVIEST OF THEM. THE EARTH TAKES THE\n    LIGHTEST. THE BANK TAKES WHAT IS LEFT.”",
-      puzzle:{
-        type:'keypad',
-        prompt:"Work out the three fuses, then dial them in the order the ways are stamped.", answers:['624'],
+        solvedText:"The last jar seats, and the rack hums. Across the room, something on the slab answers." } },
+    { id:'slab', icon:'⚡', name:'The Slab', pos:POS3.slab, needs:'rack',
+      desc:"Four clamps on the slab are glowing, each where a part of something once lay — and each a different colour.",
+      deadDesc:"The slab, empty. Four dead clamps on wires lie where a head, a heart, a hand and a foot were strapped. Nothing is feeding them.",
+      figure:ART.svg(520, 180, slabBody(true)), deadFigure:ART.svg(520, 180, slabBody(false)),
+      sprite:st=>ART.sprite(POS3.slab, 520, 180, slabBody(st.live)) },
+    { id:'dumb', icon:'🛗', name:'The Dumbwaiter', pos:POS3.dumb, needs:'locker',
+      desc:"Its call box has a fuse again: four wheels of colours, each marked with a part of a body.",
+      deadDesc:"A dumbwaiter from the cellar. Its call box is dead, and its fuse socket is empty.",
+      deadFigure:st=>ART.svg(180, 240, dumbBody(st)),
+      sprite:st=>ART.sprite(POS3.dumb, 180, 240, dumbBody(st)),
+      puzzle:{ type:'combo', from:['slab'], faces:{ colors:['red', 'yellow', 'green', 'blue', 'purple', 'white'] }, wheels:DUMB_MARKS.map(g=>({ mark:{ glyph:g } })), answer:DUMB, tryLabel:'CALL IT UP',
+        miss:"Far below, a bell rings once, and nothing comes.",
         hints:[
-          "Two jobs. First find three even digits that multiply to forty-eight; then put each one on the way the Baron assigns it.",
-          "48 is 2 × 4 × 6, and no other three even digits will do it.",
-          "Coil takes the heaviest (6), earth the lightest (2), bank what is left (4). The ways run COIL, EARTH, BANK: enter 624."
+          "Four wheels of colours: a head, a heart, a hand and a foot. Something in this room was put together from exactly those.",
+          "The slab's four clamps are dead until the jar rack is set right. Then each one glows its own colour, where a head, a heart, a hand and a foot lay.",
+          `Head ${DUMB[0]}, heart ${DUMB[1]}, hand ${DUMB[2]}, foot ${DUMB[3]}.`
         ],
-        solvedText:"6-2-4. The board wakes with a rising whine and the needles climb — and at the back of the laboratory the dumbwaiter begins to climb too. Slowly. Unbidden. From the cellar. Where the rope is cut."
-      }
-    },
-    { id:'dumbwaiter', icon:'🛎️', name:'The Dumbwaiter Card', pos:{x:54,y:70,w:12,h:24}, hiddenUntil:'switchboard',
-      desc:"The dumbwaiter arrives from the cellar on its cut rope, breathing cold air — carrying one thing. A mourning card, and on it, five symbols in the same stitched cipher as the organ's vellum:\n\n"+PIG("ALIVE")+"\n\nThe tower stair's letter-lock waits for five letters.",
-      puzzle:{
-        prompt:"Enter the 5-letter word the bell is ringing.", placeholder:"5 LETTERS", answers:['ALIVE'],
-        hints:[
-          "The same masons' pigpen cipher as the vellum — grid letters, X letters, a dot for the second round.",
-          "Five letters. The first is the grid's top-left corner: A. The last is the grid's boxed-in centre: E. It's a status report.",
-          "The card reads ALIVE. It wants you to know."
-        ],
-        solvedText:"A-L-I-V-E. Nobody asks who sent the card up. The tower stair unlocks. Up — away from the cellar. Go.",
-        solveBeat:"From the bottom of the dumbwaiter shaft, very quietly, something tugs the bell-rope twice more. You already answered. It just wanted to hear you again.",
-        beatSound:'bell'
-      }
-    }
+        solvedText:"Chains rattle in the shaft, and the dumbwaiter comes up out of the dark with one thing on its shelf: the key to the tower stair." } },
   ]
-},
+};
+
+const OLD_ROOMS = [
 /* ============ ROOM 4 — THE TOWER ============ */
 {
   id:'tower', name:'Room 4 — The Tower', scene:'tower',
@@ -984,7 +1094,7 @@ const OLD_ROOMS = [
   ]
 }
 ];
-const ROOMS = [ROOM1, ROOM2, ...OLD_ROOMS];
+const ROOMS = [ROOM1, ROOM2, ROOM3, ...OLD_ROOMS];
 
 registerScenario({
   id:'vorstag', classic:true,
