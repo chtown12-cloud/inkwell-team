@@ -41,7 +41,7 @@ in the order the room allows, looking first at every object the lock says its
 answer comes from. Along the way it checks that nothing hidden is in the room
 early and nothing dead can be worked early, takes a wrong try and two hints on
 the first lock to check the clock maths, and presses the scenario's own final
-button. The four scenarios not yet rebuilt are still played from the table at
+button. The three scenarios not yet rebuilt are still played from the table at
 the top of the file. Needs Playwright and the dev server.
 
 **`sync.js`** puts a shared screen and a phone in the same game and plays
@@ -62,9 +62,13 @@ Wheels come back round; the face is a button too; a wrong try holds and costs
 five seconds; a wrong run on the compass clears itself; a lock you walk away
 from is as you left it; the tide clock holds one step either side of the span
 it accepts; the picture does not open while it is still wrong; the dial does
-not open for a sweep that only passes through. Then the tools — the lantern
-shows nothing until you have it and goes where you point it, the cut card
-turns and stays turned — and the drawings: every object is standing in the
+not open for a sweep that only passes through; rods go where they are put and
+one a step out is enough to fail; a keypad's tick is not a try until every
+place is filled; a handle let go too soon, or held straight through the mark,
+does not fire. Then the tools — the lantern shows nothing until you have it
+and goes where you point it, a card or a wheel turns, stays turned and comes
+back round after its own number of steps, a lamp that pulses is seen both lit
+and dark in every colour it claims — and the drawings: every object is standing in the
 room under its own ring, a lock drawn open looks different once it is, and
 every close-up arrives big enough to read on the shared screen and on a phone
 without running off the side. It runs on whichever scenarios are on the reset

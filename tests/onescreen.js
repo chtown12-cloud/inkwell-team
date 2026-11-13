@@ -63,7 +63,7 @@ async function show(p, room, id, state = 'live') {
     if (S.roomIndex !== room) enterRoom(room);
     const o = ACTIVE.rooms[room].objects.find(x => x.id === id);
     if (o.revealedBy) S.solved.add(o.revealedBy);
-    if (o.needs) { if (state === 'dead') S.solved.delete(o.needs); else S.solved.add(o.needs); }
+    [].concat(o.needs || []).forEach(d => { if (state === 'dead') S.solved.delete(d); else S.solved.add(d); });
     if (state === 'open') S.solved.add(id); else S.solved.delete(id);
     closeModal();
   }, { room, id, state });

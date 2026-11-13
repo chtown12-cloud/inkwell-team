@@ -9,7 +9,7 @@
    hidden can be worked early, presses the scenario's own final button, and
    confirms the score card and the chains.
 
-   The four scenarios not yet rebuilt are still played from the table below.
+   The three scenarios not yet rebuilt are still played from the table below.
 */
 const { launch } = require('./browser');
 
@@ -17,16 +17,6 @@ const BASE = 'http://localhost:8787';
 const ALL = ['eldermoor', 'prospero', 'vorstag', 'erebus', 'midnight'];
 
 const SOLUTIONS = {
-  prospero: {
-    finalButton: 'LAUNCH THE POD 🚀',
-    emoji: '👾', victoryText: 'THE POD IS AWAY', finale: ['thrusters', 'PANEL:LOCKED|PRESSURE|RELEASE'],
-    rooms: [
-      [['pods', 'LOCKER'], ['locker', '6942'], ['terminal', 'BURN'], ['manifest', '34']],
-      [['antenna', 'DIAL:4715'], ['beacon', 'SEAL VENTS'], ['console', 'GAMMA'], ['reactor', '651']],
-      [['vines', 'VENT'], ['trays', 'STARVE'], ['pumps', '642'], ['airlock', 'PURGE']],
-      [['checklist', 'ORDER:EBDAC'], ['fuelpanel', '9430'], ['window', '435'], ['clamps', '2496']],
-    ],
-  },
   vorstag: {
     finalButton: 'RIDE THE LIGHTNING ⚡',
     emoji: '🧟', victoryText: 'THE GATE IS OPEN', finale: ['rod', 'HOLD'],
@@ -143,10 +133,12 @@ const nextLock = (page) => page.evaluate(() => {
       : p.type === 'tiles' ? (p.answer ? LOCKS.asList(p.answer) : Array.from({ length: p.cols * p.rows }, (_, i) => String(i)))
       : p.type === 'tune' ? p.at
       : (p.type === 'toggle' || p.type === 'press') ? LOCKS.asList(p.answer)
+      : p.type === 'levels' ? LOCKS.asList(p.answer).map(Number)
+      : p.type === 'hold' ? p.target
       : String(p.answer),
     slots: p.slots, repeat: !!p.repeat, inside: !!p.inside, says: !!p.solvedText,
     // what must not be workable until this lock is open
-    waitsOnThis: room.objects.filter(x => x.needs === o.id).map(x => x.id),
+    waitsOnThis: room.objects.filter(x => [].concat(x.needs || []).includes(o.id)).map(x => x.id),
     hiddenByThis: room.objects.filter(x => x.hiddenUntil === o.id).map(x => x.id),
   };
 });
@@ -158,8 +150,12 @@ async function fumble(page, lock) {
     const at = await page.evaluate(() => [...document.querySelectorAll('.lk-wheel')].map(w => w.dataset.v));
     if (at.join() === lock.want.join()) await page.click('.lk-wheel[data-w="0"] .lk-step.up');
     await page.click('.lk-try');
-  } else if (t === 'clock' || t === 'toggle') {
+  } else if (t === 'clock' || t === 'toggle' || t === 'levels') {
     await page.click('.lk-try');
+  } else if (t === 'keypad') {
+    const d = lock.want[0] === '1' ? '2' : '1';
+    for (let i = 0; i < lock.want.length; i++) await page.click(`.pad-key[data-k="${d}"]`);
+    await page.click('.pad-key.go');
   } else if (t === 'dirpad') {
     const d = /^N+$/.test(lock.want) ? 'S' : 'N';
     for (let i = 0; i < lock.want.length; i++) await page.click(`.lk-d[data-dir="${d}"]`);
@@ -208,6 +204,24 @@ async function work(page, lock) {
       await page.click(`.lk-tile[data-slot="${i}"]`);
       await page.click(`.lk-tile[data-slot="${at.indexOf(lock.want[i])}"]`);
     }
+  } else if (t === 'levels') {
+    for (let i = 0; i < lock.want.length; i++) {
+      if (+(await page.getAttribute(`.lk-col[data-c="${i}"]`, 'data-v')) === lock.want[i]) continue;
+      await page.click(`.lk-cell[data-c="${i}"][data-l="${lock.want[i]}"]`);
+    }
+    await page.click('.lk-try');
+  } else if (t === 'hold' && await page.locator('#lk-hold').count()) {
+    // genuinely hold it and let go on the number, the way a player must
+    await page.evaluate((target) => new Promise((done) => {
+      const btn = document.getElementById('hold-btn'), box = document.getElementById('lk-hold');
+      btn.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true, cancelable: true }));
+      const watch = setInterval(() => {
+        if (+box.dataset.v < target) return;
+        clearInterval(watch);
+        btn.dispatchEvent(new PointerEvent('pointerup', { bubbles: true }));
+        done();
+      }, 10);
+    }), lock.want);
   } else if (t === 'tune') {
     await page.evaluate((v) => { const s = document.getElementById('tune-slider'); s.value = v; s.dispatchEvent(new Event('input', { bubbles: true })); }, lock.want);
   } else if (t === 'simul') {

@@ -48,6 +48,21 @@ async function start(p, scenario) {
   await p.evaluate(() => { S.staged = { arrival: 1, squeeze: 1, midroom: 1 }; });
 }
 
+/** Wait for the camera to stop: the stage's box unchanged for three frames running. A fixed pause is a
+    guess at how long a move takes on this machine, and a guess that is a frame short reads as a pixel of
+    black that is not there (or a pixel off centre) on whichever object needed the longest pan. */
+const settle = (p) => p.evaluate(() => new Promise((done) => {
+  const el = document.getElementById('stage');
+  let last = '', same = 0, n = 0;
+  const tick = () => {
+    const r = el.getBoundingClientRect(), now = [r.left, r.top, r.width].map(v => v.toFixed(2)).join();
+    same = now === last ? same + 1 : 0; last = now;
+    if (same >= 3 || ++n > 300) return done();
+    requestAnimationFrame(tick);
+  };
+  setTimeout(tick, 60);                       // let the move begin before deciding it has ended
+}));
+
 /** The stage's box, the spotlight, and where the focused object actually is. */
 const look = (p) => p.evaluate(() => {
   const st = document.getElementById('stage').getBoundingClientRect();
@@ -103,7 +118,7 @@ const look = (p) => p.evaluate(() => {
           await clearBeat(p);
         }
         await p.evaluate((id) => openModal(id), o.id);
-        await p.waitForTimeout(700);          // let the push-in finish
+        await settle(p);                      // let the push-in finish
         const m = await look(p);
         if (!m.zoomed) { noZoom.push(o.id); continue; }
         if (m.worstEdge > wide.worstEdge + 0.6) {
@@ -113,7 +128,7 @@ const look = (p) => p.evaluate(() => {
         const dx = Math.abs(m.light.x - m.focusOnScreen.x), dy = Math.abs(m.light.y - m.focusOnScreen.y);
         if (dx > 2 || dy > 2) lightOff.push(`${o.id} off by ${Math.round(Math.max(dx, dy))}px`);
         await p.evaluate(() => closeModal());
-        await p.waitForTimeout(650);
+        await settle(p);
       }
       ok(`${shape.name}: ${all.length} objects, none show more black than the wide shot`,
         !blackEdge.length, blackEdge.slice(0, 4).join(', '));
@@ -121,15 +136,9 @@ const look = (p) => p.evaluate(() => {
         !lightOff.length, lightOff.slice(0, 4).join(', '));
       ok(`${shape.name}: every object gets a push-in`, !noZoom.length, noZoom.join(', '));
 
-      // and it comes back — once the pull-out has actually finished. The move
-      // takes .62s and the loop above only waits .65s, which is a coin toss on
-      // a busy machine; this is a check on where the camera ends up, not on
-      // how quickly the test can look.
-      await p.waitForFunction(() => {
-        const st = document.getElementById('stage').getBoundingClientRect();
-        return Math.abs((st.left + st.right) / 2 - innerWidth / 2) < 1.5
-          && Math.abs(st.width / 1600 - Math.min(innerWidth / 1600, innerHeight / 900)) < 0.002;
-      }, null, { timeout: 4000 }).catch(() => {});
+      // and it comes back — once the pull-out has actually finished: this is a
+      // check on where the camera ends up, not on how quickly the test can look.
+      await settle(p);
       const back = await look(p);
       ok(`${shape.name}: closing returns to the wide shot`,
         !back.zoomed && back.centred && back.worstEdge <= wide.worstEdge + 0.6,
