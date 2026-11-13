@@ -12,30 +12,6 @@
 (function(){
 const SCENES={};
 
-/* pigpen cipher glyphs — standard key: A-I grid, J-R grid+dot, S-V X, W-Z X+dot */
-const PIG=(()=>{
-  const grid=(i,dot)=>{
-    const r=Math.floor(i/3),c=i%3;
-    let d='';
-    if(r>0) d+='M7 7 H29 ';
-    if(r<2) d+='M7 31 H29 ';
-    if(c>0) d+='M7 7 V31 ';
-    if(c<2) d+='M29 7 V31 ';
-    return `<path d="${d}"/>`+(dot?'<circle cx="18" cy="19" r="2.7" fill="currentColor" stroke="none"/>':'');
-  };
-  const vee=(i,dot)=>{
-    const d=['M7 7 L18 30 L29 7','M7 7 L30 19 L7 31','M29 7 L6 19 L29 31','M7 31 L18 8 L29 31'][i];
-    const dp=[[18,13],[13,19],[23,19],[18,25]][i];
-    return `<path d="${d}"/>`+(dot?`<circle cx="${dp[0]}" cy="${dp[1]}" r="2.7" fill="currentColor" stroke="none"/>`:'');
-  };
-  const glyph=ch=>{
-    const a='ABCDEFGHI'.indexOf(ch), j='JKLMNOPQR'.indexOf(ch), x='STUV'.indexOf(ch), w='WXYZ'.indexOf(ch);
-    const inner = a>=0?grid(a,false) : j>=0?grid(j,true) : x>=0?vee(x,false) : vee(w,true);
-    return `<svg width="31" height="34" viewBox="0 0 36 38" style="vertical-align:middle;margin:0 4px;overflow:visible"><g stroke="currentColor" stroke-width="2.8" fill="none" stroke-linecap="square">${inner}</g></svg>`;
-  };
-  return word=>'<span style="color:var(--sand)">'+word.split(' ').map(w=>w.split('').map(glyph).join('')).join('<span style="display:inline-block;width:36px"></span>')+'</span>';
-})();
-
 /* ---------- Room 1: The Gatehouse Court ---------- */
 SCENES.gatehouse=()=>`
 <svg viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice">
@@ -254,61 +230,22 @@ SCENES.tower=()=>`
 <ellipse class="cloud c3" cx="760" cy="60" rx="300" ry="40" fill="#0a0818" opacity=".85"/>
 <path class="flick" d="M1120 150 l-36 84 30 -8 -44 108" stroke="#cfd6ff" stroke-width="5" fill="none" opacity=".6"/>
 <path class="flick" d="M330 130 l-24 60 20 -6 -30 76" stroke="#cfd6ff" stroke-width="4" fill="none" opacity=".45" style="animation-delay:1.7s"/>
+<!-- the clock turret, and the stair head behind you -->
+<g fill="#1d1430" stroke="#2c2444" stroke-width="3">
+  <rect x="1240" y="120" width="290" height="500"/>
+  <path d="M1240 120h290l0 -34 -32 0 0 18 -40 0 0 -18 -40 0 0 18 -40 0 0 -18 -40 0 0 18 -40 0 0 -18 -58 0z"/>
+</g>
+<path d="M1240 300H1530M1240 460H1530" stroke="#120d1e" stroke-width="3" opacity=".7"/>
+<path d="M40 640V470Q40 420 90 420T140 470V640Z" fill="#120d1e" stroke="#2c2444" stroke-width="4"/>
 <!-- tower battlements -->
 <path d="M0 640 h1600 v260 h-1600z" fill="#221a33"/>
 <path d="M0 640 h1600 l0 -36 -60 0 0 20 -80 0 0 -20 -80 0 0 20 -80 0 0 -20 -80 0 0 20 -80 0 0 -20 -80 0 0 20 -80 0 0 -20 -80 0 0 20 -80 0 0 -20 -80 0 0 20 -80 0 0 -20 -80 0 0 20 -80 0 0 -20 -80 0 0 20 -80 0 0 -20 -80 0 0 20 -80 0 0 -20 -76 0z" fill="#171126"/>
 ${[0,1,2,3,4].map(i=>`<line x1="${i*380-60}" y1="660" x2="${i*400-120}" y2="900" stroke="#0d0a16" stroke-width="4" opacity=".7"/>`).join('')}
-<!-- the lightning rod -->
-<g id="el-rod">
-  <rect x="770" y="150" width="18" height="440" fill="#26313a"/>
-  <path d="M779 150 l0 -70" stroke="#4a5a62" stroke-width="8"/>
-  <circle cx="779" cy="72" r="10" fill="#8fa8c8"/>
-  ${[0,1,2].map(i=>`<line x1="779" y1="${220+i*110}" x2="${820+i*24}" y2="${250+i*110}" stroke="#26313a" stroke-width="7"/>`).join('')}
-  <circle class="slowblink" cx="779" cy="600" r="12" fill="#c9d6ff"/>
-</g>
-<!-- the coil spitting early sparks -->
-<path class="arcflick" d="M515 400 l14 -16 -8 -6 16 -14" stroke="#c9d6ff" stroke-width="3" fill="none"/>
-<path class="arcflick a2" d="M515 404 l-16 -14 10 -6 -14 -16" stroke="#c9d6ff" stroke-width="2.5" fill="none"/>
-<!-- the great coil -->
-<g id="art-coil">
-  <rect x="440" y="430" width="150 " height="180" rx="16" fill="#2a2436" stroke="#3a2d4a" stroke-width="5"/>
-  ${[0,1,2,3,4,5].map(i=>`<ellipse cx="515" cy="${450+i*28}" rx="66" ry="9" fill="none" stroke="#8a6f52" stroke-width="5"/>`).join('')}
-  <circle class="flick" cx="515" cy="416" r="16" fill="#9fb8e8"/>
-</g>
-<!-- capacitor bank -->
-<g id="art-capacitor">
-  <rect x="1050" y="450" width="220" height="160" rx="12" fill="#1d1430" stroke="#3a2d4a" stroke-width="6"/>
-  ${[0,1,2].map(i=>`<rect class="flick" x="${1072+i*62}" y="472" width="42" height="80" rx="8" fill="#0d0a16" stroke="#5c4a74" stroke-width="3" style="animation-delay:${i*.5}s"/>`).join('')}
-  <rect x="1080" y="566" width="160" height="24" rx="6" fill="#0d0a16"/>
-  <line x1="1160" y1="450" x2="900 " y2="240" stroke="#26313a" stroke-width="5"/>
-</g>
-<!-- chapel fuse box -->
-<g id="el-fusebox">
-  <rect x="220" y="470" width="120" height="150" rx="8" fill="#241a10" stroke="#3a2d1a" stroke-width="6"/>
-  <line x1="280" y1="470" x2="280" y2="620" stroke="#3a2d1a" stroke-width="4"/>
-  <text x="280" y="456" text-anchor="middle" font-family="Special Elite" font-size="12" fill="#c9bde0">CHAPEL MAINS</text>
-  ${[0,1,2,3].map(i=>`<circle cx="${252+(i%2)*56}" cy="${510+Math.floor(i/2)*56}" r="10" fill="#0d0a16" stroke="#8a7430" stroke-width="3"/>`).join('')}
-</g>
-<!-- storm-glass table -->
-<g id="el-barometer">
-  <rect x="640" y="690 " width="14" height="120" fill="#241a10"/>
-  <ellipse cx="647" cy="690" rx="90" ry="18" fill="#2a2436"/>
-  <path d="M620 676 v-50 q0 -16 16 -16 q16 0 16 16 v50z" fill="#1c2e3a" opacity=".95"/>
-  <path class="bob" d="M628 650 q8 -10 16 0 q-8 8 -16 0z" fill="#9fb8e8"/>
-  <rect x="680" y="646" width="66" height="44" rx="4" fill="#d9cba6" transform="rotate(6 713 668)"/>
-</g>
-<!-- portcullis winch glyphs -->
-<g id="el-portcullis">
-  <rect x="1380" y="660" width="160" height="180" rx="10" fill="#2a2436" stroke="#3a2d4a" stroke-width="6"/>
-  <circle cx="1460" cy="720" r="34" fill="#171126" stroke="#5c4a74" stroke-width="6"/>
-  ${[0,1,2,3].map(i=>`<line x1="1460" y1="720" x2="${Math.round(1460+40*Math.cos(i*Math.PI/2+0.6))}" y2="${Math.round(720+40*Math.sin(i*Math.PI/2+0.6))}" stroke="#5c4a74" stroke-width="6"/>`).join('')}
-  <text x="1460" y="790" text-anchor="middle" font-size="16" fill="#e0cfa2">☾ ✠ ⚘ ♜</text>
-  <text x="1460" y="816" text-anchor="middle" font-family="Special Elite" font-size="10" fill="#8f7fa8">FOLLOW THE CHAIN</text>
-</g>
 <!-- valley below, tiny village lights -->
 <g class="plx" data-depth="5">
   ${[0,1,2,3,4].map(i=>`<circle class="tw" cx="${140+i*90}" cy="${856+((i*13)%18)}" r="2.5" fill="#ffd98c" style="animation-delay:${i*.8}s"/>`).join('')}
 </g>
+<!--SPRITES-->
 <g class="atmo">
 <!-- something in here is still running -->
 <circle id="rl-tower" cx="230" cy="210" r="6" fill="#ffb45e" opacity=".12"/>
@@ -752,7 +689,7 @@ const ROOM2 = {
         inside:{ name:'The music box', figure:musicFig, tool:{ type:'listen', notes:TUNE, label:'▶ turn the crank' } } } },
     { id:'organ', icon:'🎹', name:'The Organ', pos:POS2.organ,
       desc:"Five great pipes, no two the same length, and nobody has stood them in order.",
-      sprite:ART.sprite(POS2.organ, 320, 426, organBody),
+      sprite:st=>ART.sprite(POS2.organ, 320, 426, organBody + (st.solved ? `<ellipse cx="160" cy="200" rx="150" ry="170" fill="#ffd894" opacity=".09"/><path d="M40 330H280" stroke="#ffd894" stroke-width="3" opacity=".5"/>` : '')),
       puzzle:{ type:'press', from:['cabinet'], figure:organFig, slots:STRIP.length, repeat:true, answer:ORGAN, tones:Object.fromEntries(ORGAN_PIPES.map((len, i) => [String(i + 1), PITCH[len]])),
         gm:`pipes counted from the left: ${ORGAN.split('').join(', ')}`,
         miss:"The organ wheezes the wrong tune at you, and stops.",
@@ -1004,97 +941,227 @@ const ROOM3 = {
   ]
 };
 
-const OLD_ROOMS = [
-/* ============ ROOM 4 — THE TOWER ============ */
-{
+/* ============================================================
+   ROOM 4 — THE TOWER
+   The portcullis winch has four clutches, one per shaft, and each can be
+   set to turn one way, the other, or not at all: the drive gears on the
+   wall say which. The capacitor wants its three jars charged as they were
+   the night the Baron photographed them — on a glass negative. The great
+   clock stopped; the village church still keeps time, if you can read it
+   through a telescope that turns the whole world upside down. Then the rod
+   goes up into the storm.
+   ============================================================ */
+
+/* ---- the drive gears: a crank, five gears, and one of them slid out of mesh ---- */
+const GEARS = [   // id, x, y, r, emblem
+  ['crank', 90, 250, 62, null], ['g1', 177, 189, 44, 'sun'], ['g2', 272, 215, 54, 'moon'], ['g3', 337, 150, 38, 'bell'],
+  ['g4', 419, 180, 30, 'star'], ['g5', 263, 308, 40, 'crown'], ['g6', 332, 320, 30, 'key'],
+];
+// the crank turns sunwise; gears in mesh turn opposite ways; the star gear has been slid out of mesh
+const SPIN = { g1: 'anticlockwise', g2: 'clockwise', g3: 'anticlockwise', g4: 'still', g5: 'anticlockwise', g6: 'clockwise' };
+const CLUTCH_MARKS = ['sun', 'moon', 'star', 'bell', 'crown', 'key'];
+const CLUTCHES = CLUTCH_MARKS.map(m => SPIN[GEARS.find(g => g[4] === m)[0]]);
+const gear = (cx, cy, r, emblem) => {
+  const n = Math.round(r / 6.5);
+  let teeth = '';
+  for (let i = 0; i < n; i++) teeth += `<rect x="${cx - 5}" y="${cy - r - 9}" width="10" height="14" rx="2" fill="#8a7a5a" stroke="${V.dark}" stroke-width="2" transform="rotate(${(i * 360 / n).toFixed(1)} ${cx} ${cy})"/>`;
+  return teeth + `<circle cx="${cx}" cy="${cy}" r="${r}" fill="#8a7a5a" stroke="${V.dark}" stroke-width="3"/><circle cx="${cx}" cy="${cy}" r="${r * .62}" fill="#6a5c40" stroke="${V.dark}" stroke-width="2"/>`
+    + `<circle cx="${cx}" cy="${cy}" r="16" fill="#2a2436" stroke="${V.dark}" stroke-width="2.5"/>` + (emblem ? GL(emblem, cx - 11, cy - 11, 22, V.gold) : '');
+};
+const gearsArt = { w: 520, h: 400, body: (() => {
+  let b = `<rect x="2" y="2" width="516" height="396" rx="10" fill="#2a2436" stroke="${V.dark}" stroke-width="4"/>`;
+  for (let i = 0; i < 7; i++) b += `<path d="M2 ${50 + i * 50}H518" stroke="${V.dark}" stroke-width="2" opacity=".35"/>`;
+  // the star gear's bracket is slotted, and it has been slid along to the far end of its slot
+  b += `<path d="M386 168L452 192" stroke="#1c1626" stroke-width="22" stroke-linecap="round"/><path d="M386 168L452 192" stroke="#5c5470" stroke-width="2" stroke-linecap="round" opacity=".8"/>`;
+  GEARS.forEach(([id, x, y, r, em]) => b += gear(x, y, r, em));
+  // the crank, and which way it is wound
+  b += `<path d="M90 250L90 176" stroke="${V.ironLight}" stroke-width="10" stroke-linecap="round"/><circle cx="90" cy="172" r="11" fill="${V.woodLip}" stroke="${V.dark}" stroke-width="3"/>`;
+  b += `<path d="M26 196A84 84 0 0 1 112 160" fill="none" stroke="#efe9da" stroke-width="5" stroke-linecap="round"/><path d="M112 160l-4 -16l16 10Z" fill="#efe9da" transform="rotate(20 112 160)"/>`;
+  return b;
+})() };
+const spinArt = (id) => `<svg viewBox="0 0 24 24" width="100%" height="100%">${id === 'still'
+  ? `<path d="M5 12h14" stroke="currentColor" stroke-width="3" stroke-linecap="round"/><circle cx="12" cy="12" r="3.4" fill="currentColor"/>`
+  : `<path d="${id === 'clockwise' ? 'M6.2 7.4A7.4 7.4 0 1 1 5 15' : 'M17.8 7.4A7.4 7.4 0 1 0 19 15'}" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/>`
+    + `<path d="${id === 'clockwise' ? 'M2.8 4.6l4.4 3.2-4.6 2.4z' : 'M21.2 4.6l-4.4 3.2 4.6 2.4z'}" fill="currentColor"/>`}</svg>`;
+const SPIN_FACES = ['clockwise', 'anticlockwise', 'still'].map(id => ({ id, art: spinArt(id) }));
+function winchBody(st) {
+  let b = `<rect x="6" y="60" width="248" height="190" rx="10" fill="#2a2436" stroke="${V.dark}" stroke-width="5"/>`;
+  b += `<ellipse cx="130" cy="120" rx="70" ry="34" fill="#3a3244" stroke="${V.dark}" stroke-width="4"/><rect x="60" y="86" width="140" height="68" fill="#3a3244"/><ellipse cx="130" cy="154" rx="70" ry="34" fill="#4a4458" stroke="${V.dark}" stroke-width="4"/>`;
+  for (let i = 0; i < 5; i++) b += `<path d="M66 ${96 + i * 13}H194" stroke="#5c5470" stroke-width="4"/>`;
+  b += `<path d="M130 86V${st.solved ? 0 : 20}" stroke="#5c5470" stroke-width="9" stroke-dasharray="10 6"/>`;
+  CLUTCH_MARKS.forEach((m, i) => {
+    const x = 30 + i * 40;
+    b += `<rect x="${x - 16}" y="196" width="32" height="44" rx="6" fill="#1c1626" stroke="#5c5470" stroke-width="2"/>` + GL(m, x - 8, 202, 16, V.gold)
+      + `<path d="M${x} 236l${st.solved ? { clockwise: 8, anticlockwise: -8, still: 0 }[CLUTCHES[i]] : 0} -10" stroke="${V.ironLight}" stroke-width="4" stroke-linecap="round"/>`;
+  });
+  return b;
+}
+
+/* ---- the Baron's photograph of the capacitor: a glass negative ---- */
+const CHARGE = { red: 4, yellow: 1, blue: 3 };
+const BANK = ['red', 'yellow', 'blue'];
+const PHOTO_ORDER = ['blue', 'red', 'yellow'];          // he stood the jars differently that night
+const CAPACITOR = BANK.map(c => CHARGE[c]);
+const inv = (hex) => '#' + (0xffffff - parseInt(hex.slice(1), 16)).toString(16).padStart(6, '0');
+const plateArt = { w: 560, h: 420, body: (() => {
+  // everything on a negative is the other way about: the night sky pale, the bolt and the moon black, every colour its opposite
+  let b = `<rect x="6" y="10" width="548" height="404" rx="8" fill="#000" opacity=".35"/><rect x="2" y="2" width="548" height="404" rx="8" fill="#c9c2ad" stroke="#5c5470" stroke-width="5"/>`;
+  b += `<rect x="20" y="20" width="512" height="368" fill="${inv('#120d1e')}"/><ellipse cx="160" cy="70" rx="160" ry="24" fill="${inv('#060412')}" opacity=".6"/>`;
+  b += `<circle cx="452" cy="74" r="26" fill="${inv('#e8e2c8')}"/><path d="M262 30l-26 62 22 -6 -32 78" stroke="${inv('#cfd6ff')}" stroke-width="6" fill="none" stroke-linejoin="round"/>`;
+  b += `<rect x="20" y="300" width="512" height="88" fill="${inv('#221a33')}"/><path d="M20 300h512" stroke="${inv('#0d0a16')}" stroke-width="4"/>`;
+  PHOTO_ORDER.forEach((col, i) => {
+    const x = 120 + i * 140, top = 150, h = 150, lvl = CHARGE[col];
+    b += `<rect x="${x - 36}" y="${top}" width="72" height="${h}" rx="14" fill="${inv('#0d0a16')}" stroke="${inv('#5c5470')}" stroke-width="4"/>`;
+    for (let k = 1; k <= 5; k++) b += `<path d="M${x + 22} ${top + h - 8 - k * 27}h12" stroke="${inv('#8f86b8')}" stroke-width="3"/>`;
+    b += `<rect x="${x - 28}" y="${top + h - 8 - lvl * 27}" width="56" height="${lvl * 27}" rx="6" fill="${inv('#bfe0ff')}"/>`;
+    b += `<rect x="${x - 26}" y="${top - 22}" width="52" height="24" rx="6" fill="${inv(C[col])}" stroke="${inv('#0d0a16')}" stroke-width="3"/>`;
+  });
+  return b;
+})() };
+// the camera up on its legs, and the plate leaning against one of them where you can see it
+const cameraBody = `<path d="M60 120L24 330M60 120L96 330M60 120V330" stroke="${V.woodDark}" stroke-width="7" stroke-linecap="round"/>`
+  + `<rect x="12" y="40" width="96" height="80" rx="6" fill="${V.wood}" stroke="${V.dark}" stroke-width="4"/><path d="M108 58l28 -12v68l-28 -12Z" fill="#241a10" stroke="${V.dark}" stroke-width="3"/><circle cx="136" cy="80" r="11" fill="#1c2e3a" stroke="${V.brass}" stroke-width="4"/>`
+  + `<g transform="rotate(-9 110 300)"><rect x="56" y="230" width="104" height="80" rx="4" fill="#5c5470" stroke="${V.dark}" stroke-width="3"/>`
+  + ART.inset(60, 234, 96, 72, plateArt.w, plateArt.h, plateArt.body) + `</g>`;
+
+/* ---- the capacitor bank ---- */
+function bankBody(open) {
+  let b = `<rect x="6" y="150" width="248" height="40" rx="6" fill="${V.woodDark}" stroke="${V.dark}" stroke-width="4"/><circle cx="40" cy="196" r="12" fill="#241a10"/><circle cx="220" cy="196" r="12" fill="#241a10"/>`;
+  BANK.forEach((col, i) => {
+    const x = 50 + i * 80, n = open ? CHARGE[col] : 0;
+    b += `<rect x="${x - 26}" y="34" width="52" height="116" rx="12" fill="#0d0a16" stroke="#5c5470" stroke-width="3"/>`;
+    if (n) b += `<rect x="${x - 20}" y="${144 - n * 21}" width="40" height="${n * 21}" rx="6" fill="#bfe0ff" opacity=".85"/><ellipse cx="${x}" cy="${144 - n * 10}" rx="34" ry="${n * 14}" fill="#bfe0ff" opacity=".12"/>`;
+    b += `<rect x="${x - 20}" y="16" width="40" height="20" rx="5" fill="${C[col]}" stroke="${V.dark}" stroke-width="3"/><path d="M${x} 16V4" stroke="#5c5470" stroke-width="4"/>`;
+  });
+  return b + `<path d="M50 4H210" stroke="#5c5470" stroke-width="4"/>`;
+}
+
+/* ---- the telescope, and the village it shows you upside down ---- */
+const CHURCH = { h: 8, m: 5 };
+const TOWER_TIME = `${CHURCH.h}:${String(CHURCH.m).padStart(2, '0')}`;
+const scopeArt = { w: 520, h: 520, body: (() => {
+  const village = (() => {
+    let v = `<rect x="0" y="0" width="520" height="520" fill="#2a2a4e"/>`;
+    for (let i = 0; i < 30; i++) v += `<circle cx="${(i * 97) % 520}" cy="${(i * 53) % 210}" r="${1 + (i % 3) * .6}" fill="#e6e0c8"/>`;
+    v += `<path d="M0 330Q130 290 260 320T520 300V520H0Z" fill="#151026"/><path d="M0 380Q140 350 300 372T520 360V520H0Z" fill="#0d0a16"/>`;
+    // the church: a spire, and a clock you could set yours by
+    v += `<rect x="226" y="190" width="80" height="170" fill="#3a3250"/><path d="M220 190L266 80L312 190Z" fill="#2a2440"/><rect x="242" y="300" width="48" height="60" rx="24" fill="#120d1e"/>`;
+    v += ART.clockFace(266, 236, 30, CHURCH.h, CHURCH.m, { face: '#e8dfc2', ink: '#1c1408', rim: '#8a7430' });
+    [[90, 300], [150, 318], [360, 304], [420, 316]].forEach(([x, y], i) => v += `<path d="M${x - 34} ${y + 50}V${y}L${x} ${y - 30}L${x + 34} ${y}V${y + 50}Z" fill="#2a2440"/><rect x="${x - 8}" y="${y + 6}" width="16" height="18" fill="#ffd98c" opacity="${i % 2 ? .9 : .6}"/>`);
+    return v;
+  })();
+  // the eyepiece turns the world over, as a telescope's will
+  return `<rect width="520" height="520" fill="#05040a"/><clipPath id="eye"><circle cx="260" cy="260" r="236"/></clipPath>`
+    + `<g clip-path="url(#eye)"><g transform="rotate(180 260 260)">${village}</g></g><circle cx="260" cy="260" r="236" fill="none" stroke="#2a2436" stroke-width="10"/>`;
+})() };
+const telescopeBody = `<path d="M90 140L50 260M90 140L130 260M90 140V260" stroke="${V.woodDark}" stroke-width="7" stroke-linecap="round"/>`
+  + `<g transform="rotate(-18 90 120)"><rect x="10" y="104" width="170" height="30" rx="8" fill="${V.brass}" stroke="${V.dark}" stroke-width="4"/><rect x="0" y="108" width="22" height="22" rx="4" fill="${V.brassDark}" stroke="${V.dark}" stroke-width="3"/><rect x="170" y="98" width="20" height="42" rx="5" fill="${V.brassDark}" stroke="${V.dark}" stroke-width="3"/></g>`;
+
+/* ---- the great clock ---- */
+function clockBody(open) {
+  const [h, m] = open ? [CHURCH.h, CHURCH.m] : [3, 40];
+  return `<circle cx="120" cy="120" r="114" fill="#2c2444" stroke="${V.dark}" stroke-width="6"/>` + ART.clockFace(120, 120, 98, h, m, { numerals: true, face: '#e8dfc2', ink: '#1c1408', rim: '#8a7430' });
+}
+
+/* ---- the rod ---- */
+const ROD_AT = 73;
+const READY4 = [['winch', 'bell'], ['capacitor', 'bolt'], ['towerclock', 'moon']];
+function rodBody(st) {
+  let b = `<path d="M74 40V430" stroke="#4a5a62" stroke-width="12"/><path d="M74 40V10" stroke="#8fa8c8" stroke-width="6"/><circle cx="74" cy="8" r="8" fill="#cfd6ff"/>`;
+  for (let i = 0; i < 6; i++) b += `<ellipse cx="74" cy="${300 + i * 22}" rx="46" ry="8" fill="none" stroke="#8a6f52" stroke-width="5"/>`;
+  b += `<rect x="14" y="440" width="120" height="96" rx="10" fill="#2a2436" stroke="${V.dark}" stroke-width="4"/>`;
+  READY4.forEach(([id, g], i) => {
+    const on = st.solved || (st.open && st.open[id]);
+    b += `<circle cx="${40 + i * 34}" cy="466" r="9" fill="${on ? '#9fd0ff' : '#120d1e'}" stroke="#5c5470" stroke-width="2"/>` + GL(g, 31 + i * 34, 482, 18, on ? '#9fd0ff' : '#5c5470');
+  });
+  if (st.solved) b += `<path d="M74 0l-18 50 16 -4 -22 60" stroke="#e8f0ff" stroke-width="5" fill="none" stroke-linejoin="round"/>`;
+  return b;
+}
+
+const POS4 = {
+  towerclock: { x: 79,    y: 17.8, w: 14.4,  h: 25.6 },
+  gears:      { x: 64.4,  y: 45.6, w: 14.4,  h: 19.6 },
+  winch:      { x: 81.9,  y: 61.1, w: 16.25, h: 27.8 },
+  telescope:  { x: 54.4,  y: 64.4, w: 11.9,  h: 28.9 },
+  rod:        { x: 44,    y: 6.7,  w: 9.25,  h: 59.6 },
+  camera:     { x: 30,    y: 54.4, w: 10,    h: 37.8 },
+  capacitor:  { x: 9.4,   y: 50,   w: 16.25, h: 21.1 },
+};
+
+const ROOM4 = {
   id:'tower', name:'Room 4 — The Tower', scene:'tower',
   stageFx:'shudder',
   relays:[{el:'rl-tower',mode:'pulse',period:2.6}],
   wrongSound:'thunder',
   wrongVfx:'flash',
   intro:"The storm the Baron waited his whole life for is here. Catch it, and the gate lifts.",
-  objective:"Rig the conductor, charge the coil, and <b>ride the lightning</b> — the portcullis runs on the storm.",
+  objective:"Set the winch, charge the jars, start the clock — and <b>ride the lightning</b>. The portcullis runs on the storm.",
   entryBeat:"The tower door was barred from this side — and the bar now leans against the battlement, set aside as gently as a sleeping child. It wanted you to reach the top. It's the gate it never learned to open.",
   entrySound:'thunder',
-  completeText:"The rig is wound, the fuses hold, and the portcullis is up. The storm is directly overhead — the next strike is yours to take.",
-  chain:"Five ritual tags, each carrying its reason: the chains are grounded first because everything after puts charge in the room, the capacitor is cranked while the rod is still down, the coil can only be coupled once the rod is up, and the master switch is last — EADCB → the fuse box's chart gives each way its rating and the ways are numbered: 2386 → the storm table rules out the six-thousand-volt front and the one that strikes after the bell tolls one, leaving 11:30, less the fifty minutes the charge takes = 10:40 → the portcullis rings are stamped with their own figures and the counterweight chain passes them moon, tower, cross, flower: 7539 → hold the master switch closed and let go on a nine-kilovolt arc.",
+  completeText:"The winch is geared, the jars are full, and the great clock is going again. The storm is directly overhead — the next strike is yours to take.",
+  chain:`The crank on the drive gears is wound sunwise and gears in mesh turn opposite ways, so the sun gear turns anticlockwise, the moon gear clockwise, the bell and crown gears anticlockwise off the moon, the key gear clockwise off the crown, and the star gear has been slid out of mesh and stands still: the winch's clutches are set ${CLUTCHES.join(', ')} → the Baron's photograph of the capacitor is a glass negative — the sky is pale and the bolt is black — so its cyan cap is really red, its blue cap really yellow and its orange cap really blue, and the jars are charged red ${CHARGE.red}, yellow ${CHARGE.yellow}, blue ${CHARGE.blue}: ${CAPACITOR.join(', ')} → the telescope turns the village upside down; the right way up, the church clock says ${TOWER_TIME}, and the great clock is set to it → with all three done the rod goes up, and the coil's dial is swept until the meter fills, at ${ROD_AT}.`,
   objects:[
-    { id:'rig', icon:'🔩', name:'The Ignition Rig', pos:{x:45,y:12,w:12,h:56},
-      desc:"The Baron's ignition ritual, five steps on five scattered vellum tags. He wrote every one of them with its reason attached, because he expected to be doing this alone and frightened:\n\n   TAG A — “Crank the capacitor, and crank it while the rod is still down. I will not have a raised rod standing over a charging bank.”\n\n   TAG B — “Throw the master switch. Last. It is the last thing anyone does in this tower, one way or the other.”\n\n   TAG C — “Couple the coil — and not until the rod is up, because the coupling runs through the rod's own collar and cannot be reached from the floor.”\n\n   TAG D — “Raise the rod.”\n\n   TAG E — “Ground the chains first, before anything else whatever. Everything after this puts charge in the room, and the chains are the only reason it goes into the earth and not into you.”",
-      puzzle:{
-        type:'order', order:{labels:{"A": "Crank the capacitor", "B": "Throw the master switch", "C": "Couple the coil", "D": "Raise the rod", "E": "Ground the chains"}},
-        prompt:"Enter the five tag letters in ritual order.", placeholder:"FIVE LETTERS", answers:['EADCB'],
+    { id:'gears', icon:'⚙️', name:'The Drive Gears', pos:POS4.gears,
+      desc:"The train of gears that drives the winch, behind a broken guard. Every shaft but the crank's wears a little brass emblem.",
+      figure:ART.svg(gearsArt.w, gearsArt.h, gearsArt.body),
+      sprite:ART.sprite(POS4.gears, gearsArt.w, gearsArt.h, gearsArt.body) },
+    { id:'winch', icon:'🏗️', name:'Portcullis Winch', pos:POS4.winch,
+      desc:"The chain to the portcullis comes up through the floor and round this drum. Six clutches, each with an emblem: one way, the other way, or not at all.",
+      sprite:st=>ART.sprite(POS4.winch, 260, 256, winchBody(st)),
+      puzzle:{ type:'combo', from:['gears'], faces:SPIN_FACES, wheels:CLUTCH_MARKS.map(g=>({ mark:{ glyph:g } })), answer:CLUTCHES, tryLabel:'ENGAGE',
+        miss:"The drum lurches, the gears shriek, and the clutches throw themselves out again.",
         hints:[
-          "Every tag carries its reason. Two of them name their own place outright — one insists on being first, one on being last.",
-          "Chains first (E), master switch last (B). The capacitor is cranked while the rod is still down, so the capacitor comes before the rod.",
-          "Chains, capacitor, rod, then the coil once the rod is up, then the switch: enter EADCB."
+          "Six clutches, each marked with an emblem: clockwise, anticlockwise, or still. The same emblems are on the drive gears behind the guard.",
+          "The crank turns the big gear the way its arrow shows, and gears that touch always turn opposite ways. Follow the train along — and look hard at whether every gear really touches its neighbour.",
+          "Sun anticlockwise, moon clockwise, star still, bell anticlockwise, crown anticlockwise, key clockwise."
         ],
-        solvedText:"Chains, capacitor, rod, coil, switch. The rig assents piece by piece, and the whole tower starts to hum like a struck bell in very slow motion.",
-        solveBeat:"Lightning walks the ridge across the valley — one, two, three strikes in a line, closing on the castle like footsteps.",
-        beatSound:'thunder'
-      }
-    },
-    { id:'fusebox', onSolve:{el:'rx-tower',op:.2,fx:'surge'}, icon:'🕯️', name:'Chapel Fuse Box', pos:{x:13,y:50,w:9,h:20},
-      desc:"The chapel mains feed the tower through a four-digit fuse box. Four ways, four dials, and the chart pasted inside the door tells you what each way is allowed to carry:\n\n   WAY 1 — CHAPEL LAMPS ....... 2\n   WAY 2 — TOWER STAIR ........ 3\n   WAY 3 — THE COIL ........... 8\n   WAY 4 — GROUND CHAINS ...... 6\n\nUnderneath, in the Baron's hand:\n\n   “The coil takes eight and nothing under it. It has cost me two fuses\n    and one man who thought he knew better.”",
-      puzzle:{
-        type:'keypad',
-        prompt:"Enter the 4-digit code.", answers:['2386'],
+        solvedText:"Six clutches bite. The drum takes up forty years of slack, and somewhere below, the portcullis shifts in its grooves." } },
+    { id:'camera', icon:'📷', name:"The Baron's Camera", pos:POS4.camera,
+      desc:"His camera, still on its legs, and the last glass plate he ever took leaning against it: the capacitor, the night it was full.",
+      figure:ART.svg(plateArt.w, plateArt.h, plateArt.body),
+      sprite:ART.sprite(POS4.camera, 160, 340, cameraBody) },
+    { id:'capacitor', icon:'🫙', name:'The Capacitor', pos:POS4.capacitor,
+      desc:"Three Leyden jars under three coloured caps, all of them empty. Each takes its charge in five steps.",
+      sprite:st=>ART.sprite(POS4.capacitor, 260, 210, bankBody(st.solved)),
+      puzzle:{ type:'levels', from:['camera'], cols:BANK.map(c=>({ mark:{ color:c } })), max:5, skin:'tanks', answer:CAPACITOR, tryLabel:'CLOSE THE CIRCUIT',
+        miss:"Blue fire crawls up the jars and dies. Not like that.",
         hints:[
-          "No arithmetic here. The chart gives the rating for each way, and the ways are numbered.",
-          "Dial them in way order: chapel lamps, tower stair, coil, ground chains.",
-          "2, 3, 8, 6. Enter 2386."
+          "Three jars to charge, and a photograph of them full. But the caps in the photograph are colours this capacitor doesn't have.",
+          "It is a glass negative: everything is its opposite. The sky is pale and the bolt is black — and so every colour is its opposite too. Cyan is red, blue is yellow, orange is blue.",
+          `Red ${CHARGE.red}, yellow ${CHARGE.yellow}, blue ${CHARGE.blue}: ${CAPACITOR.join(', ')}.`
         ],
-        solvedText:"2-3-8-6. The chapel mains close with a thud you feel through the stone, and the tower's veins fill with potential."
-      }
-    },
-    { id:'barometer', icon:'⛈️', name:'The Storm-Glass Table', pos:{x:37,y:72,w:12,h:18},
-      desc:"The Baron's storm-glass and his strike table for tonight, in a steady hand that gets less steady:\n\n“FRONT ONE — strikes at 10:15 · six thousand volts\nFRONT TWO — strikes at 11:30 · twelve thousand volts\nFRONT THREE — strikes at 1:20 · nine thousand volts\n\nTHE COIL NEEDS NINE THOUSAND OR BETTER.\nAFTER THE CHAPEL BELL TOLLS ONE, THE DOORS BELOW OPEN ON THEIR OWN. WE MUST BE GONE.\nBEGIN THE CHARGE 50 MINUTES BEFORE THE STRIKE.”",
-      puzzle:{
-        prompt:"Set the charge time (hour then minutes, e.g. 730).", placeholder:"H:MM", answers:['1040'],
+        solvedText:"The jars fill with crawling blue light, red to four, yellow to one, blue to three, and the air on the tower top starts to taste of tin." } },
+    { id:'telescope', icon:'🔭', name:'The Telescope', pos:POS4.telescope,
+      desc:"A brass telescope on a tripod, trained on the village in the valley. The church is just in the middle of it.",
+      figure:ART.svg(scopeArt.w, scopeArt.h, scopeArt.body),
+      sprite:ART.sprite(POS4.telescope, 190, 260, telescopeBody) },
+    { id:'towerclock', icon:'🕰️', name:'The Great Clock', pos:POS4.towerclock,
+      desc:"The tower's great clock, stopped. The Baron kept it to the village church to the minute.",
+      sprite:st=>ART.sprite(POS4.towerclock, 240, 240, clockBody(st.solved)),
+      puzzle:{ type:'clock', from:['telescope'], start:{h:3,m:40}, answer:TOWER_TIME, tryLabel:'START THE CLOCK',
+        miss:"The great clock ticks twice and stops again. That is not the village's time.",
         hints:[
-          "Two filters: the coil's voltage floor, and the bell that tolls one.",
-          "10:15 is only six thousand volts. 1:20 is after the bell tolls one — and you must be gone. That leaves 11:30 — count back 50 minutes.",
-          "11:30 minus 0:50 is 10:40. Enter 1040."
+          "A clock to set, and a telescope trained on the village church — which has a clock of its own.",
+          "Look at the church in the telescope: the spire points down and the stars are underneath. A telescope turns everything upside down — the church clock too. Turn it the right way up before you read it.",
+          `The right way up, the church clock says ${TOWER_TIME}.`
         ],
-        solvedText:"10:40. The charge timer arms itself with a sound like a held breath. The storm-glass crystals climb the tube — the front is coming to you."
-      }
-    },
-    { id:'portcullis', icon:'⚙️', name:'Portcullis Winch', pos:{x:85,y:70,w:12,h:22}, hiddenUntil:'barometer',
-      desc:"The portcullis winch answers to four glyph rings, and each ring is stamped with its own figure beside the glyph, so that nobody winding this gate in the dark has to remember anything:\n\n   ☾ 7        ♜ 5        ✠ 3        ⚘ 9\n\nThe rings do not turn independently. The counterweight chain runs from the drum and passes them one after another, and you can follow it with your eye the whole way: the moon first, then the tower, then the cross, and the flower last of all, where the chain goes down into the floor.",
-      puzzle:{
-        type:'keypad',
-        prompt:"Enter the 4-digit release.", answers:['7539'],
+        solvedText:"The great clock catches, and goes. Down in the valley, as if it heard, the church bell starts to ring." } },
+    { id:'rod', icon:'⚡', name:'The Lightning Rod', pos:POS4.rod, ringAt:[50, 88], needs:READY4.map(r=>r[0]),
+      desc:"The rod is up in the storm and the coil at its foot is live. One dial left: sweep it until the coil sings, and the sky will find you.",
+      deadDesc:"The rod lies in its cradle under three dark lamps. The winch, the capacitor and the clock must all be ready before it will rise.",
+      deadFigure:st=>ART.svg(148, 540, rodBody(st)),
+      sprite:st=>ART.sprite(POS4.rod, 148, 540, rodBody(st)),
+      puzzle:{ type:'tune', min:0, max:100, step:1, start:12, at:ROD_AT, tol:1, unit:'',
         hints:[
-          "You do not need anything from the rest of the castle. The figures are stamped on the rings and the chain itself gives the order.",
-          "Follow the chain from the drum: moon, tower, cross, flower.",
-          "☾ 7, ♜ 5, ✠ 3, ⚘ 9. Enter 7539."
+          "Sweep the coil's dial slowly and watch the meter: it climbs as you get close.",
+          "Somewhere past the middle of the dial the meter fills completely. Hold it there.",
+          `The coil sings at ${ROD_AT}.`
         ],
-        solvedText:"7-5-3-9, and the winch pawl lifts. The portcullis is free. All that remains is to bring the lightning down and signal the village to open the valley gate.",
-        solveBeat:"On the battlement behind you — patient, unhurried, close — something sets down its weight. It has climbed the outside of the tower. It always could.",
-        beatSound:'growl'
-      }
-    },
-    { id:'rod', icon:'⚡', name:'The Master Switch', pos:{x:44,y:70,w:14,h:12}, hiddenUntil:'portcullis',
-      desc:"The Baron's master switch, a brass handle the length of your forearm. Hold it closed and the capacitor bank charges; let it go and the charge bleeds away through the ground chains.\n\nThe rig's own plate is explicit, and the storm glass told you the rest:\n\n“THE GATE RELEASES ON A NINE-KILOVOLT ARC. BELOW NINE IT WILL NOT CARRY. ABOVE NINE THE COIL GOES, AND THE COIL IS NOT REPLACEABLE.”\n\nHold it too long and you will take the rig with you. Let go too early and nothing crosses the gap.",
-      puzzle:{
-        type:'hold',
-        hold:{ label:'⚡ HOLD THE SWITCH CLOSED', unit:'kV', max:14, target:9, tolerance:0.5,
-               rate:2.6, fall:3.6, ticks:[3,6,9,12] },
-        prompt:"Hold the switch closed and let go at the arc the gate needs.",
-        hints:[
-          "The plate gives the number outright. The difficulty is not knowing it — it is stopping there.",
-          "The gauge climbs while you hold and falls back the moment you let go. Nine kilovolts, no more.",
-          "Hold until the gauge reads 9.0 and release. If you overshoot, let it fall and come up again."
-        ],
-        solvedText:"",
-        solveBeat:"Nine kilovolts crosses the gap with a crack you feel in your teeth, and somewhere below, iron begins to move.",
-        beatSound:'thunder'
-      }
-    }
+        solvedText:"" } },
   ]
-}
-];
-const ROOMS = [ROOM1, ROOM2, ROOM3, ...OLD_ROOMS];
+};
+
+const ROOMS = [ROOM1, ROOM2, ROOM3, ROOM4];
 
 registerScenario({
   id:'vorstag', classic:true,
