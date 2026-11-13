@@ -29,9 +29,8 @@ which players are shown on the end card; and — the one that matters most —
 that the room can actually be finished, opening locks only from what is
 visible and what has already come out of an open one. It prints that order for
 every room. It also holds a scenario to no more than two of any kind of lock,
-and all five to different shapes and different endings. Scenarios not yet
-rebuilt are checked against the standard they were built under. It needs
-nothing but node.
+and all five to different shapes and different endings. It needs nothing but
+node.
 
 **`playthrough.js`** drives a real browser through every scenario from the
 title to the score card. On the reset grammar it has no answer key: it reads
@@ -41,8 +40,7 @@ in the order the room allows, looking first at every object the lock says its
 answer comes from. Along the way it checks that nothing hidden is in the room
 early and nothing dead can be worked early, takes a wrong try and two hints on
 the first lock to check the clock maths, and presses the scenario's own final
-button. The one scenario not yet rebuilt is still played from the table at
-the top of the file. Needs Playwright and the dev server.
+button. Needs Playwright and the dev server.
 
 **`sync.js`** puts a shared screen and a phone in the same game and plays
 every scenario room by room, the two taking turns to open the locks. After
