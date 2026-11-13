@@ -198,51 +198,7 @@ SCENES.locomotive=()=>`
   ${[0,1,2].map(i=>`<g><circle cx="${300+i*110}" cy="${240+(i%2)*20}" r="42" fill="#241a0c" stroke="#c9a04a" stroke-width="5"/>
    <line class="flick" x1="${300+i*110}" y1="${240+(i%2)*20}" x2="${328+i*110}" y2="${216+(i%2)*20}" stroke="#e0cfa2" stroke-width="4" style="animation-delay:${i*.4}s"/></g>`).join('')}
 </g>
-<!-- brake & levers -->
-<g>
-  <rect x="180" y="430" width="16" height="180" fill="#3a2a16" transform="rotate(-14 188 520)"/>
-  <circle cx="166" cy="424" r="16" fill="#8a2418"/>
-  <rect x="260" y="450" width="14" height="160" fill="#3a2a16" transform="rotate(8 267 530)"/>
-  <circle cx="276" cy="446" r="13" fill="#c9a04a"/>
-</g>
-<!-- fire drill card -->
-<g id="el-fireboxcard">
-  <rect x="440" y="480" width="120" height="160" rx="6" fill="#d9cba6" transform="rotate(-4 500 560)"/>
-  <text x="500" y="512" text-anchor="middle" font-family="Special Elite" font-size="11" fill="#7a2a1a" transform="rotate(-4 500 560)">FIRE DRILL</text>
-  ${[0,1,2,3,4].map(i=>`<line x1="458" y1="${530+i*20}" x2="542" y2="${526+i*20}" stroke="#5a4a34" stroke-width="3" transform="rotate(-4 500 560)"/>`).join('')}
-</g>
-<!-- signal lantern case -->
-<g id="el-lantern">
-  <rect x="1120" y="480" width="130" height="150" rx="10" fill="#241a0c" stroke="#5c4423" stroke-width="6"/>
-  <rect x="1150" y="510" width="70" height="80" rx="8" fill="#0d0805" stroke="#c9a04a" stroke-width="4"/>
-  <circle class="flick" cx="1185" cy="550" r="18" fill="#8a2418"/>
-  <circle cx="1185" cy="466" r="8" fill="#c9a04a"/>
-</g>
-<!-- timetable board -->
-<g id="el-timetable">
-  <rect x="1300" y="180" width="220" height="240" fill="#241a0c" stroke="#3a2a16" stroke-width="7"/>
-  <text x="1410" y="214" text-anchor="middle" font-family="Special Elite" font-size="14" fill="#d9cba6">TIME TABLE</text>
-  ${[0,1,2,3,4,5].map(i=>`<line x1="1320" y1="${234+i*28}" x2="${1500-((i%3)*20)}" y2="${234+i*28}" stroke="#8a6a3a" stroke-width="3"/>`).join('')}
-</g>
-<!-- coupling pins -->
-<g id="el-coupling">
-  <rect x="1300" y="640" width="220 " height="160" rx="12" fill="#2c1c10" stroke="#170f08" stroke-width="7"/>
-  ${[0,1,2,3].map(i=>`<g><rect x="${1322+i*52}" y="668" width="34" height="76" rx="8" fill="#170f08" stroke="#c9a04a" stroke-width="3"/>
-   <text x="${1339+i*52}" y="712" text-anchor="middle" font-size="15" fill="#e0cfa2">${'★✚●■'[i]}</text></g>`).join('')}
-  <text x="1410" y="774" text-anchor="middle" font-family="Special Elite" font-size="10" fill="#8a6a3a">REAR FORWARD</text>
-</g>
-<!-- whistle pull (final) -->
-<g id="el-whistle">
-  <rect x="80" y="640 " width="240" height="180" rx="14" fill="#241a0c" stroke="#5c4423" stroke-width="6"/>
-  <line x1="160" y1="660" x2="160" y2="600" stroke="#c9a04a" stroke-width="8"/>
-  <circle cx="160" cy="592" r="14" fill="#c9a04a"/>
-  <ellipse class="steam" cx="160" cy="560" rx="18" ry="9" fill="#c8ccda" opacity=".4"/>
-  <rect x="200" y="680" width="100" height="60" rx="8" fill="#0d0805"/>
-  ${[0,1,2].map(i=>`<circle class="slowblink" cx="${226+i*26}" cy="710" r="8" fill="#ffd98c" style="animation-delay:${i*.4}s"/>`).join('')}
-</g>
-<!-- the conductor's punch, hanging by the door -->
-<g><line x1="1080" y1="440" x2="1080" y2="470" stroke="#170f08" stroke-width="3"/>
-<path d="M1068 470 q12 -10 24 0 l-4 26 q-8 6 -16 0z" fill="#8a8a92"/></g>
+<!--SPRITES-->
 <g class="atmo">
 <!-- something in here is still running -->
 <circle id="rl-locomotive" cx="230" cy="210" r="6" fill="#ffd98c" opacity=".12"/>
@@ -832,100 +788,139 @@ const ROOM3 = {
   ]
 };
 
-const OLD_ROOMS = [
-/* ============ ROOM 4 — THE LOCOMOTIVE ============ */
-{
+/* ============================================================
+   ROOM 4 — THE LOCOMOTIVE
+   Nobody is driving. The junction is coming up, and the ground frame
+   that sets it is in reach of the cab steps: ten levers, red for
+   signals, black for points, white for spare. The diagram shows what
+   each lever works, and the driver's route card shows where this train
+   should have gone. Set the road home, then whistle and go — two pairs
+   of hands at once.
+   ============================================================ */
+
+/* ---- the junction, as the diagram draws it ---- */
+// Points: a black lever. Pulled, it throws the point to the road drawn with a gap at the blade.
+// Signals: a red lever. Pulled, the arm drops and the road past it is clear.
+const LEVER_KIND = { 1: 'signal', 2: 'point', 3: 'signal', 4: 'signal', 5: 'point', 6: 'spare', 7: 'point', 8: 'signal', 9: 'spare', 10: 'spare' };
+const HOME = 'crown';
+const ROAD_HOME = ['1', '2', '5', '4'];                 // the entry signal, both points reversed, the home signal
+const ink = '#1c140c', track = (d, w = 10) => `<path d="${d}" stroke="${ink}" stroke-width="${w}" fill="none" stroke-linecap="round" stroke-linejoin="round"/>`;
+const leverTag = (n, x, y) => `<circle cx="${x}" cy="${y}" r="16" fill="${LEVER_KIND[n] === 'signal' ? '#a3322a' : ink}" stroke="${M.paper}" stroke-width="2"/>`
+  + W(x, y + 6, String(n), { size: 17, fill: M.paper, weight: 700, face: 'num' });
+// a signal post standing up from its road (dir -1) or hanging below it (dir 1), its arm, and its lever's number
+const semaphore = (x, y, n, dir = -1) => { const end = y + dir * 46;
+  return `<path d="M${x} ${y}V${end}" stroke="${ink}" stroke-width="4"/><rect x="${x}" y="${end - 4}" width="30" height="9" fill="#a3322a" stroke="${ink}" stroke-width="2"/>` + leverTag(n, x - 2, y + dir * 70); };
+const bufferStop = (x, y) => `<path d="M${x} ${y - 16}V${y + 16}M${x + 8} ${y - 16}V${y + 16}" stroke="${ink}" stroke-width="6"/>`;
+const diagramArt = { w: 760, h: 456, body: (() => {
+  let b = `<rect width="760" height="456" fill="${M.woodDark}"/><rect x="14" y="14" width="732" height="428" fill="#e6dcc0"/>`;
+  // the main line in from the left, straight through to the mountains: every point's normal road is the unbroken one
+  b += track('M30 320H690');
+  // point 2: its reverse road climbs to the upper line, drawn with a gap where it leaves
+  b += track('M222 298L286 200H620') + leverTag(2, 196, 352);
+  // point 5, on the upper line: straight on to the station that is not on the line; its reverse road climbs to the top
+  b += track('M402 182L458 92H620') + leverTag(5, 380, 226);
+  // point 7, on the main line: its reverse road drops toward a bridge that is gone
+  b += track('M522 342L566 410H600') + bufferStop(606, 410) + leverTag(7, 506, 292);
+  // where each road goes
+  b += roundel(HOME, 652, 92, 24) + roundel('eye', 652, 200, 24) + roundel('mountain', 722, 320, 24) + roundel('wave', 640, 410, 24);
+  // the signals, each beside the road it guards
+  b += semaphore(90, 310, 1) + semaphore(580, 102, 4, 1) + semaphore(580, 210, 3, 1) + semaphore(682, 330, 8, 1);
+  // the key: a black disc is a point, a red one a signal
+  b += `<rect x="30" y="384" width="150" height="46" rx="6" fill="none" stroke="${M.paperDark}" stroke-width="2"/>`
+    + `<circle cx="54" cy="407" r="11" fill="${ink}"/><path d="M70 412H104M76 404L96 392" stroke="${ink}" stroke-width="4" fill="none"/>`
+    + `<circle cx="128" cy="407" r="11" fill="#a3322a"/><path d="M146 418V398" stroke="${ink}" stroke-width="3"/><rect x="146" y="398" width="20" height="6" fill="#a3322a"/>`;
+  return b;
+})() };
+
+/* ---- the driver's route card ---- */
+const routeArt = { w: 400, h: 500, body: `<rect width="400" height="500" fill="${M.woodDark}"/><rect x="20" y="20" width="360" height="460" rx="10" fill="#efe6cc" stroke="${M.ink}" stroke-width="3"/>`
+  + crescent(200, 110, 46, M.brassDark)
+  + `<path d="M200 182V300" stroke="${M.ink}" stroke-width="8" stroke-dasharray="18 12"/><path d="M176 290L200 322L224 290" stroke="${M.ink}" stroke-width="8" fill="none" stroke-linejoin="round"/>`
+  + roundel(HOME, 200, 392, 50) };
+
+/* ---- the ground frame ---- */
+const frame = (keys, pulled = []) => {
+  // the frame stands against the whitewashed boards of its hut, so a black lever shows as plainly as a red one
+  let b = `<rect width="760" height="420" fill="#a89c80"/>` + Array.from({ length: 7 }, (_, i) => `<path d="M0 ${30 + i * 56}H760" stroke="#8e8268" stroke-width="3"/>`).join('')
+    + `<rect x="20" y="300" width="720" height="40" rx="6" fill="#3a2a16" stroke="#120c08" stroke-width="4"/>`;
+  for (let n = 1; n <= 10; n++) {
+    const x = 70 + (n - 1) * 69, kind = LEVER_KIND[n], col = kind === 'signal' ? '#a3322a' : kind === 'point' ? '#1c140c' : '#e6dcc0';
+    const rod = (d) => `<path d="${d}" stroke="#2a2018" stroke-width="22" stroke-linecap="round"/><path d="${d}" stroke="${col}" stroke-width="15" stroke-linecap="round"/><path d="${d}" stroke="#fff" stroke-opacity=".18" stroke-width="4"/>`;
+    const upright = rod(`M${x} 300V90`) + `<rect x="${x - 14}" y="80" width="28" height="18" rx="6" fill="#5a5a62" stroke="#2a2018" stroke-width="2"/>`;
+    const over = rod(`M${x} 300L${x - 70} 110`) + `<rect x="${x - 84}" y="98" width="28" height="18" rx="6" fill="#5a5a62" stroke="#2a2018" stroke-width="2" transform="rotate(-20 ${x - 70} 107)"/>`;
+    const plate = `<rect x="${x - 24}" y="346" width="48" height="40" rx="5" fill="${M.brass}" stroke="#120c08" stroke-width="3"/>` + W(x, 374, String(n), { size: 22, fill: '#120c08', weight: 700, face: 'num' });
+    b += keys ? `<g data-key="${n}"><rect x="${x - 34}" y="70" width="68" height="330" fill="#000" opacity="0"/><g class="sw-off">${upright}</g><g class="sw-on">${over}</g>${plate}</g>`
+      : (pulled.includes(String(n)) ? over : upright) + plate;
+  }
+  return b;
+};
+
+/* ---- the whistle, and the regulator ---- */
+function whistleBody(st) {
+  let b = `<rect x="10" y="80" width="220" height="170" rx="14" fill="#241a0c" stroke="#5c4423" stroke-width="6"/>`
+    + `<path d="M70 96V30" stroke="${M.brass}" stroke-width="8"/><circle cx="70" cy="24" r="14" fill="${M.brass}"/><path d="M70 30q30 -10 60 4" stroke="#8a7448" stroke-width="3" fill="none"/>`
+    + `<path d="M160 230L190 120" stroke="#3a2a16" stroke-width="16" stroke-linecap="round"/><circle cx="192" cy="114" r="14" fill="#a3322a"/>`
+    + `<rect x="120" y="150" width="90" height="56" rx="8" fill="#0d0805"/>`;
+  if (st.live) b += `<ellipse class="steam" cx="70" cy="0" rx="20" ry="10" fill="#c8ccda" opacity=".45"/>`;
+  return b;
+}
+
+const POS4 = {
+  routecard: { x: 27.5,  y: 13.3, w: 5,     h: 11.1 },
+  diagram:   { x: 72.5,  y: 14.4, w: 23.75, h: 25.3 },
+  levers:    { x: 72.5,  y: 56.7, w: 23.75, h: 32.8 },
+  whistle:   { x: 4.4,   y: 54.4, w: 15,    h: 28.9 },
+};
+
+const ROOM4 = {
   id:'locomotive', name:'Room 4 — The Locomotive', scene:'locomotive', stageFx:'rocking',
   relays:[{el:'rl-locomotive',mode:'pulse',period:2.4}],
-  wrongSound:'chug',
-  wrongVfx:'shake',
-  intro:"The cab is empty, the firebox is roaring, and the junction to the living line is coming up fast.",
-  objective:"Feed the fire, prove the drill, and <b>whistle the switchman</b> — miss the junction and the Special keeps its schedule forever.",
-  entryBeat:"The coal in the tender is full — forty years of night runs, and the coal never falls. On the throttle, a gloved handprint in the soot. The glove had six fingers.",
-  entrySound:'chug',
-  completeText:"The firebox is lit, the coupling is dropped, and the signal ahead is green. All that is left is to throw it before the junction.",
-  chain:"Five fire-drill tags, each carrying its reason: coal is broken first, the box is fed once there is broken coal, the dampers are opened once there is something to draw on, the injector waits until she is drawing, and the brake is last because nothing moves without steam — CBEDA → the lantern case is keyed to the engine's own number, riveted to the cab side on the builder's plate: 1568 → the timetable rules out the unmanned 3:15 switch and the 7:05, which is past where the printed line ends, leaving 4:45 less the sixty-five minutes the switchman needs = 3:40 → the coupling release carries the consist and the rule that pins are pulled from the rear forward, so freight, third, second, first: 3528 → whistle and lamp together, two pairs of hands, or the junction reads neither.",
+  wrongSound:'clank',
+  wrongVfx:'sparks',
+  intro:"The cab is empty, the fire is roaring, and the regulator is wide open. The junction is coming up fast.",
+  objective:"Set the road home at the junction, then <b>whistle and go</b>. Whatever opens a lock is somewhere else in this cab.",
+  entryBeat:"Nobody is driving. The firebox door swings open and shut on its own, feeding the fire, and the punch clicks once in the tender behind you.",
+  entrySound:'clank',
+  completeText:"The whistle screams, the points clatter under the wheels, and the Special leans onto the road home.",
+  chain:`The driver's route card shows this train, the crescent, going home to the crown: the terminus. On the diagram the road to the crown leaves the main line at point 2 and climbs again at point 5, both on the roads drawn with a gap (reverse), past signal 1 at the entry and signal 4 at the top; the ground frame wants exactly levers ${ROAD_HOME.slice().sort((a, b) => a - b).join(', ')} pulled → then the whistle and the regulator together.`,
   objects:[
-    { id:'firebox', icon:'🔥', name:'The Firebox Drill', pos:{x:26,y:52,w:11,h:22},
-      desc:"The company fire drill, five steps on five soot-stained tags, scattered across the footplate. Every one of them carries the reason, because the company lost two firemen the year they printed the version that did not.\n\n   TAG A — “Release the brake. Last of all, and not one second before: nothing moves until there is steam to move it.”\n\n   TAG B — “Feed the firebox, once there is broken coal to feed it with.”\n\n   TAG C — “Break the coal first. You cannot feed a fire with lumps you are still swinging a hammer at.”\n\n   TAG D — “Set the injector once she is properly drawing. Cold water into a fire that has not caught will put it straight out.”\n\n   TAG E — “Open the dampers once there is something in the box to draw on. Dampers on an empty firebox pull your fire up the chimney.”",
-      puzzle:{
-        type:'order', order:{labels:{"A": "Release the brake", "B": "Feed the firebox", "C": "Break the coal", "D": "Set the injector", "E": "Open the dampers"}},
-        prompt:"Enter the five tag letters in drill order.", placeholder:"FIVE LETTERS", answers:['CBEDA'],
+    { id:'routecard', icon:'🪪', name:"The Driver's Route Card", pos:POS4.routecard,
+      desc:"Pinned by the cab window: where this train goes at the junction.",
+      figure:ART.svg(routeArt.w, routeArt.h, routeArt.body),
+      sprite:ART.sprite(POS4.routecard, routeArt.w, routeArt.h, routeArt.body) },
+    { id:'diagram', icon:'🗺️', name:'The Junction Diagram', pos:POS4.diagram,
+      desc:"The junction, and the ground frame's levers by number: what each one works, and where each road goes.",
+      figure:ART.svg(diagramArt.w, diagramArt.h, diagramArt.body),
+      sprite:ART.sprite(POS4.diagram, diagramArt.w, diagramArt.h, diagramArt.body) },
+    { id:'levers', icon:'🎚️', name:'Ground Frame', pos:POS4.levers,
+      desc:"Ten levers, in reach of the cab steps: red for signals, black for points, white for spare. Pull the ones that set the road.",
+      sprite:st=>ART.sprite(POS4.levers, 760, 420, frame(false, st.solved ? ROAD_HOME : [])),
+      puzzle:{ type:'toggle', from:['diagram', 'routecard'], figure:ART.svg(760, 420, frame(true)), answer:ROAD_HOME, tryLabel:'SET THE ROAD',
+        gm:'pull levers 1, 2, 4 and 5: the entry signal, both points to their reverse roads, and the signal for the road to the crown',
+        miss:"The frame locks solid. That road does not lead home, or a signal is wrong.",
         hints:[
-          "Every tag says why. Two of them claim an end: one is explicitly first, one explicitly last.",
-          "Coal first (C), brake last (A). The firebox is fed once there is broken coal, and the dampers are opened once there is something in the box.",
-          "Coal, feed, dampers, then the injector once she is drawing, then the brake: enter CBEDA."
+          "The route card shows where this train should go: up the junction to the crown, the terminus. The diagram shows which lever works which point and which signal.",
+          "Follow the road from the left to the crown. Where it leaves the straight line, the point must be pulled over (the road drawn with a gap). Every signal it passes must be pulled off too. Leave everything else alone.",
+          "Pull levers 1, 2, 4 and 5."
         ],
-        solvedText:"Coal, feed, dampers, injector, brake. The Special surges under your feet, eager — too eager — and the pressure needles climb toward the junction like they know the way.",
-        solveBeat:"The train's whistle sounds, far above you. Nobody pulled it. It sounded… pleased.",
-        beatSound:'whistle'
-      }
-    },
-    { id:'lantern', onSolve:{el:'rx-locomotive',op:.2,fx:'surge'}, icon:'🏮', name:'The Signal Lantern Case', pos:{x:69,y:52,w:9,h:19},
-      desc:"The signal lantern is locked in its case on the fireman's side, four digits, stencilled by the brakeman in paint that has been there a long time:\n\n   “KEYED TO HER OWN NUMBER. IF YOU ARE ON THIS FOOTPLATE YOU CAN READ IT.”\n\nHe is not wrong. The builder's plate is riveted to the cab side at eye height, polished by forty years of elbows:\n\n   GREAT NORTHERN & COASTAL RAILWAY\n   No. 1568\n   BUILT 1911",
-      puzzle:{
-        type:'keypad',
-        prompt:"Enter the 4-digit code.", answers:['1568'],
+        solvedText:"The levers go over with a long iron groan, and out in the dark ahead, the points swing for home." } },
+    { id:'whistle', icon:'🚂', name:'Whistle & Regulator', pos:POS4.whistle, needs:'levers',
+      desc:"The road is set. Somebody on the whistle cord, somebody on the regulator, at the same moment.",
+      deadDesc:"The whistle and the regulator. Go now and the train takes whatever road the junction is set to.",
+      deadFigure:st=>ART.svg(240, 260, whistleBody(st)),
+      sprite:st=>ART.sprite(POS4.whistle, 240, 260, whistleBody(st)),
+      puzzle:{ type:'simul',
+        stations:[{id:'loco-whistle',label:'Whistle Cord',icon:'📯'},{id:'loco-regulator',label:'Regulator',icon:'🎚️'}],
+        need:2, pullLabel:'WHISTLE AND GO',
         hints:[
-          "Nothing to carry in from the rest of the train. The brakeman keyed this case to the engine you are standing in.",
-          "The engine's number is on the builder's plate riveted to the cab side.",
-          "She is No. 1568. Enter 1568."
-        ],
-        solvedText:"1-5-6-8, her own number. The case opens on the signal lantern, its red lens polished bright by hands that wanted, very much, for somebody to finally use it."
-      }
-    },
-    { id:'timetable', icon:'🕰️', name:'The Timetable', pos:{x:80,y:18,w:15,h:28},
-      desc:"The company timetable, annotated in the brakeman's hand:\n\n“JUNCTIONS TONIGHT —\n3:15 · MILE 40 — switch unmanned\n4:45 · MILE 62 — switchman on duty\n7:05 · MILE 90 — switchman on duty\n\nTHE PRINTED LINE ENDS AT 6:00. THERE IS NO 6:01 IN THIS BOOK.\nSIGNAL THE SWITCHMAN 65 MINUTES BEFORE THE JUNCTION.”",
-      puzzle:{
-        prompt:"Set the signal time (hour then minutes, e.g. 730).", placeholder:"H:MM", answers:['340','0340'],
-        hints:[
-          "Two filters: somebody has to be manning the switch, and the line itself ends at 6:00.",
-          "3:15 is unmanned. 7:05 is after the book runs out of minutes — there is no 7:05 on this line. That leaves 4:45 — count back 65 minutes.",
-          "4:45 minus 1:05 is 3:40. Enter 340."
-        ],
-        solvedText:"3:40. You mark the time against the dead conductor's watch — which has started, quietly, to tick again. It wants to make the junction too."
-      }
-    },
-    { id:'coupling', icon:'🔗', name:'The Coupling Pins', pos:{x:80,y:70,w:15,h:20}, hiddenUntil:'timetable',
-      desc:"To make the junction light enough, the dead cars have to go. The coupling release wears four punch-glyph tumblers, and each glyph is stamped with its figure right there on the housing:\n\n   ★ 8        ✚ 2        ● 5        ■ 3\n\nRiveted above them, the train board for tonight's consist, in the order she is made up from the engine back:\n\n   ENGINE — FIRST — SECOND — THIRD — FREIGHT\n\nAnd stamped across the release itself, the only way anybody has ever uncoupled a train:\n\n   “PINS ARE PULLED FROM THE REAR FORWARD. SHE DROPS WHAT IS BEHIND HER FIRST.”",
-      puzzle:{
-        type:'keypad',
-        prompt:"Enter the 4-digit release.", answers:['3528'],
-        hints:[
-          "Everything is on the release: the four figures, the order she is made up in, and which end you start from.",
-          "She is made up engine, first, second, third, freight — so from the rear forward that is freight, third, second, first.",
-          "■ 3, ● 5, ✚ 2, ★ 8. Enter 3528."
-        ],
-        solvedText:"3-5-2-8. The pins drop one after another from the back of the train forward, the dead cars sigh loose — and in the cab it is suddenly, mercifully, just you and the engine.",
-        solveBeat:"From the receding dark behind the last coach, a lantern swings side to side — the old signal. Not a warning. A farewell from staff to staff.",
-        beatSound:'bell'
-      }
-    },
-    { id:'whistle', icon:'🚂', name:'Whistle & Lamp', pos:{x:44,y:84,w:14,h:10}, hiddenUntil:'coupling',
-      desc:"The whistle cord hangs over the driver's side; the signal lantern is bracketed out on the fireman's. Rigged together the brakeman's way — which is to say they were never meant for one person.\n\nThe junction reads both or neither. A whistle with no lamp is a train in trouble. A lamp with no whistle is a train that has already stopped. Both at once, and only both at once, is a train asking to be let through.\n\nOne of you on the cord. One of you on the lamp. On three.",
-      puzzle:{
-        type:'simul',
-        stations:[
-          {id:'whistle-cord', label:'The Whistle Cord', icon:'🚂'},
-          {id:'whistle-lamp', label:'The Signal Lantern', icon:'🏮'},
-        ],
-        need:2,
-        pullLabel:'SIGNAL THE JUNCTION',
-        prompt:"The junction reads both or neither. Take the cord and the lamp, then give it together.",
-        hints:[
-          "This is not a code. It is two hands in two places at the same moment.",
-          "Take a station on your phone — one of you on the cord, one on the lantern — and the release arms when the last one fills.",
-          "On a single screen one pair of hands will do; otherwise get somebody onto the other station and give it together."
-        ],
-        solvedText:"",
-        solveBeat:"The whistle and the lamp go together, and a quarter-mile ahead a point blade swings over and locks.",
-        beatSound:'bell'
-      }
-    }
+          "This takes two pairs of hands at once. Anyone on a phone can take the whistle or the regulator.",
+          "Split up: one of you on the whistle cord, one on the regulator.",
+          "Once both show somebody in place, press WHISTLE AND GO."
+        ] } },
   ]
-}
-];
-const ROOMS = [ROOM1, ROOM2, ROOM3, ...OLD_ROOMS];
+};
+
+const ROOMS = [ROOM1, ROOM2, ROOM3, ROOM4];
 
 registerScenario({
   id:'midnight', classic:true,
@@ -956,17 +951,17 @@ registerScenario({
     <ellipse class="steam" cx="96" cy="66" rx="14" ry="7" fill="#8f86a8" opacity=".3" style="animation-delay:1.6s"/>
   </svg>`,
   story:[
-    "The Midnight Special left the platform at 11:58 with a full first class, a string quartet, and hot supper service. You woke at a station stop that appears on no timetable — and you are, as far as you can tell, the only souls left aboard.",
+    "The Midnight Special left the terminus at 11:50 with a full first class, a string quartet, and hot supper service. You woke at a station stop that appears on no timetable — and you are, as far as you can tell, the only souls left aboard.",
     "The supper is still steaming. The berths are turned down. And somewhere down the corridor, patient as arithmetic, a ticket punch clicks — the Conductor, keeping accounts for a company that closed its books in 1887.",
-    "There is one junction left where this line still touches the living one. Reach the locomotive, make the Special light enough to turn, and whistle the switchman — before the timetable runs out of minutes. And whatever you hear behind you: your ticket is <em>not</em> ready."
+    "There is one junction left where this line still touches the living one. Reach the locomotive, set the road home at the junction, and whistle for it — before the timetable runs out of minutes. And whatever you hear behind you: your ticket is <em>not</em> ready."
   ],
   begin:'🚂 BEGIN — 45:00', finalButton:'MAKE THE JUNCTION 🚂',
   emojis:['🚂','🎩','🕰️','🎻','🥃','🎫','🌙','🔔','🧳','🪞','🐈‍⬛','💀'],
   ratings:['🏆 Master of the Line','🚂 First-Class Escapist','🎫 Coach Passenger','🛟 Barely Made the Junction','🌙 Riding Forever'],
   shareTitle:'ESCAPED THE MIDNIGHT SPECIAL!',
   victoryTitle:'🚂 THE JUNCTION IS YOURS',
-  victoryProse:`Three short. Three long. Three short. The whistle hammers the old call into the dark, the switch lamp far ahead flips from red to white, and the Special slams onto the living line hard enough to throw sparks past the windows.<br><br>
-    Dawn comes up like a held breath released. In the last car's window — the car you uncoupled, standing still on the dead line behind you — a lantern swings side to side, and a gloved hand raises a ticket punch in salute. Accounts settled. Passage paid.<br><br>
+  victoryProse:`The whistle screams into the dark, the points clatter under the wheels, and the Special leans off the dead line onto the living one hard enough to throw sparks past the windows.<br><br>
+    Dawn comes up like a held breath released. Far behind you, on the dead line, a station that is not on any map stands lit for a moment — and on its platform a lantern swings side to side, and a gloved hand raises a ticket punch in salute. Accounts settled. Passage paid.<br><br>
     The next station has a name you recognize. You have never been so glad to hear a timetable read aloud.`,
   gameOverProse:`Somewhere behind you a clock finishes striking six, and the timetable simply… ends.<br><br>The Special glides on into the blank pages, smooth as sleep. Down the corridor, the ticket punch begins — unhurried, patient — to click its way toward the cab.`,
   flare:{x:160,y:560,hue:[255,215,140]},
