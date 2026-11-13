@@ -159,49 +159,19 @@ ${[0,1,2,3,4].map(i=>`<line x1="${i*380-80}" y1="620" x2="${i*420-160}" y2="900"
   <rect x="1310" y="120" width="14" height="480" fill="#2a3a48"/>
   <path d="M1240 120 h150 l-20 -40 h-110z" fill="#22303e"/>
   <rect x="1290" y="580" width="54" height="60" fill="#1a242c"/>
-  <circle cx="1317" cy="560" r="26" fill="none" stroke="#4c6478" stroke-width="7"/>
+  <rect x="1293" y="540" width="48" height="40" rx="6" fill="#2a3a48" stroke="#4c6478" stroke-width="4"/>
 </g>
-<!-- core racks -->
-<g id="el-cores">
-  <rect x="120" y="330" width="900" height="14" fill="#2a3a48"/>
-  <rect x="120" y="480" width="900" height="14" fill="#2a3a48"/>
-${[['B',180,330,9,4],['T',290,330,2,6],['U',400,330,7,2],['R',510,330,6,1],['O',620,330,3,3],['I',730,330,5,3],['E',840,330,8,6],['D',950,330,4,2]].map(([ch,x,y])=>
- `<g><rect x="${x-34}" y="${y-84}" width="68" height="80" rx="12" fill="#16303e" stroke="#3a6a84" stroke-width="3"/>
-  <ellipse class="flick" cx="${x}" cy="${y-44}" rx="26" ry="32" fill="url(#eBlue)"/>
-  <text x="${x}" y="${y-36}" text-anchor="middle" font-family="Special Elite" font-size="20" fill="#c8ecff">${ch}</text></g>`).join('')}
-</g>
-<!-- E-9: the broken case -->
-<g id="art-coreE9">
-  <rect x="500" y="560" width="220" height="120" rx="14" fill="#16303e" stroke="#3a6a84" stroke-width="5"/>
-  <path d="M540 560 l40 -60 60 20 40 -30 40 70z" fill="#0a141e"/>
-  <path d="M560 570 l30 -40 M640 566 l26 -36" stroke="#7fd4ff" stroke-width="3" opacity=".6"/>
-  <text x="610" y="700" text-anchor="middle" font-family="Special Elite" font-size="15" fill="#7fa4c0">SAMPLE E-9</text>
-  <ellipse class="rippleA" cx="610" cy="720" rx="90" ry="12" fill="none" stroke="#7fd4ff" stroke-width="2" opacity=".5"/>
-  <ellipse class="rippleA r2" cx="610" cy="720" rx="90" ry="12" fill="none" stroke="#7fd4ff" stroke-width="2" opacity=".5"/>
-  <ellipse cx="610" cy="720" rx="130" ry="16" fill="#0d2230" opacity=".8"/>
-  <path d="M700 716 q120 10 260 -18 q120 -24 200 -8" stroke="#0d2230" stroke-width="18" fill="none" opacity=".6"/>
-</g>
-<!-- cold safe -->
-<g id="el-coldsafe">
-  <rect x="150" y="620" width="160" height="170" rx="10" fill="#22303e" stroke="#4c6478" stroke-width="7"/>
-  <circle cx="230" cy="690" r="30" fill="#0d1216" stroke="#8aa4ba" stroke-width="5"/>
-  <line x1="230" y1="690" x2="248" y2="672" stroke="#8aa4ba" stroke-width="4"/>
-  <rect x="190" y="740" width="80" height="16" rx="4" fill="#1a242c"/>
-</g>
-<!-- intercom to the drill shed -->
-<g id="el-intercom">
-  <rect x="1420" y="330" width="110" height="140" rx="10" fill="#1c262e" stroke="#4c6478" stroke-width="5"/>
-  ${[26,16].map(r=>`<circle cx="1475" cy="380" r="${r}" fill="none" stroke="#0d1216" stroke-width="5"/>`).join('')}
-  <circle id="intercom-lamp" cx="1475" cy="436" r="9" fill="#ffdf9c" opacity=".1"/>
-  <text x="1475" y="492" text-anchor="middle" font-family="Special Elite" font-size="10" fill="#7fa4c0">DRILL SHED</text>
-</g>
-<!-- microscope bench -->
+<!-- the bench the microscope stands on -->
 <g>
-  <rect x="1080" y="640" width="260" height="16" fill="#2a3a48"/>
-  <rect x="1096" y="656" width="228" height="100" fill="#1a242c"/>
-  <path d="M1150 640 q-6 -40 24 -50 q10 -4 12 -20 l14 0 q0 22 -12 28 q-22 10 -18 42z" fill="#8aa4ba"/>
-  <rect x="1240" y="600" width="70" height="40" rx="4" fill="#dce8f2" transform="rotate(4 1275 620)"/>
+  <rect x="990" y="650" width="280" height="16" fill="#2a3a48"/>
+  <rect x="1006" y="666" width="248" height="96" fill="#1a242c"/>
+  <path d="M1030 690h200M1030 724h200" stroke="#22303a" stroke-width="3"/>
 </g>
+<!-- E-9's meltwater, dried into prints between the case and the airlock -->
+<g fill="#7fd4ff" opacity=".13">
+<ellipse cx="812" cy="700" rx="13" ry="7" transform="rotate(-20 812 700)"/><ellipse cx="842" cy="676" rx="13" ry="7" transform="rotate(-24 842 676)"/><ellipse cx="846" cy="650" rx="13" ry="7" transform="rotate(-16 846 650)"/><ellipse cx="876" cy="636" rx="13" ry="7" transform="rotate(-28 876 636)"/><ellipse cx="884" cy="612" rx="13" ry="7" transform="rotate(-20 884 612)"/>
+</g>
+<!--SPRITES-->
 <circle class="slowblink" cx="60" cy="60" r="8" fill="#c94a3d"/>
 <text x="84" y="66" font-family="Special Elite" font-size="15" fill="#7f5a5a">COLD ROOM: −40°</text>
 <g class="atmo">
@@ -212,10 +182,10 @@ ${[['B',180,330,9,4],['T',290,330,2,6],['U',400,330,7,2],['R',510,330,6,1],['O',
 <ellipse id="rx-corelab" class="surge" cx="1140" cy="610" rx="96" ry="70" fill="#7fe0ff" opacity="0"/>
 <!-- ice crystals turning over in air kept at minus forty -->
 <circle class="sparkle" cx="120" cy="40" r="2.4" fill="#dff2ff" style="animation-delay:0.0s"/><circle class="sparkle" cx="257" cy="93" r="2.4" fill="#dff2ff" style="animation-delay:0.7s"/><circle class="sparkle" cx="394" cy="146" r="2.4" fill="#dff2ff" style="animation-delay:1.4s"/><circle class="sparkle" cx="531" cy="199" r="2.4" fill="#dff2ff" style="animation-delay:2.0999999999999996s"/><circle class="sparkle" cx="668" cy="82" r="2.4" fill="#dff2ff" style="animation-delay:2.8s"/><circle class="sparkle" cx="805" cy="135" r="2.4" fill="#dff2ff" style="animation-delay:3.5s"/><circle class="sparkle" cx="942" cy="188" r="2.4" fill="#dff2ff" style="animation-delay:4.199999999999999s"/><circle class="sparkle" cx="1079" cy="71" r="2.4" fill="#dff2ff" style="animation-delay:4.8999999999999995s"/><circle class="sparkle" cx="1216" cy="124" r="2.4" fill="#dff2ff" style="animation-delay:0.5999999999999996s"/><circle class="sparkle" cx="1353" cy="177" r="2.4" fill="#dff2ff" style="animation-delay:1.2999999999999998s"/><circle class="sparkle" cx="130" cy="60" r="2.4" fill="#dff2ff" style="animation-delay:2.0s"/><circle class="sparkle" cx="267" cy="113" r="2.4" fill="#dff2ff" style="animation-delay:2.6999999999999993s"/><circle class="sparkle" cx="404" cy="166" r="2.4" fill="#dff2ff" style="animation-delay:3.3999999999999986s"/>
-<ellipse class="steam" cx="1240" cy="700" rx="70" ry="18" fill="#dff2ff" opacity=".08"/>
-<ellipse class="steam" cx="1300" cy="660" rx="50" ry="13" fill="#dff2ff" opacity=".06" style="animation-delay:4s"/>
+<ellipse class="steam" cx="1330" cy="600" rx="50" ry="14" fill="#dff2ff" opacity=".08"/>
+<ellipse class="steam" cx="1350" cy="570" rx="36" ry="10" fill="#dff2ff" opacity=".06" style="animation-delay:4s"/>
 <g opacity=".22"><path d="M1440 470 q30 26 22 62 M1500 500 q-18 34 6 62" stroke="#cfe8ff" stroke-width="2" fill="none"/></g>
-<circle class="rippleA" cx="1180" cy="820" r="26" fill="none" stroke="#8fd8ff" stroke-width="2" opacity=".2"/></g>
+</g>
 </svg>`;
 
 /* ---------- Room 4: The Radio Tower ---------- */
@@ -802,79 +772,194 @@ const ROOM2 = {
   ]
 };
 
-const OLD_ROOMS = [
-/* ============ ROOM 3 — THE ICE CORE LAB ============ */
-{
+/* ============================================================
+   ROOM 3 — THE ICE CORE LAB
+   The log of the long core hangs on the wall: a hundred and twenty
+   metres of ice, band by band. E-9's case is broken open on the floor
+   with a piece of that core still in it. Find where the piece came from
+   and the cold safe gives up E-9's slide; under the microscope each of
+   its three wells comes sharp at its own depth; and the airlock out to
+   the tunnel will not cycle until you declare what you are carrying.
+   ============================================================ */
+
+/* ---- the long core, as logged: one band a metre, from 120 m down ---- */
+const LOG_TOP = 120;
+const CORE_LOG = '002202203203021011130221020001101101022210210020110120001010010200020122031212112010100010100100201020310212011211200110'.split('').map(Number);
+const FRAGMENT = [2, 0, 1, 2, 2, 0, 3, 1];             // E-9's piece, read from its top (the end its arrow points to)
+const FRAG_AT = (() => {                                 // where it sits the right way up; upside down and nearly, it sits elsewhere too
+  for (let i = 0; i + FRAGMENT.length <= CORE_LOG.length; i++) if (FRAGMENT.every((v, k) => CORE_LOG[i + k] === v)) return i;
+  return -1;
+})();
+const SAFE_CODE = String(LOG_TOP + FRAG_AT);
+const BAND = ['#eef5fb', '#a9bccd', '#4f6577', '#15191d'];   // clear ice, cloudy, dust, ash
+const MARKER = '#c0392b';
+const upArrow = (x, y, len, ang = -90) => `<g transform="translate(${x} ${y}) rotate(${ang})"><path d="M0 0H${len}M${len - 12} -8L${len} 0L${len - 12} 8" stroke="${MARKER}" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></g>`;
+const logArt = { w: 640, h: 420, body: (() => {
+  let b = `<rect width="640" height="420" fill="#d9d2bf"/><rect x="6" y="6" width="628" height="408" fill="none" stroke="#b8ae94" stroke-width="2"/>`;
+  for (let j = 0; j < 4; j++) {
+    const x = 84 + j * 148, y0 = 36, h = 12;
+    b += `<rect x="${x - 2}" y="${y0 - 2}" width="50" height="${30 * h + 4}" fill="#2a3640"/>`;
+    for (let r = 0; r < 30; r++) {
+      const i = j * 30 + r, y = y0 + r * h, d = LOG_TOP + i;
+      b += `<rect x="${x}" y="${y}" width="46" height="${h}" fill="${BAND[CORE_LOG[i]]}"/>`;
+      const tick = d % 10 === 0 ? 14 : d % 5 === 0 ? 9 : 5;
+      b += `<path d="M${x - 4} ${y}H${x - 4 - tick}" stroke="#3a3428" stroke-width="${d % 10 === 0 ? 2.4 : 1.4}"/>`;
+      if (d % 10 === 0) b += W(x - 22, y + 5, String(d), { size: 14, fill: '#2a2418', weight: 700, face: 'num', anchor: 'end' });
+    }
+    b += `<path d="M${x - 4} ${y0 + 30 * h}H${x - 18}" stroke="#3a3428" stroke-width="2.4"/>` + W(x - 22, y0 + 30 * h + 5, String(LOG_TOP + j * 30 + 30), { size: 14, fill: '#2a2418', weight: 700, face: 'num', anchor: 'end' });
+    // the same red marker the drillers put on every piece of core: this way is up
+    b += upArrow(x + 23, 30, 22);
+  }
+  return b;
+})() };
+
+/* ---- E-9's case, broken open, and the piece of core still in it ---- */
+const fragBody = (x, y, cell, ht) => {
+  let b = `<rect x="${x - 3}" y="${y - 3}" width="${cell * FRAGMENT.length + 6}" height="${ht + 6}" rx="6" fill="#2a3640"/>`;
+  FRAGMENT.forEach((v, k) => { b += `<rect x="${x + k * cell}" y="${y}" width="${cell}" height="${ht}" fill="${BAND[v]}"/>`; });
+  // broken, not sawn: ragged at both ends
+  b += `<path d="M${x - 4} ${y - 4}l8 10l-6 9l7 11l-6 9l5 ${ht - 39 + 8}H${x - 6}Z" fill="#16303e"/>`;
+  const xe = x + cell * FRAGMENT.length;
+  b += `<path d="M${xe + 4} ${y - 4}l-7 12l6 8l-8 12l7 10l-4 ${ht - 42 + 8}H${xe + 6}Z" fill="#16303e"/>`;
+  // the drillers' red marker, drawn along the piece: this way is up
+  return b + upArrow(x + cell * FRAGMENT.length - 24, y + Math.round(ht * 0.3), cell * FRAGMENT.length - 48, 180);
+};
+const e9Art = { w: 560, h: 300, body: (() => {
+  let b = `<rect width="560" height="300" fill="#101a22"/><ellipse cx="280" cy="262" rx="270" ry="30" fill="#0d2230"/>`
+    + `<ellipse cx="300" cy="266" rx="180" ry="14" fill="none" stroke="#7fd4ff" stroke-width="2" opacity=".35"/>`;
+  b += `<rect x="40" y="90" width="480" height="150" rx="16" fill="#16303e" stroke="#3a6a84" stroke-width="5"/><rect x="58" y="108" width="444" height="112" rx="10" fill="#0d1d27"/>`;
+  b += `<path d="M40 96L60 30L190 50L230 18L330 44L360 28L520 92" fill="none" stroke="#3a6a84" stroke-width="5" stroke-linejoin="round"/>`;
+  b += fragBody(120, 120, 40, 52);
+  b += `<path d="M90 230l14 -8M470 228l-16 -6" stroke="#7fd4ff" stroke-width="3" opacity=".6"/>`;
+  return b;
+})() };
+const e9Sprite = e9Art.body.replace(/^<rect width="560" height="300" fill="#101a22"\/>/, '');
+
+/* ---- the cold safe, and the slide inside it ---- */
+const safePlate = ART.svg(520, 96, `<rect width="520" height="96" rx="10" fill="#22303e"/>`
+  + fragBody(40, 26, 26, 30).replace(/<rect x="\d+" y="\d+" width="26" height="30" fill="[^"]+"\/>/g, (m) => m.replace(/fill="[^"]+"/, 'fill="#5c7488"'))
+  + `<path d="M28 4H52L40 18Z" fill="${E.amber}"/>`
+  + `<path d="M252 48H300M288 38l12 10l-12 10" stroke="#8aa4ba" stroke-width="4" fill="none" stroke-linecap="round"/>`
+  + [0, 1, 2].map(i => `<rect x="${324 + i * 46}" y="22" width="38" height="52" rx="6" fill="#0b1014" stroke="#8aa4ba" stroke-width="2.5"/>`).join('')
+  + W(484, 64, 'm', { size: 30, fill: '#cfd8e0', weight: 700, face: 'num' }));
+function safeBody(st) {
+  let b = `<rect x="10" y="20" width="160" height="164" rx="10" fill="#22303e" stroke="#4c6478" stroke-width="6"/>`;
+  if (st.solved) b += `<rect x="22" y="32" width="136" height="140" rx="4" fill="#0b1014"/><path d="M22 32L-6 46V164L22 172Z" fill="#2c3e4e" stroke="#4c6478" stroke-width="4"/>`
+    + `<rect x="50" y="120" width="80" height="12" rx="2" fill="#bfe4ee" opacity=".7"/>`;
+  else b += `<rect x="104" y="52" width="46" height="62" rx="5" fill="#141c22" stroke="#8aa4ba" stroke-width="2"/>`
+    + Array.from({ length: 12 }, (_, i) => `<rect x="${110 + (i % 3) * 13}" y="${58 + Math.floor(i / 3) * 13}" width="9" height="9" rx="2" fill="#8aa4ba"/>`).join('')
+    + `<rect x="30" y="58" width="56" height="20" rx="3" fill="#dfe9f2"/><rect x="34" y="64" width="48" height="8" fill="#5c7488"/>`
+    + `<path d="M24 150h132" stroke="#cfe8ff" stroke-width="3" opacity=".4"/>`;
+  return b;
+}
+const WELLS = ['dots1', 'dots2', 'dots3'];
+const slideFig = ART.svg(560, 220, `<rect width="560" height="220" fill="#0b1418"/><rect x="30" y="50" width="500" height="120" rx="6" fill="#bfe4ee" opacity=".55" stroke="#dff2ff" stroke-width="3"/>`
+  + `<rect x="30" y="50" width="96" height="120" rx="6" fill="#dfe9f2" opacity=".8"/>`
+  + WELLS.map((g, i) => `<circle cx="${200 + i * 120}" cy="110" r="36" fill="#9fd4e6" opacity=".55" stroke="#dff2ff" stroke-width="3"/>` + GL(g, 186 + i * 120, 154, 28, '#dff2ff')).join(''));
+
+/* ---- the microscope, and what is in the wells ---- */
+const WELL_HOLDS = { dots1: 'diatom', dots2: 'beetle', dots3: 'amoeba' };
+const WELL_DEPTH = { dots1: 9, dots2: 2, dots3: 6 };       // each well's drop sits at its own depth in the slide
+const WELL_AT = { dots1: [290, 330], dots2: [170, 190], dots3: [350, 150] };   // where each lies in the eyepiece's view
+const AIRLOCK = WELLS.map(w => WELL_HOLDS[w]);
+const WELL_SAY = { diatom: 'the triangle, a diatom', beetle: 'the beetle', amoeba: 'the blob, an amoeba' };
+const scopeView = (() => {
+  let b = `<rect width="520" height="440" fill="#05080a"/><circle cx="260" cy="220" r="206" fill="#d9ecdf"/>`
+    + `<circle cx="260" cy="220" r="206" fill="none" stroke="#1a2a20" stroke-width="10"/>`;
+  WELLS.forEach(w => {
+    const [x, y] = WELL_AT[w];
+    // the well's dots are etched in the glass at its foot, so they stay sharp whatever the knob is doing
+    b += `<circle cx="${x}" cy="${y}" r="64" fill="#c4e2d0" stroke="#6a9a84" stroke-width="5"/>` + GL(w, x - 13, y + 34, 26, '#2f5a48')
+      + `<g data-at="${WELL_DEPTH[w]}">${GL(WELL_HOLDS[w], x - 38, y - 48, 76, '#2a4a3c')}</g>`;
+  });
+  return b;
+})();
+function scopeBody(st) {
+  // the instrument on the bench, seen from across the room
+  let b = `<rect x="40" y="150" width="140" height="20" rx="4" fill="#3a4c5c"/><path d="M70 150V120Q70 100 92 96L150 86" stroke="#cfd8e0" stroke-width="16" fill="none" stroke-linecap="round"/>`
+    + `<rect x="128" y="20" width="28" height="80" rx="6" fill="#cfd8e0" transform="rotate(-22 142 60)"/><rect x="112" y="96" width="62" height="12" rx="3" fill="#5c7488"/>`
+    + `<rect x="120" y="108" width="20" height="26" fill="#8aa4ba"/><circle cx="78" cy="128" r="11" fill="#5c7488"/>`;
+  if (st.live) b += `<rect x="104" y="96" width="44" height="7" rx="1" fill="#bfe4ee"/><circle cx="130" cy="140" r="8" fill="#fff3c0" opacity=".85"/>`;
+  return b;
+}
+
+/* ---- the airlock to the tunnel ---- */
+function airlockBody(st) {
+  let b = `<rect x="4" y="4" width="152" height="412" rx="10" fill="#141c22" stroke="#4c6478" stroke-width="6"/>`;
+  if (st.solved) {
+    b += `<rect x="14" y="14" width="132" height="392" fill="#0a1218"/>` + [0, 1, 2, 3].map(i => `<circle cx="80" cy="${70 + i * 90}" r="${14 - i * 3}" fill="#ffd9a0" opacity="${0.5 - i * 0.1}"/>`).join('')
+      + `<path d="M14 14H40V406H14Z" fill="#3a5a78" stroke="#22303e" stroke-width="3"/>`;
+  } else {
+    b += `<rect x="14" y="14" width="132" height="392" fill="#3a5a78"/><circle cx="80" cy="120" r="40" fill="#0a1218" stroke="#8aa4ba" stroke-width="8"/>`
+      + `<path d="M14 300H146" stroke="#2c4660" stroke-width="5"/>` + [0, 1, 2, 3, 4].map(i => `<path d="M${18 + i * 28} 400L${40 + i * 28} 366" stroke="${E.amber}" stroke-width="8"/>`).join('')
+      + `<rect x="42" y="200" width="76" height="62" rx="6" fill="#22303e" stroke="#8aa4ba" stroke-width="2.5"/>`
+      + WELLS.map((g, i) => `<rect x="${50 + i * 22}" y="226" width="16" height="26" rx="3" fill="#dfe9f2"/>` + GL(g, 52 + i * 22, 208, 12, '#dfe9f2')).join('');
+  }
+  return b;
+}
+
+const POS3 = {
+  drilllog:   { x: 6.25,  y: 15.6, w: 27.5,  h: 32.2 },
+  coldsafe:   { x: 9.4,   y: 67.8, w: 11.25, h: 21.1 },
+  e9case:     { x: 35,    y: 71.1, w: 15,    h: 15.6 },
+  airlock:    { x: 51.25, y: 22.2, w: 10,    h: 46.7 },
+  microscope: { x: 63.75, y: 52.2, w: 13.75, h: 20 },
+};
+
+const ROOM3 = {
   id:'corelab', name:'Room 3 — The Ice Core Lab', scene:'corelab',
   relays:[{el:'rl-corelab',mode:'pulse',period:2.6}],
   wrongSound:'geiger',
   wrongVfx:'sparks',
   intro:"Minus forty in here, by design. Sample case E-9 is open, and its meltwater has been walking around.",
-  objective:"Learn what the crew drilled up. The cold room keeps its secrets <b>frozen — keep it that way.</b>",
-  entryBeat:"Sample E-9's case didn't fail — the bolts were backed out from the inside of the case. Whatever the drill brought up through three hundred thousand years of ice was awake when it arrived.",
+  objective:"Find out what came up with core E-9, then get through the <b>airlock</b> to the tunnel. Whatever opens a lock is somewhere else in this room.",
+  entryBeat:"E-9's case didn't fail. The bolts were backed out from the inside. Whatever the drill brought up through three hundred thousand years of ice was awake when it arrived.",
   entrySound:'clank',
-  completeText:"The tower door unbolts. Behind you, the intercom's open channel exhales once and goes dead — like a thing satisfied you finally understand where it went.",
-  chain:"The frost-writing on the steel table names what this whole lab exists to study: ICE → the cold store's chart recorder gives the day it lost temperature, day 61, and anything drilled after that never froze through, which leaves six of the eight cores spelling BURIED → the cold safe's tag wants three different non-zero multiples of three, the first the sum of the other two and the smallest in the middle: 936 → the drill-shed key fob is embossed in the same braille as the tape: BELOW.",
+  completeText:"The airlock cycles, hisses, and opens on the tunnel to the radio tower. On the floor behind you, E-9's meltwater has dried into footprints, and they go the same way.",
+  chain:`E-9's broken case still holds a piece of the core, eight bands long, with the drillers' red arrow pointing to its top; on the wall the long core's log, a band a metre from ${LOG_TOP} m down, has the same eight bands once the right way up (and once upside down, and once with one band wrong), starting at ${SAFE_CODE} m → the cold safe gives up E-9's slide, three wells marked with one, two and three dots → under the microscope each well's drop comes sharp at its own turn of the focus knob: ${WELLS.map((w, i) => `${i + 1} dot${i ? 's' : ''} a ${WELL_HOLDS[w]}`).join(', ')} → the airlock declares the same three, well by well.`,
   objects:[
-    { id:'coreE9', icon:'🧊', name:'Sample E-9', pos:{x:30,y:60,w:15,h:18},
-      desc:"The shattered case, and beside it, in the frost on the steel table, someone wrote with a fingertip — the station's last riddle:\n\n“I hold yesterday's air in bubbles.\nI remember every winter that ever was.\nI break like glass and bleed like water,\nand I kept your visitor patient for a very long time.”",
-      puzzle:{
-        prompt:"What is the frost-writing describing?", placeholder:"ANSWER", answers:['ICE','THEICE','ANICECORE','ICECORE'],
+    { id:'drilllog', icon:'📜', name:'The Core Log', pos:POS3.drilllog,
+      desc:"The long core, logged band by band from 120 metres down: clear ice, cloudy ice, dust, and here and there a black line of ash.",
+      figure:ART.svg(logArt.w, logArt.h, logArt.body),
+      sprite:ART.sprite(POS3.drilllog, logArt.w, logArt.h, logArt.body) },
+    { id:'e9case', icon:'🧊', name:'Sample E-9', pos:POS3.e9case,
+      desc:"E-9's case, broken open from the inside. A piece of the core is still in it, marked the way the drillers mark every piece.",
+      figure:ART.svg(e9Art.w, e9Art.h, e9Art.body),
+      sprite:ART.sprite(POS3.e9case, e9Art.w, e9Art.h, e9Sprite) },
+    { id:'coldsafe', icon:'🔐', name:'Cold Safe', pos:POS3.coldsafe,
+      desc:"The sample safe. Its plate wants a depth: where the top of a piece of core came from.",
+      sprite:st=>ART.sprite(POS3.coldsafe, 180, 190, safeBody(st)),
+      puzzle:{ type:'keypad', from:['drilllog', 'e9case'], answer:SAFE_CODE, plate:safePlate,
+        miss:"The safe beeps twice and stays shut.",
         hints:[
-          "It's what this whole lab exists to study.",
-          "Ancient air in bubbles, a memory of winters, breaks like glass, bleeds like water…",
-          "ICE. Three hundred thousand years of it — and something inside, keeping."
+          "The safe wants the depth a piece of core came from, and there is a piece of core in E-9's broken case. The log on the wall shows every band of the long core.",
+          "Find E-9's eight bands in the log. The red arrow on both shows which way is up: on the piece it points along it to its top, so read it from that end, downwards, the way the log runs. An ash line is a good place to start looking.",
+          `It sits from ${SAFE_CODE} to ${+SAFE_CODE + FRAGMENT.length - 1} metres. Its top is at ${SAFE_CODE}.`
         ],
-        solvedText:"ICE. The riddle isn't a lock — it's a warning label, written by someone who finally understood the archive they'd been sawing into. The core racks along the wall suddenly demand much closer reading."
-      }
-    },
-    { id:'cores', onSolve:{el:'rx-corelab',op:.2,fx:'surge'}, icon:'🔬', name:'The Core Racks', pos:{x:8,y:26,w:56,h:14}, hiddenUntil:'coreE9',
-      desc:"Eight cores in the cold store, each tagged with a letter and the station day it was drilled.\n\nPinned to the store door, the chart recorder's trace for the season, and the lead scientist's note under the place where the line falls off a cliff:\n\n   “STORE LOST TEMPERATURE ON DAY 61 AND WE DID NOT NOTICE FOR A WEEK.\n    ANYTHING THAT CAME IN AFTER THAT NEVER FROZE THROUGH. LOG IT AND BIN IT.”\n\nLeft to right along the rack:",
-      puzzle:{
-        type:'select',
-        select:{commit:"🧊 THESE CORES ARE SOUND", wrong:"The survey log will not accept that set.",
-          items:[{letter:"B",value:"drilled day 12"},{letter:"T",value:"drilled day 74"},{letter:"U",value:"drilled day 30"},{letter:"R",value:"drilled day 55"},{letter:"O",value:"drilled day 80"},{letter:"I",value:"drilled day 48"},{letter:"E",value:"drilled day 19"},{letter:"D",value:"drilled day 8"}]},
-        prompt:"Which cores froze through? Tap the ones that came in before the store failed.", answers:['BURIED'],
+        solvedText:"The safe's seal breaks with a crack of frost. In a tray inside, E-9's slide: three wells of meltwater, each marked with its dots.",
+        inside:{ name:"E-9's slide", figure:slideFig } } },
+    { id:'microscope', icon:'🔬', name:'The Microscope', pos:POS3.microscope, needs:'coldsafe',
+      desc:"Under the lens, E-9's three wells. Each drop sits at its own depth in the glass, and only one is ever sharp.",
+      deadDesc:"A good microscope, with nothing on its stage. Somewhere in here is the slide it was waiting for.",
+      deadFigure:st=>ART.svg(220, 180, scopeBody(st)),
+      figure:ART.svg(520, 440, scopeView),
+      tool:{ type:'focus', steps:12, start:0, blur:3.2, label:'focus' },
+      sprite:st=>ART.sprite(POS3.microscope, 220, 180, scopeBody(st)) },
+    { id:'airlock', icon:'☣️', name:'Decontamination Airlock', pos:POS3.airlock,
+      desc:"The airlock to the tunnel won't cycle until you declare what you are carrying out: one picture for each well, by its dots.",
+      sprite:st=>ART.sprite(POS3.airlock, 160, 420, airlockBody(st)),
+      puzzle:{ type:'combo', from:['microscope'], wheels:WELLS.map(g=>({ faces:{ glyphs:['amoeba', 'diatom', 'beetle', 'snowflake', 'leaf', 'mushroom', 'shell', 'star'] }, mark:{ glyph:g } })), answer:AIRLOCK, tryLabel:'CYCLE IT',
+        miss:"The airlock hisses, and the inner door stays sealed. That isn't what you're carrying.",
         hints:[
-          "One number decides every core: the day the store lost temperature. Everything drilled before it is sound, everything after it is not.",
-          "The chart says day 61. Go along the rack and keep only the cores drilled earlier than that.",
-          "Day 74 and day 80 came in after the store failed, so T and O are out. The rest spell BURIED."
+          "Three wheels of tiny living things, each marked with one, two or three dots: the wells on E-9's slide.",
+          "Put the slide under the microscope and turn the focus knob slowly. Each well's drop comes sharp at a different turn; read what is in it, and check its dots.",
+          `${WELLS.map((w, i) => `${i + 1} dot${i ? 's' : ''}: ${WELL_SAY[WELL_HOLDS[w]]}`).join('; ')}.`
         ],
-        solvedText:"B-U-R-I-E-D. The word the glacier kept trying to say. The sound cores also hide the cold safe's tag, tucked behind R like a bookmark.",
-        solveBeat:"Deep under the floor, the ice groans one long syllable — and the meltwater around E-9's case shivers in rings, in time with it.",
-        beatSound:'growl'
-      }
-    },
-    { id:'coldsafe', icon:'🔐', name:'The Cold Safe', pos:{x:8,y:68,w:12,h:20},
-      desc:"The lab's cold safe, 3-digit dial. The tag from the core rack, in the lead scientist's careful print:\n\n“Three different digits, every one a multiple of three, none of them zero.\nThe first is the sum of the other two.\nThe smallest hides in the middle.”",
-      puzzle:{
-        type:'keypad',
-        prompt:"Find the three digits that fit and enter them in order.", answers:['936'],
-        hints:[
-          "Your only materials are 3, 6 and 9 — the single-digit multiples of three.",
-          "Which of them is the sum of the other two? 9 = 3 + 6, so 9 leads.",
-          "9 first, then the smallest (3) in the middle, 6 last — enter 936."
-        ],
-        solvedText:"9-3-6. Inside the safe: the tower key, the crew's last photographs — and the drill logs, whose final page is just one depth figure circled so hard the pen went through.",
-        solveBeat:null
-      }
-    },
-    { id:'intercom', icon:'📢', name:'The Drill-Shed Intercom', pos:{x:87,y:35,w:9,h:20}, hiddenUntil:'coldsafe',
-      desc:"The intercom to the drill shed crackles alive — an open channel, breathing, saying nothing. The drill shed has been empty for nine days.\n\nTaped beside the speaker hangs the shed key, on a metal fob embossed with the same raised dots as the tape leader:\n\n<span style='font-size:2rem;letter-spacing:10px'>⠃⠑⠇⠕⠺</span>\n\nThe tower door's 5-letter lock waits.",
-      puzzle:{
-        prompt:"Enter the 5-letter word the intercom is clicking.", placeholder:"5 LETTERS", answers:['BELOW'],
-        hints:[
-          "The same braille as the tape leader — five cells, five letters.",
-          "It starts with B and ends with W. It's telling you where it went.",
-          "⠃⠑⠇⠕⠺ reads BELOW. It went home. For now."
-        ],
-        solvedText:"B-E-L-O-W. The open channel closes the moment you speak it — message received. The tower door unbolts. You are done asking the station questions; the answers have started coming to find you.",
-        solveBeat:"From the drill shaft, far under your boots, comes a sound you feel more than hear — three hundred meters of ice being climbed, without hurry.",
-        beatSound:'knock'
-      }
-    }
+        solvedText:"The airlock cycles. Mist, a hiss, and the inner door rolls back on the tunnel." } },
   ]
-},
+};
+
+const OLD_ROOMS = [
 /* ============ ROOM 4 — THE RADIO TOWER ============ */
 {
   id:'radiotower', name:'Room 4 — The Radio Tower', scene:'radiotower',
@@ -968,7 +1053,7 @@ const OLD_ROOMS = [
   ]
 }
 ];
-const ROOMS = [ROOM1, ROOM2, ...OLD_ROOMS];
+const ROOMS = [ROOM1, ROOM2, ROOM3, ...OLD_ROOMS];
 
 registerScenario({
   id:'erebus', classic:true,
