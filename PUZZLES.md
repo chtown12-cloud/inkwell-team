@@ -83,8 +83,11 @@ built so its own face can show its answer. The rest takes a person.
 An object is either a **clue** or a **lock**.
 
 A clue is a drawing (`figure`). Some let you do something to them: sweep a
-light over them (`lens`), lay a cut card on them and turn it (`tool: turn`),
-turn them over (`flip`), or play them (`listen`).
+light over them (`lens`), lay a cut card or a wheel on them and turn it
+(`tool: turn`, by quarters or by any number of `steps`), turn them over
+(`flip`), play them (`listen`), or stand and watch them run through
+something — a lamp through its colours, a knocking through its counts
+(`pulse`).
 
 A lock is a `puzzle` of one of these kinds:
 
@@ -97,6 +100,9 @@ A lock is a `puzzle` of one of these kinds:
 | `press` | press keys, or parts of a picture, in order | a sequence |
 | `tiles` | tap two pieces to swap them | the picture, whole |
 | `tune` | sweep a dial until the meter peaks | found, not looked up |
+| `levels` | set rods or tanks to a height, each under its own marker | one height per column |
+| `keypad` | key in a number, then the tick | the number |
+| `hold` | hold a handle while a gauge climbs, and let go | where you let go |
 | `simul` | two people, two places, at once | everyone there |
 
 What comes out of an open lock is its `inside`: another drawing, which is
@@ -105,7 +111,15 @@ then a clue for something else. Two more things shape the order of a room.
 is in the chest). `needs` leaves it standing there, visibly dead, until
 something else has happened (the receiver before the breakers are thrown) —
 which is better than hiding it whenever the player should be able to see what
-they are working towards.
+they are working towards. `needs` can name several locks, and then the thing
+that is waiting should say which of them are in: the ignition console in the
+pod bay wears a lamp for each.
+
+An open lock should change the room, not just its own close-up. A drawing is
+given its own state (`solved`, `live`) and the state of any lock it `needs`
+or says it `watches`, so the pod lets go of its clamps when the lever across
+the bay is thrown. The one prop whose open state repaints something large at
+the back of the room (the bay doors) is drawn `behind` the others.
 
 ### Drawn once, placed twice
 
@@ -148,29 +162,50 @@ here, and a new puzzle is checked against the table before it is built.
 | | winch — a tide clock | a tide card + the moon over the cove | pick the right curve, read a graph |
 | | flares — short and long, 9 slots | a strip torn from the code chart | know what to say |
 
-### The other four
+### Prospero (the ship)
 
-Prospero, Vorstag, Erebus and Midnight are being rebuilt on this grammar one
-at a time. Until each one is, it is still built — and still audited — to the
+| | lock | what you find | the step |
+|---|---|---|---|
+| R1 | locker — 4 digit wheels, each under a pictogram | a pipe run + the diamond on a cargo crate | chain two legends: picture to colour, colour to number |
+| | terminal — nine keys, 7 presses, traced as you go | the evacuation plan | walk a maze by its landmarks |
+| | lift — keypad, 5 digits | the terminal's cracked readout + the pods' frosted ones | put two halves together |
+| R2 | log — 5 letter wheels | the captain's keyboard | read the wear |
+| | helm — 4 picture wheels, numbered | the sky in the viewport + the star chart | name what you can see |
+| | comms — colour keys, 6 presses | the speaker's lamp (dead until the helm answers) | watch, and repeat |
+| | chronometer — a clock | the star wheel from the log + the viewport | turn a wheel until it matches the sky |
+| | reactor — 5 rods under colour caps | the core scope (dead until comms is up) | read a round chart into a straight row |
+| R3 | specimen case — 5 picture wheels, ranked | the specimen row | put in order by height |
+| | seed vault — 4 digit wheels, each under a pictogram | the weigh log | solve the sums |
+| | manifold — valves drawn into the pipework | the feed card from the case | mix colours, and watch the lines change |
+| | airlock — keypad, 4 digits | whatever is in the vent | listen, and count |
+| R4 | clamp release — a lever, 6 throws | the tags on the pod's four clamps | a numbered place is a direction |
+| | fuel panel — 3 tanks under colour caps | the pod's engines + the fuelling table | find your row; go by colour, not by position |
+| | door timer — a clock | the orbital screen + the bay clock | count the marks, add the hours |
+| | ignition — a handle and a gauge | the burn card from the door timer | let go on the mark |
+
+### The other three
+
+Vorstag, Erebus and Midnight are being rebuilt on this grammar one at a
+time. Until each one is, it is still built — and still audited — to the
 standard before this one: the rule lives on a prop, no prop states the method,
 and every answer is in the room's chain. Their mechanics, so that nothing
-built for Eldermoor's successors repeats them by accident:
+built for their successors repeats them by accident:
 
-| Slot | Prospero (ship) | Vorstag (castle) | Erebus (ice) | Midnight (train) |
-|---|---|---|---|---|
-| R1 opener | phosphor burn-in down the pod plates | shield anagram + well-house plaque | flag channel numbers (A=1) | book cipher + the porter's own working |
-| R1 code lock | evacuation shutdown order | seasons tapestry + well rim | resupply notice + drum glyphs | fare card + punch chart |
-| R1 word lock | quarantine tag + contamination scale | canonical hours + the gatekeeper's card | polar signpost + re-keying notice | nightly seal register + tag date |
-| R1 number | watch bill: duty vs relief | ledger: departed vs not | sitrep + winter-over sheet | waybill: crates short, sacks aboard |
-| R2 tuning | beacon register, one marked SILENT | hymn board + psalter verse | sked card matched on its hours | diary: speed and track |
-| R2 code | tap code | pigpen | braille | Cyrillic |
-| R2 second | 5-bit binary | Atbash | Vigenère | rail fence |
-| R2 deduction | rod seating logic | numeral weights | halving chain | boarding order |
-| R3 filter | **number property** — prime seed counts | **provenance** — the Baron's own wax | **date range** — drilled before the store failed | **cross-reference** — covers that settled |
-| R3 number | countdown sequence | even factors of 48 on named ways | multiples of three | money addition |
-| R4 order | the flight officer's reasons | the Baron's reasons | the engineer's reasons | the fireman's reasons |
-| R4 locks | pod-type table · release sequence | fuse chart · counterweight chain | approach plate · bins vs stock card | builder's plate · consist order |
-| Finale | thruster panel | lightning hold | runway dial | whistle and lamp together |
+| Slot | Vorstag (castle) | Erebus (ice) | Midnight (train) |
+|---|---|---|---|
+| R1 opener | shield anagram + well-house plaque | flag channel numbers (A=1) | book cipher + the porter's own working |
+| R1 code lock | seasons tapestry + well rim | resupply notice + drum glyphs | fare card + punch chart |
+| R1 word lock | canonical hours + the gatekeeper's card | polar signpost + re-keying notice | nightly seal register + tag date |
+| R1 number | ledger: departed vs not | sitrep + winter-over sheet | waybill: crates short, sacks aboard |
+| R2 tuning | hymn board + psalter verse | sked card matched on its hours | diary: speed and track |
+| R2 code | pigpen | braille | Cyrillic |
+| R2 second | Atbash | Vigenère | rail fence |
+| R2 deduction | numeral weights | halving chain | boarding order |
+| R3 filter | **provenance** — the Baron's own wax | **date range** — drilled before the store failed | **cross-reference** — covers that settled |
+| R3 number | even factors of 48 on named ways | multiples of three | money addition |
+| R4 order | the Baron's reasons | the engineer's reasons | the fireman's reasons |
+| R4 locks | fuse chart · counterweight chain | approach plate · bins vs stock card | builder's plate · consist order |
+| Finale | lightning hold | runway dial | whistle and lamp together |
 
 ## Writing one
 

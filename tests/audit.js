@@ -198,7 +198,7 @@ function auditClassic(s) {
       if (/\n/.test(o.desc || '')) fail(at, 'description has line breaks: a table in prose is a drawing that was never drawn');
 
       /* gating points somewhere real */
-      for (const key of ['hiddenUntil', 'needs']) {
+      for (const key of ['hiddenUntil', 'needs', 'watches']) {
         for (const dep of [].concat(o[key] || [])) {
           if (dep === o.id) fail(at, `${key} points at itself`);
           else if (!byId.has(dep)) fail(at, `${key}:'${dep}' is not an object in this room`);
@@ -206,6 +206,8 @@ function auditClassic(s) {
         }
       }
       if (o.needs && !o.deadDesc) fail(at, 'can stand dead in the room but has nothing to say while it does (deadDesc)');
+      // a drawing that says it follows other locks has to be one that can change
+      if (o.watches && typeof o.sprite !== 'function') fail(at, 'watches other locks but is drawn the same whatever they do (sprite is not a function)');
 
       if (!p) { clues++; return; }
       locks++;

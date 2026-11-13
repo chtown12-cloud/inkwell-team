@@ -14,40 +14,43 @@ and race the clock.
 | ❄️ **Station Erebus** | Silent Antarctic research station | Something that thawed out of core E-9 |
 | 🚂 **The Midnight Special** | A 1927 express that never arrives | The Conductor, punching tickets nobody bought |
 
-Every scenario: 4 rooms, 17 puzzles, illustrated animated scenes (SVG parallax,
+Every scenario: 4 rooms, 16 or 17 puzzles, illustrated animated scenes (SVG parallax,
 fog, snow, fireflies, film grain), discoverable glowing hotspots, an unseen
 monster delivered through narrative beats, and a fully synthesized WebAudio
 soundscape with a distinct signature per room (surf and gulls; reactor hum and
 sonar pings; thunder and organ; blizzard and generator chug; rail clack and far
 whistles). No image or audio files — everything is generated in the browser.
 
-**How the puzzles work.** *The Wreck of the Eldermoor* is built the way a
-physical escape room is: locks that look like locks, and whatever opens each
-one somewhere else in the room. A padlock with four wheels ringed in four
-colours — and, along the hull, a net of glass floats in the same four colours.
-A compass you steer through seven legs — and a torn chart whose course has
-seven. Nothing is typed. Wheels are turned, scraps swapped, clock hands set,
-breakers thrown, a lantern swept across dark water; no lock carries
-instructions, and no clue says which lock it belongs to. Expect to be properly
-stuck now and then: a hint or two per room is normal.
+**How the puzzles work.** *The Wreck of the Eldermoor* and *Derelict: The
+Prospero* are built the way a physical escape room is: locks that look like
+locks, and whatever opens each one somewhere else in the room. A padlock with
+four wheels ringed in four colours — and, along the hull, a net of glass
+floats in the same four colours. A lift that wants five digits — written
+twice in the cryo bay, frosted over on the pods and cracked across on a
+terminal, and whole in neither place. Nothing is typed. Wheels are turned,
+scraps swapped, clock hands set, breakers thrown, a lantern swept across dark
+water, reactor rods raised, a burn held to the mark; no lock carries
+instructions, and no clue says which lock it belongs to. An open lock changes
+the room, not just its own close-up. Expect to be properly stuck now and
+then: a hint or two per room is normal.
 
-The other four scenarios are being rebuilt the same way, one at a time. Until
-each is, it plays as before — clue documents, ciphers and deductions — with
-its own palette, so a second scenario does not repeat the first:
+The other three scenarios are being rebuilt the same way, one at a time.
+Until each is, it plays as before — clue documents, ciphers and deductions —
+with its own palette, so a second scenario does not repeat the first:
 
-| Slot | Prospero | Vorstag | Erebus | Midnight |
-|------|----------|---------|--------|----------|
-| Room-1 opener | **acrostic** (phosphor burn-in) | **anagram** | **A1Z26** (№→letter) | **book cipher** (line·word) |
-| Room-2 cipher | **binary** (5-bit) | **Atbash** (mirror) | **Vigenère** (key ICE) | **rail fence** (zigzag) |
-| Room-2 deduction | **logic-grid** rod seating | **Roman-numeral** weighing | **halving-chain** rule | **boarding-order** logic |
-| Room-3 filter | **number property** (primes) | **provenance** (the Baron's wax) | **date range** (before the store failed) | **cross-reference** (covers that settled) |
-| Room-3 number lock | **countdown sequence** | **factor puzzle** (×48) | **multiples-of-three** | **money addition** |
-| Signal code | **tap code** (knock pairs) | **pigpen** (masons' cipher) | **braille** (embossed dots) | **Cyrillic** (émigré's hand) |
-| Co-op set piece | — | — | — | **whistle and lamp** together |
+| Slot | Vorstag | Erebus | Midnight |
+|------|---------|--------|----------|
+| Room-1 opener | **anagram** | **A1Z26** (№→letter) | **book cipher** (line·word) |
+| Room-2 cipher | **Atbash** (mirror) | **Vigenère** (key ICE) | **rail fence** (zigzag) |
+| Room-2 deduction | **Roman-numeral** weighing | **halving-chain** rule | **boarding-order** logic |
+| Room-3 filter | **provenance** (the Baron's wax) | **date range** (before the store failed) | **cross-reference** (covers that settled) |
+| Room-3 number lock | **factor puzzle** (×48) | **multiples-of-three** | **money addition** |
+| Signal code | **pigpen** (masons' cipher) | **braille** (embossed dots) | **Cyrillic** (émigré's hand) |
+| Co-op set piece | — | — | **whistle and lamp** together |
 
-Each of those four uses its own real-world code for its two mid-game signal
-decodes — prisoners' tap code, pigpen, braille, or phonetic Cyrillic — and
-teams look the alphabet up themselves. The one mechanic they deliberately
+Each of those three uses its own real-world code for its two mid-game signal
+decodes — pigpen, braille, or phonetic Cyrillic — and teams look the alphabet
+up themselves. The one mechanic they deliberately
 share, because it is their signature co-op moment, is the two-stage tuning
 **console**: the exact frequency comes from clues, then three trim knobs are
 coaxed by watching the meter until the panel reads LOCKED IN.
@@ -217,10 +220,10 @@ Answers per scenario, in solve order. (Full chains and all hint text: in-game GM
 
 | Room | Answers |
 |------|---------|
-| 1 · The Cryo Bay | LOCKER (acrostic of pod logs) → **6942** (shutdown order: reactor/power/water/cryo) → RATS (STAR backward) → **34** (9 souls − 6 pods; 2 cores × 2) |
-| 2 · The Bridge | tune **47.15** (Day 47 + 15 scratches) → SEAL VENTS (tap code) → GAMMA (binary 5-bit) → **651** (rod-seating logic) |
-| 3 · Hydroponics | VENT → STARVE (prime seed counts) → **642** (priming: 6, −2 each pump) → PURGE (airlock tap code) |
-| 4 · The Escape Pod Bay | EBDAC (scheduling, oxygen 3rd) → **9430** (47.15 × 2) → **435** (5:20 pass − 45 min) → **2496** (6942 reversed) → SOS thrusters |
+| 1 · The Cryo Bay | locker **7385** (bolt, snowflake, trefoil, drop: each picture's pipe colour, then that colour's number on the crate) → terminal: **snowflake, medic, kettle, leaf, antenna, bulb, lift** (the one way through the evacuation plan) → lift **39567** (pods 1, 2, 3, 5, 6: top half of each digit on the terminal, bottom half on the pod) |
+| 2 · The Bridge | log **ORBIT** (the five worn keys) → helm **crown, key, fish, snake** (the four ringed constellations, named from the chart) → comms **blue, yellow, red, blue, green, yellow** (the speaker's lamp) → chronometer **8:00** (star wheel turned to match the sky; read the pointer) → reactor rods **4, 2, 5, 1, 3** (red, yellow, green, blue, white, off the core scope) |
+| 3 · Hydroponics | specimen case **vine, mushroom, branch, flower, leaf** (ranked by height) → seed vault **7234** (leaf 7, vine 2, mushroom 3, flower 4, from the weigh log) → manifold: bed 1 **yellow + blue**, bed 2 **red + yellow**, bed 3 **red + blue** (to mix the feed card's green, orange, purple) → airlock **3524** (the knocks in the vent) |
+| 4 · The Escape Pod Bay | clamp release **up, right, down, up, left, down** (the tags, one to six) → tanks **white 5, orange 4, blue 2** (the three-engine row, matched by cap colour) → door timer **4:35** (station five marks out, bay clock at 11:35) → ignition: hold to **6.4** and let go |
 
 ## ⚡ Castle Vorstag
 
@@ -249,7 +252,7 @@ Answers per scenario, in solve order. (Full chains and all hint text: in-game GM
 | 3 · The Dining Car | MIRROR → HUNGRY (perfect-square covers) → **385** (chits total $3.85) → AGAIN (Cyrillic ticket) |
 | 4 · The Locomotive | CBEDA (scheduling, feed 2nd) → **1568** (78.4 × 2) → **340** (4:45 junction − 65 min) → **3528** (8253 reversed) → SOS whistle |
 
-Every deduction and number-lock puzzle in the four scenarios not yet rebuilt
+Every deduction and number-lock puzzle in the three scenarios not yet rebuilt
 has a solver-verified unique solution, and their scheduling drills have
 verified unique orders. Room transitions hold on a title card until the team
 clicks ENTER.
@@ -280,9 +283,10 @@ Line):
   (`text`/`dial`/`order`/`panel`…) for the scenarios not yet rebuilt.
 - **`lib/locks.js`** — the locks you work with your hands: wheels, a compass
   pad, clock hands, levers, things pressed in order, a picture in pieces, a
-  dial swept through static — plus what a clue can let you do to it (a lantern,
-  a cut card you turn, something to play). Each keeps its working state, so a
-  half-set lock is as you left it.
+  dial swept through static, rods and tanks, a keypad, a handle held against a
+  gauge — plus what a clue can let you do to it (a lantern, a card or a wheel
+  you turn, something to play, something to watch). Each keeps its working
+  state, so a half-set lock is as you left it.
 - **`lib/art.js`** — the drawing kit the rebuilt scenarios draw their props
   with: one drawing serves as the close-up (`ART.svg`) and as the object
   standing in the room (`ART.sprite`), plus a shared picture alphabet
