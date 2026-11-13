@@ -126,7 +126,14 @@ the back of the room (the bay doors) is drawn `behind` the others.
 Every object is drawn into the room itself (`sprite`) from the same drawing as
 its close-up, so what you can see from across the beach is exactly what you
 count when you lean in — the net has the same floats in the same places at
-both sizes. The backdrops are only the place. `lib/art.js` is the kit:
+both sizes. That holds for what a lock shows once it is open, too. **The room
+never shows a made-up version of a clue.** A screen that wakes, a chart that
+has been pieced together, a card standing in an open box: in the room it is
+either the close-up's own drawing made small, or it is drawn from the same
+numbers, or it shows nothing that can be read. A sketch "to suggest" the real
+thing can be read, and will be — the cryo bay's terminal once showed five
+plausible half-digits in the room that were not the five in its close-up, and
+a team keyed in exactly what the room told them. The backdrops are only the place. `lib/art.js` is the kit:
 `ART.svg` for a close-up, `ART.sprite` for the same thing in the room,
 `ART.inset` to set one drawing inside another, `ART.glyph` for the shared
 picture alphabet.
