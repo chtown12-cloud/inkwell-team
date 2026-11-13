@@ -257,8 +257,7 @@ Line):
   synth (beds + one-shot library), canvas FX (mist/motes/fireflies/snow/embers,
   flares, film grain, title backdrops: rain/stars/snow/rails), and the game
   logic (hub, hotspots, the examine view and its camera, timer, beats, relay
-  lamps, endings, GM panel). It also still carries the typed puzzle kinds
-  (`text`/`dial`/`order`/`panel`…) from before the reset; no scenario uses them now.
+  lamps, endings, GM panel).
 - **`lib/locks.js`** — the locks you work with your hands: wheels, a compass
   pad, clock hands, levers, things pressed in order, a picture in pieces, a
   dial swept through static, rods and tanks, a keypad, a handle held against a
