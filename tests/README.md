@@ -7,7 +7,7 @@ node tests/audit.js                 # static: the puzzle standard, enforced
 node dev-server.js &                # serves the game on :8787
 node tests/playthrough.js           # live: all five scenarios, start to victory
 node tests/playthrough.js vorstag   # …or just one
-node tests/sync.js                  # live: a screen and a phone, in step, on both transports
+node tests/sync.js                  # live: phones wait for START, then a screen and a phone in step, on both transports
 node tests/locks.js                 # live: every lock worked wrong on purpose, every drawing measured
 node tests/camera.js eldermoor      # live: the examine camera, at three window shapes
 node tests/onescreen.js             # live: nothing scrolls, at three window shapes
@@ -42,7 +42,12 @@ early and nothing dead can be worked early, takes a wrong try and two hints on
 the first lock to check the clock maths, and presses the scenario's own final
 button. Needs Playwright and the dev server.
 
-**`sync.js`** puts a shared screen and a phone in the same game and plays
+**`sync.js`** starts with the muster: a phone that joins while the screen is
+still showing the code must wait, with the clock stopped, and go in when the
+screen presses START — on the screen's clock. A late arrival must go straight
+in, START pressed before the link exists must still reach the session, and a
+screen picked up during the muster must be able to start it. Then it puts a
+shared screen and a phone in the same game and plays
 every scenario room by room, the two taking turns to open the locks. After
 every press it checks that they are in the same room, that one press of
 Continue entered one room, that every room was visited once and in order, and

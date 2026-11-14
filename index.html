@@ -680,8 +680,7 @@ body.phone #credits{display:none}
    the place they are about to be shut inside is worth more than an opaque box. */
 #qr-panel{position:fixed;inset:0;z-index:120;display:flex;
   background:radial-gradient(ellipse at center,rgba(3,8,9,.72),rgba(3,8,9,.93));
-  backdrop-filter:blur(3px);
-  align-items:center;justify-content:center;overflow:auto;padding:20px}
+  backdrop-filter:blur(3px);overflow:auto;padding:20px}
 /* each arrival lands rather than appearing */
 .qr-players .chip{animation:crewland .5s cubic-bezier(.2,1.2,.35,1) both}
 @keyframes crewland{from{opacity:0;transform:translateY(9px) scale(.9)}to{opacity:1;transform:none}}
@@ -689,10 +688,13 @@ body.phone #credits{display:none}
 .qr-count{color:var(--teal-hi);font-family:var(--font-label);letter-spacing:2px;
   font-size:.9rem;margin:14px 0 4px;min-height:1.3em}
 @media (prefers-reduced-motion: reduce){ .qr-players .chip{animation:none} }
-.qr-inner{text-align:center;max-width:520px}
+/* margin:auto rather than centring the flexbox, which on a short screen cuts
+   the top off where no scroll can reach it */
+.qr-inner{text-align:center;max-width:520px;margin:auto}
 .qr-inner h2{font-family:var(--font-display);color:var(--sand);letter-spacing:3px;margin-bottom:8px}
 .qr-lead{color:var(--dim);font-size:.95rem;margin-bottom:16px;line-height:1.5}
-#qr-canvas{background:#fff;padding:10px;border-radius:10px;image-rendering:pixelated}
+#qr-canvas{background:#fff;padding:10px;border-radius:10px;image-rendering:pixelated;
+  max-width:min(300px,30vh);max-height:min(300px,30vh)}   /* the whole muster on a laptop screen, START included */
 .qr-code{font-family:var(--font-num);font-size:2.4rem;letter-spacing:10px;color:var(--teal-hi);margin-top:14px}
 .qr-url{color:var(--dim);font-size:.82rem;word-break:break-all;margin:4px 0 14px}
 .qr-alt{color:var(--dim);font-size:.8rem;margin:-6px 0 12px}
@@ -708,6 +710,7 @@ body.phone #credits{display:none}
 #trouble b{color:#ffb9a6}
 #trouble code{background:rgba(0,0,0,.35);padding:1px 6px;border-radius:4px;color:#ffe9c9}
 .qr-link{font-size:.85rem;margin-bottom:10px;letter-spacing:1px}
+.qr-note{color:var(--dim);font-size:.82rem;margin-top:10px}
 .qr-link.good{color:#8fe3a8}
 .qr-link.warn{color:#e0b96a}
 .qr-players{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-bottom:18px;min-height:26px}
@@ -950,6 +953,22 @@ body:not(.phone) .lk-tiles{width:min(100%,calc((100vh - 300px) * var(--whole,1.6
 }
 @media (prefers-reduced-motion: reduce){ .lk-face.tick{animation:none} .lv-knob{transition:none} }
 
+/* a phone that joined before the screen pressed start */
+.ph-muster{max-width:420px;margin:7vh auto 0;text-align:center;padding:24px 18px 20px;
+  background:rgb(var(--card,30 50 55) / .9);border:1px solid rgb(var(--rule,61 90 96) / .5);border-radius:14px}
+.ph-muster-icon{font-size:2.4rem;margin-bottom:6px}
+.ph-muster h2{font-family:var(--font-display);color:var(--sand);letter-spacing:3px;font-size:1.3rem}
+.ph-muster p{color:var(--sand);font-size:1rem;line-height:1.5;margin:10px 0 0}
+.ph-muster p.ph-small{color:var(--dim);font-size:.85rem;margin:6px 0 16px}
+.ph-crew{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+.ph-crew .chip{background:rgba(216,195,154,.1);border:1px solid #5c6f6d;border-radius:20px;
+  padding:3px 12px;font-size:.9rem;color:var(--sand)}
+.ph-crew .chip.me{border-color:var(--teal-hi)}
+.ph-dots i{font-style:normal;animation:phdot 1.4s infinite both}
+.ph-dots i:nth-child(2){animation-delay:.2s}
+.ph-dots i:nth-child(3){animation-delay:.4s}
+@keyframes phdot{0%,80%,100%{opacity:.2}40%{opacity:1}}
+@media (prefers-reduced-motion: reduce){ .ph-dots i{animation:none} }
 /* the phone, once the last lock is open and the screen has not been pressed */
 .ph-wait{margin:14px 2px 0;padding:12px 14px;border:1px solid var(--teal-hi);border-radius:10px;
   background:rgba(79,163,155,.14);color:var(--sand);font-size:.95rem;line-height:1.45;text-align:center}
@@ -1199,11 +1218,12 @@ body.phone #modal{max-height:86vh;
     <canvas id="qr-canvas"></canvas>
     <div class="qr-code" id="qr-code"></div>
     <div class="qr-url" id="qr-url"></div>
-    <div class="qr-alt">Can't scan? Open the same address and enter the code above.</div>
+    <div class="qr-alt" id="qr-alt">Can't scan? Open the same address and enter the code above.</div>
     <div class="qr-link" id="qr-link"></div>
     <div class="qr-count" id="qr-count"></div>
     <div class="qr-players" id="qr-players"></div>
-    <button class="big-btn" id="qr-done" onclick="closeQr()">DONE</button>
+    <button class="big-btn" id="qr-done" onclick="qrDone()">START WITHOUT PHONES</button>
+    <div class="qr-note" id="qr-note"></div>
   </div>
 </div>
 
@@ -1848,7 +1868,9 @@ addEventListener('mousemove', e=>{
 });
 
 /* ---------- timer ---------- */
-function elapsedSec(){ if(S.endElapsed!==null) return S.endElapsed; return S.startTime?Math.floor((Date.now()-S.startTime)/1000):0; }
+/** Now, on the shared game's clock when there is one, so every device reads the same timer. */
+function gameNow(){ return window.NET ? NET.now() : Date.now(); }
+function elapsedSec(){ if(S.endElapsed!==null) return S.endElapsed; return S.startTime?Math.max(0,Math.floor((gameNow()-S.startTime)/1000)):0; }
 function fmt(sec){ sec=Math.max(0,Math.floor(sec)); return Math.floor(sec/60)+':'+String(sec%60).padStart(2,'0'); }
 /* ============================================================
    PRESSURE — the shape of the hour
@@ -2566,7 +2588,6 @@ $('start-btn').onclick=async ()=>{
   if(AC&&AC.state==='suspended') AC.resume();
   S.teamName=($('team-name').value.trim()||'The Castaways').toUpperCase();
   $('team-badge').textContent=S.teamEmoji+' '+S.teamName;
-  S.started=true; S.startTime=Date.now();
   $('start-screen').classList.add('hidden');
   $('gm-btn').classList.add('hidden');
   $('back-btn').classList.add('hidden');
@@ -2575,8 +2596,14 @@ $('start-btn').onclick=async ()=>{
   $('objective').classList.remove('hidden');
   $('vignette').classList.remove('hidden');
   fitStage();
-  enterRoom(0);
-  tick();
+  enterRoom(0);          // built and lit behind the muster, its card waiting
+  $('timer').textContent=fmt(START_SECONDS);
+  /* The muster goes up at once, before the link for phones exists, so that
+     nothing behind it can be pressed while the crew is still gathering. The
+     clock does not run until START: it used to start on BEGIN, and anyone who
+     scanned the code was dropped straight into the first room with the time
+     already going, while the screen was still showing the code. */
+  openQr();
   // open a shared session so phones can join; harmless if the API isn't there
   const code = await NET.createSession(ACTIVE.id, S.difficulty);
   // no code but a refusal from the database is a setup problem worth shouting
@@ -2593,9 +2620,27 @@ $('start-btn').onclick=async ()=>{
     await NET.checkPersistence();
     refreshCrewCount();
     refreshLinkStatus();
-    openQr();
+    // START was pressed while the link was still being made: tell the phones now
+    if(S.started) sayBegin();
+    else openQr();
+  } else if(!S.started){
+    beginGame();         // no phones can join, so there is nobody to wait for
   }
 };
+/**
+ * The screen starts the game. Nobody's clock runs before this press: phones
+ * that joined while the crew was gathering are waiting on it, and all of them
+ * go in together.
+ */
+function beginGame(){
+  closeQr();
+  if(S.started) return;
+  S.started=true; S.startTime=gameNow();
+  tick();
+  sayBegin();
+}
+/** The muster's big button: before the game it starts it; after, it just closes. */
+function qrDone(){ if(S.started) closeQr(); else beginGame(); }
 $('continue-btn').onclick=()=>{
   $('room-complete').classList.add('hidden');
   /* Work out where "next" is ONCE, go there, and only then tell the session.
@@ -2862,9 +2907,18 @@ const MP = { suppress:false, openObj:null,
 
 function mpSend(action, extra){ if(MP.active()) NET.send(action, extra); }
 
+/** Has the screen pressed start? A game made before the muster existed has no flag and was always running. */
+function begunSession(room){ return !room || room.begun!==false; }
+
 /** Fold authoritative server state into this client. */
 function applyRemote(room){
-  if(!room || !S.started) return;
+  if(!room) return;
+  if(!S.started){
+    if(!begunSession(room)){ musterSync(); return; }
+    startFromSession(room);      // the screen pressed start: every device goes in on it
+  }
+  // started on the screen, but the session never heard (a dropped write): say it again
+  if(!S.isPhone && room.begun===false && room.host && room.host.id===NET.playerId) sayBegin();
   MP.suppress = true;
   try{
     if(room.startTime) S.startTime = room.startTime;
@@ -2915,6 +2969,34 @@ function applyRemote(room){
   refreshCrewCount();
   tick();
   maybeVictory();
+}
+
+/** While the crew gathers: keep the roster current on the screen and on every waiting phone. */
+function musterSync(){
+  if(S.isPhone){ renderMuster(); refreshHostBanner(); }
+  refreshQrPlayers();
+  refreshLinkStatus();
+  refreshCrewCount();
+}
+/** Start this device from the session: its clock, and on a phone the room. */
+function startFromSession(room){
+  S.started=true;
+  S.startTime=room.startTime||gameNow();
+  if(S.isPhone){
+    S.roomIndex=room.roomIndex||0;
+    (room.solved||[]).forEach(id=>S.solved.add(id));
+    enterRoomPhone();
+    // a phone that sat waiting has probably been put down: say it is time
+    if(musterSig!==null){ sfxChime(); try{ navigator.vibrate && navigator.vibrate(120); }catch(e){} }
+  } else closeQr();
+  tick();
+}
+let beginSaidAt=0;
+/** Tell the session the screen has started — or tell it again, if it seems not to have heard. */
+function sayBegin(){
+  if(!MP.active() || Date.now()-beginSaidAt<4000) return;
+  beginSaidAt=Date.now();
+  NET.send('begin');
 }
 
 /** The press reaches every device as `finished`, so check on every sync. */
@@ -3068,15 +3150,21 @@ function joinUrl(){
   return location.origin + location.pathname + '?join=' + (S.code||'');
 }
 function openQr(){
-  if(!S.code) return;
-  $('qr-code').textContent = S.code;
   const local = location.protocol === 'file:';
-  $('qr-url').textContent = local
-    ? 'Open the game from a web address (not a local file) for phones to be able to join.'
-    : joinUrl();
   const cv = $('qr-canvas');
-  if(local){ cv.style.display='none'; }
-  else { cv.style.display=''; try{ QR.render(cv, joinUrl(), {size:300}); }catch(e){ cv.style.display='none'; } }
+  $('qr-code').textContent = S.code || '';
+  $('qr-alt').style.display = S.code ? '' : 'none';
+  if(!S.code){
+    // the muster is up before the link is: say so rather than show an empty frame
+    cv.style.display='none';
+    $('qr-url').textContent = 'Setting up the link for phones…';
+  } else {
+    $('qr-url').textContent = local
+      ? 'Open the game from a web address (not a local file) for phones to be able to join.'
+      : joinUrl();
+    if(local){ cv.style.display='none'; }
+    else { cv.style.display=''; try{ QR.render(cv, joinUrl(), {size:300}); }catch(e){ cv.style.display='none'; } }
+  }
   refreshQrPlayers();
   refreshLinkStatus();
   $('qr-panel').classList.remove('hidden');
@@ -3094,7 +3182,9 @@ const TROUBLE = {
 };
 function refreshLinkStatus(){
   const el=$('qr-link');
-  const st = (window.NET && NET.status && NET.status()) || {state:'down',why:'none'};
+  const making = !S.code && !S.started && !(window.NET && NET.denied);   // the muster, before its link exists
+  const st = making ? {state:'degraded',why:'connecting'}
+    : (window.NET && NET.status && NET.status()) || {state:'down',why:'none'};
   if(el){
     el.className = 'qr-link ' + (st.state==='ok' ? 'good' : 'warn');
     el.textContent = st.state==='ok'
@@ -3142,7 +3232,10 @@ function refreshQrPlayers(){
   const count=$('qr-count');
   if(count) count.textContent = n===0 ? '' : (n===1?'1 aboard':n+' aboard');
   const btn=$('qr-done');
-  if(btn) btn.textContent = n===0 ? 'START WITHOUT PHONES' : "WE'RE ALL HERE ➤";
+  if(btn) btn.textContent = S.started ? 'BACK TO THE GAME' : n===0 ? 'START WITHOUT PHONES' : 'START THE GAME ➤';
+  const note=$('qr-note');
+  if(note) note.textContent = S.started ? 'Anyone who joins now goes straight in.'
+    : 'Phones wait until you press start. The clock starts for everyone at once.';
 }
 
 /* ---------- the shared screen going away ---------- */
@@ -3190,6 +3283,27 @@ function renderPhone(){
   }
   wrap.innerHTML=html;
 }
+/** A phone that joined before the screen pressed start waits here, with the crew. */
+let musterSig=null;
+function renderMuster(){
+  const wrap=$('phone-root'); if(!wrap) return;
+  const back=$('phone-scene');
+  // the place they are about to be shut inside, behind the wait
+  if(back && !back.innerHTML && ACTIVE.scenes[currentRoom().scene]) back.innerHTML=sceneSvg(currentRoom());
+  const hostId=(NET.state&&NET.state.host&&NET.state.host.id)||null;
+  const crew=((NET.state&&NET.state.players)||[]).filter(p=>p.id!==hostId);
+  // redrawn only when the crew changes, not on every heartbeat
+  const sig=crew.map(p=>p.id+p.emoji+p.name).join('|');
+  if(sig===musterSig && wrap.querySelector('.ph-muster')) return;
+  musterSig=sig;
+  wrap.innerHTML=`<div class="ph-muster">
+    <div class="ph-muster-icon">${ACTIVE.icon||'⏳'}</div>
+    <h2>YOU'RE IN</h2>
+    <p>Waiting for the big screen to start the game<span class="ph-dots"><i>.</i><i>.</i><i>.</i></span></p>
+    <p class="ph-small">The clock starts for everyone at the same moment.</p>
+    <div class="ph-crew">${crew.map(p=>`<span class="chip${p.id===NET.playerId?' me':''}">${p.emoji} ${esc(p.name)}</span>`).join('')}</div>
+  </div>`;
+}
 function phoneOpen(id){
   MP.openObj=id;
   mpSend('sit',{objId:id});
@@ -3225,7 +3339,9 @@ async function bootPhone(code){
   $('join-screen').classList.remove('hidden');
   $('join-btn').onclick = async ()=>{
     const name=$('join-name').value.trim()||'Crew';
-    NET.onState = applyRemote;
+    // Not listening yet: the join's own echo can land before this send returns,
+    // and a device that does not yet know it is a phone would act on it as a
+    // screen. Whatever arrives meanwhile is still kept, in NET.state.
     const joined = await NET.send('join',{name,emoji:chosen});
     if(!joined){
       note.innerHTML = '<b style="color:#ffb9a6">Couldn\u2019t join that game.</b><br>'
@@ -3234,25 +3350,26 @@ async function bootPhone(code){
             : 'The game may have ended, or the connection dropped. Check the code and try again.');
       return;
     }
-    S.isPhone=true; S.started=true; S.code=code;
+    S.isPhone=true; S.code=code;
     S.teamName=name.toUpperCase(); S.teamEmoji=chosen;
-    S.roomIndex = (NET.state&&NET.state.roomIndex)||0;
-    S.startTime = (NET.state&&NET.state.startTime)||Date.now();
-    (NET.state&&NET.state.solved||[]).forEach(id=>S.solved.add(id));
     document.body.classList.add('phone');
     $('join-screen').classList.add('hidden');
     $('phone-root').classList.remove('hidden');
     $('hud').classList.remove('hidden');
     $('team-badge').textContent=chosen+' '+name.toUpperCase();
     $('hud-room').textContent='';
+    $('timer').textContent=fmt(START_SECONDS);
     initAudio(); if(AC&&AC.state==='suspended') AC.resume();
-    enterRoomPhone();
     NET.startPolling();
     // The takeover offer used to be checked only when a message arrived — but a
     // screen that has gone quiet sends nothing, so the one case that needed
     // noticing was the one case that never was. Look on a timer too.
     setInterval(refreshHostBanner, 8000);
-    tick();
+    // A late arrival goes straight in. Anyone earlier waits for the screen's
+    // START — this used to drop them into the first room with the clock
+    // running while the screen was still showing the code.
+    NET.onState = applyRemote;
+    applyRemote(NET.state);
   };
 }
 
@@ -3267,9 +3384,10 @@ async function bootHost(code){
   ACTIVE = SCENARIOS.find(x=>x.id===room.scenario) || SCENARIOS[0];
   wearScenario();
   setDifficulty(room.difficulty);
-  S.code=code; S.started=true; S.isPhone=false;
+  const begun=begunSession(room);
+  S.code=code; S.started=begun; S.isPhone=false;
   S.roomIndex=room.roomIndex||0;
-  S.startTime=room.startTime||Date.now();
+  S.startTime=begun ? (room.startTime||gameNow()) : null;
   (room.solved||[]).forEach(id=>S.solved.add(id));
   S.penaltySec=room.penaltySec||0; S.hintsUsed=room.hintsUsed||0; S.wrongCount=room.wrongCount||0;
   S.teamName='THE CREW'; S.teamEmoji=(ACTIVE.emojis||['⚓'])[0];
@@ -3286,7 +3404,8 @@ async function bootHost(code){
   NET.startPolling();
   fitStage();
   enterRoom(S.roomIndex);
-  tick();
+  if(begun) tick();
+  else { $('timer').textContent=fmt(START_SECONDS); openQr(); }   // the crew was still gathering
 }
 
 /* Anyone closing the game should say so on the way out. The database works it

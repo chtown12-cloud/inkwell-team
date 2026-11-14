@@ -1,8 +1,8 @@
 /* ============================================================
    POST /api/action  { code, playerId, action, ... }
 
-   One endpoint for every mutation: join, ping, sit, stand, solve,
-   hint, wrong, advance, finish. All validated in lib/session.js.
+   One endpoint for every mutation: join, ping, sit, stand, begin,
+   solve, hint, wrong, advance, finish. All validated in lib/session.js.
 
    Concurrency: sessions are tiny and writes are last-write-wins, but
    every action is written as a read-modify-write of the whole room and
