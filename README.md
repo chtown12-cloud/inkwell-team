@@ -55,10 +55,12 @@ scenario with `?s=eldermoor`, `?s=prospero`, `?s=vorstag`, `?s=erebus`, or
 
 ### Playing together on phones (recommended for groups)
 
-One person shares their screen as usual. When the game starts it shows a **QR
-code**: everyone else scans it and gets a condensed, playable view of the same
-room on their own phone. Anyone can open a puzzle and solve it, and **the solve
-lands for the whole team instantly**. The shared screen becomes the room — the
+One person shares their screen as usual. Press **BEGIN** and it shows a **QR
+code**: everyone else scans it and waits on their phone while the crew gathers,
+with the clock stopped. When the screen presses **START** the clock starts for
+everyone at once, and each phone gets a condensed, playable view of the same
+room. Anyone can open a puzzle and solve it, and **the solve lands for the whole
+team instantly**. The shared screen becomes the room — the
 scene, the timer, the sound — and doubles as a dispatch board showing who is
 working on what.
 
@@ -72,9 +74,12 @@ physical room.
   working on what and who has drifted off.
 - **Can't scan?** The hub has a code box — open the game's address and type the
   six characters shown on the screen. Same result as the QR.
+- Late arrivals are fine: anyone who joins after START goes straight into the
+  room the crew is in, on the same clock. The 📱 button brings the code back.
 - If the host's screen closes, phones notice within a second and offer to take
   over — on that phone, or on a laptop by opening the address and entering the
-  code. Progress and the clock carry across untouched, and the warning clears
+  code. Progress and the clock carry across untouched (a game that had not
+  started yet is picked up still waiting for START), and the warning clears
   itself if the host was only reloading.
 - Nobody is ever locked out: any number of people can join the same puzzle, and
   one person **can** solve alone.
@@ -286,7 +291,7 @@ Line):
   that changed it. Firebase would — it raises a page's own write back at it
   before the write returns — and the game being re-entered half way through a
   button press is how the shared screen once walked from room 1 into room 3.
-- **`lib/session.js`** — the session rules (join, sit, solve, hint, advance) as
+- **`lib/session.js`** — the session rules (join, sit, begin, solve, hint, advance) as
   one pure module. It runs *inside a Firebase transaction* on the client and
   *inside the request handler* on the server, so both transports enforce
   identical rules. `normalizeRoom()` absorbs Realtime Database's habit of
