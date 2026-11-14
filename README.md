@@ -6,6 +6,8 @@ everyone else joins on their phones by scanning a QR code, so the crew can
 split up and work different puzzles at once. Pick a scenario, muster your crew,
 and race the clock.
 
+**Play it:** <https://chtown12-cloud.github.io/virtual-escape/>
+
 | Scenario | Setting | The thing you never see |
 |----------|---------|--------------------------|
 | 🏝️ **The Wreck of the Eldermoor** | Shipwreck on an uncharted island | Something pacing the treeline |
@@ -42,10 +44,14 @@ The rules are written down in
 
 ## How to run it
 
-Open `index.html` in any modern browser — **sound on, fullscreen recommended**.
-No build step; Google Fonts is the only CDN dependency. Deep-link a team
-straight to a scenario with `?s=eldermoor`, `?s=prospero`, `?s=vorstag`,
-`?s=erebus`, or `?s=midnight`.
+The game is hosted on GitHub Pages, straight from `main`:
+<https://chtown12-cloud.github.io/virtual-escape/>. Every merge to `main` is live a couple of minutes later
+(Pages caches for up to ten minutes, so a refresh may be needed just after an
+update). It is plain static files, so it also runs by opening `index.html` in
+any modern browser — **sound on, fullscreen recommended**. No build step;
+Google Fonts is the only CDN dependency. Deep-link a team straight to a
+scenario with `?s=eldermoor`, `?s=prospero`, `?s=vorstag`, `?s=erebus`, or
+`?s=midnight` (for example `https://chtown12-cloud.github.io/virtual-escape/?s=erebus`).
 
 ### Playing together on phones (recommended for groups)
 
@@ -80,7 +86,7 @@ physical room.
 
 Sync runs on **Firebase Realtime Database** — the same database QuizDash uses
 (project `quizdash-eba72`), under a separate `escape/` key so the two games can
-never collide. Nothing else is needed: no server, no Vercel storage, no
+never collide. Nothing else is needed: no server, no extra storage, no
 serverless functions. Games are pushed over a websocket, so a solve appears on
 every device immediately.
 
@@ -136,8 +142,9 @@ connected.
 
 **If sync is ever unavailable** — rules not published yet, no network, or the
 game opened straight off disk — it silently falls back: first to the bundled
-REST API (only present if you deploy the `api/` folder somewhere that runs
-serverless functions, e.g. Vercel), and finally to classic single-screen play.
+REST API (GitHub Pages can't run it, so the live site goes straight to the
+next step; it runs under `node dev-server.js`, or on any host that runs
+serverless functions), and finally to classic single-screen play.
 Nothing ever hard-fails.
 
 **Locally:** `node dev-server.js` runs the game on <http://localhost:8787> with
